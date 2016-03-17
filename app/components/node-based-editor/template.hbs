@@ -1,1 +1,6 @@
-{{yield}}
+<div id='svg-container'>
+</div>
+{{#each this.model.entities as | entity index | }}
+  {{entity-node entity=entity nodes=entityComponents}}
+  {{!-- {{svg-node entity=entity}} --}}
+{{/each}}
