@@ -3,6 +3,7 @@ import Ember from 'ember';
 export default Ember.Component.extend({
   draw: undefined,
   entityComponents: [],
+  entitySvgNodes: {},
   didInsertElement() {
     this.initSVGDocument()
   },
