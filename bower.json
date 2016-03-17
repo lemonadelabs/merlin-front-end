@@ -5,6 +5,9 @@
     "ember-cli-shims": "0.1.0",
     "ember-cli-test-loader": "0.2.2",
     "ember-qunit-notifications": "0.1.0",
-    "svg.js": "^2.2.5"
+    "svg.js": "^2.2.5",
+    "svg.foreignobject.js": "*",
+    "lodash": "^4.6.1",
+    "svg.draggable.js": "^2.1.3"
   }
 }
