@@ -33,6 +33,9 @@ module.exports = function(defaults) {
   });
 
   app.import('bower_components/svg.js/dist/svg.js')
+  app.import('bower_components/svg.foreignobject.js/svg.foreignobject.js')
+  app.import('bower_components/svg.draggable.js/dist/svg.draggable.js')
+  app.import('bower_components/lodash/lodash.js')
 
   return app.toTree();
 };
