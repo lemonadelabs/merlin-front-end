@@ -18,21 +18,31 @@ export default Ember.Component.extend({
     var nodeGroups = {}
 
       if (self.entityComponents.length === self.model.entities.length) {
-          // console.log('asdfasdfsadf')
-
-          // var nodeGroups = self.draw.group()
-          // // nodeGroups.translate(0, (130 * i))
-          // // var rect = nodeGroups.rect(100, 100).attr({ fill: '#f06' })
-          // var dragRect = nodeGroups.rect(100, 10).attr({ fill: '#ffffff' })
-
-          // nodeGroups.draggable()
 
         _.forEach(self.entityComponents, function (component, i) {
 
-          nodeGroups[i] = self.draw.group()
-          nodeGroups[i].translate(0, (130 * i))
-          var rect = nodeGroups[i].rect(100, 100).attr({ fill: '#ddd' })
-          var dragRect = nodeGroups[i].rect(100, 20).attr({ fill: '#ffffff' })
+          var id = component.get('id')
+
+          var group = self.buildDrawgroup({id : id})
+          group.translate(30, ((130 * i) + 30 ))
+
+          group.footprint = group.rect(100, 100).attr({ fill: '#ddd' })
+          group.dragRect = group.rect(100, 20).attr({ fill: '#ffffff' })
+
+          var dragRect = group.dragRect
+          Ember.$(dragRect.node).on('mouseenter', function () {
+            group.draggable()
+          })
+
+          Ember.$(dragRect.node).on('mouseleave', function () {
+            group.draggable(false)
+          })
+
+          group.foreignObj = group.foreignObject().attr({id: 'component'})
+          group.foreignObj.translate(0,20)
+
+          group.foreignObj.appendChild(component.element)
+
 
           var start = {
             x: 500,
@@ -43,45 +53,38 @@ export default Ember.Component.extend({
             y: 1100
           }
 
-          var controlPt1 = {}
-          controlPt1.x = (destination.x - start.x) / 2  + start.x
-          controlPt1.y = start.y
-
-          var controlPt2 = {}
-          controlPt2.x = (destination.x - start.x) / 2 + start.x
-          controlPt2.y = destination.y
-
-          var line = self.draw.path(`M ${start.x} ${start.y} C ${controlPt1.x} ${controlPt1.y} ${controlPt2.x} ${controlPt2.y} ${destination.x} ${destination.y}`).fill('none').stroke({ width: 2 })
-          // nodeGroups[i].draggable()
+          var line = self.draw.path( self.buildBezierCurveString({start:start, end:destination}) ).fill('none').stroke({ width: 1 })
 
           Ember.$(document).on('mousemove', function (e) {
             destination.x = e.clientX
             destination.y = e.clientY
-
-            controlPt1.x = (destination.x - start.x) / 2  + start.x
-            controlPt1.y = start.y
-            controlPt2.x = (destination.x - start.x) / 2 + start.x
-            controlPt2.y = destination.y
-
-            line.plot(`M ${start.x} ${start.y} C ${controlPt1.x} ${controlPt1.y} ${controlPt2.x} ${controlPt2.y} ${destination.x} ${destination.y}`)
+            line.plot( self.buildBezierCurveString({start:start, end:destination}) )
           })
 
 
-          Ember.$(dragRect.node).on('mouseenter', function () {
-            nodeGroups[i].draggable()
-          })
 
-          Ember.$(dragRect.node).on('mouseleave', function () {
-            nodeGroups[i].draggable(false)
-          })
-
-          var fobj = nodeGroups[i].foreignObject().attr({id: 'component'})
-          fobj.translate(0,20)
-
-          fobj.appendChild(component.element)
 
         })
       }
-  }.observes('draw') //.observes('entityComponents.[]')
+  }.observes('draw'),
+
+  buildBezierCurveString: function (opts) {
+    var start = opts.start
+    var end = opts.end
+    var controlPt1 = {}
+    controlPt1.x = (end.x - start.x) / 2  + start.x
+    controlPt1.y = start.y
+
+    var controlPt2 = {}
+    controlPt2.x = (end.x - start.x) / 2 + start.x
+    controlPt2.y = end.y
+
+    return `M ${start.x} ${start.y} C ${controlPt1.x} ${controlPt1.y} ${controlPt2.x} ${controlPt2.y} ${end.x} ${end.y}`
+  },
+
+  buildDrawgroup: function (opts) {
+    return this.entitySvgNodes[opts.id] = this.draw.group()
+  },
+
 
 });
