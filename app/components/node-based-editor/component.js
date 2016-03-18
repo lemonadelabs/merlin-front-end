@@ -38,7 +38,7 @@ export default Ember.Component.extend({
           group.translate(30, ((130 * i) + 30 ))
 
           group.footprint = group.rect(160, 120).attr({ fill: '#ddd' })
-          group.dragRect = group.rect(16  0, 20).attr({ fill: '#ffffff' })
+          group.dragRect = group.rect(160, 20).attr({ fill: '#999' })
 
           var dragRect = group.dragRect
           Ember.$(dragRect.node).on('mouseenter', function () {
