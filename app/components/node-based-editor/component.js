@@ -19,6 +19,17 @@ export default Ember.Component.extend({
 
       if (self.entityComponents.length === self.model.entities.length) {
 
+          var start = {
+            x: 0,
+            y: 0
+          }
+          var end = {
+            x: 0,
+            y: 0
+          }
+
+
+
         _.forEach(self.entityComponents, function (component, i) {
 
           var id = component.get('id')
