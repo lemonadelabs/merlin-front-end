@@ -54,31 +54,72 @@ export default Ember.Component.extend({
 
           group.foreignObj.appendChild(component.element)
 
+          group.outputs = {}
 
-          var start = {
-            x: 500,
-            y: 500
-          }
-          var end = {
-            x: 1100,
-            y: 1100
-          }
+          group.outputs[1] = group.rect(15, 15).attr({ fill: '#790AC7' }).translate(-15,40)
+          group.outputs[1].connected = false
+          group.outputs[2] = group.rect(15, 15).attr({ fill: '#790AC7' }).translate(-15,80)
+          group.outputs[2].connected = false
+          group.outputs[3] = group.rect(15, 15).attr({ fill: '#790AC7' }).translate(160,40)
+          group.outputs[3].connected = false
+          group.outputs[4] = group.rect(15, 15).attr({ fill: '#790AC7' }).translate(160,80)
+          group.outputs[4].connected = false
 
-          var line = self.createBezierCurve({
-            start : start,
-            end : end
+          _.forEach(group.outputs, function (output) {
+
+            Ember.$(output.node).on('mousedown', function (e) {
+              onConnectorMouseDown({ output : output, e : e })
+            })
+
+            Ember.$(output.node).on('mouseup', function (e) {
+              onConnectorMouseUp({ output : output, e : e })
+            })
+
           })
 
+          function onConnectorMouseDown(opts) {
 
-          Ember.$(document).on('mousemove', function (e) {
-            end.x = e.clientX
-            end.y = e.clientY
+            var line = self.createBezierCurve({
+              start : start,
+              end : end
+            })
+
+            var output = opts.output
+            var e = opts.e
+          //   give the start position to the connector clicked on
+            var position = $(output.node).position()
+            start.x = end.x = position.left
+            start.y = end.y = position.top
             line.plot( self.buildBezierCurveString({ start : start, end : end }) )
-          })
 
+            Ember.$(document).on('mousemove', followMouse )
+            function followMouse(e) {
+              end.x = e.clientX
+              end.y = e.clientY
+              line.plot( self.buildBezierCurveString({ start : start, end : end }) )
+            }
 
+            Ember.$(document).on('mouseup', unbind )
+            function unbind() {
+              Ember.$(document).unbind('mousemove', followMouse )
+              Ember.$(document).unbind('mouseup', unbind )
+            }
 
+          }
 
+          function onConnectorMouseUp(opts) {
+            var position = $(output.node).position()
+            end.x = position.left
+            end.y = position.top
+            line.plot( self.buildBezierCurveString({ start : start, end : end }) )
+          }
+
+          function onConnectorClick(output) {
+            var position = $(output.node).position()
+            start.x = position.left
+            start.y = position.top
+            line.plot( self.buildBezierCurveString({ start : start, end : end }) )
+          }
         })
       }
   }.observes('draw'),
