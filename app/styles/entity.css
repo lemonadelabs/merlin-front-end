@@ -1,7 +1,10 @@
 .entity-node {
-  border: solid 1px rgb(102, 129, 159);
-  width: 100px;
-  height: 80px;
+  /*border: solid 1px rgb(102, 129, 159);*/
+  width: 160px;
+  height: 100px;
+  text-align: center;
+  /*margin-left: 200;*/
+  /*margin-right: auto;*/
 }
 
 .entity-node input {
