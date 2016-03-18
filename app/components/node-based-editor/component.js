@@ -48,17 +48,21 @@ export default Ember.Component.extend({
             x: 500,
             y: 500
           }
-          var destination = {
+          var end = {
             x: 1100,
             y: 1100
           }
 
-          var line = self.draw.path( self.buildBezierCurveString({start:start, end:destination}) ).fill('none').stroke({ width: 1 })
+          var line = self.createBezierCurve({
+            start : start,
+            end : end
+          })
+
 
           Ember.$(document).on('mousemove', function (e) {
-            destination.x = e.clientX
-            destination.y = e.clientY
-            line.plot( self.buildBezierCurveString({start:start, end:destination}) )
+            end.x = e.clientX
+            end.y = e.clientY
+            line.plot( self.buildBezierCurveString({ start : start, end : end }) )
           })
 
 
@@ -67,6 +71,15 @@ export default Ember.Component.extend({
         })
       }
   }.observes('draw'),
+
+  createBezierCurve: function (opts) {
+    var curveString = this.buildBezierCurveString({start : opts.start, end : opts.end})
+    return this.draw.path( curveString ).fill('none').stroke({ width: 1 })
+  },
+
+  updateBezierCurve: function (opts) {
+
+  },
 
   buildBezierCurveString: function (opts) {
     var start = opts.start
