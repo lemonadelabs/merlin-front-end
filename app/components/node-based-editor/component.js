@@ -19,6 +19,8 @@ export default Ember.Component.extend({
     var self = this
     var nodeGroups = {}
 
+      console.log('qwerqwer')
+
       if (self.entityComponents.length === self.model.entities.length) {
 
           // var start = {
@@ -39,6 +41,8 @@ export default Ember.Component.extend({
             draw : self.draw,
             component : component
           })
+
+
 
           self.entityDrawGroups[id].translate(30, ((130 * i) + 30 ))
 
