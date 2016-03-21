@@ -1,9 +1,11 @@
 import Ember from 'ember';
+import EntityDrawGroup from './entityDrawGroup'
 
 export default Ember.Component.extend({
   draw: undefined,
   entityComponents: [],
   entitySvgNodes: {},
+  entityDrawGroups: {},
   didInsertElement() {
     this.initSVGDocument()
   },
@@ -19,107 +21,110 @@ export default Ember.Component.extend({
 
       if (self.entityComponents.length === self.model.entities.length) {
 
-          var start = {
-            x: 0,
-            y: 0
-          }
-          var end = {
-            x: 0,
-            y: 0
-          }
-
-
+          // var start = {
+          //   x: 0,
+          //   y: 0
+          // }
+          // var end = {
+          //   x: 0,
+          //   y: 0
+          // }
 
         _.forEach(self.entityComponents, function (component, i) {
 
           var id = component.get('id')
 
-          var group = self.buildDrawgroup({id : id})
-          group.translate(30, ((130 * i) + 30 ))
-
-          group.footprint = group.rect(160, 120).attr({ fill: '#ddd' })
-          group.dragRect = group.rect(160, 20).attr({ fill: '#999' })
-
-          var dragRect = group.dragRect
-          Ember.$(dragRect.node).on('mouseenter', function () {
-            group.draggable()
+          self.entityDrawGroups[id] = new EntityDrawGroup({
+            id : id,
+            draw : self.draw,
+            component : component
           })
 
-          Ember.$(dragRect.node).on('mouseleave', function () {
-            group.draggable(false)
-          })
+          self.entityDrawGroups[id].translate(30, ((130 * i) + 30 ))
 
-          group.foreignObj = group.foreignObject().attr({id: 'component'})
-          group.foreignObj.translate(0,20)
+        //   group.footprint = group.rect(160, 120).attr({ fill: '#ddd' })
+        //   group.dragRect = group.rect(160, 20).attr({ fill: '#999' })
 
-          group.foreignObj.appendChild(component.element)
+        //   var dragRect = group.dragRect
+        //   Ember.$(dragRect.node).on('mouseenter', function () {
+        //     group.draggable()
+        //   })
 
-          group.outputs = {}
+        //   Ember.$(dragRect.node).on('mouseleave', function () {
+        //     group.draggable(false)
+        //   })
 
-          group.outputs[1] = group.rect(15, 15).attr({ fill: '#790AC7' }).translate(-15,40)
-          group.outputs[1].connected = false
-          group.outputs[2] = group.rect(15, 15).attr({ fill: '#790AC7' }).translate(-15,80)
-          group.outputs[2].connected = false
-          group.outputs[3] = group.rect(15, 15).attr({ fill: '#790AC7' }).translate(160,40)
-          group.outputs[3].connected = false
-          group.outputs[4] = group.rect(15, 15).attr({ fill: '#790AC7' }).translate(160,80)
-          group.outputs[4].connected = false
+        //   group.foreignObj = group.foreignObject().attr({id: 'component'})
+        //   group.foreignObj.translate(0,20)
 
-          _.forEach(group.outputs, function (output) {
+        //   group.foreignObj.appendChild(component.element)
 
-            Ember.$(output.node).on('mousedown', function (e) {
-              onConnectorMouseDown({ output : output, e : e })
-            })
+        //   group.outputs = {}
 
-            Ember.$(output.node).on('mouseup', function (e) {
-              onConnectorMouseUp({ output : output, e : e })
-            })
+        //   group.outputs[1] = group.rect(15, 15).attr({ fill: '#790AC7' }).translate(-15,40)
+        //   group.outputs[1].connected = false
+        //   group.outputs[2] = group.rect(15, 15).attr({ fill: '#790AC7' }).translate(-15,80)
+        //   group.outputs[2].connected = false
+        //   group.outputs[3] = group.rect(15, 15).attr({ fill: '#790AC7' }).translate(160,40)
+        //   group.outputs[3].connected = false
+        //   group.outputs[4] = group.rect(15, 15).attr({ fill: '#790AC7' }).translate(160,80)
+        //   group.outputs[4].connected = false
 
-          })
+        //   _.forEach(group.outputs, function (output) {
 
-          function onConnectorMouseDown(opts) {
+        //     Ember.$(output.node).on('mousedown', function (e) {
+        //       onConnectorMouseDown({ output : output, e : e })
+        //     })
 
-            var line = self.createBezierCurve({
-              start : start,
-              end : end
-            })
+        //     Ember.$(output.node).on('mouseup', function (e) {
+        //       onConnectorMouseUp({ output : output, e : e })
+        //     })
 
-            var output = opts.output
-            var e = opts.e
-          //   give the start position to the connector clicked on
-            var position = $(output.node).position()
-            start.x = end.x = position.left
-            start.y = end.y = position.top
-            line.plot( self.buildBezierCurveString({ start : start, end : end }) )
+        //   })
 
-            Ember.$(document).on('mousemove', followMouse )
-            function followMouse(e) {
-              end.x = e.clientX
-              end.y = e.clientY
-              line.plot( self.buildBezierCurveString({ start : start, end : end }) )
-            }
+        //   function onConnectorMouseDown(opts) {
 
-            Ember.$(document).on('mouseup', unbind )
-            function unbind() {
-              Ember.$(document).unbind('mousemove', followMouse )
-              Ember.$(document).unbind('mouseup', unbind )
-            }
+        //     var line = self.createBezierCurve({
+        //       start : start,
+        //       end : end
+        //     })
 
-          }
+        //     var output = opts.output
+        //     var e = opts.e
+        //   //   give the start position to the connector clicked on
+        //     var position = $(output.node).position()
+        //     start.x = end.x = position.left
+        //     start.y = end.y = position.top
+        //     line.plot( self.buildBezierCurveString({ start : start, end : end }) )
 
-          function onConnectorMouseUp(opts) {
-            var position = $(output.node).position()
-            end.x = position.left
-            end.y = position.top
-            line.plot( self.buildBezierCurveString({ start : start, end : end }) )
-          }
+        //     Ember.$(document).on('mousemove', followMouse )
+        //     function followMouse(e) {
+        //       end.x = e.clientX
+        //       end.y = e.clientY
+        //       line.plot( self.buildBezierCurveString({ start : start, end : end }) )
+        //     }
 
-          function onConnectorClick(output) {
-            var position = $(output.node).position()
-            start.x = position.left
-            start.y = position.top
-            line.plot( self.buildBezierCurveString({ start : start, end : end }) )
-          }
+        //     Ember.$(document).on('mouseup', unbind )
+        //     function unbind() {
+        //       Ember.$(document).unbind('mousemove', followMouse )
+        //       Ember.$(document).unbind('mouseup', unbind )
+        //     }
+
+        //   }
+
+        //   function onConnectorMouseUp(opts) {
+        //     var position = $(output.node).position()
+        //     end.x = position.left
+        //     end.y = position.top
+        //     line.plot( self.buildBezierCurveString({ start : start, end : end }) )
+        //   }
+
+        //   function onConnectorClick(output) {
+        //     var position = $(output.node).position()
+        //     start.x = position.left
+        //     start.y = position.top
+        //     line.plot( self.buildBezierCurveString({ start : start, end : end }) )
+        //   }
         })
       }
   }.observes('draw'),
@@ -147,9 +152,9 @@ export default Ember.Component.extend({
     return `M ${start.x} ${start.y} C ${controlPt1.x} ${controlPt1.y} ${controlPt2.x} ${controlPt2.y} ${end.x} ${end.y}`
   },
 
-  buildDrawgroup: function (opts) {
-    return this.entitySvgNodes[opts.id] = this.draw.group()
-  },
+  // buildDrawgroup: function (opts) {
+  //   return this.entitySvgNodes[opts.id] = this.draw.group()
+  // },
 
 
 });
