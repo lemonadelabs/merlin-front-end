@@ -1,13 +1,14 @@
 import Ember from 'ember';
 import EntityDrawGroup from './entityDrawGroup'
+import NodesGroup from './nodesGroup'
 
 export default Ember.Component.extend({
   draw: undefined,
   entityComponents: [],
-  entitySvgNodes: {},
-  entityDrawGroups: {},
-  outputTerminals: {},
-  inputTerminals: {},
+  // entitySvgNodes: {},
+  // entityDrawGroups: {},
+  // outputTerminals: {},
+  // inputTerminals: {},
   didInsertElement() {
     this.initSVGDocument()
   },
@@ -19,60 +20,39 @@ export default Ember.Component.extend({
 
   buldSVGNodes: function () {
     var self = this
-    var nodeGroups = {}
 
-      if (self.entityComponents.length === self.model.entities.length) {
-
-
-        _.forEach(self.entityComponents, function (component, i) {
-
-          var id = component.get('id')
-
-          self.entityDrawGroups[id]
-
-          var entityDrawGroup = new EntityDrawGroup({
-            id : id,
-            draw : self.draw,
-            component : component,
-            entityData : _.find(self.get('model').entities, ['id', id] )
-          })
-
-          self.entityDrawGroups[id] = entityDrawGroup
-
-          entityDrawGroup.group.translate( ((260 * i) + 30 ), ((160 * i) + 30 ))
-
-          _.forEach(entityDrawGroup.outputTerminals, function (output, id) {
-            self.outputTerminals[id] = output
-          })
-
-          _.forEach(entityDrawGroup.inputTerminals, function (input, id) {
-            self.inputTerminals[id] = input
-          })
-
-        })
-      }
-
-
-      _.forEach(self.entityDrawGroups, function (entityDrawGroup) {
-        _.forEach(entityDrawGroup.outputTerminals, function (outputTerminal, id) {
-          var startPosition = Ember.$(outputTerminal.svg.node).position()
-          var type = outputTerminal.type
-          var endpoints = outputTerminal.endpoints
-          _.forEach(endpoints, function (endpoint) {
-            var inputTerminal = self.inputTerminals[endpoint.id]
-            if (inputTerminal) {
-              var endPosition = Ember.$(inputTerminal.svg.node).position()
-              var cable = self.createBezierCurve({
-                startPosition: startPosition,
-                endPosition: endPosition
-              })
-              entityDrawGroup.cables.push(cable)
-              var inputEntityGroup = self.entityDrawGroups[inputTerminal.entityId]
-              inputEntityGroup.cables.push(cable)
-            }
-          })
-        })
+    if (this.entityComponents.length === this.model.entities.length) {
+      this.nodesGroup = new NodesGroup({
+        draw : this.draw,
+        entityModel : self.get('model').entities
       })
+      this.nodesGroup.buildNodes({ components : this.entityComponents})
+      this.nodesGroup.buildCables()
+    }
+
+
+
+      // _.forEach(self.entityDrawGroups, function (entityDrawGroup) { // build the cables
+      //   _.forEach(entityDrawGroup.outputTerminals, function (outputTerminal, id) {
+      //     var startPosition = Ember.$(outputTerminal.svg.node).position()
+      //     var type = outputTerminal.type
+      //     var endpoints = outputTerminal.endpoints
+      //     _.forEach(endpoints, function (endpoint) {
+      //       var inputTerminal = self.inputTerminals[endpoint.id]
+      //       if (inputTerminal) {
+      //         var endPosition = Ember.$(inputTerminal.svg.node).position()
+      //         var cable = self.createBezierCurve({
+      //           startPosition: startPosition,
+      //           endPosition: endPosition
+      //         })
+      //         console.log(cable)
+      //         entityDrawGroup.cables.push(cable)
+      //         var inputEntityGroup = self.entityDrawGroups[inputTerminal.entityId]
+      //         inputEntityGroup.cables.push(cable)
+      //       }
+      //     })
+      //   })
+      // })
 
         // function plotLine(opts) {
         //   var position = $(output.node).position()
@@ -145,7 +125,10 @@ export default Ember.Component.extend({
 
   createBezierCurve: function (opts) {
     var curveString = this.buildBezierCurveString({start : opts.startPosition, end : opts.endPosition})
-    return this.draw.path( curveString ).fill('none').stroke({ width: 1 })
+    var cable = this.draw.path( curveString ).fill('none').stroke({ width: 1 })
+    cable.startPosition = opts.startPosition
+    cable.endPosition = opts.endPosition
+    return cable
   },
 
   updateBezierCurve: function (opts) {
