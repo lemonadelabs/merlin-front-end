@@ -11,11 +11,22 @@ export default function mockData() {
           amount: 1000000
         }
       ],
-      inputs: [],
-      outputs: [
-        {id: 2},
-        {id: 3}
-      ]
+      inputs: {},
+      outputs: {
+        money: {
+          id: 100,
+          endpoints: [
+            {
+              id: 200,
+              bias: 0.2
+            },
+            {
+              id: 201,
+              bias: 0.8
+            }
+          ]
+        }
+      }
     },
     {
       tags: ['staff'],
@@ -28,13 +39,25 @@ export default function mockData() {
           junior: 6
         }
       ],
-      inputs: [
-        {id: 1}
-      ],
-      outputs: [
-        {id: 3}
-      ]
+      outputs: {
+        personel: {
+          id: 101,
+          endpoints: [
+            {
+              id: 202,
+              bias: 1
+            }
+          ]
+        }
+      },
+      inputs: {
+        money: {
+          id: 200,
+          source: 100
+        }
+      },
     },
+
     {
       tags: ['resource'],
       id: 3,
@@ -45,30 +68,45 @@ export default function mockData() {
           requiredPersonel: 12
         }
       ],
-      inputs: [
-        {id: 1}
-      ],
-      outputs: [
-        {id: 3},
-      ]
+      inputs: {
+        staff: {
+          id: 202,
+          source: 101
+        },
+        money: {
+          id: 201,
+          source: 1
+        }
+      },
+      outputs: {
+        storage: {
+          id: 102,
+          endpoints: [
+            {
+              id: 3,
+              bias: 1
+            }
+          ]
+        }
+      },
     }
   ]
 
-  data.outputs = [
-    {
-      id: 4,
-      name: 'application serve',
-      results: [
-        {
-          name: 'applications served',
-          amount: 4000000
-        }
-      ],
-      inputs: [
-        { id: 3 }
-      ]
-    },
-  ]
+  // data.outputs = [
+  //   {
+  //     id: 4,
+  //     name: 'application serve',
+  //     results: [
+  //       {
+  //         name: 'applications served',
+  //         amount: 4000000
+  //       }
+  //     ],
+  //     inputs: [
+  //       { id: 3 }
+  //     ]
+  //   },
+  // ]
 
   return data
 }

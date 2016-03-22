@@ -6,6 +6,8 @@ export default Ember.Component.extend({
   entityComponents: [],
   entitySvgNodes: {},
   entityDrawGroups: {},
+  outputTerminals: {},
+  inputTerminals: {},
   didInsertElement() {
     this.initSVGDocument()
   },
@@ -15,64 +17,79 @@ export default Ember.Component.extend({
     this.set('draw', draw)
   },
 
-  buldSVGNode: function () {
+  buldSVGNodes: function () {
     var self = this
     var nodeGroups = {}
 
-      console.log('qwerqwer')
-
       if (self.entityComponents.length === self.model.entities.length) {
 
-          // var start = {
-          //   x: 0,
-          //   y: 0
-          // }
-          // var end = {
-          //   x: 0,
-          //   y: 0
-          // }
 
         _.forEach(self.entityComponents, function (component, i) {
 
           var id = component.get('id')
 
-          self.entityDrawGroups[id] = new EntityDrawGroup({
+          self.entityDrawGroups[id]
+
+          var entityDrawGroup = new EntityDrawGroup({
             id : id,
             draw : self.draw,
-            component : component
+            component : component,
+            entityData : _.find(self.get('model').entities, ['id', id] )
           })
 
+          self.entityDrawGroups[id] = entityDrawGroup
+
+          entityDrawGroup.group.translate( ((260 * i) + 30 ), ((160 * i) + 30 ))
+
+          _.forEach(entityDrawGroup.outputTerminals, function (output, id) {
+            self.outputTerminals[id] = output
+          })
+
+          _.forEach(entityDrawGroup.inputTerminals, function (input, id) {
+            self.inputTerminals[id] = input
+          })
+
+        })
+      }
 
 
-          self.entityDrawGroups[id].translate(30, ((130 * i) + 30 ))
+      _.forEach(self.entityDrawGroups, function (entityDrawGroup) {
+        _.forEach(entityDrawGroup.outputTerminals, function (outputTerminal, id) {
+          var startPosition = Ember.$(outputTerminal.svg.node).position()
+          var type = outputTerminal.type
+          var endpoints = outputTerminal.endpoints
+          _.forEach(endpoints, function (endpoint) {
+            var inputTerminal = self.inputTerminals[endpoint.id]
+            if (inputTerminal) {
+              var endPosition = Ember.$(inputTerminal.svg.node).position()
+              var cable = self.createBezierCurve({
+                startPosition: startPosition,
+                endPosition: endPosition
+              })
+              entityDrawGroup.cables.push(cable)
+              var inputEntityGroup = self.entityDrawGroups[inputTerminal.entityId]
+              inputEntityGroup.cables.push(cable)
+            }
+          })
+        })
+      })
 
-        //   group.footprint = group.rect(160, 120).attr({ fill: '#ddd' })
-        //   group.dragRect = group.rect(160, 20).attr({ fill: '#999' })
+        // function plotLine(opts) {
+        //   var position = $(output.node).position()
+        //   start.x = position.left
+        //   start.y = position.top
+        //   line.plot( self.buildBezierCurveString({ start : start, end : end }) )
+        // }
 
-        //   var dragRect = group.dragRect
-        //   Ember.$(dragRect.node).on('mouseenter', function () {
-        //     group.draggable()
-        //   })
+        // var start = {
+        //   x: 0,
+        //   y: 0
+        // }
+        // var end = {
+        //   x: 0,
+        //   y: 0
+        // }
 
-        //   Ember.$(dragRect.node).on('mouseleave', function () {
-        //     group.draggable(false)
-        //   })
-
-        //   group.foreignObj = group.foreignObject().attr({id: 'component'})
-        //   group.foreignObj.translate(0,20)
-
-        //   group.foreignObj.appendChild(component.element)
-
-        //   group.outputs = {}
-
-        //   group.outputs[1] = group.rect(15, 15).attr({ fill: '#790AC7' }).translate(-15,40)
-        //   group.outputs[1].connected = false
-        //   group.outputs[2] = group.rect(15, 15).attr({ fill: '#790AC7' }).translate(-15,80)
-        //   group.outputs[2].connected = false
-        //   group.outputs[3] = group.rect(15, 15).attr({ fill: '#790AC7' }).translate(160,40)
-        //   group.outputs[3].connected = false
-        //   group.outputs[4] = group.rect(15, 15).attr({ fill: '#790AC7' }).translate(160,80)
-        //   group.outputs[4].connected = false
 
         //   _.forEach(group.outputs, function (output) {
 
@@ -123,18 +140,11 @@ export default Ember.Component.extend({
         //     line.plot( self.buildBezierCurveString({ start : start, end : end }) )
         //   }
 
-        //   function onConnectorClick(output) {
-        //     var position = $(output.node).position()
-        //     start.x = position.left
-        //     start.y = position.top
-        //     line.plot( self.buildBezierCurveString({ start : start, end : end }) )
-        //   }
-        })
-      }
+
   }.observes('draw'),
 
   createBezierCurve: function (opts) {
-    var curveString = this.buildBezierCurveString({start : opts.start, end : opts.end})
+    var curveString = this.buildBezierCurveString({start : opts.startPosition, end : opts.endPosition})
     return this.draw.path( curveString ).fill('none').stroke({ width: 1 })
   },
 
@@ -145,6 +155,12 @@ export default Ember.Component.extend({
   buildBezierCurveString: function (opts) {
     var start = opts.start
     var end = opts.end
+    if (start.top) {
+      start.x = start.left
+      start.y = start.top
+      end.x = end.left
+      end.y = end.top
+    }
     var controlPt1 = {}
     controlPt1.x = (end.x - start.x) / 2  + start.x
     controlPt1.y = start.y
