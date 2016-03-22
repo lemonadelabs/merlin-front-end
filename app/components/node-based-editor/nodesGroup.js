@@ -1,3 +1,4 @@
+import Cable from './cable'
 import EntityDrawGroup from './entityDrawGroup'
 
 export default function NodesGroup (opts) {
@@ -23,7 +24,7 @@ NodesGroup.prototype.buildNodes = function(opts) {
     })
     self.entityDrawGroups[id] = entityDrawGroup
 
-    entityDrawGroup.group.translate( ((260 * i) + 30 ), ((160 * i) + 30 ))
+    entityDrawGroup.position({itterate : i})
 
     _.forEach(entityDrawGroup.outputTerminals, function (output, id) {
       self.outputTerminals[id] = output
@@ -34,6 +35,48 @@ NodesGroup.prototype.buildNodes = function(opts) {
   })
 };
 
-NodesGroup.prototype.buildCabes = function(first_argument) {
+NodesGroup.prototype.initCables = function() {
+  var self = this
+  _.forEach(this.entityDrawGroups, function (entityDrawGroup) { // build the cables
 
+    _.forEach(entityDrawGroup.outputTerminals, function (outputTerminal, id) {
+
+      var endpoints = outputTerminal.endpoints
+      _.forEach(endpoints, function (endpoint) {
+
+        var inputTerminal = self.inputTerminals[endpoint.id]
+        if (inputTerminal) {
+
+          var cable = new Cable({
+            draw : self.draw,
+            outputTerminal : outputTerminal,
+            inputTerminal : inputTerminal
+          })
+
+          entityDrawGroup.cables.push(cable)
+
+          var inputEntityGroup = self.entityDrawGroups[inputTerminal.entityId]
+          inputEntityGroup.cables.push(cable)
+        }
+      })
+    })
+  })
+};
+
+NodesGroup.prototype.initDraggable = function() {
+  var self = this
+  _.forEach(this.entityDrawGroups, function (entityDrawGroup) {
+
+    $(entityDrawGroup.dragRect.node).on('mouseenter', function () {
+      entityDrawGroup.group.draggable()
+    })
+
+    Ember.$(entityDrawGroup.dragRect.node).on('mouseleave', function () {
+      entityDrawGroup.group.draggable(false)
+    })
+    entityDrawGroup.group.on('dragmove', function (e) {
+      entityDrawGroup.updateCables()
+    })
+
+  })
 };

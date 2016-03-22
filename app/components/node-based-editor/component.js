@@ -27,7 +27,8 @@ export default Ember.Component.extend({
         entityModel : self.get('model').entities
       })
       this.nodesGroup.buildNodes({ components : this.entityComponents})
-      this.nodesGroup.buildCables()
+      this.nodesGroup.initCables()
+      this.nodesGroup.initDraggable()
     }
 
 

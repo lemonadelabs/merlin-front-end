@@ -1,3 +1,5 @@
+import Cable from './cable'
+
 export default function EntityDrawGroup (opts) {
   this.id = opts.id
   this.group = opts.draw.group()
@@ -5,7 +7,7 @@ export default function EntityDrawGroup (opts) {
 
   this.footprint = this.group.rect(160, 120).attr({ fill: '#ddd' })
   this.dragRect = this.buildDraggableRect()
-  this.addDragListners()
+  // this.addDragListners()
   this.componentObject = this.appendComponent({component : opts.component})
   this.inputTerminals = this.buildInputTerminals({ inputs : opts.entityData.inputs})
   this.outputTerminals = this.buildOutputTerminals({ outputs : opts.entityData.outputs})
@@ -24,7 +26,7 @@ EntityDrawGroup.prototype.buildInputTerminals = function(opts) {
       inputs[input.id] = {
         svg : terminal,
         type : type,
-        entityId: self.id
+        entityId : self.id
       }
       counter ++
     })
@@ -45,7 +47,8 @@ EntityDrawGroup.prototype.buildOutputTerminals = function(opts) {
       outputs[output.id] = {
         svg : terminal,
         type : type,
-        endpoints: output.endpoints
+        endpoints : output.endpoints,
+        entityId : self.id
       }
       counter ++
     })
@@ -74,5 +77,15 @@ EntityDrawGroup.prototype.addDragListners = function() {
   Ember.$(this.dragRect.node).on('mouseleave', function () {
     self.group.draggable(false)
   })
+};
 
+EntityDrawGroup.prototype.position = function(opts) {
+  this.group.translate( ((260 * opts.itterate) + 30 ), ((160 * opts.itterate) + 30 ))
+};
+
+
+EntityDrawGroup.prototype.updateCables = function(opts) {
+  _.forEach(this.cables, function (cable) {
+    cable.updatePosition()
+  })
 };
