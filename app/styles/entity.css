@@ -1,8 +1,26 @@
+.entity-node.entity-staff {
+  --node-color: var(--staffing-color);
+  --node-background-color : color( var(--staffing-color) alpha(-10%) shade(20%) saturation(+5%) );
+  --node-subheading-background-color: color( var(--staffing-color) alpha(-50%) );
+}
+
+.entity-node.entity-resource {
+  --node-color: var(--asset-color);
+  --node-background-color : color( var(--asset-color) alpha(-10%) shade(20%) saturation(+5%) );
+  --node-subheading-background-color: color( var(--asset-color) alpha(-50%) );
+}
+
+.entity-node.entity-budget {
+  --node-color: var(--budget-color);
+  --node-background-color : color( var(--budget-color) alpha(-10%) shade(20%) saturation(+5%) );
+  --node-subheading-background-color: color( var(--budget-color) alpha(-50%) );
+}
+
 .entity-node {
   width: 180px;
   height: auto;
   color: white;
-  background-color: color( var(--staffing-color) alpha(-10%) shade(20%) saturation(+5%) );
+  background-color: var(--node-background-color);
   border-radius: 2pt;
   padding-left: 20px;
   padding-right: 20px;
@@ -10,7 +28,7 @@
 }
 .entity-node .entity-drag-bar {
   text-align: center;
-  background-color: var(--staffing-color);
+  background-color: var(--node-color);
   padding-top: 7px;
   padding-bottom: 7px;
   border-radius: 2pt 2pt 0 0;
@@ -29,7 +47,7 @@
 
 .entity-node .entity-subheading {
   text-align: center;
-  background-color: color( var(--staffing-color) alpha(-50%) );
+  background-color: var(--node-subheading-background-color);
   font-size: 11px;
   line-height: 30px;
   text-transform: capitalize;
