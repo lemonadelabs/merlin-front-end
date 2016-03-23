@@ -1,7 +1,23 @@
+@import "colors.css";
 @import "draw.css";
 @import "entity.css";
 @import "output.css";
 
 body {
   font-family: "sofia-pro", sans-serif;
+  font-feature-settings: "liga" off;
+  background-color: rgb(46,46,46);
+}
+
+/* apply a natural box layout model to all elements, but allowing components to change */
+html {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+foreignobject {
+  width: auto;
+  height: auto;
 }

@@ -31,6 +31,7 @@ export default function mockData() {
     {
       tags: ['staff'],
       id: 2,
+      name: 'Staffing',
       processes: [
         {
           name: 'staff',

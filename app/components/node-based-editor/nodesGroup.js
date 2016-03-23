@@ -67,13 +67,17 @@ NodesGroup.prototype.initDraggable = function() {
   var self = this
   _.forEach(this.entityDrawGroups, function (entityDrawGroup) {
 
-    $(entityDrawGroup.dragRect.node).on('mouseenter', function () {
+    var $dragBar = Ember.$(entityDrawGroup.componentObject.node).find('.entity-drag-bar')
+
+    $dragBar.on('mouseenter', function () {
+      console.log(entityDrawGroup.id)
       entityDrawGroup.group.draggable()
     })
 
-    Ember.$(entityDrawGroup.dragRect.node).on('mouseleave', function () {
+    $dragBar.on('mouseleave', function () {
       entityDrawGroup.group.draggable(false)
     })
+
     entityDrawGroup.group.on('dragmove', function (e) {
       entityDrawGroup.updateCables()
     })

@@ -1,7 +1,32 @@
 .entity-node {
-  width: 160px;
-  height: 100px;
+  width: 180px;
+  height: auto;
   text-align: center;
+  color: white;
+  background-color: color( var(--staffing-color) alpha(-10%) shade(20%) saturation(+5%) );
+  border-radius: 2pt;
+}
+.entity-node .entity-drag-bar {
+  background-color: var(--staffing-color);
+  /*height: 32px;*/
+  padding-top: 7px;
+  padding-bottom: 7px;
+  border-radius: 2pt 2pt 0 0;
+}
+
+.entity-drag-bar p {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  margin: 0;
+  /*margin-top: 1.5em;*/
+
+}
+
+
+.entity-node .entity-subheading {
+  background-color: color( var(--staffing-color) alpha(-50%) );
+  font-size: 10px;
 }
 
 .entity-node input {

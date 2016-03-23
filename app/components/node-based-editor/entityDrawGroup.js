@@ -5,8 +5,8 @@ export default function EntityDrawGroup (opts) {
   this.group = opts.draw.group()
   this.cables = []
 
-  this.footprint = this.group.rect(160, 120).attr({ fill: '#ddd' })
-  this.dragRect = this.buildDraggableRect()
+  // this.footprint = this.group.rect(160, 120).attr({ fill: '#ddd' })
+  // this.dragRect = this.buildDraggableRect()
   // this.addDragListners()
   this.componentObject = this.appendComponent({component : opts.component})
   this.inputTerminals = this.buildInputTerminals({ inputs : opts.entityData.inputs})
@@ -57,14 +57,9 @@ EntityDrawGroup.prototype.buildOutputTerminals = function(opts) {
 }
 
 EntityDrawGroup.prototype.appendComponent = function(opts) {
-  var foreignObj = this.group.foreignObject().attr({id: 'component'})
-  foreignObj.translate(0,20)
+  var foreignObj = this.group.foreignObject(200,1000).attr({id: 'component'}) // size hack to fix safari css bug
   foreignObj.appendChild(opts.component.element)
   return foreignObj
-};
-
-EntityDrawGroup.prototype.buildDraggableRect = function() {
-  return this.group.rect(160, 20).attr({ fill: '#999' })
 };
 
 EntityDrawGroup.prototype.addDragListners = function() {

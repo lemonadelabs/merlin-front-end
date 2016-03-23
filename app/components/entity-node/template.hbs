@@ -1,6 +1,26 @@
-{{this.entity.tags}}
-<br>
-{{this.entity.name}}
-<br>
-{{input value=this.entity.name}}
+
+<header class='entity-drag-bar'><p>
+  {{#if this.entity.name}}
+    {{this.entity.name}}
+  {{else}}
+    Unamed
+  {{/if}}
+
+</p></header>
+<p class='entity-subheading'>inputs</p>
+<p>$200000 <span>budget</span></p>
+
+<p class='entity-subheading'>options</p>
+<p>staff numbers</p>
+{{input value=5}}
+<p>average staff pay</p>
+{{input value=50000}}
+
+<p class='entity-subheading'>outputs</p>
+<p><span>Staff Bandwidth</span> 491 <span>FTE</span></p>
+{{!-- <p>{{this.entity.tags}}</p> --}}
+
+
+
+
 
