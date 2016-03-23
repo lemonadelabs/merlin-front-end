@@ -1,3 +1,7 @@
 @import "draw.css";
 @import "entity.css";
 @import "output.css";
+
+body {
+  font-family: "sofia-pro", sans-serif;
+}
