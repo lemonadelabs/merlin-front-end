@@ -14,16 +14,18 @@ export default function mockData() {
       inputs: [],
       outputs: [
         {
-          type: 'money',
+          name: 'budget',
+          unit: '$',
           id: 100,
+          amount: 400000,
           endpoints: [
             {
               id: 200,
-              bias: 0.2
+              bias: 0.8
             },
             {
               id: 201,
-              bias: 0.8
+              bias: 0.2
             }
           ]
         }
@@ -48,13 +50,17 @@ export default function mockData() {
         {
           type: 'money',
           id: 200,
-          source: 100
+          source: 100,
+          amount: 320000
         }
       ],
+
       outputs: [
         {
-          type: 'personel',
+          name: 'staff bandwith',
           id: 101,
+          amount: 491,
+          unit: 'FTE',
           endpoints: [
             {
               id: 202,
@@ -68,7 +74,7 @@ export default function mockData() {
     {
       tags: ['resource'],
       id: 3,
-      name: 'server farm',
+      name: 'Passport Printer',
       params: [
         {
           name: 'staffing requirement',
@@ -79,18 +85,22 @@ export default function mockData() {
         {
           type: 'staff',
           id: 202,
-          source: 101
+          source: 101,
+          amount: 491
         },
         {
           type: 'money',
           id: 201,
-          source: 1
+          source: 101,
+          amount: 80000
         }
       ],
       outputs: [
         {
-          type: 'cyber space',
+          name: 'passports',
           id: 102,
+          amount: 100012,
+          unit: 'units',
           endpoints: [
             {
               id: 3,
@@ -98,6 +108,17 @@ export default function mockData() {
             }
           ]
         }
+        // {
+        //   type: 'passports',
+        //   id: 102,
+        //   amount: ???,
+        //   endpoints: [
+        //     {
+        //       id: 3,
+        //       bias: 1
+        //     }
+        //   ]
+        // }
       ]
     }
   ]
