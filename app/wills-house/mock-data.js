@@ -5,15 +5,16 @@ export default function mockData() {
       tags: ['budget'],
       id: 1,
       name: 'w031',
-      processes: [
+      params: [
         {
           name: 'budget amount',
-          amount: 1000000
+          value: 1000000
         }
       ],
-      inputs: {},
-      outputs: {
-        money: {
+      inputs: [],
+      outputs: [
+        {
+          type: 'money',
           id: 100,
           endpoints: [
             {
@@ -26,22 +27,33 @@ export default function mockData() {
             }
           ]
         }
-      }
+      ]
     },
     {
       tags: ['staff'],
       id: 2,
       name: 'Staffing',
-      processes: [
+      params: [
         {
-          name: 'staff',
-          staff: 10,
-          senior: 4,
-          junior: 6
+          name: 'staff numbers',
+          value: 5
+        },
+        {
+          name: 'average staff pay',
+          value: 50000
         }
       ],
-      outputs: {
-        personel: {
+
+      inputs: [
+        {
+          type: 'money',
+          id: 200,
+          source: 100
+        }
+      ],
+      outputs: [
+        {
+          type: 'personel',
           id: 101,
           endpoints: [
             {
@@ -50,37 +62,34 @@ export default function mockData() {
             }
           ]
         }
-      },
-      inputs: {
-        money: {
-          id: 200,
-          source: 100
-        }
-      },
+      ],
     },
 
     {
       tags: ['resource'],
       id: 3,
       name: 'server farm',
-      processes: [
+      params: [
         {
           name: 'staffing requirement',
           requiredPersonel: 12
         }
       ],
-      inputs: {
-        staff: {
+      inputs: [
+        {
+          type: 'staff',
           id: 202,
           source: 101
         },
-        money: {
+        {
+          type: 'money',
           id: 201,
           source: 1
         }
-      },
-      outputs: {
-        storage: {
+      ],
+      outputs: [
+        {
+          type: 'cyber space',
           id: 102,
           endpoints: [
             {
@@ -89,7 +98,7 @@ export default function mockData() {
             }
           ]
         }
-      },
+      ]
     }
   ]
 
