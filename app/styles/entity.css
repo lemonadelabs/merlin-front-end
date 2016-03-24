@@ -61,14 +61,20 @@
   margin-right: -20px;
 }
 
-.entity-node .entity-subheading:first-of-type {
+
+.entity-node .entity-input-output {
+  vertical-align: middle;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 14px;
+  display: inline-block;
+  margin-bottom: 0;
+}
+
+.entity-node .entity-input-output:first-of-type {
   margin-top: 0;
 }
 
-.entity-node .entity-input-output {
-  font-size: 14px;
-  font-weight: 600;
-}
 .entity-node .entity-label {
   font-size: 10px;
   font-weight: 300;
@@ -97,4 +103,30 @@
 
 .entity-node .entity-output {
   text-align: right;
+}
+
+.entity-node .entity-output-container, .entity-node .entity-input-container {
+  /*position: relative;*/
+}
+.entity-output-container{
+  margin-right: -27px;
+  text-align: right;
+  margin-bottom: 10px;
+}
+
+.entity-node .terminal {
+  background-color: #fff;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  display: inline-block;
+  vertical-align: middle;
+
+}
+.entity-node .input-terminal {
+  margin-left: -28px;
+  margin-right: 10px;
+}
+
+.entity-node .output-terminal {
 }
