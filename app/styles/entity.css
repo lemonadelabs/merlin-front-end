@@ -61,6 +61,9 @@
   margin-right: -20px;
 }
 
+.entity-node .entity-subheading:first-of-type {
+  margin-top: 0;
+}
 
 .entity-node .entity-input-output {
   vertical-align: middle;
@@ -69,11 +72,9 @@
   line-height: 14px;
   display: inline-block;
   margin-bottom: 0;
-}
-
-.entity-node .entity-input-output:first-of-type {
   margin-top: 0;
 }
+
 
 .entity-node .entity-label {
   font-size: 10px;
