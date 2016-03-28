@@ -45,6 +45,7 @@ NodesGroup.prototype.initCables = function() {
       _.forEach(endpoints, function (endpoint) {
 
         var inputTerminal = self.inputTerminals[endpoint.id]
+
         if (inputTerminal) {
 
           var cable = new Cable({

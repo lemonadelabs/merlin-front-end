@@ -9,10 +9,11 @@ export default function Cable (opts) {
 Cable.prototype.init = function(opts) {
   var outputTerminal = opts.outputTerminal
   var type = outputTerminal.type
-  var startPositionCSS = Ember.$(outputTerminal.svg.node).position()
+  var startPositionCSS = terminalCSSPosition(outputTerminal.domElement)
+
 
   var inputTerminal = opts.inputTerminal
-  var endPositionCSS = Ember.$(inputTerminal.svg.node).position()
+  var endPositionCSS = inputTerminalCSSPosition(inputTerminal.domElement)
 
   var curveString = this.buildBezierCurveString({
     start : startPositionCSS,
@@ -27,8 +28,9 @@ Cable.prototype.init = function(opts) {
 };
 
 Cable.prototype.updatePosition = function() {
-  var startPositionCSS = terminalCSSPosition(this.outputTerminal)
-  var endPositionCSS = terminalCSSPosition(this.inputTerminal)
+  var startPositionCSS = terminalCSSPosition(this.outputTerminal.domElement)
+
+  var endPositionCSS = inputTerminalCSSPosition(this.inputTerminal.domElement)
 
   var curveString = this.buildBezierCurveString({
     start : startPositionCSS,
@@ -37,8 +39,15 @@ Cable.prototype.updatePosition = function() {
   this.svg.plot( curveString )
 };
 
+
 function terminalCSSPosition (terminal) {
-  return Ember.$(terminal.svg.node).position()
+  return terminal.position()
+}
+
+function inputTerminalCSSPosition (terminal) {
+  var position = terminalCSSPosition(terminal)
+  position.left -= 30
+  return position
 }
 
 Cable.prototype.buildBezierCurveString = function(opts) {
