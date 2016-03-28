@@ -43,8 +43,10 @@ EntityDrawGroup.prototype.findOutputTerminals = function(opts) {
 
     _.forEach(opts.outputs, function (output, type) { // todo: make these place themselves dynamicly
       var terminal = self.group.rect(15, 15).attr({ fill: '#790AC7' }).translate(160,40 * counter)
+      var $terminal = Ember.$(`.terminal.output-terminal#${output.id}`)
       outputs[output.id] = {
         svg : terminal,
+        domElement : $terminal,
         type : type,
         endpoints : output.endpoints,
         entityId : self.id
