@@ -20,6 +20,8 @@ EntityDrawGroup.prototype.findInputTerminals = function(opts) {
     var counter = 1
     _.forEach(opts.inputs, function (input, type) { // todo: make these place themselves dynamicly
       var terminal = self.group.rect(15, 15).attr({ fill: '#790AC7' }).translate(-15,40 * counter)
+      var $terminal = Ember.$(`.terminal.input-terminal#${input.id}`)
+      console.log($terminal)
       inputs[input.id] = {
         svg : terminal,
         type : type,
