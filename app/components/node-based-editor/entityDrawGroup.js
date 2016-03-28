@@ -6,12 +6,12 @@ export default function EntityDrawGroup (opts) {
   this.cables = []
 
   this.componentObject = this.appendComponent({component : opts.component})
-  this.inputTerminals = this.buildInputTerminals({ inputs : opts.entityData.inputs})
-  this.outputTerminals = this.buildOutputTerminals({ outputs : opts.entityData.outputs})
+  this.inputTerminals = this.findInputTerminals({ inputs : opts.entityData.inputs})
+  this.outputTerminals = this.findOutputTerminals({ outputs : opts.entityData.outputs})
 }
 
 
-EntityDrawGroup.prototype.buildInputTerminals = function(opts) {
+EntityDrawGroup.prototype.findInputTerminals = function(opts) {
   var self = this
 
   var inputs = {}
@@ -31,7 +31,7 @@ EntityDrawGroup.prototype.buildInputTerminals = function(opts) {
   return inputs
 }
 
-EntityDrawGroup.prototype.buildOutputTerminals = function(opts) {
+EntityDrawGroup.prototype.findOutputTerminals = function(opts) {
   var self = this
 
   var outputs = {}
