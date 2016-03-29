@@ -5,11 +5,21 @@ export default function EntityDrawGroup (opts) {
   this.group = opts.draw.group()
   this.cables = []
 
+  this.footPring = this.buildFoorprint()
   this.componentObject = this.appendComponent({component : opts.component})
   this.inputTerminals = this.findInputTerminals({ inputs : opts.entityData.inputs})
   this.outputTerminals = this.findOutputTerminals({ outputs : opts.entityData.outputs})
 }
 
+
+EntityDrawGroup.prototype.buildFoorprint = function() {
+  var width = 180
+  // var width = $('.entity-node.2').width() + 20
+  var height = 20
+  // var height = $('.entity-node.2').height()
+  var footprint = this.group.rect(width, height)
+  return footprint
+};
 
 EntityDrawGroup.prototype.findInputTerminals = function(opts) {
   var self = this
@@ -40,8 +50,6 @@ EntityDrawGroup.prototype.findOutputTerminals = function(opts) {
     var counter = 1
 
     _.forEach(opts.outputs, function (output, type) { // todo: make these place themselves dynamicly
-
-      var whuuuuuut = self.group.rect(10, 10) // if I take this away, the code breaks
 
       var $terminal = Ember.$(`.terminal.output-terminal#${output.id}`)
       outputs[output.id] = {
