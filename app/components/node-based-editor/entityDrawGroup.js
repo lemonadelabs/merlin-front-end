@@ -19,10 +19,8 @@ EntityDrawGroup.prototype.findInputTerminals = function(opts) {
     var amountInputs = _.size(opts.inputs)
     var counter = 1
     _.forEach(opts.inputs, function (input, type) { // todo: make these place themselves dynamicly
-      var terminal = self.group.rect(15, 15).attr({ fill: '#790AC7' }).translate(-15,40 * counter)
       var $terminal = Ember.$(`.terminal.input-terminal#${input.id}`)
       inputs[input.id] = {
-        svg : terminal,
         domElement : $terminal,
         type : type,
         entityId : self.id
@@ -42,10 +40,11 @@ EntityDrawGroup.prototype.findOutputTerminals = function(opts) {
     var counter = 1
 
     _.forEach(opts.outputs, function (output, type) { // todo: make these place themselves dynamicly
-      var terminal = self.group.rect(15, 15).attr({ fill: '#790AC7' }).translate(160,40 * counter)
+
+      var whuuuuuut = self.group.rect(10, 10) // if I take this away, the code breaks
+
       var $terminal = Ember.$(`.terminal.output-terminal#${output.id}`)
       outputs[output.id] = {
-        svg : terminal,
         domElement : $terminal,
         type : type,
         endpoints : output.endpoints,
