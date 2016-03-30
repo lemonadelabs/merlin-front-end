@@ -16,19 +16,42 @@ export default Ember.Component.extend({
     var self = this;
     document.onmousemove = document.onmousemove || this.updateInputPosition;
     document.onmouseup = document.onmouseup || this.envokeCancelEvent;
-    document.addEventListener("cancelManipulation", function(e){
-      if(self.get('active')){
-        self.finishManipulation();
-      }
-    });
+    if(!document.cancelManipulationListener){
+      document.addEventListener("cancelManipulation", function(){
+        if(self.get('active')){
+          self.finishManipulation();
+        }
+      });
+      document.cancelManipulationListener = true;
+    }
+
+    if(!document.touchMoveListener){
+      document.addEventListener("touchmove", this.updateInputPosition);
+      document.touchMoveListener = true;
+    }
+
+    if(!document.touchEndListener){
+      document.addEventListener("touchend", this.envokeCancelEvent);
+      document.touchEndListener = true;
+    }
 
   },
   willDestroy(){
     document.onmousemove = null;
   },
   mouseDown(e){
+    this.handleInputStart(e);
+  },
+  touchStart(e){
+    this.handleInputStart(e);
+  },
+  handleInputStart:function(e){
+    if(e.type === 'touchstart'){
+      this.updateInputPosition(e.originalEvent);
+    }
+
     this.set('active',true);
-    //fallback for older firefox that doesn't support offsetX
+    //fallback for older firefox that doesn't support offsetX & touch devices
     var offset = e.offsetX || (document.inputX - this.get('x'));
     var width = this.get('width');
 
@@ -89,8 +112,8 @@ export default Ember.Component.extend({
     }
   },
   updateInputPosition: function(e){
-    document.inputX = e.clientX;
-    document.inputY = e.clientY;
+    document.inputX = e.clientX || e.touches[0].clientX;
+    document.inputY = e.clientY || e.touches[0].clientY;
   },
   envokeCancelEvent: function(){
     /*TODO: this does not work on IE but works with Edge, we should look into a polyfill
