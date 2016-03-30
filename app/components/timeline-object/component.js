@@ -16,14 +16,6 @@ export default Ember.Component.extend({
     var self = this;
     document.onmousemove = document.onmousemove || this.updateInputPosition;
     document.onmouseup = document.onmouseup || this.envokeCancelEvent;
-    if(!document.cancelManipulationListener){
-      document.addEventListener("cancelManipulation", function(){
-        if(self.get('active')){
-          self.finishManipulation();
-        }
-      });
-      document.cancelManipulationListener = true;
-    }
 
     if(!document.touchMoveListener){
       document.addEventListener("touchmove", this.updateInputPosition);
@@ -46,6 +38,7 @@ export default Ember.Component.extend({
     this.handleInputStart(e);
   },
   handleInputStart:function(e){
+    this.addCancelEventListener();
     if(e.type === 'touchstart'){
       this.updateInputPosition(e.originalEvent);
     }
@@ -65,12 +58,28 @@ export default Ember.Component.extend({
       Ember.run.next(this,this.updateMyPosition, {'offset':offset});
     }
   },
+  addCancelEventListener(){
+    var self = this;
+    console.log(this);
+    if(!document.cancelManipulationListener){
+      document.addEventListener("cancelManipulation", self.finishManipulation.bind(this));
+      document.cancelManipulationListener = true;
+    }
+  },
+  removeCancelEventListener(){
+    var self = this;
+    if(document.cancelManipulationListener){
+      document.removeEventListener("cancelManipulation", self.finishManipulation.bind(this));
+      document.cancelManipulationListener = false;
+    }
+  },
   mouseUp(){
     //This will still work on IE
     this.finishManipulation();
   },
   finishManipulation:function(){
     this.set('active',false);
+    this.removeCancelEventListener();
     var interActEndFunc = this.get('onMouseUp') || this.warnMissingAction;
     interActEndFunc();
   },
