@@ -26,10 +26,10 @@ export default Ember.Component.extend({
     var offset = e.offsetX || (document.inputX - this.get('x'));
     var width = this.get('width');
 
-    if(offset > this.width - 20){
+    if(offset >= this.width - 20){
       Ember.run.next(this,this.updateMyWidthRight, {'offset':width-offset});
     }
-    else if(offset < 20){
+    else if(offset <= 20){
       Ember.run.next(this,this.updateMyWidthLeft, {'offset':offset});
     }
     else{
@@ -63,8 +63,8 @@ export default Ember.Component.extend({
     var width = this.get('width');
 
     if(x !== x+ (x - document.inputX)){
-      this.set('x', x - (x - document.inputX))
-      this.set('width', width+(x - document.inputX))
+      this.set('x', x - (x - (document.inputX-offset)))
+      this.set('width', width+(x - (document.inputX-offset)))
     }
 
     if(this.get('active')){
