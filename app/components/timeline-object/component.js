@@ -13,8 +13,14 @@ export default Ember.Component.extend({
     return Ember.String.htmlSafe(`transform:translate(${x}px); width: ${width}px;`);
   }),
   didInsertElement(){
+    var self = this;
     document.onmousemove = document.onmousemove || this.updateInputPosition;
     document.onmouseup = document.onmouseup || this.envokeCancelEvent;
+    document.addEventListener("cancelManipulation", function(e){
+      if(self.get('active')){
+        self.finishManipulation();
+      }
+    });
 
   },
   willDestroy(){
@@ -37,6 +43,10 @@ export default Ember.Component.extend({
     }
   },
   mouseUp(){
+    //This will still work on IE
+    this.finishManipulation();
+  },
+  finishManipulation:function(){
     this.set('active',false);
     var interActEndFunc = this.get('onMouseUp') || this.warnMissingAction;
     interActEndFunc();
@@ -83,6 +93,9 @@ export default Ember.Component.extend({
     document.inputY = e.clientY;
   },
   envokeCancelEvent: function(){
-    console.log('cancel yo!');
+    /*TODO: this does not work on IE but works with Edge, we should look into a polyfill
+    or a different aproach should the need for IE come up.*/
+    var ev = new Event("cancelManipulation", {"bubbles":false, "cancelable":false});
+    document.dispatchEvent(ev);
   }
 });
