@@ -1,0 +1,32 @@
+.timeline-object {
+  /*transition: transform 100ms;*/
+  background-color: var(--budget-color);
+  color: white;
+  min-height: 50px;
+  cursor: move;
+  cursor: -webkit-grab;
+  position: relative;
+  border-radius: 2px;
+}
+
+.timeline-object.active {
+  cursor: -webkit-grabbing;
+}
+.timeline-object::after {
+  content: "";
+  width: 20px;
+  position: absolute;
+  right: 0;
+  height: 100%;
+  /*background-color: orange;*/
+  cursor: ew-resize;
+}
+.timeline-object::before {
+  content: "";
+  width: 20px;
+  position: absolute;
+  left: 0;
+  height: 100%;
+  /*background-color: orange;*/
+  cursor: ew-resize;
+}
