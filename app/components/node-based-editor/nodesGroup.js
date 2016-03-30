@@ -7,6 +7,12 @@ export default function NodesGroup (opts) {
   this.entityDrawGroups = {}
   this.outputTerminals = {}
   this.inputTerminals = {}
+  this.cablePool = []
+  this.colorHash = {
+    "entity-budget" : "#7ED321",
+    "entity-staff" : "#4A90E2",
+    "entity-resource" : "#9013FE"
+  }
 }
 
 NodesGroup.prototype.buildNodes = function(opts) {
@@ -15,12 +21,14 @@ NodesGroup.prototype.buildNodes = function(opts) {
 
   _.forEach(components, function (component, i) {
     var id = component.get('id')
+    var entityType = component.get('entity-type')
 
     var entityDrawGroup = new EntityDrawGroup({
       id : id,
       draw : self.draw,
       component : component,
-      entityData : _.find(self.entityModel, ['id', id] )
+      entityData : _.find(self.entityModel, ['id', id] ),
+      entityType : entityType
     })
     self.entityDrawGroups[id] = entityDrawGroup
 
@@ -35,11 +43,29 @@ NodesGroup.prototype.buildNodes = function(opts) {
   })
 };
 
+NodesGroup.prototype.poolCables = function(opts) {
+  for (var i = 0; i < opts.amount; i++) {
+    this.cablePool.push(
+      this.draw.path( )
+    )
+  };
+};
+
 NodesGroup.prototype.initCables = function() {
   var self = this
+  console.log(this.entityDrawGroups)
+  // var entityDrawGroup = this.entityDrawGroups[2]
   _.forEach(this.entityDrawGroups, function (entityDrawGroup) { // build the cables
 
+    var entityType = entityDrawGroup.entityType
+    var cableColor = self.colorHash[entityType]
+
     _.forEach(entityDrawGroup.outputTerminals, function (outputTerminal, id) {
+
+      outputTerminal.domElement.css('background-color', cableColor)
+      console.log(outputTerminal.domElement.css('background-color'))
+
+
 
       var endpoints = outputTerminal.endpoints
       _.forEach(endpoints, function (endpoint) {
@@ -47,11 +73,14 @@ NodesGroup.prototype.initCables = function() {
         var inputTerminal = self.inputTerminals[endpoint.id]
 
         if (inputTerminal) {
+          inputTerminal.domElement.css('background-color', cableColor)
 
           var cable = new Cable({
+            cable : self.cablePool.pop(),
             draw : self.draw,
             outputTerminal : outputTerminal,
-            inputTerminal : inputTerminal
+            inputTerminal : inputTerminal,
+            color : cableColor
           })
 
           entityDrawGroup.cables.push(cable)
@@ -71,7 +100,6 @@ NodesGroup.prototype.initDraggable = function() {
     var $dragBar = Ember.$(entityDrawGroup.componentObject.node).find('.entity-drag-bar')
 
     $dragBar.on('mouseenter', function () {
-      console.log(entityDrawGroup.id)
       entityDrawGroup.group.draggable()
     })
 

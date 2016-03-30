@@ -2,10 +2,11 @@ import Cable from './cable'
 
 export default function EntityDrawGroup (opts) {
   this.id = opts.id
+  this.entityType = opts.entityType
   this.group = opts.draw.group()
   this.cables = []
 
-  this.footPring = this.buildFoorprint()
+  this.footprint = this.buildFoorprint()
   this.componentObject = this.appendComponent({component : opts.component})
   this.inputTerminals = this.findInputTerminals({ inputs : opts.entityData.inputs})
   this.outputTerminals = this.findOutputTerminals({ outputs : opts.entityData.outputs})
@@ -71,7 +72,8 @@ EntityDrawGroup.prototype.appendComponent = function(opts) {
 };
 
 EntityDrawGroup.prototype.position = function(opts) {
-  this.group.translate( ((260 * opts.itterate) + 30 ), ((160 * opts.itterate) + 30 ))
+  // this.group.translate( ((260 * opts.itterate) + 30 ), ((160 * opts.itterate) + 30 ))
+  this.group.translate( ((-260 * opts.itterate) + 900 ), ((160 * opts.itterate) + 50 ))
 };
 
 
