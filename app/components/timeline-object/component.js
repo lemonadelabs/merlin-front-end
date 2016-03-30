@@ -63,8 +63,8 @@ export default Ember.Component.extend({
     var width = this.get('width');
 
     if(x !== x+ (x - document.inputX)){
-      this.set('x', x - (x - (document.inputX-offset)))
-      this.set('width', width+(x - (document.inputX-offset)))
+      this.set('x', x - (x - document.inputX + offset) );
+      this.set('width', width + (x - document.inputX + offset) );
     }
 
     if(this.get('active')){
