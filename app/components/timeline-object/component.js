@@ -14,6 +14,8 @@ export default Ember.Component.extend({
   }),
   didInsertElement(){
     document.onmousemove = document.onmousemove || this.updateInputPosition;
+    document.onmouseup = document.onmouseup || this.envokeCancelEvent;
+
   },
   willDestroy(){
     document.onmousemove = null;
@@ -79,6 +81,8 @@ export default Ember.Component.extend({
   updateInputPosition: function(e){
     document.inputX = e.clientX;
     document.inputY = e.clientY;
+  },
+  envokeCancelEvent: function(){
+    console.log('cancel yo!');
   }
-
 });
