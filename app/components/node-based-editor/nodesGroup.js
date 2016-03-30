@@ -7,7 +7,7 @@ export default function NodesGroup (opts) {
   this.entityDrawGroups = {}
   this.outputTerminals = {}
   this.inputTerminals = {}
-  this.cablePool = []
+  this.cableParent = this.draw.nested()
   this.colorHash = {
     "entity-budget" : "#7ED321",
     "entity-staff" : "#4A90E2",
@@ -43,17 +43,9 @@ NodesGroup.prototype.buildNodes = function(opts) {
   })
 };
 
-NodesGroup.prototype.poolCables = function(opts) {
-  for (var i = 0; i < opts.amount; i++) {
-    this.cablePool.push(
-      this.draw.path( )
-    )
-  };
-};
-
 NodesGroup.prototype.initCables = function() {
   var self = this
-  console.log(this.entityDrawGroups)
+
   // var entityDrawGroup = this.entityDrawGroups[2]
   _.forEach(this.entityDrawGroups, function (entityDrawGroup) { // build the cables
 
@@ -63,9 +55,6 @@ NodesGroup.prototype.initCables = function() {
     _.forEach(entityDrawGroup.outputTerminals, function (outputTerminal, id) {
 
       outputTerminal.domElement.css('background-color', cableColor)
-      console.log(outputTerminal.domElement.css('background-color'))
-
-
 
       var endpoints = outputTerminal.endpoints
       _.forEach(endpoints, function (endpoint) {
@@ -76,7 +65,7 @@ NodesGroup.prototype.initCables = function() {
           inputTerminal.domElement.css('background-color', cableColor)
 
           var cable = new Cable({
-            cable : self.cablePool.pop(),
+            cableParent : self.cableParent,
             draw : self.draw,
             outputTerminal : outputTerminal,
             inputTerminal : inputTerminal,

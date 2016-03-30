@@ -8,12 +8,12 @@ export default function Cable (opts) {
 
 
 Cable.prototype.init = function(opts) {
+  var cableParent = opts.cableParent
   var outputTerminal = opts.outputTerminal
-  var type = outputTerminal.type
+  var inputTerminal = opts.inputTerminal
+
   var startPositionCSS = terminalCSSPosition(outputTerminal.domElement)
 
-
-  var inputTerminal = opts.inputTerminal
   var endPositionCSS = inputTerminalCSSPosition(inputTerminal.domElement)
 
   var curveString = this.buildPathString({
@@ -21,9 +21,9 @@ Cable.prototype.init = function(opts) {
     end : endPositionCSS
   })
 
-  var cable = opts.cable.plot( curveString ).fill('none').stroke({ width: 3, color : opts.color })
-  // var cable = this.draw.path( curveString ).fill('none').stroke({ width: 3, color : opts.color }) //.stroke(opts.color)
-  // $(cable.node).prependTo($('svg:first-of-type'))
+  var cable = cableParent.path( )
+  cable.plot( curveString ).fill('none').stroke({ width: 3, color : opts.color })
+
   cable.outputTerminal = outputTerminal
   cable.inputTerminal = inputTerminal
   return cable

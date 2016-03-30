@@ -22,11 +22,9 @@ export default Ember.Component.extend({
         draw : this.draw,
         entityModel : self.get('model').entities
       })
-      this.nodesGroup.poolCables({amount : 10}) // todo: make this pool right amount of cables dynamicly
       this.nodesGroup.buildNodes({ components : this.entityComponents})
-      this.nodesGroup.initCables()
       this.nodesGroup.initDraggable()
-      // this.nodesGroup.buildNodes({ components : this.entityComponents})
+      this.nodesGroup.initCables()
     }
   }.observes('draw'),
 
