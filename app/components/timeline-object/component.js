@@ -13,7 +13,6 @@ export default Ember.Component.extend({
     return Ember.String.htmlSafe(`transform:translate(${x}px); width: ${width}px;`);
   }),
   didInsertElement(){
-    var self = this;
     document.onmousemove = document.onmousemove || this.updateInputPosition;
     document.onmouseup = document.onmouseup || this.envokeCancelEvent;
 
@@ -21,12 +20,10 @@ export default Ember.Component.extend({
       document.addEventListener("touchmove", this.updateInputPosition);
       document.touchMoveListener = true;
     }
-
     if(!document.touchEndListener){
       document.addEventListener("touchend", this.envokeCancelEvent);
       document.touchEndListener = true;
     }
-
   },
   willDestroy(){
     document.onmousemove = null;
@@ -60,7 +57,6 @@ export default Ember.Component.extend({
   },
   addCancelEventListener(){
     var self = this;
-    console.log(this);
     if(!document.cancelManipulationListener){
       document.addEventListener("cancelManipulation", self.finishManipulation.bind(this));
       document.cancelManipulationListener = true;
