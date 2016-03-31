@@ -113,8 +113,8 @@ export default Ember.Component.extend({
     }
   },
   updateInputPosition: function(e){
-    document.inputX = e.clientX || e.touches[0].clientX;
-    document.inputY = e.clientY || e.touches[0].clientY;
+    document.inputX = e.clientX || e.touches[0].clientX || 0;
+    document.inputY = e.clientY || e.touches[0].clientY || 0;
   },
   envokeCancelEvent: function(){
     /*TODO: this does not work on IE but works with Edge, we should look into a polyfill
