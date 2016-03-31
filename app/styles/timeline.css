@@ -1,0 +1,38 @@
+.timeline-track{
+  width: 100%;
+  margin-top: 10px;
+}
+
+.timeline-object {
+  background-color: var(--budget-color);
+  border-radius: 2px;
+  color: white;
+  cursor: move;
+  cursor: -webkit-grab;
+  min-height: 50px;
+  position: absolute;
+  top:0;
+  user-select: none;
+}
+
+.timeline-object.active {
+  cursor: -webkit-grabbing;
+}
+.timeline-object:after {
+  content: "";
+  width: 20px;
+  right: 0;
+  top:0;
+  position: absolute;
+  height: 100%;
+  cursor: ew-resize;
+}
+.timeline-object:before {
+  content: "";
+  cursor: ew-resize;
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top:0;
+  width: 20px;
+}
