@@ -7,12 +7,14 @@ export default Ember.Component.extend({
   attributeBindings: ['style'],
   x:0,
   width:100,
+  boundFinishManipulationFunc:undefined,
   style:Ember.computed('x','width', function(){
     var x = this.get('x');
     var width = this.get('width');
     return Ember.String.htmlSafe(`transform:translate(${x}px); width: ${width}px;`);
   }),
   didInsertElement(){
+    this.set('boundFinishManipulationFunc',this.finishManipulation.bind(this));
     document.onmousemove = document.onmousemove || this.updateInputPosition;
     document.onmouseup = document.onmouseup || this.envokeCancelEvent;
 
@@ -55,19 +57,13 @@ export default Ember.Component.extend({
       Ember.run.next(this,this.updateMyPosition, {'offset':offset});
     }
   },
-  addCancelEventListener(){
-    var self = this;
-    if(!document.cancelManipulationListener){
-      document.addEventListener("cancelManipulation", self.finishManipulation.bind(this));
-      document.cancelManipulationListener = true;
-    }
+  addCancelEventListener: function(){
+    document.addEventListener("cancelManipulation", this.boundFinishManipulationFunc, false);
+    document.cancelManipulationListener = true;
   },
-  removeCancelEventListener(){
-    var self = this;
-    if(document.cancelManipulationListener){
-      document.removeEventListener("cancelManipulation", self.finishManipulation.bind(this));
-      document.cancelManipulationListener = false;
-    }
+  removeCancelEventListener: function(){
+    document.removeEventListener("cancelManipulation", this.boundFinishManipulationFunc, false);
+    document.cancelManipulationListener = false;
   },
   mouseUp(){
     //This will still work on IE
