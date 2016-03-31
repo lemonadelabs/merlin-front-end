@@ -7,13 +7,13 @@
   cursor: -webkit-grab;
   position: relative;
   border-radius: 2px;
-  user-select: none; 
+  user-select: none;
 }
 
 .timeline-object.active {
   cursor: -webkit-grabbing;
 }
-.timeline-object::after {
+.timeline-object:after {
   content: "";
   width: 20px;
   position: absolute;
@@ -22,7 +22,7 @@
   /*background-color: orange;*/
   cursor: ew-resize;
 }
-.timeline-object::before {
+.timeline-object:before {
   content: "";
   width: 20px;
   position: absolute;
