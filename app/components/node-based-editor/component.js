@@ -25,6 +25,7 @@ export default Ember.Component.extend({
       this.nodesGroup.buildNodes({ components : this.entityComponents})
       this.nodesGroup.initDraggable()
       this.nodesGroup.initCables()
+      this.nodesGroup.outputTerminalListners()
     }
   }.observes('draw'),
 

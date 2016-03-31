@@ -1,6 +1,7 @@
 export default function Cable (opts) {
   this.guides = []
-  this.draw = opts.draw
+  this.draw = opts.cableParent
+
   this.outputTerminal = opts.outputTerminal
   this.inputTerminal = opts.inputTerminal
   this.svg = this.init(opts)
@@ -12,28 +13,41 @@ Cable.prototype.init = function(opts) {
   var outputTerminal = opts.outputTerminal
   var inputTerminal = opts.inputTerminal
 
-  var startPositionCSS = terminalCSSPosition(outputTerminal.domElement)
 
-  var endPositionCSS = inputTerminalCSSPosition(inputTerminal.domElement)
-
-  var curveString = this.buildPathString({
-    start : startPositionCSS,
-    end : endPositionCSS
-  })
-
-  var cable = cableParent.path( )
-  cable.plot( curveString ).fill('none').stroke({ width: 3, color : opts.color })
-
+  var cable = cableParent.path( ).fill('none').stroke({ width: 3, color : opts.color })
   cable.outputTerminal = outputTerminal
-  cable.inputTerminal = inputTerminal
+
+  if (inputTerminal) {
+
+    cable.inputTerminal = inputTerminal
+
+    var startPositionCSS = terminalCSSPosition(outputTerminal.$domElement)
+    var endPositionCSS = inputTerminalCSSPosition(inputTerminal.$domElement)
+
+    var curveString = this.buildPathString({
+      start : startPositionCSS,
+      end : endPositionCSS
+    })
+    cable.plot( curveString )
+  } else {
+    console.log('cable is flying!')
+  }
+
   return cable
 
 };
 
-Cable.prototype.updatePosition = function() {
-  var startPositionCSS = terminalCSSPosition(this.outputTerminal.domElement)
+Cable.prototype.flyTo = function(opts) {
+  opts.start = terminalCSSPosition(this.outputTerminal.$domElement)
+  var curveString = this.buildPathString(opts)
 
-  var endPositionCSS = inputTerminalCSSPosition(this.inputTerminal.domElement)
+  this.svg.plot( curveString )
+};
+
+Cable.prototype.updatePosition = function() {
+  var startPositionCSS = terminalCSSPosition(this.outputTerminal.$domElement)
+
+  var endPositionCSS = inputTerminalCSSPosition(this.inputTerminal.$domElement)
 
   var curveString = this.buildPathString({
     start : startPositionCSS,
@@ -55,7 +69,12 @@ function inputTerminalCSSPosition (terminal) {
 
 Cable.prototype.buildPathString = function (opts) {
   if (opts.start.top) {
-    opts = formatPositionOpts(opts)
+    opts.start.x = opts.start.left
+    opts.start.y = opts.start.top
+  }
+  if (opts.end.top) {
+    opts.end.x = opts.end.left
+    opts.end.y = opts.end.top
   }
 
   if (opts.start.x > opts.end.x) {
@@ -64,14 +83,6 @@ Cable.prototype.buildPathString = function (opts) {
     return this.buildStandardPathString(opts)
   }
 };
-
-function formatPositionOpts(opts) {
-  opts.start.x = opts.start.left
-  opts.start.y = opts.start.top
-  opts.end.x = opts.end.left
-  opts.end.y = opts.end.top
-  return opts
-}
 
 Cable.prototype.buildReversePathString = function(opts) {
 

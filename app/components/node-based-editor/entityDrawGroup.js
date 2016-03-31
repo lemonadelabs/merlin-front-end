@@ -32,7 +32,7 @@ EntityDrawGroup.prototype.findInputTerminals = function(opts) {
     _.forEach(opts.inputs, function (input, type) { // todo: make these place themselves dynamicly
       var $terminal = Ember.$(`.terminal.input-terminal#${input.id}`)
       inputs[input.id] = {
-        domElement : $terminal,
+        $domElement : $terminal,
         type : type,
         entityId : self.id
       }
@@ -54,7 +54,7 @@ EntityDrawGroup.prototype.findOutputTerminals = function(opts) {
 
       var $terminal = Ember.$(`.terminal.output-terminal#${output.id}`)
       outputs[output.id] = {
-        domElement : $terminal,
+        $domElement : $terminal,
         type : type,
         endpoints : output.endpoints,
         entityId : self.id
@@ -72,8 +72,8 @@ EntityDrawGroup.prototype.appendComponent = function(opts) {
 };
 
 EntityDrawGroup.prototype.position = function(opts) {
-  // this.group.translate( ((260 * opts.itterate) + 30 ), ((160 * opts.itterate) + 30 ))
-  this.group.translate( ((-260 * opts.itterate) + 900 ), ((160 * opts.itterate) + 50 ))
+  this.group.translate( ((260 * opts.itterate) + 30 ), ((160 * opts.itterate) + 30 ))
+  // this.group.translate( ((-260 * opts.itterate) + 900 ), ((160 * opts.itterate) + 50 ))
 };
 
 

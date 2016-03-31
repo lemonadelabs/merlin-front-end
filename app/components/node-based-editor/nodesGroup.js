@@ -13,7 +13,60 @@ export default function NodesGroup (opts) {
     "entity-staff" : "#4A90E2",
     "entity-resource" : "#9013FE"
   }
+  this.flyingCable = undefined
 }
+
+NodesGroup.prototype.outputTerminalListners = function() {
+  var self = this
+
+  var allTerminals = {}
+  _.forEach(this.outputTerminals, collectTerminals)
+  _.forEach(this.inputTerminals, collectTerminals)
+  function collectTerminals (terminal, id) {
+    allTerminals[id] = terminal
+  }
+
+  _.forEach( allTerminals, function (terminal) {
+    terminal.$domElement.on('mousedown', function (e) {
+      self.flyingCable = new Cable({
+        cableParent : self.cableParent,
+        outputTerminal : terminal,
+        color : "#4A90E2"
+      })
+    })
+
+    terminal.$domElement.on('mouseup', function (e) {
+      console.log('mouseup!!!')
+      var cable = self.flyingCable
+      self.flyingCable = undefined
+      cable.inputTerminal = terminal
+      cable.updatePosition()
+      self.referenceCableInTerminals({ cable : cable })
+    })
+
+  })
+
+  $(document).on('mousemove', function (e) {
+    if (self.flyingCable) {
+      var end = {
+        x : e.clientX,
+        y : e.clientY
+      }
+      self.flyingCable.flyTo({ end : end })
+    }
+  })
+
+  $(document).on('mouseup', function (e) {
+    if (!(_.includes(e.target.className, 'terminal'))) {
+      console.log(e.target.className)
+      self.flyingCable.svg.remove()
+      self.flyingCable = undefined
+    }
+  })
+
+
+
+};
 
 NodesGroup.prototype.buildNodes = function(opts) {
   var self = this
@@ -54,7 +107,7 @@ NodesGroup.prototype.initCables = function() {
 
     _.forEach(entityDrawGroup.outputTerminals, function (outputTerminal, id) {
 
-      outputTerminal.domElement.css('background-color', cableColor)
+      outputTerminal.$domElement.css('background-color', cableColor)
 
       var endpoints = outputTerminal.endpoints
       _.forEach(endpoints, function (endpoint) {
@@ -62,24 +115,33 @@ NodesGroup.prototype.initCables = function() {
         var inputTerminal = self.inputTerminals[endpoint.id]
 
         if (inputTerminal) {
-          inputTerminal.domElement.css('background-color', cableColor)
+          inputTerminal.$domElement.css('background-color', cableColor)
 
           var cable = new Cable({
             cableParent : self.cableParent,
-            draw : self.draw,
             outputTerminal : outputTerminal,
             inputTerminal : inputTerminal,
             color : cableColor
           })
 
-          entityDrawGroup.cables.push(cable)
+          self.referenceCableInTerminals({ cable : cable })
 
-          var inputEntityGroup = self.entityDrawGroups[inputTerminal.entityId]
-          inputEntityGroup.cables.push(cable)
         }
       })
     })
   })
+};
+
+NodesGroup.prototype.referenceCableInTerminals = function(opts) {
+  var cable = opts.cable
+  var inputTerminal = cable.inputTerminal
+  var inputEntity = this.entityDrawGroups[inputTerminal.entityId]
+  inputEntity.cables.push(cable)
+
+  var outputTerminal = cable.outputTerminal
+  var outputEntity = this.entityDrawGroups[outputTerminal.entityId]
+  outputEntity.cables.push(cable)
+
 };
 
 NodesGroup.prototype.initDraggable = function() {
