@@ -7,8 +7,18 @@
   {{/if}}
 
 </p></header>
-<p class='entity-subheading'>inputs</p>
-<p class='entity-input-output'>$200,000 <span class='entity-label'>budget</span></p>
+{{#if this.entity.inputs}}
+  <p class='entity-subheading'>inputs</p>
+
+  <div class='entity-input-container'>
+    {{#each this.entity.inputs as | input | }}
+      <div>
+        <div class='terminal input-terminal' id='{{input.id}}'></div>
+        <p class='entity-input-output'>{{input.amount}} <span class='entity-label'>{{input.type}}</span></p>
+      </div>
+    {{/each}}
+  </div>
+{{/if}}
 
 <p class='entity-subheading'>options</p>
 <p class='entity-label'>staff numbers</p>
@@ -17,7 +27,19 @@
 {{input value=50000}}
 
 <p class='entity-subheading'>outputs</p>
-<p class='entity-input-output'><span class='entity-label'>staff Bandwidth</span> 491 <span>FTE</span></p>
+
+{{#if this.entity.outputs}}
+<div class='entity-output-container'>
+  {{#each this.entity.outputs as | output | }}
+    <div>
+      <p class='entity-input-output entity-output'><span class='entity-label'>{{output.name}}</span> {{output.amount}} <span class='fte'>{{output.unit}}</span></p>
+      <div class='terminal output-terminal' id='{{output.id}}'></div>
+    </div>
+  {{/each}}
+</div>
+{{/if}}
+
+
 {{!-- <p>{{this.entity.tags}}</p> --}}
 
 

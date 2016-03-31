@@ -2,18 +2,21 @@
   --node-color: var(--staffing-color);
   --node-background-color : color( var(--staffing-color) alpha(-10%) shade(20%) saturation(+5%) );
   --node-subheading-background-color: color( var(--staffing-color) alpha(-50%) );
+  --node-outline-color: color( var(--staffing-color) whiteness(+15%) alpha(-50%) );
 }
 
 .entity-node.entity-resource {
   --node-color: var(--asset-color);
   --node-background-color : color( var(--asset-color) alpha(-10%) shade(20%) saturation(+5%) );
   --node-subheading-background-color: color( var(--asset-color) alpha(-50%) );
+  --node-outline-color: color( var(--asset-color) whiteness(+15%) alpha(-50%) );
 }
 
 .entity-node.entity-budget {
   --node-color: var(--budget-color);
   --node-background-color : color( var(--budget-color) alpha(-10%) shade(20%) saturation(+5%) );
   --node-subheading-background-color: color( var(--budget-color) alpha(-50%) );
+  --node-outline-color: color( var(--budget-color) whiteness(+15%) alpha(-50%) );
 }
 
 .entity-node {
@@ -25,6 +28,7 @@
   padding-left: 20px;
   padding-right: 20px;
   padding-bottom: 1px;
+  border: solid 1px var(--node-outline-color);
 }
 .entity-node .entity-drag-bar {
   text-align: center;
@@ -62,14 +66,62 @@
 }
 
 .entity-node .entity-input-output {
+  vertical-align: middle;
   font-size: 14px;
   font-weight: 600;
+  line-height: 14px;
+  display: inline-block;
+  margin-bottom: 0;
+  margin-top: 0;
 }
+
 .entity-node .entity-label {
   font-size: 10px;
   font-weight: 300;
   text-transform: capitalize;
   margin-bottom: 0;
   line-height: 10px;
-  /*margin-top: 0;*/
 }
+
+.entity-node input[type='text'] {
+  border: solid 1px var(--node-color);
+  text-align: center;
+  font-family: "sofia-pro", sans-serif;
+  background-color: rgba(0, 0, 0, 0.15);
+  color: white;
+  height: 25px;
+  width: 100%;
+  margin-top: 5px;
+  border-radius: 2pt;
+  font-size: 14px;
+}
+
+.entity-node .fte {
+  font-size: 0.6em;
+}
+
+.entity-node .entity-output {
+  text-align: right;
+}
+
+.entity-output-container{
+  margin-right: -27px;
+  text-align: right;
+  margin-bottom: 10px;
+}
+
+.entity-node .terminal {
+  background-color: #fff;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  display: inline-block;
+  vertical-align: middle;
+  cursor: pointer;
+  cursor: hand;
+}
+.entity-node .input-terminal {
+  margin-left: -28px;
+  margin-right: 10px;
+}
+

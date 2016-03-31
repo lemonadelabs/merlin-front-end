@@ -2,19 +2,27 @@ import Cable from './cable'
 
 export default function EntityDrawGroup (opts) {
   this.id = opts.id
+  this.entityType = opts.entityType
   this.group = opts.draw.group()
   this.cables = []
 
-  // this.footprint = this.group.rect(160, 120).attr({ fill: '#ddd' })
-  // this.dragRect = this.buildDraggableRect()
-  // this.addDragListners()
+  this.footprint = this.buildFoorprint()
   this.componentObject = this.appendComponent({component : opts.component})
-  this.inputTerminals = this.buildInputTerminals({ inputs : opts.entityData.inputs})
-  this.outputTerminals = this.buildOutputTerminals({ outputs : opts.entityData.outputs})
+  this.inputTerminals = this.findInputTerminals({ inputs : opts.entityData.inputs})
+  this.outputTerminals = this.findOutputTerminals({ outputs : opts.entityData.outputs})
 }
 
 
-EntityDrawGroup.prototype.buildInputTerminals = function(opts) {
+EntityDrawGroup.prototype.buildFoorprint = function() {
+  var width = 180
+  // var width = $('.entity-node.2').width() + 20
+  var height = 20
+  // var height = $('.entity-node.2').height()
+  var footprint = this.group.rect(width, height)
+  return footprint
+};
+
+EntityDrawGroup.prototype.findInputTerminals = function(opts) {
   var self = this
 
   var inputs = {}
@@ -22,9 +30,9 @@ EntityDrawGroup.prototype.buildInputTerminals = function(opts) {
     var amountInputs = _.size(opts.inputs)
     var counter = 1
     _.forEach(opts.inputs, function (input, type) { // todo: make these place themselves dynamicly
-      var terminal = self.group.rect(15, 15).attr({ fill: '#790AC7' }).translate(-15,40 * counter)
+      var $terminal = Ember.$(`.terminal.input-terminal#${input.id}`)
       inputs[input.id] = {
-        svg : terminal,
+        $domElement : $terminal,
         type : type,
         entityId : self.id
       }
@@ -34,7 +42,7 @@ EntityDrawGroup.prototype.buildInputTerminals = function(opts) {
   return inputs
 }
 
-EntityDrawGroup.prototype.buildOutputTerminals = function(opts) {
+EntityDrawGroup.prototype.findOutputTerminals = function(opts) {
   var self = this
 
   var outputs = {}
@@ -43,9 +51,10 @@ EntityDrawGroup.prototype.buildOutputTerminals = function(opts) {
     var counter = 1
 
     _.forEach(opts.outputs, function (output, type) { // todo: make these place themselves dynamicly
-      var terminal = self.group.rect(15, 15).attr({ fill: '#790AC7' }).translate(160,40 * counter)
+
+      var $terminal = Ember.$(`.terminal.output-terminal#${output.id}`)
       outputs[output.id] = {
-        svg : terminal,
+        $domElement : $terminal,
         type : type,
         endpoints : output.endpoints,
         entityId : self.id
@@ -62,20 +71,9 @@ EntityDrawGroup.prototype.appendComponent = function(opts) {
   return foreignObj
 };
 
-EntityDrawGroup.prototype.addDragListners = function() {
-  var self = this
-
-  $(this.dragRect.node).on('mouseenter', function () {
-    self.group.draggable()
-  })
-
-  Ember.$(this.dragRect.node).on('mouseleave', function () {
-    self.group.draggable(false)
-  })
-};
-
 EntityDrawGroup.prototype.position = function(opts) {
   this.group.translate( ((260 * opts.itterate) + 30 ), ((160 * opts.itterate) + 30 ))
+  // this.group.translate( ((-260 * opts.itterate) + 900 ), ((160 * opts.itterate) + 50 ))
 };
 
 
