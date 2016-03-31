@@ -113,17 +113,13 @@ export default Ember.Component.extend({
     }
   },
   updateInputPosition: function(e){
-    switch (e.constructor.name) {
-      case 'MouseEvent':
-        document.inputX = e.clientX;
-        document.inputY = e.clientY;
-        break;
-      case 'TouchEvent':
-        document.inputX = e.touches[0].clientX;
-        document.inputY = e.touches[0].clientY;
-        break;
-      default:
-        console.error('Undetected input event type expected \'MouseEvent\' or \'TouchEvent\'')
+    if (e.clientX){
+      document.inputX = e.clientX;
+      document.inputY = e.clientY;
+    }
+    else if(e.touches[0].clientX){
+      document.inputX = e.touches[0].clientX;
+      document.inputY = e.touches[0].clientY;
     }
   },
   envokeCancelEvent: function(){
