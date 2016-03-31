@@ -1,3 +1,2 @@
-{{timeline-object name='boo'}}
-{{timeline-object name='boo2'}}
-{{timeline-object name='boo3'}}
+{{log this.timelineObjects}}
+{{timeline-track timelineObjects=this.timelineObjects onInteractionEnd=(action 'onInteractionEnd')}}

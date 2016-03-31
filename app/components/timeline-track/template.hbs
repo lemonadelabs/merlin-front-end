@@ -1,0 +1,5 @@
+{{log this.timelineObjects}}
+{{#each this.timelineObjects as |timelineObject|}}
+  {{log timelineObject}}
+  {{timeline-object name='boo' onInteractionEnd=this.onInteractionEnd }}
+{{/each}}

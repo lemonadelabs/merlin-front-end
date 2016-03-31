@@ -1,12 +1,17 @@
+.timeline-track{
+  width: 100%;
+  margin-top: 10px;
+}
+
 .timeline-object {
-  /*transition: transform 100ms;*/
   background-color: var(--budget-color);
+  border-radius: 2px;
   color: white;
-  min-height: 50px;
   cursor: move;
   cursor: -webkit-grab;
-  position: relative;
-  border-radius: 2px;
+  min-height: 50px;
+  position: absolute;
+  top:0;
   user-select: none;
 }
 
@@ -16,18 +21,18 @@
 .timeline-object:after {
   content: "";
   width: 20px;
-  position: absolute;
   right: 0;
+  top:0;
+  position: absolute;
   height: 100%;
-  /*background-color: orange;*/
   cursor: ew-resize;
 }
 .timeline-object:before {
   content: "";
-  width: 20px;
-  position: absolute;
-  left: 0;
-  height: 100%;
-  /*background-color: orange;*/
   cursor: ew-resize;
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top:0;
+  width: 20px;
 }

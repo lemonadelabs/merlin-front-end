@@ -8,10 +8,14 @@ export default Ember.Component.extend({
   x:0,
   width:100,
   boundFinishManipulationFunc:undefined,
-  style:Ember.computed('x','width', function(){
+  style:Ember.computed('x','width','active', function(){
     var x = this.get('x');
     var width = this.get('width');
-    return Ember.String.htmlSafe(`transform:translate(${x}px); width: ${width}px;`);
+    if(this.get('active')){
+      return Ember.String.htmlSafe(`transform:translate(${x}px, -5px); width: ${width}px;`);
+    }else{
+      return Ember.String.htmlSafe(`transform:translate(${x}px, 0px); width: ${width}px;`);
+    }
   }),
   didInsertElement(){
     this.set('boundFinishManipulationFunc',this.finishManipulation.bind(this));
@@ -71,9 +75,9 @@ export default Ember.Component.extend({
   },
   finishManipulation:function(){
     this.set('active',false);
-    this.removeCancelEventListener();
-    var interActEndFunc = this.get('onMouseUp') || this.warnMissingAction;
+    var interActEndFunc = this.get('onInteractionEnd') || this.warnMissingAction;
     interActEndFunc();
+    this.removeCancelEventListener();
   },
   warnMissingAction:function(){
     console.warn("Missing action on interaction end");
@@ -104,6 +108,7 @@ export default Ember.Component.extend({
     if(this.get('active')){
       Ember.run.next(this, this.updateMyWidthLeft, {'offset':offset});
     }
+
   },
   updateMyPosition:function(args){
     var offset = args.offset;
