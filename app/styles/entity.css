@@ -29,7 +29,9 @@
   padding-right: 20px;
   padding-bottom: 1px;
   border: solid 1px var(--node-outline-color);
+  /*position: absolute;*/
 }
+
 .entity-node .entity-drag-bar {
   text-align: center;
   background-color: var(--node-color);
@@ -125,3 +127,6 @@
   margin-right: 10px;
 }
 
+/*.entities-container {
+  margin: 30px;
+}*/

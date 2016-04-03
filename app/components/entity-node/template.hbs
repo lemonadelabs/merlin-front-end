@@ -21,8 +21,17 @@
 {{/if}}
 
 <p class='entity-subheading'>options</p>
+<select>
+  <option value='asdf'>asdf</option>
+  <option value='qwer'>qwer</option>
+</select>
+
+<input type='checkbox'>
+
+
 <p class='entity-label'>staff numbers</p>
-{{input value=5}}
+{{!-- {{input value=5}} --}}
+{{range-slider name='staff numbers' max=1000 min=0}}
 <p class='entity-label'>average staff pay</p>
 {{input value=50000}}
 

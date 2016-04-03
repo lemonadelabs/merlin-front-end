@@ -57,7 +57,7 @@ NodesGroup.prototype.outputTerminalListners = function() {
   })
 
   $(document).on('mouseup', function (e) {
-    if (!(_.includes(e.target.className, 'terminal'))) {
+    if (!(_.includes(e.target.className, 'terminal')) && self.flyingCable) {
       console.log(e.target.className)
       self.flyingCable.svg.remove()
       self.flyingCable = undefined
@@ -148,18 +148,24 @@ NodesGroup.prototype.initDraggable = function() {
   var self = this
   _.forEach(this.entityDrawGroups, function (entityDrawGroup) {
 
-    var $dragBar = Ember.$(entityDrawGroup.componentObject.node).find('.entity-drag-bar')
+
+    var $entityComponent = entityDrawGroup.$component
+    var $dragBar = $entityComponent.find('.entity-drag-bar')
+    // var $dragBar = Ember.$(entityDrawGroup.componentObject.node).find('.entity-drag-bar')
 
     $dragBar.on('mouseenter', function () {
       entityDrawGroup.group.draggable()
+      // entityDrawGroup.componentObject.draggable()
     })
 
     $dragBar.on('mouseleave', function () {
       entityDrawGroup.group.draggable(false)
+      // entityDrawGroup.componentObject.draggable(false)
     })
 
     entityDrawGroup.group.on('dragmove', function (e) {
       entityDrawGroup.updateCables()
+      console.log(e)
     })
 
   })

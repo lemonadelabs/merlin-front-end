@@ -68,6 +68,8 @@ EntityDrawGroup.prototype.findOutputTerminals = function(opts) {
 EntityDrawGroup.prototype.appendComponent = function(opts) {
   var foreignObj = this.group.foreignObject(200,1000).attr({id: 'component'}) // size hack to fix safari css bug
   foreignObj.appendChild(opts.component.element)
+  this.$component = $(opts.component.element)
+  // return opts.component
   return foreignObj
 };
 
