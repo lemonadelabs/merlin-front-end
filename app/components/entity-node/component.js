@@ -10,7 +10,7 @@ export default Ember.Component.extend({
     this.nodes.push(this)
     this.nodes.arrayContentDidChange(this.nodes.length, 0, 1)
     this.set('id',this.entity.id);
-    this.set('entity-type',`entity-${this.entity.tags[0]}`);
+    this.set('entity-type',`entity-${this.entity.attributes[0]}`);
   }
 
 });
