@@ -1,6 +1,9 @@
 :root {
-  --budget-color: rgb(126, 211, 33);
-  --staffing-color: rgb(74, 144, 226);
-  --asset-color: rgb(144, 19, 254);
-
+  /*--budget-color: rgb(126, 211, 33);*/
+  /*--staffing-color: rgb(74, 144, 226);*/
+  /*--asset-color: rgb(144, 19, 254);*/
+  --capability-color: #03DEAD;
+  --budget-color: #7ED321;
+  --fixed_asset-color: #9013FE;
+  --output-color: #F5A623  ;
 }

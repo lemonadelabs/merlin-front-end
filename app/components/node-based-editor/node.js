@@ -1,11 +1,11 @@
-import Cable from './cable'
 
-export default function EntityDrawGroup (opts) {
+export default function Node (opts) {
   this.id = opts.id
-  this.entityType = opts.entityType
+  this.nodeType = opts.nodeType
   this.group = opts.draw.group()
   this.cables = []
 
+  this.$component = Ember.$(opts.component.element)
   this.footprint = this.buildFoorprint()
   this.componentObject = this.appendComponent({component : opts.component})
   this.inputTerminals = this.findInputTerminals({ inputs : opts.entityData.inputs})
@@ -13,7 +13,7 @@ export default function EntityDrawGroup (opts) {
 }
 
 
-EntityDrawGroup.prototype.buildFoorprint = function() {
+Node.prototype.buildFoorprint = function() {
   var width = 180
   // var width = $('.entity-node.2').width() + 20
   var height = 20
@@ -22,64 +22,56 @@ EntityDrawGroup.prototype.buildFoorprint = function() {
   return footprint
 };
 
-EntityDrawGroup.prototype.findInputTerminals = function(opts) {
-  var self = this
-
-  var inputs = {}
+Node.prototype.findInputTerminals = function(opts) {
   if (!_.isEmpty(opts.inputs)) {
-    var amountInputs = _.size(opts.inputs)
-    var counter = 1
+    var self = this
+    var inputs = {}
     _.forEach(opts.inputs, function (input, type) { // todo: make these place themselves dynamicly
-      var $terminal = Ember.$(`.terminal.input-terminal#${input.id}`)
+      var $terminal = self.$component.find(`#${input.id}.terminal.input-terminal`)
       inputs[input.id] = {
         $domElement : $terminal,
         type : type,
-        entityId : self.id
+        entityId : self.id,
+        nodeType : self.nodeType,
+        terminalType : 'input'
       }
-      counter ++
     })
+    return inputs
   }
-  return inputs
 }
 
-EntityDrawGroup.prototype.findOutputTerminals = function(opts) {
-  var self = this
-
-  var outputs = {}
+Node.prototype.findOutputTerminals = function(opts) {
   if (!_.isEmpty(opts.outputs)) {
-    var amountoutputs = _.size(opts.outputs)
-    var counter = 1
-
+    var self = this
+    var outputs = {}
     _.forEach(opts.outputs, function (output, type) { // todo: make these place themselves dynamicly
-
-      var $terminal = Ember.$(`.terminal.output-terminal#${output.id}`)
+      var $terminal = self.$component.find(`#${output.id}.terminal.output-terminal`)
       outputs[output.id] = {
         $domElement : $terminal,
         type : type,
         endpoints : output.endpoints,
-        entityId : self.id
+        entityId : self.id,
+        nodeType : self.nodeType,
+        terminalType : 'output'
       }
-      counter ++
     })
   }
   return outputs
 }
 
-EntityDrawGroup.prototype.appendComponent = function(opts) {
+Node.prototype.appendComponent = function(opts) {
   var foreignObj = this.group.foreignObject(200,1000).attr({id: 'component'}) // size hack to fix safari css bug
   foreignObj.appendChild(opts.component.element)
-  this.$component = $(opts.component.element)
-  // return opts.component
   return foreignObj
 };
 
-EntityDrawGroup.prototype.position = function(opts) {
-  this.group.translate( ((260 * opts.itterate) + 30 ), ((160 * opts.itterate) + 30 ))
+Node.prototype.position = function(opts) {
+  this.group.translate( ((260 * opts.itterate) + 30 ), 0)
   // this.group.translate( ((-260 * opts.itterate) + 900 ), ((160 * opts.itterate) + 50 ))
 };
 
 
-EntityDrawGroup.prototype.updateCables = function(opts) {
+Node.prototype.updateCables = function(opts) {
   _.forEach(this.cables, function (cable) {
     cable.updatePosition()
   })

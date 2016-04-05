@@ -2,7 +2,12 @@
 </div>
 
 <div class='entities-container'>
-{{#each this.model.entities as | entity index | }}
+  {{#each this.model.entities as | entity index | }}
     {{entity-node entity=entity nodes=entityComponents}}
-{{/each}}
+  {{/each}}
+
+  {{#each this.model.outputs as | simulationOutput index | }}
+    {{simulation-output simulationOutput=simulationOutput outputNodes=outputComponents}}
+  {{/each}}
+
 </div>

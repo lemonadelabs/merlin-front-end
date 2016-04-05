@@ -1,10 +1,10 @@
 import Ember from 'ember';
-import EntityDrawGroup from './entityDrawGroup'
 import NodesGroup from './nodesGroup'
 
 export default Ember.Component.extend({
   draw: undefined,
   entityComponents: [],
+  outputComponents: [],
   didInsertElement() {
     this.initSVGDocument()
   },
@@ -17,12 +17,16 @@ export default Ember.Component.extend({
   buldSVGNodes: function () {
     var self = this
 
-    if (this.entityComponents.length === this.model.entities.length) {
+    if (this.entityComponents.length + this.outputComponents.length === this.model.entities.length + this.model.outputs.length ) {
       this.nodesGroup = new NodesGroup({
         draw : this.draw,
-        entityModel : self.get('model').entities
+        entityModel : self.get('model').entities,
+        outputModel : self.get('model').outputs
       })
-      this.nodesGroup.buildNodes({ components : this.entityComponents})
+      this.nodesGroup.buildNodes({
+        entityComponents : this.entityComponents,
+        outputComponents : this.outputComponents
+      })
       this.nodesGroup.initDraggable()
       this.nodesGroup.initCables()
       this.nodesGroup.outputTerminalListners()
