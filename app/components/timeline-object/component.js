@@ -11,11 +11,11 @@ export default Ember.Component.extend({
   style:Ember.computed('x','width','active', function(){
     var x = this.get('x');
     var width = this.get('width');
-    if(this.get('active')){
-      return Ember.String.htmlSafe(`transform:translate(${x}px, -5px); width: ${width}px;`);
-    }else{
-      return Ember.String.htmlSafe(`transform:translate(${x}px, 0px); width: ${width}px;`);
-    }
+    // if(this.get('active')){
+    //   return Ember.String.htmlSafe(`transform:translate(${x}px, -5px); width: ${width}px;`);
+    // }else{
+    return Ember.String.htmlSafe(`transform:translate(${x}px, 0px); width: ${width}px;`);
+    // }
   }),
   didInsertElement(){
     this.set('boundFinishManipulationFunc',this.finishManipulation.bind(this));
@@ -73,16 +73,65 @@ export default Ember.Component.extend({
     //This will still work on IE
     this.finishManipulation();
   },
-  finishManipulation:function(){
+  finishManipulation: function(){
     this.set('active',false);
     var interActEndFunc = this.get('onInteractionEnd') || this.warnMissingAction;
     interActEndFunc();
+    this.snapToGrid();
     this.removeCancelEventListener();
   },
-  warnMissingAction:function(){
+  snapToGrid: function(){
+    var grid = this.get('timelineGridObjects');
+    var left = this.get('x');
+    var width = this.get('width');
+    var right = left + width;
+    var closestLeft = grid[0].offsetLeft;
+    var closestRight = grid[0].offsetLeft+grid[0].offsetWidth;
+    var startData;
+    var endData;
+    console.log('grid[0]',closestRight);
+    console.log('right',right)
+    console.log(this.get('updateMyPositionRunLoop'));
+    this.cancelInputUpdates();
+
+    _.forEach(grid, function(item){
+      var offsetRight = item.offsetLeft+item.offsetWidth;
+
+      if(Math.abs(left-closestLeft) >= Math.abs(left-item.offsetLeft)){
+        closestLeft=item.offsetLeft;
+        startData=item.dataset;
+      }
+      if(Math.abs(right-closestRight) >= Math.abs(right-offsetRight)){
+        console.log(Math.abs(right-closestRight), Math.abs(right-offsetRight))
+        closestRight=offsetRight;
+        endData=item.dataset;
+      }
+    });
+    if(this.get('updateMyPositionRunLoop') || this.get('updateMyWidthLeftRunLoop')){
+      this.set('x',closestLeft);
+    }
+    if(this.get('updateMyWidthRightRunLoop')){
+      this.set('width',closestRight-left);
+    }
+    if(this.get('updateMyWidthLeftRunLoop')){
+      this.set('width',width+(left-closestLeft));
+    }
+    this.clearInputUpdates();
+  },
+  cancelInputUpdates:function(){
+    Ember.run.cancel(this.get('updateMyWidthLeftRunLoop'));
+    Ember.run.cancel(this.get('updateMyWidthRightRunLoop'));
+    Ember.run.cancel(this.get('updateMyPositionRunLoop'));
+  },
+  clearInputUpdates:function(){
+    this.set('updateMyWidthLeftRunLoop',undefined);
+    this.set('updateMyWidthRightRunLoop',undefined);
+    this.set('updateMyPositionRunLoop',undefined);
+  },
+  warnMissingAction: function(){
     console.warn("Missing action on interaction end");
   },
-  updateMyWidthRight:function(args){
+  updateMyWidthRight: function(args){
     var offset = args.offset;
     var x = this.get('x');
 
@@ -92,10 +141,10 @@ export default Ember.Component.extend({
     }
 
     if(this.get('active')){
-      Ember.run.next(this, this.updateMyWidthRight, {'offset':offset});
+      this.set('updateMyWidthRightRunLoop', Ember.run.next(this, this.updateMyWidthRight, {'offset':offset}) );
     }
   },
-  updateMyWidthLeft:function(args){
+  updateMyWidthLeft: function(args){
     var offset = args.offset;
     var x = this.get('x');
     var width = this.get('width');
@@ -106,15 +155,15 @@ export default Ember.Component.extend({
     }
 
     if(this.get('active')){
-      Ember.run.next(this, this.updateMyWidthLeft, {'offset':offset});
+      this.set('updateMyWidthLeftRunLoop', Ember.run.next(this, this.updateMyWidthLeft, {'offset':offset}) );
     }
 
   },
-  updateMyPosition:function(args){
+  updateMyPosition: function(args){
     var offset = args.offset;
     this.set('x', document.inputX - offset);
     if(this.get('active')){
-      Ember.run.next(this, this.updateMyPosition, {'offset':offset});
+      this.set('updateMyPositionRunLoop' , Ember.run.next(this, this.updateMyPosition, {'offset':offset}) );
     }
   },
   updateInputPosition: function(e){

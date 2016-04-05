@@ -1,2 +1,2 @@
-{{log this.timelineObjects}}
-{{timeline-track timelineObjects=this.timelineObjects onInteractionEnd=(action 'onInteractionEnd')}}
+{{timeline-timescale timelineGridObjects=this.timelineGridObjects timespan=this.timespan}}
+{{timeline-track timelineGridObjects=this.timelineGridObjects timelineObjects=this.timelineObjects onInteractionEnd=(action 'onInteractionEnd')}}

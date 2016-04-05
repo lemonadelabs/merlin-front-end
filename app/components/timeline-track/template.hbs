@@ -1,5 +1,3 @@
-{{log this.timelineObjects}}
 {{#each this.timelineObjects as |timelineObject|}}
-  {{log timelineObject}}
-  {{timeline-object name='boo' onInteractionEnd=this.onInteractionEnd }}
+  {{timeline-object name='boo' timelineGridObjects=this.timelineGridObjects onInteractionEnd=this.onInteractionEnd }}
 {{/each}}
