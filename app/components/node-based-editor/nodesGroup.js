@@ -126,7 +126,7 @@ NodesGroup.prototype.buildNodes = function(opts) {
       nodeType : nodeType
     })
 
-    node.position({itterate : i})
+    node.position({itterate : i}) // move this into Node once positioning is enabled
 
     if (_.includes(nodeType, 'entity')) {
       self.entityNodes[id] = node
