@@ -1,2 +1,27 @@
-{{timeline-timescale timelineGridObjects=this.timelineGridObjects timespan=this.timespan}}
-{{timeline-track timelineGridObjects=this.timelineGridObjects timelineObjects=this.timelineObjects onInteractionEnd=(action 'onInteractionEnd')}}
+<div class='timeline-track-container'>
+  {{timeline-track
+    timelineGridObjects=this.timelineGridObjects
+    timelineObjects=this.timelineObjects
+    onInteractionEnd=(action 'onInteractionEnd')
+  }}
+  {{timeline-track
+    timelineGridObjects=this.timelineGridObjects
+    timelineObjects=this.timelineObjects
+    onInteractionEnd=(action 'onInteractionEnd')
+  }}
+  {{timeline-track
+    timelineGridObjects=this.timelineGridObjects
+    timelineObjects=this.timelineObjects
+    onInteractionEnd=(action 'onInteractionEnd')
+  }}
+  {{timeline-track
+    timelineGridObjects=this.timelineGridObjects
+    timelineObjects=this.timelineObjects
+    onInteractionEnd=(action 'onInteractionEnd')
+  }}
+</div>
+
+{{timeline-timescale
+  timelineGridObjects=this.timelineGridObjects
+  timespan=this.timespan
+}}
