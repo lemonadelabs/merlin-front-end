@@ -30,13 +30,15 @@ export default Ember.Component.extend({
       })
       this.nodesGroup.initDraggable()
       this.nodesGroup.initCables()
-      this.nodesGroup.outputTerminalListners()
+      this.nodesGroup.terminalListners()
     } else {
       console.warn('the entity components haven\'t been built yet')
     }
   }.observes('draw'),
 
   persistPosition: function (opts) {
+    return // false return, to kill function
+
     var nodetype
     if ((_.includes(opts.nodeType, 'output'))) {
       nodetype = 'outputs'
@@ -60,9 +62,6 @@ export default Ember.Component.extend({
         }
       });
     })
-
-
   },
-
 
 });

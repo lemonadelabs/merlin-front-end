@@ -6,6 +6,7 @@ import Node from './node'
 export default function NodesGroup (opts) {
   this.draw = opts.draw
   this.entityModel = opts.entityModel
+  this.outputModel = opts.outputModel
   this.persistPosition = opts.persistPosition
   this.entityNodes = {}
   this.outputNodes = {}
@@ -23,7 +24,7 @@ export default function NodesGroup (opts) {
   this.flyingCable = undefined
 }
 
-NodesGroup.prototype.outputTerminalListners = function() {
+NodesGroup.prototype.terminalListners = function() {
   var self = this
 
   var allTerminals = {}
@@ -98,8 +99,6 @@ NodesGroup.prototype.outputTerminalListners = function() {
     }
   })
 
-
-
 };
 
 NodesGroup.prototype.buildNodes = function(opts) {
@@ -114,17 +113,20 @@ NodesGroup.prototype.buildNodes = function(opts) {
   function buildNode(component, i) {
     var id = component.get('id')
     var nodeType = component.get('node-type')
+
+
+    var nodeModel = (nodeType === 'output-node') ? _.find(self.outputModel, ['id', id]) : _.find(self.entityModel, ['id', id])
     var entityData = _.find(self.entityModel, ['id', id])
 
     var node = new Node({
       id : id,
       draw : self.draw,
       component : component,
-      entityData : entityData,
+      nodeModel : nodeModel,
       nodeType : nodeType
     })
 
-    node.position({itterate : i})
+    node.position({itterate : i}) // move this into Node once positioning is enabled
 
     if (_.includes(nodeType, 'entity')) {
       self.entityNodes[id] = node
@@ -139,7 +141,6 @@ NodesGroup.prototype.buildNodes = function(opts) {
       self.outputNodes[id] = node
     }
   }
-
 };
 
 NodesGroup.prototype.initCables = function() {
@@ -239,10 +240,6 @@ NodesGroup.prototype.initDraggable = function() {
         nodeType : nodeType,
         id : id
       })
-
     })
-
-
-
   }
 };
