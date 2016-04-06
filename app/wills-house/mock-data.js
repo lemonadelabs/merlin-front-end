@@ -279,18 +279,7 @@ export default function mockData() {
               "description": "",
               "name": "requests handled",
               "sim": "http://192.168.99.100:8000/simulations/1/",
-              "unit_type": "requests_handled",
-              "attributes" : ['output'],
-              "inputs": [
-                  {
-                      "id": 1,
-                      "description": "",
-                      "name": "Requests_handled_input",
-                      // "parent": "http://192.168.99.100:8000/entities/2/",
-                      // "unit_type": "$",
-                      "additive_write": false
-                  }
-              ],
+              "unit_type": "requests_handled"
           }
       ]
   }

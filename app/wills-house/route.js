@@ -1,9 +1,9 @@
-import mockData from './mock-data'
+// import mockData from './mock-data'
 import Ember from 'ember';
 
 export default Ember.Route.extend({
   model: function () {
-    // return Ember.$.getJSON('simulations/1')
-    return mockData()
+    return Ember.$.getJSON('simulations/1')
+    // return mockData()
   }
 });
