@@ -21,7 +21,8 @@ export default Ember.Component.extend({
       this.nodesGroup = new NodesGroup({
         draw : this.draw,
         entityModel : self.get('model').entities,
-        outputModel : self.get('model').outputs
+        outputModel : self.get('model').outputs,
+        persistPosition : self.persistPosition
       })
       this.nodesGroup.buildNodes({
         entityComponents : this.entityComponents,
@@ -29,11 +30,39 @@ export default Ember.Component.extend({
       })
       this.nodesGroup.initDraggable()
       this.nodesGroup.initCables()
-      this.nodesGroup.outputTerminalListners()
+      this.nodesGroup.terminalListners()
     } else {
       console.warn('the entity components haven\'t been built yet')
     }
   }.observes('draw'),
+
+  persistPosition: function (opts) {
+    return // false return, to kill function
+    var nodetype
+    if ((_.includes(opts.nodeType, 'output'))) {
+      nodetype = 'outputs'
+    } else if ((_.includes(opts.nodeType, 'entity'))) {
+      nodetype = 'entities'
+    }
+
+    var url = `${nodetype}/${opts.id}/`
+
+    var unModified = Ember.$.getJSON(url)
+    unModified.then(function (response) {
+      response.display_pos_x = opts.x
+      response.display_pos_y = opts.y
+
+      Ember.$.ajax({
+        url: url,
+        type: 'PUT',
+        data: response,
+        success: function(result) {
+          console.log(result)
+        }
+      });
+    })
+  },
+
 
 
 });

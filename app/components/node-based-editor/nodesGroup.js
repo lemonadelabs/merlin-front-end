@@ -6,6 +6,7 @@ import Node from './node'
 export default function NodesGroup (opts) {
   this.draw = opts.draw
   this.entityModel = opts.entityModel
+  this.persistPosition = opts.persistPosition
   this.entityNodes = {}
   this.outputNodes = {}
   this.outputTerminals = {}
@@ -22,7 +23,7 @@ export default function NodesGroup (opts) {
   this.flyingCable = undefined
 }
 
-NodesGroup.prototype.outputTerminalListners = function() {
+NodesGroup.prototype.terminalListners = function() {
   var self = this
 
   var allTerminals = {}
@@ -226,5 +227,20 @@ NodesGroup.prototype.initDraggable = function() {
     node.group.on('dragmove', function (e) {
       node.updateCables()
     })
+
+    node.group.on('dragend', function (e) {
+      var id = node.id
+      var nodeType = node.nodeType
+      var x = node.group.x()
+      var y = node.group.y()
+      self.persistPosition({
+        x : x,
+        y : y,
+        nodeType : nodeType,
+        id : id
+      })
+    })
+
+
   }
 };
