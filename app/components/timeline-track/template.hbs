@@ -1,3 +1,9 @@
 {{#each this.timelineObjects as |timelineObject|}}
-  {{timeline-object name='boo' timelineGridObjects=this.timelineGridObjects onInteractionEnd=this.onInteractionEnd }}
+  {{timeline-object
+    name=timelineObject.name
+    start=timelineObject.start
+    end=timelineObject.end
+    timelineGridObjects=this.timelineGridObjects
+    onInteractionEnd=this.onInteractionEnd
+  }}
 {{/each}}
