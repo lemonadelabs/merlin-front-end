@@ -6,6 +6,7 @@ import Node from './node'
 export default function NodesGroup (opts) {
   this.draw = opts.draw
   this.entityModel = opts.entityModel
+  this.outputModel = opts.outputModel
   this.persistPosition = opts.persistPosition
   this.entityNodes = {}
   this.outputNodes = {}
@@ -60,7 +61,6 @@ NodesGroup.prototype.terminalListners = function() {
   }
 
   function inputTerminalListners (terminal) {
-    console.log(terminal)
     terminal.$domElement.on('mousedown', function (e) {
       self.flyingCable = new Cable({
         cableParent : self.cableParent,
@@ -99,8 +99,6 @@ NodesGroup.prototype.terminalListners = function() {
     }
   })
 
-
-
 };
 
 NodesGroup.prototype.buildNodes = function(opts) {
@@ -115,13 +113,16 @@ NodesGroup.prototype.buildNodes = function(opts) {
   function buildNode(component, i) {
     var id = component.get('id')
     var nodeType = component.get('node-type')
+
+
+    var nodeModel = (nodeType === 'output-node') ? _.find(self.outputModel, ['id', id]) : _.find(self.entityModel, ['id', id])
     var entityData = _.find(self.entityModel, ['id', id])
 
     var node = new Node({
       id : id,
       draw : self.draw,
       component : component,
-      entityData : entityData,
+      nodeModel : nodeModel,
       nodeType : nodeType
     })
 
@@ -140,7 +141,6 @@ NodesGroup.prototype.buildNodes = function(opts) {
       self.outputNodes[id] = node
     }
   }
-
 };
 
 NodesGroup.prototype.initCables = function() {
