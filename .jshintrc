@@ -2,13 +2,17 @@
   "predef": [
     "document",
     "window",
-    "-Promise"
+    "-Promise",
+    "_",
+    "SVG",
+    "$"
   ],
   "browser": true,
   "boss": true,
   "curly": true,
   "debug": false,
   "devel": true,
+  "asi":true,
   "eqeqeq": true,
   "evil": true,
   "forin": false,

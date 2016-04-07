@@ -1,0 +1,16 @@
+{{yield}}
+<div class="timeline-year-container">
+  {{#each years as |year|}}
+    <div class="timeline-year">
+      {{year}}
+    </div>
+  {{/each}}
+</div>
+<div class="timeline-grid-container">
+  {{#each timeUnits as |unit|}}
+    <div data-value={{unit.value}} data-year={{unit.year}} class="timeline-grid">
+      <p class="timeline-grid-title">{{unit.title}}</p>
+      <div class="timeline-grid-shade"></div>
+    </div>
+  {{/each}}
+</div>

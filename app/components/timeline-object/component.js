@@ -5,17 +5,17 @@ export default Ember.Component.extend({
   classNames: ['timeline-object'],
   classNameBindings:['active'],
   attributeBindings: ['style'],
-  x:0,
-  width:100,
+  x:undefined,
+  width:undefined,
   boundFinishManipulationFunc:undefined,
   style:Ember.computed('x','width','active', function(){
     var x = this.get('x');
     var width = this.get('width');
-    if(this.get('active')){
-      return Ember.String.htmlSafe(`transform:translate(${x}px, -5px); width: ${width}px;`);
-    }else{
-      return Ember.String.htmlSafe(`transform:translate(${x}px, 0px); width: ${width}px;`);
-    }
+    // if(this.get('active')){
+    //   return Ember.String.htmlSafe(`transform:translate(${x}px, -5px); width: ${width}px;`);
+    // }else{
+    return Ember.String.htmlSafe(`transform:translate(${x}px, 0px); width: ${width}px;`);
+    // }
   }),
   didInsertElement(){
     this.set('boundFinishManipulationFunc',this.finishManipulation.bind(this));
@@ -30,6 +30,7 @@ export default Ember.Component.extend({
       document.addEventListener("touchend", this.envokeCancelEvent);
       document.touchEndListener = true;
     }
+
   },
   willDestroy(){
     document.onmousemove = null;
@@ -45,7 +46,6 @@ export default Ember.Component.extend({
     if(e.type === 'touchstart'){
       this.updateInputPosition(e.originalEvent);
     }
-
     this.set('active',true);
     //fallback for older firefox that doesn't support offsetX & touch devices
     var offset = e.offsetX || (document.inputX - this.get('x'));
@@ -73,16 +73,65 @@ export default Ember.Component.extend({
     //This will still work on IE
     this.finishManipulation();
   },
-  finishManipulation:function(){
+  finishManipulation: function(){
     this.set('active',false);
     var interActEndFunc = this.get('onInteractionEnd') || this.warnMissingAction;
+    this.snapToGrid();
+    var timeFromPosition = this.searchForTimeFromPosition(this.get('x'),this.get('width'));
+    this.set('start',timeFromPosition.startTime);
+    this.set('end',timeFromPosition.endTime);
     interActEndFunc();
     this.removeCancelEventListener();
+
   },
-  warnMissingAction:function(){
+  snapToGrid: function(){
+    var grid = this.get('timelineGridObjects');
+    var left = this.get('x');
+    var width = this.get('width');
+    var right = left + width;
+    var closestLeft = grid[0].offsetLeft;
+    var closestRight = grid[0].offsetLeft+grid[0].offsetWidth;
+    var startData;
+    var endData;
+    this.cancelInputUpdates();
+
+    _.forEach(grid, function(item){
+      var offsetRight = item.offsetLeft+item.offsetWidth;
+      if(Math.abs(left-closestLeft) >= Math.abs(left-item.offsetLeft)){
+        closestLeft=item.offsetLeft;
+        startData=item.dataset;
+      }
+      if(Math.abs(right-closestRight) >= Math.abs(right-offsetRight)){
+        closestRight=offsetRight;
+        endData=item.dataset;
+      }
+    });
+
+    if(this.get('updateMyPositionRunLoop') || this.get('updateMyWidthLeftRunLoop')){
+      this.set('x',closestLeft);
+    }
+    if(this.get('updateMyWidthRightRunLoop')){
+      this.set('width',closestRight-left);
+    }
+    if(this.get('updateMyWidthLeftRunLoop')){
+      this.set('width',width+(left-closestLeft));
+    }
+    this.clearInputUpdates();
+  },
+  cancelInputUpdates:function(){
+    Ember.run.cancel(this.get('updateMyWidthLeftRunLoop'));
+    Ember.run.cancel(this.get('updateMyWidthRightRunLoop'));
+    Ember.run.cancel(this.get('updateMyPositionRunLoop'));
+  },
+  clearInputUpdates:function(){
+    this.set('updateMyWidthLeftRunLoop',undefined);
+    this.set('updateMyWidthRightRunLoop',undefined);
+    this.set('updateMyPositionRunLoop',undefined);
+  },
+  warnMissingAction: function(){
     console.warn("Missing action on interaction end");
   },
-  updateMyWidthRight:function(args){
+  updateMyWidthRight: function(args){
     var offset = args.offset;
     var x = this.get('x');
 
@@ -92,10 +141,10 @@ export default Ember.Component.extend({
     }
 
     if(this.get('active')){
-      Ember.run.next(this, this.updateMyWidthRight, {'offset':offset});
+      this.set('updateMyWidthRightRunLoop', Ember.run.next(this, this.updateMyWidthRight, {'offset':offset}) );
     }
   },
-  updateMyWidthLeft:function(args){
+  updateMyWidthLeft: function(args){
     var offset = args.offset;
     var x = this.get('x');
     var width = this.get('width');
@@ -106,23 +155,23 @@ export default Ember.Component.extend({
     }
 
     if(this.get('active')){
-      Ember.run.next(this, this.updateMyWidthLeft, {'offset':offset});
+      this.set('updateMyWidthLeftRunLoop', Ember.run.next(this, this.updateMyWidthLeft, {'offset':offset}) );
     }
 
   },
-  updateMyPosition:function(args){
+  updateMyPosition: function(args){
     var offset = args.offset;
     this.set('x', document.inputX - offset);
     if(this.get('active')){
-      Ember.run.next(this, this.updateMyPosition, {'offset':offset});
+      this.set('updateMyPositionRunLoop' , Ember.run.next(this, this.updateMyPosition, {'offset':offset}) );
     }
   },
   updateInputPosition: function(e){
-    if (e.clientX){
+    if (typeof e.clientX){
       document.inputX = e.clientX;
       document.inputY = e.clientY;
     }
-    else if(e.touches[0].clientX){
+    else if(typeof e.touches[0].clientX){
       document.inputX = e.touches[0].clientX;
       document.inputY = e.touches[0].clientY;
     }
@@ -132,5 +181,51 @@ export default Ember.Component.extend({
     or a different aproach should the need for IE come up.*/
     var ev = new Event("cancelManipulation", {"bubbles":false, "cancelable":false});
     document.dispatchEvent(ev);
+  },
+  searchForPositionFromTime:function(time){
+    var grid = this.get('timelineGridObjects');
+    var offsetLeft;
+    var offsetWidth;
+
+    _.forEach(grid, function(item){
+      //jshint eqeqeq: false
+      if(time.year == item.dataset.year && time.value == item.dataset.value){
+        offsetLeft = item.offsetLeft;
+        offsetWidth = item.offsetWidth;
+      }
+    });
+    return({'offsetLeft':offsetLeft,'offsetRight':(offsetLeft+offsetWidth)});
+  },
+  searchForTimeFromPosition:function(x,width){
+    var self = this;
+    var grid = this.get('timelineGridObjects');
+    var startTime = {};
+    var endTime = {};
+    _.forEach(grid, function(item){
+      var rightOffset = item.offsetLeft+item.offsetWidth;
+      //jshint eqeqeq: false
+      if(x == item.offsetLeft){
+        startTime.year = parseInt(item.dataset.year,10);
+        startTime.value = parseInt(item.dataset.value,10);
+      }
+      if(self.between(x+width,rightOffset-5,rightOffset+5)){
+        endTime.year = parseInt(item.dataset.year,10);
+        endTime.value = parseInt(item.dataset.value,10);
+      }
+    });
+    return({'startTime':startTime,'endTime':endTime});
+  },
+
+  setPositionFromGrid: function(){
+    var startPosInfo = this.searchForPositionFromTime(this.get('start'));
+    this.set('x',startPosInfo.offsetLeft);
+    var endPosInfo = this.searchForPositionFromTime(this.get('end'));
+    this.set('width', (endPosInfo.offsetRight - startPosInfo.offsetLeft)+1);
+  },
+  onGridSetup: function (){
+    this.setPositionFromGrid();
+  }.observes('timelineGridObjects'),
+  between:function(x, min, max) {
+    return x >= min && x <= max;
   }
 });
