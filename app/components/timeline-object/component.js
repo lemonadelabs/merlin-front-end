@@ -167,11 +167,11 @@ export default Ember.Component.extend({
     }
   },
   updateInputPosition: function(e){
-    if (e.clientX){
+    if (typeof e.clientX){
       document.inputX = e.clientX;
       document.inputY = e.clientY;
     }
-    else if(e.touches[0].clientX){
+    else if(typeof e.touches[0].clientX){
       document.inputX = e.touches[0].clientX;
       document.inputY = e.touches[0].clientY;
     }
@@ -188,6 +188,7 @@ export default Ember.Component.extend({
     var offsetWidth;
 
     _.forEach(grid, function(item){
+      //jshint eqeqeq: false
       if(time.year == item.dataset.year && time.value == item.dataset.value){
         offsetLeft = item.offsetLeft;
         offsetWidth = item.offsetWidth;
@@ -202,6 +203,7 @@ export default Ember.Component.extend({
     var endTime = {};
     _.forEach(grid, function(item){
       var rightOffset = item.offsetLeft+item.offsetWidth;
+      //jshint eqeqeq: false
       if(x == item.offsetLeft){
         startTime.year = parseInt(item.dataset.year,10);
         startTime.value = parseInt(item.dataset.value,10);
