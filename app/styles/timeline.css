@@ -3,6 +3,7 @@
   width: 80%;
   color: white;
   flex-wrap: nowrap;
+  align-items: stretch;
   margin-left:auto;
   margin-right: auto;
 }
@@ -16,10 +17,15 @@
 }
 
 .timeline-grid {
-  flex-grow: 1;
+  overflow: hidden;
+  flex: 1 1 auto;
   height: auto;
+  width: 50px;
+  min-width: 10px;
   margin-left: 5px;
   margin-right: 5px;
+  user-select: none;
+  align-items: center;
 }
 
 .timeline-grid-shade {
@@ -35,6 +41,7 @@
   font-weight: 500;
   margin-top: 0.8em;
   margin-bottom: 0.8em;
+
 }
 
 .timeline-year-container {
@@ -44,6 +51,7 @@
   flex-wrap: nowrap;
   margin-left:auto;
   margin-right: auto;
+  user-select: none;
 }
 
 .timeline-year:first-of-type {

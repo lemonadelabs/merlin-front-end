@@ -31,16 +31,27 @@ export default Ember.Component.extend({
   buildTimeUnitsArray: function(timespan){
     var timeUnits = [];
     var numYears = timespan.end.year - timespan.start.year + 1;
-    if( this.timespan.units = 'quarters'){
-      for (var year = 0; year < numYears; year++) {
-        for (var quarter = 1; quarter < 5; quarter++) {
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+    for (var year = 0; year < numYears; year++) {
+      if( this.timespan.units === 'quarters'){
+        for (var quarter = 1; quarter <= 4; quarter++) {
           timeUnits.push({'title':'Q' + quarter,
                           'value': quarter,
                           'year': timespan.start.year+year
                          });
         }
       }
+      else {
+        for (var month = 0; month < 12; month++) {
+          timeUnits.push({'title':months[month],
+                          'value': month,
+                          'year': timespan.start.year+year
+                         });
+        }
+      }
     }
+
     return timeUnits;
   }
 });

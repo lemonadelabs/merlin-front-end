@@ -41,7 +41,7 @@ export default Ember.Component.extend({
       year:2016
     },
     end:{
-      year:2020
+      year:2017
     },
     units:'quarters'
   },
@@ -51,7 +51,7 @@ export default Ember.Component.extend({
   },
   actions:{
     onInteractionEnd: function(){
-      console.log('end yo!');
+      console.log('end yo!', this.timelineObjects);
     }
   }
 });

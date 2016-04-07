@@ -5,8 +5,8 @@ export default Ember.Component.extend({
   classNames: ['timeline-object'],
   classNameBindings:['active'],
   attributeBindings: ['style'],
-  x:0,
-  width:100,
+  x:undefined,
+  width:undefined,
   boundFinishManipulationFunc:undefined,
   style:Ember.computed('x','width','active', function(){
     var x = this.get('x');
@@ -46,7 +46,6 @@ export default Ember.Component.extend({
     if(e.type === 'touchstart'){
       this.updateInputPosition(e.originalEvent);
     }
-
     this.set('active',true);
     //fallback for older firefox that doesn't support offsetX & touch devices
     var offset = e.offsetX || (document.inputX - this.get('x'));
@@ -77,9 +76,13 @@ export default Ember.Component.extend({
   finishManipulation: function(){
     this.set('active',false);
     var interActEndFunc = this.get('onInteractionEnd') || this.warnMissingAction;
-    interActEndFunc();
     this.snapToGrid();
+    var timeFromPosition = this.searchForTimeFromPosition(this.get('x'),this.get('width'));
+    this.set('start',timeFromPosition.startTime);
+    this.set('end',timeFromPosition.endTime);
+    interActEndFunc();
     this.removeCancelEventListener();
+
   },
   snapToGrid: function(){
     var grid = this.get('timelineGridObjects');
@@ -94,7 +97,6 @@ export default Ember.Component.extend({
 
     _.forEach(grid, function(item){
       var offsetRight = item.offsetLeft+item.offsetWidth;
-
       if(Math.abs(left-closestLeft) >= Math.abs(left-item.offsetLeft)){
         closestLeft=item.offsetLeft;
         startData=item.dataset;
@@ -104,6 +106,7 @@ export default Ember.Component.extend({
         endData=item.dataset;
       }
     });
+
     if(this.get('updateMyPositionRunLoop') || this.get('updateMyWidthLeftRunLoop')){
       this.set('x',closestLeft);
     }
@@ -181,7 +184,6 @@ export default Ember.Component.extend({
   },
   searchForPositionFromTime:function(time){
     var grid = this.get('timelineGridObjects');
-    console.log(grid);
     var offsetLeft;
     var offsetWidth;
 
@@ -193,11 +195,35 @@ export default Ember.Component.extend({
     });
     return({'offsetLeft':offsetLeft,'offsetRight':(offsetLeft+offsetWidth)});
   },
-  onGridSetup: function (){
+  searchForTimeFromPosition:function(x,width){
+    var self = this;
+    var grid = this.get('timelineGridObjects');
+    var startTime = {};
+    var endTime = {};
+    _.forEach(grid, function(item){
+      var rightOffset = item.offsetLeft+item.offsetWidth;
+      if(x == item.offsetLeft){
+        startTime.year = parseInt(item.dataset.year,10);
+        startTime.value = parseInt(item.dataset.value,10);
+      }
+      if(self.between(x+width,rightOffset-5,rightOffset+5)){
+        endTime.year = parseInt(item.dataset.year,10);
+        endTime.value = parseInt(item.dataset.value,10);
+      }
+    });
+    return({'startTime':startTime,'endTime':endTime});
+  },
+
+  setPositionFromGrid: function(){
     var startPosInfo = this.searchForPositionFromTime(this.get('start'));
     this.set('x',startPosInfo.offsetLeft);
     var endPosInfo = this.searchForPositionFromTime(this.get('end'));
-    this.set('width', endPosInfo.offsetRight - startPosInfo.offsetLeft);
-
-  }.observes('timelineGridObjects')
+    this.set('width', (endPosInfo.offsetRight - startPosInfo.offsetLeft)+1);
+  },
+  onGridSetup: function (){
+    this.setPositionFromGrid();
+  }.observes('timelineGridObjects'),
+  between:function(x, min, max) {
+    return x >= min && x <= max;
+  }
 });
