@@ -1,10 +1,10 @@
 import Ember from 'ember';
-import EntityDrawGroup from './entityDrawGroup'
 import NodesGroup from './nodesGroup'
 
 export default Ember.Component.extend({
   draw: undefined,
   entityComponents: [],
+  outputComponents: [],
   didInsertElement() {
     this.initSVGDocument()
   },
@@ -17,49 +17,51 @@ export default Ember.Component.extend({
   buldSVGNodes: function () {
     var self = this
 
-    if (this.entityComponents.length === this.model.entities.length) {
+    if (this.entityComponents.length + this.outputComponents.length === this.model.entities.length + this.model.outputs.length ) {
       this.nodesGroup = new NodesGroup({
         draw : this.draw,
-        entityModel : self.get('model').entities
+        entityModel : self.get('model').entities,
+        outputModel : self.get('model').outputs,
+        persistPosition : self.persistPosition
       })
-      this.nodesGroup.buildNodes({ components : this.entityComponents})
+      this.nodesGroup.buildNodes({
+        entityComponents : this.entityComponents,
+        outputComponents : this.outputComponents
+      })
       this.nodesGroup.initDraggable()
       this.nodesGroup.initCables()
-      this.nodesGroup.outputTerminalListners()
+      this.nodesGroup.terminalListners()
+    } else {
+      console.warn('the entity components haven\'t been built yet')
     }
   }.observes('draw'),
 
-  createBezierCurve: function (opts) {
-    var curveString = this.buildBezierCurveString({start : opts.startPosition, end : opts.endPosition})
-    var cable = this.draw.path( curveString ).fill('none').stroke({ width: 1 })
-    cable.startPosition = opts.startPosition
-    cable.endPosition = opts.endPosition
-    return cable
-  },
+  persistPosition: function (opts) {
+    return // false return, to kill function
 
-  updateBezierCurve: function (opts) {
-
-  },
-
-  buildBezierCurveString: function (opts) {
-    var start = opts.start
-    var end = opts.end
-    if (start.top) {
-      start.x = start.left
-      start.y = start.top
-      end.x = end.left
-      end.y = end.top
+    var nodetype
+    if ((_.includes(opts.nodeType, 'output'))) {
+      nodetype = 'outputs'
+    } else if ((_.includes(opts.nodeType, 'entity'))) {
+      nodetype = 'entities'
     }
-    var controlPt1 = {}
-    controlPt1.x = (end.x - start.x) / 2  + start.x
-    controlPt1.y = start.y
 
-    var controlPt2 = {}
-    controlPt2.x = (end.x - start.x) / 2 + start.x
-    controlPt2.y = end.y
+    var url = `${nodetype}/${opts.id}/`
 
-    return `M ${start.x} ${start.y} C ${controlPt1.x} ${controlPt1.y} ${controlPt2.x} ${controlPt2.y} ${end.x} ${end.y}`
+    var unModified = Ember.$.getJSON(url)
+    unModified.then(function (response) {
+      response.display_pos_x = opts.x
+      response.display_pos_y = opts.y
+
+      Ember.$.ajax({
+        url: url,
+        type: 'PUT',
+        data: response,
+        success: function(result) {
+          console.log(result)
+        }
+      });
+    })
   },
-
 
 });

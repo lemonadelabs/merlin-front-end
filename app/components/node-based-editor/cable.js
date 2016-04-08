@@ -17,11 +17,12 @@ Cable.prototype.init = function(opts) {
   var cable = cableParent.path( ).fill('none').stroke({ width: 3, color : opts.color })
   cable.outputTerminal = outputTerminal
 
-  if (inputTerminal) {
+  if (inputTerminal && outputTerminal) {
 
     cable.inputTerminal = inputTerminal
 
     var startPositionCSS = terminalCSSPosition(outputTerminal.$domElement)
+
     var endPositionCSS = inputTerminalCSSPosition(inputTerminal.$domElement)
 
     var curveString = this.buildPathString({
@@ -38,9 +39,15 @@ Cable.prototype.init = function(opts) {
 };
 
 Cable.prototype.flyTo = function(opts) {
-  opts.start = terminalCSSPosition(this.outputTerminal.$domElement)
-  var curveString = this.buildPathString(opts)
-
+  var coords = {}
+  if (this.outputTerminal) {
+    coords.start = terminalCSSPosition(this.outputTerminal.$domElement)
+    coords.end = opts.mouse
+  } else if (this.inputTerminal) {
+    coords.start = opts.mouse
+    coords.end = terminalCSSPosition(this.inputTerminal.$domElement)
+  }
+  var curveString = this.buildPathString(coords)
   this.svg.plot( curveString )
 };
 

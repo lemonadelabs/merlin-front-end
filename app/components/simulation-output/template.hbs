@@ -1,0 +1,29 @@
+
+<header class='node-drag-bar'><p>
+  {{#if this.simulationOutput.name}}
+    {{this.simulationOutput.name}}
+  {{else}}
+    Unamed
+  {{/if}}
+
+</p></header>
+
+<p class='node-subheading'>input</p>
+<div class='node-input-container'>
+    <div>
+      <div class='terminal input-terminal sim-output-terminal' id='{{this.simulationOutput.id}}'></div>
+      <p class='node-input-output'>{{this.simulationOutput.amount}} <span class='node-label'>{{this.simulationOutput.unit_type}}</span></p>
+    </div>
+</div>
+
+{{!-- {{#if this.simulationOutput.processes}} --}}
+  {{!-- <p class='entity-subheading'>options</p> --}}
+  {{!-- {{#each this.simulationOutput.processes as | process | }} --}}
+    {{!-- {{#each process.properties as | property | }} --}}
+
+      {{!-- <span class='entity-label'>{{property.name}}</span> --}}
+      {{!-- {{input value=property.property_value}} --}}
+    {{!-- {{/each}} --}}
+  {{!-- {{/each}} --}}
+{{!-- {{/if}} --}}
+

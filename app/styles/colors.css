@@ -1,6 +1,7 @@
 :root {
+  --default-node-color: rgb(169, 169, 169);
+  --capability-color: rgb(3, 222, 173);
   --budget-color: rgb(126, 211, 33);
-  --staffing-color: rgb(74, 144, 226);
-  --asset-color: rgb(144, 19, 254);
-  --default-node-color: rgb(255, 165, 0);
+  --fixed_asset-color: rgb(144, 19, 254);
+  --output-color: rgb(245, 166, 35);
 }

@@ -1,5 +1,5 @@
 
-<header class='entity-drag-bar'><p>
+<header class='node-drag-bar'><p>
   {{#if this.entity.name}}
     {{this.entity.name}}
   {{else}}
@@ -8,35 +8,42 @@
 
 </p></header>
 {{#if this.entity.inputs}}
-  <p class='entity-subheading'>inputs</p>
+  <p class='node-subheading'>inputs</p>
 
-  <div class='entity-input-container'>
+  <div class='node-input-container'>
     {{#each this.entity.inputs as | input | }}
       <div>
         <div class='terminal input-terminal' id='{{input.id}}'></div>
-        <p class='entity-input-output'>{{input.amount}} <span class='entity-label'>{{input.type}}</span></p>
+        <p class='node-input-output'>{{input.amount}} <span class='node-label'>{{input.name}}</span></p>
       </div>
     {{/each}}
   </div>
 {{/if}}
 
-<p class='entity-subheading'>options</p>
-<p class='entity-label'>staff numbers</p>
-{{input value=5}}
-<p class='entity-label'>average staff pay</p>
-{{input value=50000}}
+{{#if this.entity.processes}}
+  <p class='node-subheading'>options</p>
+  {{#each this.entity.processes as | process | }}
+    {{#each process.properties as | property | }}
 
-<p class='entity-subheading'>outputs</p>
+      <span class='node-label'>{{property.name}}</span>
+      {{input value=property.property_value}}
+    {{/each}}
+  {{/each}}
+{{/if}}
+
+
 
 {{#if this.entity.outputs}}
-<div class='entity-output-container'>
-  {{#each this.entity.outputs as | output | }}
-    <div>
-      <p class='entity-input-output entity-output'><span class='entity-label'>{{output.name}}</span> {{output.amount}} <span class='fte'>{{output.unit}}</span></p>
-      <div class='terminal output-terminal' id='{{output.id}}'></div>
-    </div>
-  {{/each}}
-</div>
+<p class='node-subheading'>outputs</p>
+
+  <div class='node-output-container'>
+    {{#each this.entity.outputs as | output | }}
+      <div>
+        <p class='node-input-output node-output'><span class='node-label'>{{output.name}}</span> {{output.amount}} <span class='fte'>{{output.unit}}</span></p>
+        <div class='terminal output-terminal' id='{{output.id}}'></div>
+      </div>
+    {{/each}}
+  </div>
 {{/if}}
 
 
