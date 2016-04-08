@@ -1,23 +1,45 @@
 .entity-node.entity-staff {
-  --node-color: var(--staffing-color);
-  --node-background-color : color( var(--staffing-color) alpha(-10%) shade(20%) saturation(+5%) );
-  --node-subheading-background-color: color( var(--staffing-color) alpha(-50%) );
-  --node-outline-color: color( var(--staffing-color) whiteness(+15%) alpha(-50%) );
+  background-color: color( var(--staffing-color) alpha(-10%) shade(20%) saturation(+5%) );
+  border: solid 1px color( var(--staffing-color) whiteness(+15%) alpha(-50%) );
+}
+.entity-node.entity-staff .entity-drag-bar {
+  background-color: var(--staffing-color);
+}
+.entity-node.entity-staff .entity-subheading {
+  background-color:  color( var(--staffing-color) alpha(-50%) );
+}
+.entity-node.entity-staff input[type='text'] {
+  border: solid 1px var(--staffing-color);
 }
 
 .entity-node.entity-resource {
-  --node-color: var(--asset-color);
-  --node-background-color : color( var(--asset-color) alpha(-10%) shade(20%) saturation(+5%) );
-  --node-subheading-background-color: color( var(--asset-color) alpha(-50%) );
-  --node-outline-color: color( var(--asset-color) whiteness(+15%) alpha(-50%) );
+  background-color: color( var(--asset-color) alpha(-10%) shade(20%) saturation(+5%) );
+  border: solid 1px color( var(--asset-color) whiteness(+15%) alpha(-50%) );
+}
+.entity-node.entity-resource .entity-drag-bar {
+  background-color: var(--asset-color);
+}
+.entity-node.entity-resource .entity-subheading {
+  background-color:  color( var(--asset-color) alpha(-50%) );
+}
+.entity-node.entity-resource input[type='text'] {
+  border: solid 1px var(--asset-color);
 }
 
 .entity-node.entity-budget {
-  --node-color: var(--budget-color);
-  --node-background-color : color( var(--budget-color) alpha(-10%) shade(20%) saturation(+5%) );
-  --node-subheading-background-color: color( var(--budget-color) alpha(-50%) );
-  --node-outline-color: color( var(--budget-color) whiteness(+15%) alpha(-50%) );
+  background-color: color( var(--budget-color) alpha(-10%) shade(20%) saturation(+5%) );
+  border: solid 1px color( var(--budget-color) whiteness(+15%) alpha(-50%) );
 }
+.entity-node.entity-budget .entity-drag-bar {
+  background-color: var(--budget-color);
+}
+.entity-node.entity-budget .entity-subheading {
+  background-color:  color( var(--budget-color) alpha(-50%) );
+}
+.entity-node.entity-budget input[type='text'] {
+  border: solid 1px var(--budget-color);
+}
+
 
 .entity-node {
   width: 180px;
@@ -124,4 +146,3 @@
   margin-left: -28px;
   margin-right: 10px;
 }
-
