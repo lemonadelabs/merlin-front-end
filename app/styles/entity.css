@@ -45,16 +45,16 @@
   width: 180px;
   height: auto;
   color: white;
-  background-color: var(--node-background-color);
+  background-color: color( var(--default-node-color) alpha(-10%) shade(20%) saturation(+5%) );
   border-radius: 2pt;
   padding-left: 20px;
   padding-right: 20px;
   padding-bottom: 1px;
-  border: solid 1px var(--node-outline-color);
+  border: solid 1px color( var(--default-node-color) whiteness(+15%) alpha(-50%) );
 }
 .entity-node .entity-drag-bar {
   text-align: center;
-  background-color: var(--node-color);
+  background-color: var(--default-node-color);
   padding-top: 7px;
   padding-bottom: 7px;
   border-radius: 2pt 2pt 0 0;
@@ -73,7 +73,7 @@
 
 .entity-node .entity-subheading {
   text-align: center;
-  background-color: var(--node-subheading-background-color);
+  background-color:  color( var(--default-node-color) alpha(-50%) );
   font-size: 11px;
   line-height: 30px;
   text-transform: capitalize;
@@ -106,7 +106,7 @@
 }
 
 .entity-node input[type='text'] {
-  border: solid 1px var(--node-color);
+  border: solid 1px var(--default-node-color);
   text-align: center;
   font-family: "sofia-pro", sans-serif;
   background-color: rgba(0, 0, 0, 0.15);

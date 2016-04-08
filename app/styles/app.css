@@ -1,8 +1,8 @@
 @import "colors.css";
 @import "draw.css";
 @import "entity.css";
-@import "output.css";
 @import "timeline.css";
+
 body {
   font-family: "sofia-pro", sans-serif;
   font-feature-settings: "liga" off;
