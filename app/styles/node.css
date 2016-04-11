@@ -1,47 +1,60 @@
-.node.entity-staff {
-  background-color: color( var(--staffing-color) alpha(-10%) shade(20%) saturation(+5%) );
-  border: solid 1px color( var(--staffing-color) whiteness(+15%) alpha(-50%) );
+.node.entity-capability {
+  background-color: color( var(--capability-color) alpha(-10%) shade(20%) saturation(+5%) );
+  border: solid 1px color( var(--capability-color) whiteness(+15%) alpha(-50%) );
 }
-.node.entity-staff .entity-drag-bar {
-  background-color: var(--staffing-color);
+.node.entity-capability .node-drag-bar {
+  background-color: var(--capability-color);
 }
-.node.entity-staff .entity-subheading {
-  background-color:  color( var(--staffing-color) alpha(-50%) );
+.node.entity-capability .node-subheading {
+  background-color:  color( var(--capability-color) alpha(-50%) );
 }
-.node.entity-staff input[type='text'] {
-  border: solid 1px var(--staffing-color);
-}
-
-.node.entity-resource {
-  background-color: color( var(--asset-color) alpha(-10%) shade(20%) saturation(+5%) );
-  border: solid 1px color( var(--asset-color) whiteness(+15%) alpha(-50%) );
-}
-.node.entity-resource .entity-drag-bar {
-  background-color: var(--asset-color);
-}
-.node.entity-resource .entity-subheading {
-  background-color:  color( var(--asset-color) alpha(-50%) );
-}
-.node.entity-resource input[type='text'] {
-  border: solid 1px var(--asset-color);
+.node.entity-capability input[type='text'] {
+  border: solid 1px var(--capability-color);
 }
 
 .node.entity-budget {
   background-color: color( var(--budget-color) alpha(-10%) shade(20%) saturation(+5%) );
   border: solid 1px color( var(--budget-color) whiteness(+15%) alpha(-50%) );
 }
-.node.entity-budget .entity-drag-bar {
+.node.entity-budget .node-drag-bar {
   background-color: var(--budget-color);
 }
-.node.entity-budget .entity-subheading {
+.node.entity-budget .node-subheading {
   background-color:  color( var(--budget-color) alpha(-50%) );
 }
 .node.entity-budget input[type='text'] {
   border: solid 1px var(--budget-color);
 }
 
+.node.entity-fixed_asset {
+  background-color: color( var(--fixed_asset-color) alpha(-10%) shade(20%) saturation(+5%) );
+  border: solid 1px color( var(--fixed_asset-color) whiteness(+15%) alpha(-50%) );
+}
+.node.entity-fixed_asset .node-drag-bar {
+  background-color: var(--fixed_asset-color);
+}
+.node.entity-fixed_asset .node-subheading {
+  background-color:  color( var(--fixed_asset-color) alpha(-50%) );
+}
+.node.entity-fixed_asset input[type='text'] {
+  border: solid 1px var(--fixed_asset-color);
+}
 
-.entity-node {
+.node.output-node {
+  background-color: color( var(--output-color) alpha(-10%) shade(20%) saturation(+5%) );
+  border: solid 1px color( var(--output-color) whiteness(+15%) alpha(-50%) );
+}
+.node.output-node .node-drag-bar {
+  background-color: var(--output-color);
+}
+.node.output-node .node-subheading {
+  background-color:  color( var(--output-color) alpha(-50%) );
+}
+.node.output-node input[type='text'] {
+  border: solid 1px var(--output-color);
+}
+
+.node {
   width: 180px;
   height: auto;
   color: white;
@@ -72,7 +85,7 @@
   text-transform: capitalize;
 }
 
-.node .node-subheading {
+.node-subheading {
   text-align: center;
   background-color:  color( var(--default-node-color) alpha(-50%) );
   font-size: 11px;
