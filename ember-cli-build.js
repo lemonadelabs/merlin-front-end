@@ -32,6 +32,7 @@ module.exports = function(defaults) {
   app.import('bower_components/svg.foreignobject.js/svg.foreignobject.js')
   app.import('bower_components/svg.draggable.js/dist/svg.draggable.js')
   app.import('bower_components/lodash/lodash.js')
+  app.import('bower_components/chartjs/dist/Chart.js')
 
   return app.toTree();
 };
