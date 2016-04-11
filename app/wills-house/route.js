@@ -3,7 +3,7 @@ import Ember from 'ember';
 
 export default Ember.Route.extend({
   model: function () {
-    return Ember.$.getJSON('simulations/1')
+    return Ember.$.getJSON('api/simulations/1')
     // return mockData()
   }
 });
