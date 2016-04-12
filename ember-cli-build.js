@@ -33,6 +33,8 @@ module.exports = function(defaults) {
   app.import('bower_components/svg.draggable.js/dist/svg.draggable.js')
   app.import('bower_components/lodash/lodash.js')
   app.import('bower_components/chartjs/dist/Chart.js')
+  //TODO: look into how to import this betterer
+  app.Color = require('pigment/basic')
 
   return app.toTree();
 };

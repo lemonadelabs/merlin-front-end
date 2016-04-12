@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import DataSet from '../lemonade-chart/dataSet';
 
 export default Ember.Component.extend({
   timelineObjects:[
@@ -38,12 +39,7 @@ export default Ember.Component.extend({
   ],
   testData:{
     labels: [],
-    datasets: [{
-      label: '# of Votes',
-      backgroundColor: "rgba(220,220,220,0.2)",
-      borderColor: "rgba(220,220,220,1)",
-      data: []
-    }]
+    datasets: []
   },
   testOptions:{
     scales: {
@@ -65,19 +61,20 @@ export default Ember.Component.extend({
   },
   timelineGridObjects:undefined,
   didInsertElement(){
+    this.setupGrapData();
+  },
+  setupGrapData:function(){
+    var graphColour = new Color('rgb(100,9,90)');
+    var graphColour2 = new Color('rgb(40,9,100)');
     var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
-
-    var resultData = this.get('model.0.data.result');
+    var resultRequestsData = new DataSet(this.get('model.0.name'), this.get('model.0.data.result'), graphColour);
+    var resultCashData = new DataSet(this.get('model.1.name'), this.get('model.1.data.value'), graphColour2);
     var resultLabels = [];
-
-    for (var i = 0; i < resultData.length; i++) {
+    for (var i = 0; i < resultRequestsData.data.length; i++) {
       resultLabels.push(months[i])
     }
-
-    this.set('testData.labels',resultData);
-    this.set('testData.datasets.data',resultLabels);
-
-    console.log(this.get('model.0'));
+    this.testData.datasets.pushObjects([resultRequestsData,resultCashData])
+    this.set('testData.labels',resultLabels);
   },
   actions:{
     onInteractionEnd: function(){

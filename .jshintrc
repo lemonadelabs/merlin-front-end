@@ -6,7 +6,8 @@
     "_",
     "SVG",
     "$",
-    "Chart"
+    "Chart",
+    "Color"
   ],
   "browser": true,
   "boss": true,

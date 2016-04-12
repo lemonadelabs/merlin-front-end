@@ -4,7 +4,7 @@ export default Ember.Component.extend({
   chart:undefined,
   didInsertElement(){
     this.setUpDefaultValues();
-    this.buildChart();
+    // this.buildChart();
   },
   setUpDefaultValues(){
     //Get the font properties of body so that we can apply it to our chart
@@ -25,5 +25,15 @@ export default Ember.Component.extend({
     var options = this.get('options');
     var chart = new Chart(ctx, {type, data, options});
     this.set('chart', chart)
-  }
+  },
+  observeDataChange: function(){
+    var datasets = this.get('data.datasets');
+    var datasetsLastIndex = datasets.length - 1;
+
+    if (this.get('data.labels') && this.get(`data.datasets.${datasetsLastIndex}.data`)) {
+      if(!this.get('chart')){
+        this.buildChart()
+      }
+    }
+  }.observes('data.labels','data.datasets')
 });
