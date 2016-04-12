@@ -15,7 +15,7 @@ export default Ember.Component.extend({
     globalChartOptions.defaultFontFamily = fontFamily;
     globalChartOptions.defaultFontColor = 'white';
     globalChartOptions.defaultColor = 'rgba(255,255,255,0.1)'
-    //Built in legend sucks so lets hide it
+    //Built in legend sucks so lets hide it and build it in the template
     globalChartOptions.legend.display = false
   },
   buildChart(){

@@ -37,12 +37,12 @@ export default Ember.Component.extend({
     }
   ],
   testData:{
-    labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+    labels: [],
     datasets: [{
       label: '# of Votes',
       backgroundColor: "rgba(220,220,220,0.2)",
       borderColor: "rgba(220,220,220,1)",
-      data: [12, 19, 3, 5, 2, 3]
+      data: []
     }]
   },
   testOptions:{
@@ -59,13 +59,25 @@ export default Ember.Component.extend({
       year:2016
     },
     end:{
-      year:2017
+      year:2016
     },
-    units:'quarters'
+    units:'months'
   },
   timelineGridObjects:undefined,
   didInsertElement(){
-    console.log(this.get('timelineGridObjects'));
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+
+    var resultData = this.get('model.0.data.result');
+    var resultLabels = [];
+
+    for (var i = 0; i < resultData.length; i++) {
+      resultLabels.push(months[i])
+    }
+
+    this.set('testData.labels',resultData);
+    this.set('testData.datasets.data',resultLabels);
+
+    console.log(this.get('model.0'));
   },
   actions:{
     onInteractionEnd: function(){
