@@ -1,30 +1,29 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
-  type: 'bar',
-  data: {
-    labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-    datasets: [{
-        label: '# of Votes',
-        data: [12, 19, 3, 5, 2, 3]
-    }]
-  },
-  options: {
-      scales: {
-          yAxes: [{
-              ticks: {
-                  beginAtZero:true
-              }
-          }]
-      }
-  },
   chart:undefined,
-  didInsertElement:function(){
-    var ctx = document.getElementById("myChart");
-    console.log('inserting graph');
+  didInsertElement(){
+    this.setUpDefaultValues();
+    this.buildChart();
+  },
+  setUpDefaultValues(){
+    //Get the font properties of body so that we can apply it to our chart
+    var body = document.body;
+    var fontFamily = window.getComputedStyle(body, null).getPropertyValue('font-family');
+
+    var globalChartOptions = Chart.defaults.global;
+    globalChartOptions.defaultFontFamily = fontFamily;
+    globalChartOptions.defaultFontColor = 'white';
+    globalChartOptions.defaultColor = 'rgba(255,255,255,0.1)'
+    //Built in legend sucks so lets hide it
+    globalChartOptions.legend.display = false
+  },
+  buildChart(){
+    var ctx = document.getElementsByTagName("canvas")[0];
     var type = this.get('type');
     var data = this.get('data');
     var options = this.get('options');
-    this.set('chart', new Chart(ctx, {type, data, options}))
+    var chart = new Chart(ctx, {type, data, options});
+    this.set('chart', chart)
   }
 });

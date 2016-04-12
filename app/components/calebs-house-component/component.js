@@ -36,6 +36,24 @@ export default Ember.Component.extend({
       }
     }
   ],
+  testData:{
+    labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+    datasets: [{
+      label: '# of Votes',
+      backgroundColor: "rgba(220,220,220,0.2)",
+      borderColor: "rgba(220,220,220,1)",
+      data: [12, 19, 3, 5, 2, 3]
+    }]
+  },
+  testOptions:{
+    scales: {
+      yAxes: [{
+          ticks: {
+          beginAtZero:true
+          }
+        }]
+    }
+  },
   timespan:{
     start:{
       year:2016

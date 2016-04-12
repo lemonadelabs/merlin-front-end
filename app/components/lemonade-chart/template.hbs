@@ -1,2 +1,13 @@
-<canvas id="myChart" width="400" height="400"></canvas>
-{{yield}}
+<canvas></canvas>
+{{#if this.legend}}
+  {{#each this.data.datasets as |dataset|}}
+    <p class="chart-legend">
+      <span
+        class= "chart-legend-key"
+        style= "background-color:{{dataset.backgroundColor}};
+                border:solid 1px {{dataset.borderColor}}">
+      </span>
+      {{dataset.label}}
+    </p>
+  {{/each}}
+{{/if}}
