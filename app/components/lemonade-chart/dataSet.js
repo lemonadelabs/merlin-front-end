@@ -12,7 +12,8 @@ export default class DataSet {
   }
   setDashType(type, customArray){
     if(type === 'dotted'){
-      this.borderDash = [0,10];
+      //first 2 0's are for chrome to make the dots start at the start of the circle
+      this.borderDash = [0,0,0,10];
     }
     else if (type === 'longDash') {
       this.borderDash = [20,10];
