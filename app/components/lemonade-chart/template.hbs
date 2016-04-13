@@ -1,13 +1,15 @@
 <canvas></canvas>
 {{#if this.legend}}
-  {{#each this.data.datasets as |dataset|}}
-    <p class="chart-legend">
-      <span
-        class= "chart-legend-key"
-        style= "background-color:{{dataset.backgroundColor}};
-                border:solid 1px {{dataset.borderColor}}">
-      </span>
-      {{dataset.label}}
-    </p>
-  {{/each}}
+  <footer>
+      {{#each this.data.datasets as |dataset|}}
+        <p class="lemonade-chart-legend {{if dataset.hidden 'toggled'}}" {{action "toggleDataSet" dataset}}>
+          <span
+            class= "key"
+            style= "background-color:{{dataset.backgroundColor}};
+            border:solid 2px {{dataset.borderColor}}">
+          </span>
+          {{dataset.label}}
+        </p>
+      {{/each}}
+  </footer>
 {{/if}}

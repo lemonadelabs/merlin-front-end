@@ -1,7 +1,8 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
-  chart:undefined,
+  classNames : ['lemonade-chart-container'],
+  chart : undefined,
   didInsertElement(){
     this.setUpDefaultValues();
     // this.buildChart();
@@ -35,5 +36,12 @@ export default Ember.Component.extend({
         this.buildChart()
       }
     }
-  }.observes('data.labels','data.datasets')
+  }.observes('data.labels','data.datasets'),
+  actions:{
+    toggleDataSet: function(dataset){
+      var hide = Ember.get(dataset, 'hidden') ? false : true
+      Ember.set(dataset, 'hidden', hide)
+      this.get('chart').update()
+    }
+  }
 });

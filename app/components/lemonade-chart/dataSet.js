@@ -6,5 +6,6 @@ export default class DataSet {
     this.data = Data;
     this.borderColor = borderColor;
     this.backgroundColor = bgColour;
+    this.hidden = false;
   }
 }
