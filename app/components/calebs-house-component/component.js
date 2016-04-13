@@ -68,7 +68,8 @@ export default Ember.Component.extend({
     var graphColour2 = new Color('rgb(126, 211, 33)');
     var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
     var resultRequestsData = new DataSet(this.get('model.0.name'), this.get('model.0.data.result'), graphColour,[]);
-    var resultCashData = new DataSet(this.get('model.1.name'), this.get('model.1.data.value'), graphColour2, [5,7]);
+    var resultCashData = new DataSet(this.get('model.1.name'), this.get('model.1.data.value'), graphColour2)
+    resultRequestsData.setDashType('longDash');
     var resultLabels = [];
     for (var i = 0; i < resultRequestsData.data.length; i++) {
       resultLabels.push(months[i])
