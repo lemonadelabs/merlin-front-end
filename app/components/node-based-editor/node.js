@@ -82,7 +82,8 @@ Node.prototype.findOutputTerminals = function(opts) {
 Node.prototype.position = function(opts) {
   // this.group.translate( ((260 * opts.itterate) + 30 ), 0)
   this.$component.css({
-    'transform' : `translateX(${ 400 * opts.itterate  + 40}px)`
+    'left' : `${ 400 * opts.itterate  + 40}px`
+    // 'transform' : `translateX(${ 400 * opts.itterate  + 40}px)`
   })
 
 };

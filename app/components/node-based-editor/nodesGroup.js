@@ -213,34 +213,66 @@ NodesGroup.prototype.initDraggable = function() {
   _.forEach(this.entityNodes, addListners)
   _.forEach(this.outputNodes, addListners)
 
-  function addListners(node) {
-    var $entityComponent = node.$component
-    var $dragBar = $entityComponent.find('.node-drag-bar')
+  function addListners (node) {
+    var $dragBar = node.$component.find('.node-drag-bar')
+    var initPosition = node.$component.position()
+    node.initialPositionLeft = initPosition.left
+    node.initialPositionTop = initPosition.top
 
-    $dragBar.on('mouseenter', function () {
-      node.group.draggable()
+    $dragBar.on('mousedown', function (e) {
+      node.dragOffset = dragOffset({e : e})
+      $(document).on('mousemove', onDrag)
     })
 
-    $dragBar.on('mouseleave', function () {
-      node.group.draggable(false)
+    $dragBar.on('mouseup', function () {
+      $(document).off('mousemove', onDrag)
     })
 
-    node.group.on('dragmove', function (e) {
-      node.updateCables()
-    })
-
-    node.group.on('dragend', function (e) {
-      var id = node.id
-      var nodeType = node.nodeType
-      var x = node.group.x()
-      var y = node.group.y()
-
-      self.persistPosition({
-        x : x,
-        y : y,
-        nodeType : nodeType,
-        id : id
+    function onDrag (e) {
+      var x = e.clientX - (node.initialPositionLeft + node.dragOffset.x)
+      var y = e.clientY - (node.initialPositionTop + node.dragOffset.y)
+      node.$component.css({
+        'transform' : `translate(${x}px,${y}px)`
       })
-    })
+      node.updateCables()
+    }
+
+    function dragOffset(opts) {
+      var offset = {}
+      offset.x = opts.e.offsetX
+      offset.y = opts.e.offsetY
+      return offset
+    }
   }
+
+  // function addListners(node) {
+  //   var $entityComponent = node.$component
+  //   var $dragBar = $entityComponent.find('.node-drag-bar')
+
+  //   $dragBar.on('mouseenter', function () {
+  //     node.group.draggable()
+  //   })
+
+  //   $dragBar.on('mouseleave', function () {
+  //     node.group.draggable(false)
+  //   })
+
+  //   node.group.on('dragmove', function (e) {
+  //     node.updateCables()
+  //   })
+
+  //   node.group.on('dragend', function (e) {
+  //     var id = node.id
+  //     var nodeType = node.nodeType
+  //     var x = node.group.x()
+  //     var y = node.group.y()
+
+  //     self.persistPosition({
+  //       x : x,
+  //       y : y,
+  //       nodeType : nodeType,
+  //       id : id
+  //     })
+  //   })
+  // }
 };

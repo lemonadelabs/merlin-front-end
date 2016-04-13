@@ -6,7 +6,19 @@ export default Ember.Component.extend({
   entityComponents: [],
   outputComponents: [],
   didInsertElement() {
+    document.onmousemove = document.onmousemove || this.updateInputPosition;
     this.initSVGDocument()
+  },
+
+  updateInputPosition: function(e){
+    if (typeof e.clientX){
+      document.inputX = e.clientX;
+      document.inputY = e.clientY;
+    }
+    else if(typeof e.touches[0].clientX){
+      document.inputX = e.touches[0].clientX;
+      document.inputY = e.touches[0].clientY;
+    }
   },
 
   initSVGDocument: function () {
