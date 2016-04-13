@@ -1,14 +1,18 @@
 
 export default function Node (opts) {
+  var self = this
   this.id = opts.id
   this.nodeType = opts.nodeType
   this.group = opts.draw.group()
   this.cables = []
 
   this.$component = Ember.$(opts.component.element)
-  this.footprint = this.buildFoorprint()
-  this.componentObject = this.appendComponent({component : opts.component})
+  this.position( { itterate : opts.itterate } )
+  // this.footprint = this.buildFoorprint()
+  // this.componentObject = this.appendComponent({component : opts.component})
+  // setTimeout(function () {
   this.inputTerminals = this.findInputTerminals(opts)
+  // }, 1000)
 
   if (opts.nodeModel.outputs) { this.outputTerminals = this.findOutputTerminals( { outputs : opts.nodeModel.outputs} ) }
 }
@@ -69,15 +73,18 @@ Node.prototype.findOutputTerminals = function(opts) {
   return outputs
 }
 
-Node.prototype.appendComponent = function(opts) {
-  var foreignObj = this.group.foreignObject(200,1000).attr({id: 'component'}) // size hack to fix safari css bug
-  foreignObj.appendChild(opts.component.element)
-  return foreignObj
-};
+// Node.prototype.appendComponent = function(opts) {
+//   var foreignObj = this.group.foreignObject(200,1000).attr({id: 'component'}) // size hack to fix safari css bug
+//   foreignObj.appendChild(opts.component.element)
+//   return foreignObj
+// };
 
 Node.prototype.position = function(opts) {
-  this.group.translate( ((260 * opts.itterate) + 30 ), 0)
-  // this.group.translate( ((-260 * opts.itterate) + 900 ), ((160 * opts.itterate) + 50 ))
+  // this.group.translate( ((260 * opts.itterate) + 30 ), 0)
+  this.$component.css({
+    'transform' : `translateX(${ 400 * opts.itterate  + 40}px)`
+  })
+
 };
 
 

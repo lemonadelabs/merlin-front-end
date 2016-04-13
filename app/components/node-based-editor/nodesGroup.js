@@ -123,10 +123,11 @@ NodesGroup.prototype.buildNodes = function(opts) {
       draw : self.draw,
       component : component,
       nodeModel : nodeModel,
-      nodeType : nodeType
+      nodeType : nodeType,
+      itterate : i
     })
 
-    node.position({itterate : i}) // move this into Node once positioning is enabled
+    // node.position({itterate : i}) // move this into Node once positioning is enabled
 
     if (_.includes(nodeType, 'entity')) {
       self.entityNodes[id] = node

@@ -23,7 +23,7 @@ Cable.prototype.init = function(opts) {
 
     var startPositionCSS = terminalCSSPosition(outputTerminal.$domElement)
 
-    var endPositionCSS = inputTerminalCSSPosition(inputTerminal.$domElement)
+    var endPositionCSS = terminalCSSPosition(inputTerminal.$domElement)
 
     var curveString = this.buildPathString({
       start : startPositionCSS,
@@ -54,7 +54,7 @@ Cable.prototype.flyTo = function(opts) {
 Cable.prototype.updatePosition = function() {
   var startPositionCSS = terminalCSSPosition(this.outputTerminal.$domElement)
 
-  var endPositionCSS = inputTerminalCSSPosition(this.inputTerminal.$domElement)
+  var endPositionCSS = terminalCSSPosition(this.inputTerminal.$domElement)
 
   var curveString = this.buildPathString({
     start : startPositionCSS,
@@ -65,14 +65,15 @@ Cable.prototype.updatePosition = function() {
 
 
 function terminalCSSPosition (terminal) {
-  return terminal.position()
+  var position = {}
+  var boundingBox = terminal[ 0 ].getBoundingClientRect()
+  position.left = boundingBox.left + boundingBox.width / 2
+  position.top = boundingBox.top + boundingBox.height / 2
+
+  return position
+
 }
 
-function inputTerminalCSSPosition (terminal) {
-  var position = terminalCSSPosition(terminal)
-  position.left -= 30
-  return position
-}
 
 Cable.prototype.buildPathString = function (opts) {
   if (opts.start.top) {

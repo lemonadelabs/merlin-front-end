@@ -1,7 +1,7 @@
 <div id='svg-container'>
 </div>
 
-<div class='entities-container'>
+<div id='node-based-editor-container'>
   {{#each this.model.entities as | entity index | }}
     {{entity-node entity=entity nodes=entityComponents}}
   {{/each}}
