@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import DataSet from '../lemonade-chart/dataSet';
+import Axes from '../lemonade-chart/axes';
 
 export default Ember.Component.extend({
   timelineObjects:[
@@ -43,11 +44,8 @@ export default Ember.Component.extend({
   },
   testOptions:{
     scales: {
-      yAxes: [{
-          ticks: {
-          beginAtZero:true
-          }
-        }]
+      yAxes: [],
+      xAxes:[]
     }
   },
   timespan:{
@@ -66,10 +64,21 @@ export default Ember.Component.extend({
   setupGrapData:function(){
     var graphColour = new Color('rgb(245, 166, 35)');
     var graphColour2 = new Color('rgb(126, 211, 33)');
+
+    var axisColour = new Color('rgb(255, 255, 255)');
+
     var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
-    var resultRequestsData = new DataSet(this.get('model.0.name'), this.get('model.0.data.result'), graphColour,[]);
+    var resultRequestsData = new DataSet(this.get('model.0.name'), this.get('model.0.data.result'), graphColour);
     var resultCashData = new DataSet(this.get('model.1.name'), this.get('model.1.data.value'), graphColour2)
     resultRequestsData.setDashType('dotted');
+
+
+    var xAxes = new Axes('Month', axisColour);
+    var yAxes = new Axes('Requests', axisColour);
+
+    this.testOptions.scales.xAxes.push(xAxes);
+    this.testOptions.scales.yAxes.push(yAxes);
+
     var resultLabels = [];
     for (var i = 0; i < resultRequestsData.data.length; i++) {
       resultLabels.push(months[i])
