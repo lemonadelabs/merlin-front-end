@@ -64,11 +64,11 @@ export default Ember.Component.extend({
     this.setupGrapData();
   },
   setupGrapData:function(){
-    var graphColour = new Color('rgb(100,9,90)');
-    var graphColour2 = new Color('rgb(40,9,100)');
+    var graphColour = new Color('rgb(245, 166, 35)');
+    var graphColour2 = new Color('rgb(126, 211, 33)');
     var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
-    var resultRequestsData = new DataSet(this.get('model.0.name'), this.get('model.0.data.result'), graphColour);
-    var resultCashData = new DataSet(this.get('model.1.name'), this.get('model.1.data.value'), graphColour2);
+    var resultRequestsData = new DataSet(this.get('model.0.name'), this.get('model.0.data.result'), graphColour,[]);
+    var resultCashData = new DataSet(this.get('model.1.name'), this.get('model.1.data.value'), graphColour2, [5,7]);
     var resultLabels = [];
     for (var i = 0; i < resultRequestsData.data.length; i++) {
       resultLabels.push(months[i])

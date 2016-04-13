@@ -5,19 +5,21 @@ export default Ember.Component.extend({
   chart : undefined,
   didInsertElement(){
     this.setUpDefaultValues();
-    // this.buildChart();
   },
   setUpDefaultValues(){
     //Get the font properties of body so that we can apply it to our chart
     var body = document.body;
     var fontFamily = window.getComputedStyle(body, null).getPropertyValue('font-family');
-
     var globalChartOptions = Chart.defaults.global;
     globalChartOptions.defaultFontFamily = fontFamily;
     globalChartOptions.defaultFontColor = 'white';
     globalChartOptions.defaultColor = 'rgba(255,255,255,0.1)'
     //Built in legend sucks so lets hide it and build it in the template
     globalChartOptions.legend.display = false
+    //disable line tension because it causes issues with readability
+    globalChartOptions.elements.line.tension = 0
+    //Tooltip settings
+    // globalChartOptions.tooltips
   },
   buildChart(){
     var ctx = document.getElementsByTagName("canvas")[0];
@@ -30,10 +32,13 @@ export default Ember.Component.extend({
   observeDataChange: function(){
     var datasets = this.get('data.datasets');
     var datasetsLastIndex = datasets.length - 1;
-
+    var chart = this.get('chart');
     if (this.get('data.labels') && this.get(`data.datasets.${datasetsLastIndex}.data`)) {
-      if(!this.get('chart')){
+      if(!chart){
         this.buildChart()
+      }
+      else{
+        chart.update()
       }
     }
   }.observes('data.labels','data.datasets'),
