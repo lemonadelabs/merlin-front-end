@@ -10,9 +10,9 @@ export default class DataSet {
     this.hidden = false;
     this.borderCapStyle = 'round';
   }
-  setDashType(type){
+  setDashType(type, customArray){
     if(type === 'dotted'){
-      this.borderDash = [0,0,0,5];
+      this.borderDash = [0,10];
     }
     else if (type === 'longDash') {
       this.borderDash = [20,10];
@@ -22,6 +22,12 @@ export default class DataSet {
     }
     else if (type === 'dashDot') {
       this.borderDash = [10,10,0,10];
+    }
+    else if (type === 'custom') {
+      this.borderDash = customArray || console.warn('DataSet: Custom dash type selected but no dash array passed.');
+      if (customArray.length === 0) {
+         console.warn('DataSet: Custom dash passed but array is empty.');
+      }
     }
   }
 }
