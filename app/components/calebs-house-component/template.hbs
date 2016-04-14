@@ -1,4 +1,7 @@
-{{lemonade-chart type='line' data=this.graphs.testGraph.data options=this.graphs.testGraph.options legend=true}}
+{{#each this.graphs as |graph|}}
+  {{log graph}}
+  {{lemonade-chart type='line' data=graph.data options=graph.options legend=true}}
+{{/each}}
 
 {{!-- <div class='timeline-track-container'>
   {{timeline-track
