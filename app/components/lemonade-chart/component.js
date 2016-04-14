@@ -5,6 +5,7 @@ export default Ember.Component.extend({
   chart : undefined,
   didInsertElement(){
     this.setUpDefaultValues();
+    this.buildChart();
   },
   setUpDefaultValues(){
     //Get the font properties of body so that we can apply it to our chart
@@ -19,12 +20,13 @@ export default Ember.Component.extend({
     //disable line tension because it causes issues with readability
     globalChartOptions.elements.line.tension = 0
     //Tooltip settings
-    // globalChartOptions.tooltips
+    //globalChartOptions.tooltips
   },
   buildChart(){
     var ctx = document.getElementsByTagName("canvas")[0];
     var type = this.get('type');
     var data = this.get('data');
+
     var options = this.get('options');
     var chart = new Chart(ctx, {type, data, options});
     this.set('chart', chart)
@@ -33,6 +35,7 @@ export default Ember.Component.extend({
     var datasets = this.get('data.datasets');
     var datasetsLastIndex = datasets.length - 1;
     var chart = this.get('chart');
+    chart.update()
     if (this.get('data.labels') && this.get(`data.datasets.${datasetsLastIndex}.data`)) {
       if(!chart){
         this.buildChart()
@@ -41,7 +44,7 @@ export default Ember.Component.extend({
         chart.update()
       }
     }
-  }.observes('data.labels','data.datasets'),
+  }.observes('data.labels','data.datasets','data.datasets.@each.data'),
   actions:{
     toggleDataSet: function(dataset){
       var hide = Ember.get(dataset, 'hidden') ? false : true

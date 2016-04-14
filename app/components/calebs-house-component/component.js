@@ -38,13 +38,14 @@ export default Ember.Component.extend({
       }
     }
   ],
+  graphs:{},
   testData:{
     labels: [],
     datasets: []
   },
   testOptions:{
     scales: {
-      yAxes: [],
+      yAxes:[],
       xAxes:[]
     }
   },
@@ -58,13 +59,28 @@ export default Ember.Component.extend({
     units:'months'
   },
   timelineGridObjects:undefined,
-  didInsertElement(){
+  init(){
+    this._super();
     this.setupGrapData();
   },
+  didInsertElement(){
+  },
   setupGrapData:function(){
+    var testGraph = {
+      options:{
+        scales:{
+          xAxes:[],
+          yAxes:[]
+        }
+      },
+      data:{
+        labels:{},
+        datasets:[]
+      }
+    }
+
     var graphColour = new Color('rgb(245, 166, 35)');
     var graphColour2 = new Color('rgb(126, 211, 33)');
-
     var axisColour = new Color('rgb(255, 255, 255)');
 
     var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
@@ -72,19 +88,24 @@ export default Ember.Component.extend({
     var resultCashData = new DataSet(this.get('model.1.name'), this.get('model.1.data.value'), graphColour2)
     resultRequestsData.setDashType('dotted');
 
-
     var xAxes = new Axes('Month', axisColour);
     var yAxes = new Axes('Requests', axisColour);
-
-    this.testOptions.scales.xAxes.push(xAxes);
-    this.testOptions.scales.yAxes.push(yAxes);
+    xAxes.appendToTickLabel("$ ");
+    testGraph.options.scales.xAxes.push(xAxes);
+    testGraph.options.scales.yAxes.push(yAxes);
 
     var resultLabels = [];
     for (var i = 0; i < resultRequestsData.data.length; i++) {
       resultLabels.push(months[i])
     }
-    this.testData.datasets.pushObjects([resultRequestsData,resultCashData])
-    this.set('testData.labels',resultLabels);
+
+    testGraph.data.datasets.pushObjects([resultRequestsData,resultCashData])
+    testGraph.data.labels = resultLabels;
+
+    this.set('graphs.testGraph',testGraph);
+    console.log(testGraph);
+    console.log(this.get('graphs.testGraph'));
+
   },
   actions:{
     onInteractionEnd: function(){
