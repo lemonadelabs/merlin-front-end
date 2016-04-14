@@ -5,9 +5,13 @@ export default Ember.Component.extend({
   draw: undefined,
   entityComponents: [],
   outputComponents: [],
+  updateCablesBound: Ember.computed( function() {
+    return Ember.run.bind(this, this.updateCables)
+  }),
   didInsertElement() {
     document.onmousemove = document.onmousemove || this.updateInputPosition;
     this.initSVGDocument()
+    this.initZooming()
   },
 
   updateInputPosition: function(e){
@@ -40,14 +44,27 @@ export default Ember.Component.extend({
         entityComponents : this.entityComponents,
         outputComponents : this.outputComponents
       })
-      this.nodesGroup.initDraggable()
       this.nodesGroup.initCables()
       this.nodesGroup.terminalListners()
+
 
     } else {
       console.warn('the entity components haven\'t been built yet')
     }
   }.observes('draw'),
+
+  initZooming: function() {
+    this.element.addEventListener('wheel', function (e) {
+
+      e.preventDefault()
+      console.log(e)
+    })
+
+  },
+
+  updateCables: function (opts) {
+    this.nodesGroup.updateCablesForNode(opts)
+  },
 
   persistPosition: function (opts) {
     return // false return, to kill function
