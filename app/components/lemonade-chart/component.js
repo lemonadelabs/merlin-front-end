@@ -23,10 +23,9 @@ export default Ember.Component.extend({
     //globalChartOptions.tooltips
   },
   buildChart(){
-    var ctx = document.getElementsByTagName("canvas")[0];
+    var ctx = this.element.getElementsByTagName("canvas")[0];
     var type = this.get('type');
     var data = this.get('data');
-
     var options = this.get('options');
     var chart = new Chart(ctx, {type, data, options});
     this.set('chart', chart)
