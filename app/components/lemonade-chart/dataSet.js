@@ -10,6 +10,9 @@ export default class DataSet {
     this.hidden = false;
     this.borderCapStyle = 'round';
   }
+  setAxisId(Id){
+    this.yAxisID = Id;
+  }
   setDashType(type, customArray){
     if(type === 'dotted'){
       //first 2 0's are for chrome to make the dots start at the start of the circle

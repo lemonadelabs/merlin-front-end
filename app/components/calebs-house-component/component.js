@@ -84,15 +84,21 @@ export default Ember.Component.extend({
     var axisColour = new Color('rgb(255, 255, 255)');
 
     var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
-    var resultRequestsData = new DataSet(this.get('model.0.name'), this.get('model.0.data.result'), graphColour);
-    var resultCashData = new DataSet(this.get('model.1.name'), this.get('model.1.data.value'), graphColour2)
-    resultRequestsData.setDashType('dotted');
 
-    var xAxes = new Axes('Month', axisColour);
-    var yAxes = new Axes('Requests', axisColour);
-    xAxes.appendToTickLabel("$ ");
+    var resultRequestsData = new DataSet(this.get('model.0.name'), this.get('model.0.data.result'), graphColour)
+    resultRequestsData.setDashType('dotted')
+
+    var resultCashData = new DataSet(this.get('model.1.name'), this.get('model.1.data.value'), graphColour2)
+    resultCashData.setAxisId('y-axes-2')
+
+    var xAxes = new Axes('Month', axisColour, 'x-axes-1');
+    var yAxes1 = new Axes('Requests', graphColour, 'y-axes-1');
+    var yAxes2 = new Axes('Requests2', graphColour2, 'y-axes-2');
+    yAxes2.setPosition('right');
+
     testGraph.options.scales.xAxes.push(xAxes);
-    testGraph.options.scales.yAxes.push(yAxes);
+    testGraph.options.scales.yAxes.push(yAxes1);
+    testGraph.options.scales.yAxes.push(yAxes2);
 
     var resultLabels = [];
     for (var i = 0; i < resultRequestsData.data.length; i++) {
