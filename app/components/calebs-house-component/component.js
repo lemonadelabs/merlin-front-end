@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import DataSet from '../lemonade-chart/dataSet';
 import Axes from '../lemonade-chart/axes';
+import ChartParameters from '../lemonade-chart/chartParameters';
 
 export default Ember.Component.extend({
   timelineObjects:[
@@ -39,16 +40,6 @@ export default Ember.Component.extend({
     }
   ],
   graphs:{},
-  testData:{
-    labels: [],
-    datasets: []
-  },
-  testOptions:{
-    scales: {
-      yAxes:[],
-      xAxes:[]
-    }
-  },
   timespan:{
     start:{
       year:2016
@@ -66,19 +57,6 @@ export default Ember.Component.extend({
   didInsertElement(){
   },
   setupGrapData:function(){
-    var testGraph = {
-      options:{
-        scales:{
-          xAxes:[],
-          yAxes:[]
-        }
-      },
-      data:{
-        labels:{},
-        datasets:[]
-      }
-    }
-
     var graphColour = new Color('rgb(245, 166, 35)');
     var graphColour2 = new Color('rgb(126, 211, 33)');
     var axisColour = new Color('rgb(255, 255, 255)');
@@ -96,22 +74,13 @@ export default Ember.Component.extend({
     var yAxes2 = new Axes('Requests2', graphColour2, 'y-axes-2');
     yAxes2.setPosition('right');
 
-    testGraph.options.scales.xAxes.push(xAxes);
-    testGraph.options.scales.yAxes.push(yAxes1);
-    testGraph.options.scales.yAxes.push(yAxes2);
-
     var resultLabels = [];
+
     for (var i = 0; i < resultRequestsData.data.length; i++) {
       resultLabels.push(months[i])
     }
-
-    testGraph.data.datasets.pushObjects([resultRequestsData,resultCashData])
-    testGraph.data.labels = resultLabels;
-
+    var testGraph = new ChartParameters( [resultRequestsData, resultCashData], resultLabels, [xAxes], [yAxes1, yAxes2])
     this.set('graphs.testGraph',testGraph);
-    console.log(testGraph);
-    console.log(this.get('graphs.testGraph'));
-
   },
   actions:{
     onInteractionEnd: function(){
