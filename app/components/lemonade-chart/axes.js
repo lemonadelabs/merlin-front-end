@@ -36,5 +36,5 @@ export default class Axes {
 }
 
 function formattingCallback(value){
-  return this.valueToPrepend + value + this.valueToApend
+  return (this.valueToPrepend || "") + value + (this.valueToApend || "")
 }
