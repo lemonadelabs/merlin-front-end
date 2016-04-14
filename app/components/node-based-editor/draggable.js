@@ -18,12 +18,13 @@ export default function initDraggable (context) {
   }
 
   function onMouseMove (e) {
-    var x = ( e.clientX * self.zoom.inverseScale - (self.initialPosition.left * self.zoom.inverseScale + self.dragOffset.x * self.zoom.inverseScale) )
-    var y = ( e.clientY * self.zoom.inverseScale - (self.initialPosition.top * self.zoom.inverseScale + self.dragOffset.y * self.zoom.inverseScale) )
-    $(self.element).css({
-      'transform' : `translate(${x}px,${y}px)`
-    })
+    var x = ( e.clientX * self.zoom.inverseScale - ( self.dragOffset.x * self.zoom.inverseScale) )
+    // var x = ( e.clientX * self.zoom.inverseScale - (self.initialPosition.left * self.zoom.inverseScale + self.dragOffset.x * self.zoom.inverseScale) )
+    var y = ( e.clientY * self.zoom.inverseScale - ( self.dragOffset.y * self.zoom.inverseScale) )
+    // var y = ( e.clientY * self.zoom.inverseScale - (self.initialPosition.top * self.zoom.inverseScale + self.dragOffset.y * self.zoom.inverseScale) )
 
+    self.set('transformX', x)
+    self.set('transformY', y)
     self.updateCables({
       type : self.get('node-type'),
       id : self.get('id')
