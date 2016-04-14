@@ -70,20 +70,36 @@ export default Ember.Component.extend({
     let graphColour2 = new Color('rgb(126, 211, 33)');
     let axisColour = new Color('rgb(255, 255, 255)');
 
-    let resultRequestsData = new DataSet(this.get('model.0.name'), this.get('model.0.data.result'), graphColour)
-    resultRequestsData.setDashType('dotted')
+    let model = this.get('model')
+    let graphs = this.get('graphs')
+    var self = this;
+    _.forEach(model,function(value) {
+      let data = value.data.result || value.data.value;
+      let dataSet = new DataSet(value.name, data, graphColour);
+      let xAxes = new Axes('', axisColour);
+      let yAxes = new Axes('', axisColour);
+      let labels = self.generateMonthLabels(data.length)
+      let chartParameters = new ChartParameters( [dataSet], labels, [xAxes], [yAxes])
+      graphs.push(chartParameters)
+    })
 
-    let resultCashData = new DataSet(this.get('model.1.name'), this.get('model.1.data.value'), graphColour2)
-    resultCashData.setAxisId('y-axes-2')
 
-    let xAxes = new Axes('Month', axisColour, 'x-axes-1');
-    let yAxes1 = new Axes('Requests', graphColour, 'y-axes-1');
-    let yAxes2 = new Axes('Requests2', graphColour2, 'y-axes-2');
-    yAxes2.setPosition('right');
 
-    let labels = this.generateMonthLabels(resultRequestsData.data.length)
-    let testGraph = new ChartParameters( [resultRequestsData, resultCashData], labels, [xAxes], [yAxes1, yAxes2])
-    this.graphs.push(testGraph);
+
+    // let resultRequestsData = new DataSet(this.get('model.0.name'), this.get('model.0.data.result'), graphColour)
+    // resultRequestsData.setDashType('dotted')
+    //
+    // let resultCashData = new DataSet(this.get('model.1.name'), this.get('model.1.data.value'), graphColour2)
+    // resultCashData.setAxisId('y-axes-2')
+    //
+    // let xAxes = new Axes('Month', axisColour, 'x-axes-1');
+    // let yAxes1 = new Axes('Requests', graphColour, 'y-axes-1');
+    // let yAxes2 = new Axes('Requests2', graphColour2, 'y-axes-2');
+    // yAxes2.setPosition('right');
+    //
+    // let labels = this.generateMonthLabels(resultRequestsData.data.length)
+    // let testGraph = new ChartParameters( [resultRequestsData, resultCashData], labels, [xAxes], [yAxes1, yAxes2])
+    // this.graphs.push(testGraph);
   },
   actions:{
     onInteractionEnd: function(){
