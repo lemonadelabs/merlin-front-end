@@ -1,6 +1,6 @@
 export default class DataSet {
   constructor(Label, Data, Color) {
-    let borderColor = Color.alpha(1).rgbString();
+    let borderColor = Color.alpha(1).rgbString()
     let bgColour = Color.alpha(0.2).rgbaString()
     this.label = Label;
     this.data = Data;

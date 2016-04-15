@@ -69,7 +69,7 @@ export default Ember.Component.extend({
     let graphColour = new Color('rgb(245, 166, 35)');
     let graphColour2 = new Color('rgb(126, 211, 33)');
     let axisColour = new Color('rgb(255, 255, 255)');
-
+    
     let model = this.get('model')
     let graphs = this.get('graphs')
     var self = this;
@@ -80,6 +80,7 @@ export default Ember.Component.extend({
       let yAxes = new Axes('', axisColour);
       let labels = self.generateMonthLabels(data.length)
       let chartParameters = new ChartParameters( [dataSet], labels, [xAxes], [yAxes])
+      chartParameters.name = value.name
       graphs.push(chartParameters)
     })
 
