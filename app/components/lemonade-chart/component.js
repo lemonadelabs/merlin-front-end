@@ -18,7 +18,7 @@ export default Ember.Component.extend({
     //Built in legend sucks so lets hide it and build it in the template
     globalChartOptions.legend.display = false
     //disable line tension because it causes issues with readability
-    globalChartOptions.elements.line.tension = 0.1
+    globalChartOptions.elements.line.tension = 0.01
     //Tooltip settings
     //globalChartOptions.tooltips
   },
