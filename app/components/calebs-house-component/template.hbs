@@ -1,4 +1,9 @@
-<div class='timeline-track-container'>
+{{#each this.graphs as |graph|}}
+  <h1 style="color:white;">{{graph.name}}</h1>
+  {{lemonade-chart type='line' data=graph.data options=graph.options legend=true}}
+{{/each}}
+{{!-- {{lemonade-chart type='line' data=this.graphs.0.data options=this.graphs.0.options legend=true}} --}}
+{{!-- <div class='timeline-track-container'>
   {{timeline-track
     timelineGridObjects=this.timelineGridObjects
     timelineObjects=this.timelineObjects
@@ -24,4 +29,4 @@
 {{timeline-timescale
   timelineGridObjects=this.timelineGridObjects
   timespan=this.timespan
-}}
+}} --}}

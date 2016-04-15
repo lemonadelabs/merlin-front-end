@@ -2,6 +2,7 @@
 @import "draw.css";
 @import "node.css";
 @import "timeline.css";
+@import "lemonade-chart.css";
 
 body {
   font-family: "sofia-pro", sans-serif;
@@ -26,4 +27,8 @@ body {
 foreignobject {
   width: auto;
   height: auto;
+}
+
+[data-ember-action]{
+  cursor: pointer;
 }
