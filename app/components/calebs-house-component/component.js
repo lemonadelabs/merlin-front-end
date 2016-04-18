@@ -66,10 +66,10 @@ export default Ember.Component.extend({
     return resultLabels
   },
   setupGrapData:function(){
-    let graphColour = new Color('rgb(245, 166, 35)');
-    let graphColour2 = new Color('rgb(126, 211, 33)');
-    let axisColour = new Color('rgb(255, 255, 255)');
-    
+    let graphColour = 'rgb(245, 166, 35)';
+    let graphColour2 = 'rgb(126, 211, 33)';
+    let axisColour = 'rgb(255, 255, 255)';
+
     let model = this.get('model')
     let graphs = this.get('graphs')
     var self = this;
