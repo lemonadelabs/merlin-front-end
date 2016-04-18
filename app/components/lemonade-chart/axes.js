@@ -1,9 +1,9 @@
 export default class Axes {
   constructor(LabelString, GridColour, Id) {
-    let gridColour = GridColour || new Color('rgb(255, 255, 255)')
-    let fontColour = gridColour.alpha(1).rgbaString();
-    let gridlineColor = gridColour.alpha(0.2).rgbaString()
-    let firstGridlineColor = gridColour.alpha(0.6).rgbaString()
+    let gridColour = GridColour || 'rgb(255, 255, 255)'
+    let fontColour = gridColour;
+    let gridlineColor = chroma(gridColour).alpha(0.2).css()
+    let firstGridlineColor = chroma(gridColour).alpha(0.8).css()
     this.scaleLabel = {}
     this.gridLines = {}
     this.ticks = {}

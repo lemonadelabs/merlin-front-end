@@ -7,7 +7,7 @@
     "SVG",
     "$",
     "Chart",
-    "Color"
+    "chroma"
   ],
   "browser": true,
   "boss": true,

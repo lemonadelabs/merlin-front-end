@@ -42,7 +42,5 @@
     "postcss-cssnext": "^2.5.1",
     "postcss-import": "^8.0.2"
   },
-  "dependencies": {
-    "pigment": "0.0.5"
-  }
+  "dependencies": {}
 }
