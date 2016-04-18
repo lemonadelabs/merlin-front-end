@@ -1,0 +1,43 @@
+input:focus { outline: none; }
+
+input[type=range],
+input[type=range]::-webkit-slider-runnable-track{
+    -webkit-appearance: none;
+    border-radius: 3px;
+    background: red;
+    border: none;
+    height: 5px;
+    margin: 0;
+}
+
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    border: none;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    background: goldenrod;
+    margin-top: -6px;
+}
+
+input[type=range]::-moz-range-track {
+    height: 5px;
+    border: none;
+    border-radius: 3px;
+    background: red;
+    border: none;
+    height: 5px;
+    margin: 0;
+}
+
+input[type=range]::-moz-range-thumb {
+    border: none;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    background: goldenrod;
+}
+
+input[type=range]::-moz-focus-outer {
+  border: 0;
+}
