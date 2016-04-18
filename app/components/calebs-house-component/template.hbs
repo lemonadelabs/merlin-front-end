@@ -1,7 +1,9 @@
-{{#each this.graphs as |graph|}}
+{{log this.testValue}}
+{{range-slider value=this.testValue min=1 max=30}}
+{{!-- {{#each this.graphs as |graph|}}
   <h1 style="color:white;">{{graph.name}}</h1>
   {{lemonade-chart type='line' data=graph.data options=graph.options legend=true}}
-{{/each}}
+{{/each}} --}}
 {{!-- {{lemonade-chart type='line' data=this.graphs.0.data options=this.graphs.0.options legend=true}} --}}
 {{!-- <div class='timeline-track-container'>
   {{timeline-track
