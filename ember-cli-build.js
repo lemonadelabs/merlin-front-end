@@ -3,6 +3,7 @@
 var EmberApp = require('ember-cli/lib/broccoli/ember-app');
 var cssImport = require("postcss-import");
 var cssnext = require('postcss-cssnext')
+var cssMixins = require('postcss-mixins')
 
 module.exports = function(defaults) {
   var app = new EmberApp(defaults, {
@@ -14,6 +15,10 @@ module.exports = function(defaults) {
     },
     postcssOptions: {
       plugins: [
+        {
+          module: cssMixins,
+          options: {}
+        },
         {
           module: cssImport,
           options: {
