@@ -1,6 +1,7 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
+  classNames: ['range-slider-container']
   propertyBindings: ['value > element.value'],
   // attributeBindings: ['min', 'max', 'step', 'type', 'name', 'list'],
   input: function() {

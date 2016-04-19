@@ -20,6 +20,7 @@ input:focus { outline: none; }
 input[type=range]{
   -webkit-appearance: none;
   background-color: transparent;
+  margin-top: 42px;
 }
 
 input[type=range]::-webkit-slider-runnable-track{
@@ -43,4 +44,28 @@ input[type=range]::-moz-range-thumb {
 
 input[type=range]::-moz-focus-outer {
   border: 0;
+}
+.range-slider-container{
+  position: relative;
+}
+.range-value {
+  background: rgb(74, 144, 226);
+  border-radius: 3px;
+  color: white;
+  font-weight: 600;
+  margin: 0;
+  min-width: 33px;
+  padding: 3px 8px;
+  position: absolute;
+  text-align: center;
+}
+
+.range-value::after {
+  content: "▾";
+  font-size: 20px;
+  color: rgb(74, 144, 226);
+  position: absolute;
+  bottom: -13px;
+  width: 13px;
+  left: calc(50% - 6.5px);
 }
