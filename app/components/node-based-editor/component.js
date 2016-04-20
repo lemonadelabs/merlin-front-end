@@ -4,6 +4,10 @@ import initDraggable from './draggable'
 
 export default Ember.Component.extend({
   draw: undefined,
+  outputConnectorData: undefined,
+  processPropertyData: undefined,
+  outputData: undefined,
+  inputConnectorData: undefined,
   entityComponents: [],
   outputComponents: [],
   updateCablesBound: Ember.computed( function() {
@@ -23,6 +27,30 @@ export default Ember.Component.extend({
     // $(this.element).panzoom()
     this.initPaning()
   },
+
+  loadSimulation: function(){
+    var self = this
+
+    var sortedData = {
+      'Output': {},
+      'ProcessProperty': {},
+      'InputConnector': {},
+      'OutputConnector': {},
+    }
+
+
+    Ember.$.getJSON('api/simulation-run/1').then(function (result) {
+      _.forEach(result, function (item){
+        sortedData[item.type][item.id] = item
+      })
+      // self.set('simulationData', sortedData)
+
+      self.set('outputConnectorData', sortedData['OutputConnector'])
+      self.set('processPropertyData', sortedData['ProcessProperty'])
+      self.set('outputData', sortedData['Output'])
+      self.set('inputConnectorData', sortedData['InputConnector'])
+    })
+  }.on('init'),
 
   initPaning: function() {
     // var nodeContainer = document.getElementById('node-based-editor-container')
