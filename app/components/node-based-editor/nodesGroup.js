@@ -1,8 +1,6 @@
 import Cable from './cable'
 import Node from './node'
 
-
-
 export default function NodesGroup (opts) {
   this.draw = opts.draw
   this.entityModel = opts.entityModel
@@ -13,13 +11,15 @@ export default function NodesGroup (opts) {
   this.outputTerminals = {}
   this.inputTerminals = {}
   this.cableParent = this.draw.nested()
+  this.zoom = {
+    scale: 1,
+    inverseScale: 1
+  }
   this.colorHash = {
     "entity-capability" : "#03DEAD",
     "entity-budget" : "#7ED321",
     "entity-fixed_asset" : "#9013FE",
     "output-node" : "#F5A623"
-    // "entity-staff" : "#4A90E2",
-    // "entity-resource" : "#9013FE",
   }
   this.flyingCable = undefined
 }
@@ -123,10 +123,9 @@ NodesGroup.prototype.buildNodes = function(opts) {
       draw : self.draw,
       component : component,
       nodeModel : nodeModel,
-      nodeType : nodeType
+      nodeType : nodeType,
+      itterate : i
     })
-
-    node.position({itterate : i}) // move this into Node once positioning is enabled
 
     if (_.includes(nodeType, 'entity')) {
       self.entityNodes[id] = node
@@ -207,39 +206,8 @@ NodesGroup.prototype.referenceCableInTerminals = function(opts) {
   outputEntity.cables.push(cable)
 };
 
-NodesGroup.prototype.initDraggable = function() {
-  var self = this
-  _.forEach(this.entityNodes, addListners)
-  _.forEach(this.outputNodes, addListners)
 
-  function addListners(node) {
-    var $entityComponent = node.$component
-    var $dragBar = $entityComponent.find('.node-drag-bar')
-
-    $dragBar.on('mouseenter', function () {
-      node.group.draggable()
-    })
-
-    $dragBar.on('mouseleave', function () {
-      node.group.draggable(false)
-    })
-
-    node.group.on('dragmove', function (e) {
-      node.updateCables()
-    })
-
-    node.group.on('dragend', function (e) {
-      var id = node.id
-      var nodeType = node.nodeType
-      var x = node.group.x()
-      var y = node.group.y()
-
-      self.persistPosition({
-        x : x,
-        y : y,
-        nodeType : nodeType,
-        id : id
-      })
-    })
-  }
+NodesGroup.prototype.updateCablesForNode = function(opts) {
+  var node = (opts.type === 'output-node') ? this.outputNodes[opts.id] : this.entityNodes[opts.id]
+  node.updateCables(opts)
 };
