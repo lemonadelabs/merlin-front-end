@@ -2,6 +2,8 @@
 @import "draw.css";
 @import "node.css";
 @import "timeline.css";
+@import "node-based-editor-container.css";
+@import "svg-container.css";
 @import "lemonade-chart.css";
 
 body {

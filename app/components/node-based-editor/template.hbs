@@ -1,13 +1,27 @@
 <div id='svg-container'>
 </div>
 
-<div class='entities-container'>
+<div id='node-based-editor-container'>
   {{#each this.model.entities as | entity index | }}
-    {{entity-node entity=entity nodes=entityComponents}}
+    {{
+      entity-node
+      entity=entity
+      nodes=entityComponents
+      updateCables=this.updateCablesBound
+      groupOffsetX=this.transformX
+      groupOffsetY=this.transformY
+    }}
   {{/each}}
 
   {{#each this.model.outputs as | simulationOutput index | }}
-    {{simulation-output simulationOutput=simulationOutput outputNodes=outputComponents}}
+    {{
+      simulation-output
+      simulationOutput=simulationOutput
+      outputNodes=outputComponents
+      updateCables=this.updateCablesBound
+      groupOffsetX=this.transformX
+      groupOffsetY=this.transformY
+    }}
   {{/each}}
 
 </div>

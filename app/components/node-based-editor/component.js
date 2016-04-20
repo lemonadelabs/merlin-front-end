@@ -1,16 +1,54 @@
 import Ember from 'ember';
 import NodesGroup from './nodesGroup'
+import initDraggable from './draggable'
 
 export default Ember.Component.extend({
   draw: undefined,
   entityComponents: [],
   outputComponents: [],
+  updateCablesBound: Ember.computed( function() {
+    return Ember.run.bind(this, this.updateCables)
+  }),
+  attributeBindings: ['style'],
+  style:Ember.computed('transformX', 'transformY' , function () {
+    var x = this.get('transformX')
+    var y = this.get('transformY')
+    return Ember.String.htmlSafe(`transform:translate(${x}px,${y}px);`);
+  }),
+  initDraggable: initDraggable,
   didInsertElement() {
+    document.onmousemove = document.onmousemove || this.updateInputPosition;
     this.initSVGDocument()
+    this.initZooming()
+    // $(this.element).panzoom()
+    this.initPaning()
+  },
+
+  initPaning: function() {
+    // var nodeContainer = document.getElementById('node-based-editor-container')
+    // $('#svg-container').on('mousedown', function (e) {
+    //   console.log(e)
+    // })
+
+    this.initDraggable({
+      context : this,
+      element : document.getElementById('svg-container')
+    })
+  },
+
+  updateInputPosition: function(e){
+    if (typeof e.clientX){
+      document.inputX = e.clientX;
+      document.inputY = e.clientY;
+    }
+    else if(typeof e.touches[0].clientX){
+      document.inputX = e.touches[0].clientX;
+      document.inputY = e.touches[0].clientY;
+    }
   },
 
   initSVGDocument: function () {
-    var draw = SVG('svg-container').size(window.innerWidth, window.innerHeight)
+    var draw = SVG('svg-container').size(window.innerWidth * 5, window.innerHeight * 5)
     this.set('draw', draw)
   },
 
@@ -28,13 +66,26 @@ export default Ember.Component.extend({
         entityComponents : this.entityComponents,
         outputComponents : this.outputComponents
       })
-      this.nodesGroup.initDraggable()
       this.nodesGroup.initCables()
       this.nodesGroup.terminalListners()
+
+
     } else {
       console.warn('the entity components haven\'t been built yet')
     }
   }.observes('draw'),
+
+  initZooming: function() {
+    this.element.addEventListener('wheel', function (e) {
+      e.preventDefault()
+      // console.log(e)
+    })
+
+  },
+
+  updateCables: function (opts) {
+    this.nodesGroup.updateCablesForNode(opts)
+  },
 
   persistPosition: function (opts) {
     return // false return, to kill function
