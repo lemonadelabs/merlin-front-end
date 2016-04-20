@@ -6,6 +6,8 @@
     "ember-cli-test-loader": "0.2.2",
     "ember-qunit-notifications": "0.1.0",
     "svg.js": "^2.2.5",
-    "lodash": "^4.6.1"
+    "lodash": "^4.6.1",
+    "chartjs": "~2.0.0",
+    "chroma-js": "~1.1.1"
   }
 }

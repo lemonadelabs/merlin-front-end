@@ -5,7 +5,9 @@
     "-Promise",
     "_",
     "SVG",
-    "$"
+    "$",
+    "Chart",
+    "chroma"
   ],
   "browser": true,
   "boss": true,

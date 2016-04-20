@@ -30,6 +30,8 @@ module.exports = function(defaults) {
 
   app.import('bower_components/svg.js/dist/svg.js')
   app.import('bower_components/lodash/lodash.js')
+  app.import('bower_components/chartjs/dist/Chart.js')
+  app.import('bower_components/chroma-js/chroma.min.js')
 
   return app.toTree();
 };
