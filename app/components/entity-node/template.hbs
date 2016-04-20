@@ -14,7 +14,7 @@
     {{#each this.entity.inputs as | input | }}
       <div>
         <div class='terminal input-terminal' id='{{input.id}}'></div>
-        <p class='node-input-output'>{{input.amount}} <span class='node-label'>{{input.name}}</span></p>
+        <p class='node-input-output'>{{sim-run-lookup this.inputConnectorData input.id this.month}} <span class='node-label'>{{input.name}}</span></p>
       </div>
     {{/each}}
   </div>
@@ -26,6 +26,7 @@
     {{#each process.properties as | property | }}
 
       <span class='node-label'>{{property.name}}</span>
+      {{!-- {{sim-run-lookup this.processPropertyData property.id this.month}} --}}
       {{input value=property.property_value}}
     {{/each}}
   {{/each}}
@@ -39,7 +40,7 @@
   <div class='node-output-container'>
     {{#each this.entity.outputs as | output | }}
       <div>
-        <p class='node-input-output node-output'><span class='node-label'>{{output.name}}</span> {{output.amount}} <span class='fte'>{{output.unit}}</span></p>
+        <p class='node-input-output node-output'><span class='node-label'>{{output.name}}</span> {{sim-run-lookup this.outputConnectorData output.id this.month}} <span class='fte'>{{output.unit}}</span></p>
         <div class='terminal output-terminal' id='{{output.id}}'></div>
       </div>
     {{/each}}

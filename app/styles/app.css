@@ -2,9 +2,11 @@
 @import "draw.css";
 @import "node.css";
 @import "timeline.css";
+@import "inputs.css";
 @import "node-based-editor-container.css";
 @import "svg-container.css";
 @import "lemonade-chart.css";
+@import "node-editor-time-input.css";
 
 body {
   font-family: "sofia-pro", sans-serif;

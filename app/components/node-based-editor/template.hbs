@@ -6,6 +6,14 @@
     {{
       entity-node
       entity=entity
+
+      month=this.month
+
+      inputConnectorData=this.inputConnectorData
+      outputConnectorData=this.outputConnectorData
+      processPropertyData=this.processPropertyData
+
+
       nodes=entityComponents
       updateCables=this.updateCablesBound
       groupOffsetX=this.transformX
@@ -17,11 +25,16 @@
     {{
       simulation-output
       simulationOutput=simulationOutput
+      outputData=this.outputData
+
+      month=this.month
+
       outputNodes=outputComponents
       updateCables=this.updateCablesBound
       groupOffsetX=this.transformX
       groupOffsetY=this.transformY
     }}
   {{/each}}
-
 </div>
+
+

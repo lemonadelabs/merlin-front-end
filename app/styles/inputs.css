@@ -1,0 +1,73 @@
+input:focus { outline: none; }
+
+@define-mixin sliderTrack{
+  border-radius: 3px;
+  background: rgba(52, 132, 226, 0.7);
+  border: none;
+  height: 5px;
+  margin: 0;
+}
+
+@define-mixin sliderThumb{
+  -webkit-appearance: none;
+  border: none;
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  background: rgb(74, 144, 226);
+}
+
+input[type=range]{
+  -webkit-appearance: none;
+  background-color: transparent;
+  margin-top: 42px;
+}
+
+input[type=range]::-webkit-slider-runnable-track{
+    -webkit-appearance: none;
+    @mixin sliderTrack;
+}
+
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    margin-top: -6px;
+    @mixin sliderThumb;
+}
+
+input[type=range]::-moz-range-track {
+  @mixin sliderTrack;
+}
+
+input[type=range]::-moz-range-thumb {
+  @mixin sliderThumb;
+}
+
+input[type=range]::-moz-focus-outer {
+  border: 0;
+}
+.range-slider-container{
+  position: relative;
+  margin-left: 10em;
+}
+.range-value {
+  background: rgb(74, 144, 226);
+  border-radius: 3px;
+  color: white;
+  font-weight: 600;
+  margin: 0;
+  min-width: 33px;
+  padding: 3px 8px;
+  position: absolute;
+  user-select: none;
+  text-align: center;
+}
+
+.range-value::after {
+  content: "▾";
+  font-size: 20px;
+  color: rgb(74, 144, 226);
+  position: absolute;
+  bottom: -13px;
+  width: 13px;
+  left: calc(50% - 6.5px);
+}

@@ -4,6 +4,12 @@ import initDraggable from './draggable'
 
 export default Ember.Component.extend({
   draw: undefined,
+  outputConnectorData: undefined,
+  processPropertyData: undefined,
+  outputData: undefined,
+  inputConnectorData: undefined,
+  // month: undefined,
+  // timeframe: undefined,
   entityComponents: [],
   outputComponents: [],
   updateCablesBound: Ember.computed( function() {
@@ -24,10 +30,42 @@ export default Ember.Component.extend({
     this.initPaning()
   },
 
+  loadSimulation: function(){
+    var self = this
+
+    var sortedData = {
+      'Output': {},
+      'ProcessProperty': {},
+      'InputConnector': {},
+      'OutputConnector': {},
+    }
+
+
+    Ember.$.getJSON('api/simulation-run/1').then(function (result) {
+      var timeframe = result[0].data.result.length
+      self.set('timeframe', timeframe)
+      self.set('month', timeframe)
+      _.forEach(result, function (item){
+        sortedData[item.type][item.id] = item
+      })
+      // self.set('simulationData', sortedData)
+
+      self.set('outputConnectorData', sortedData['OutputConnector'])
+      self.set('processPropertyData', sortedData['ProcessProperty'])
+      self.set('outputData', sortedData['Output'])
+      self.set('inputConnectorData', sortedData['InputConnector'])
+    })
+  }.on('init'),
+
   initPaning: function() {
     // var nodeContainer = document.getElementById('node-based-editor-container')
     // $('#svg-container').on('mousedown', function (e) {
     //   console.log(e)
+    // })
+
+    console.log($('#nodes-and-svgs'))
+    // $('#nodes-and-svgs').css({
+    //   'transform' : `translate(${x}px,${y}px)`
     // })
 
     this.initDraggable({
