@@ -1,8 +1,6 @@
 import Cable from './cable'
 import Node from './node'
 
-
-
 export default function NodesGroup (opts) {
   this.draw = opts.draw
   this.entityModel = opts.entityModel
@@ -22,8 +20,6 @@ export default function NodesGroup (opts) {
     "entity-budget" : "#7ED321",
     "entity-fixed_asset" : "#9013FE",
     "output-node" : "#F5A623"
-    // "entity-staff" : "#4A90E2",
-    // "entity-resource" : "#9013FE",
   }
   this.flyingCable = undefined
 }
