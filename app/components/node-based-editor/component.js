@@ -8,6 +8,8 @@ export default Ember.Component.extend({
   processPropertyData: undefined,
   outputData: undefined,
   inputConnectorData: undefined,
+  month: undefined,
+  timeframe: undefined,
   entityComponents: [],
   outputComponents: [],
   updateCablesBound: Ember.computed( function() {
@@ -40,6 +42,9 @@ export default Ember.Component.extend({
 
 
     Ember.$.getJSON('api/simulation-run/1').then(function (result) {
+      var timeframe = result[0].data.result.length
+      self.set('timeframe', timeframe)
+      self.set('month', timeframe)
       _.forEach(result, function (item){
         sortedData[item.type][item.id] = item
       })
