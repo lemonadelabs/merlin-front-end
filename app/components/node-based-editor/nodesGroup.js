@@ -27,7 +27,6 @@ export default function NodesGroup (opts) {
 NodesGroup.prototype.terminalListners = function() {
   var self = this
 
-  var allTerminals = {}
   _.forEach(this.outputTerminals, outputTerminalListners)
   _.forEach(this.inputTerminals, inputTerminalListners)
 
@@ -36,7 +35,7 @@ NodesGroup.prototype.terminalListners = function() {
   })
 
   function outputTerminalListners (terminal) {
-    terminal.$domElement.on('mousedown', function (e) {
+    terminal.$domElement.on('mousedown', function () {
       self.flyingCable = new Cable({
         cableParent : self.cableParent,
         outputTerminal : terminal,
@@ -44,7 +43,7 @@ NodesGroup.prototype.terminalListners = function() {
       })
     })
 
-    terminal.$domElement.on('mouseup', function (e) {
+    terminal.$domElement.on('mouseup', function () {
       console.log('mouseup!!!')
       var cable = self.flyingCable
       self.flyingCable = undefined
@@ -61,14 +60,14 @@ NodesGroup.prototype.terminalListners = function() {
   }
 
   function inputTerminalListners (terminal) {
-    terminal.$domElement.on('mousedown', function (e) {
+    terminal.$domElement.on('mousedown', function () {
       self.flyingCable = new Cable({
         cableParent : self.cableParent,
         inputTerminal : terminal,
         color : self.colorHash[terminal.nodeType]
       })
     })
-    terminal.$domElement.on('mouseup', function (e) {
+    terminal.$domElement.on('mouseup', function () {
       console.log('mouseup!!!')
       var cable = self.flyingCable
       self.flyingCable = undefined
@@ -116,7 +115,6 @@ NodesGroup.prototype.buildNodes = function(opts) {
 
 
     var nodeModel = (nodeType === 'output-node') ? _.find(self.outputModel, ['id', id]) : _.find(self.entityModel, ['id', id])
-    var entityData = _.find(self.entityModel, ['id', id])
 
     var node = new Node({
       id : id,
