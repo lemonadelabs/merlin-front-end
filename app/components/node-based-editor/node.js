@@ -66,6 +66,6 @@ Node.prototype.position = function(opts) {
 
 Node.prototype.updateCables = function(opts) {
   _.forEach(this.cables, function (cable) {
-    cable.updatePosition()
+    cable.updatePosition(opts)
   })
 };

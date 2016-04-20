@@ -213,5 +213,5 @@ NodesGroup.prototype.referenceCableInTerminals = function(opts) {
 
 NodesGroup.prototype.updateCablesForNode = function(opts) {
   var node = (opts.type === 'output-node') ? this.outputNodes[opts.id] : this.entityNodes[opts.id]
-  node.updateCables()
+  node.updateCables(opts)
 };

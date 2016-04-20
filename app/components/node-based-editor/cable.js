@@ -51,10 +51,16 @@ Cable.prototype.flyTo = function(opts) {
   this.svg.plot( curveString )
 };
 
-Cable.prototype.updatePosition = function() {
+Cable.prototype.updatePosition = function(opts) {
   var startPositionCSS = terminalCSSPosition(this.outputTerminal.$domElement)
-
   var endPositionCSS = terminalCSSPosition(this.inputTerminal.$domElement)
+
+  if (opts.groupOffsetX) {
+    startPositionCSS.top -= opts.groupOffsetY
+    startPositionCSS.left -= opts.groupOffsetX
+    endPositionCSS.top -= opts.groupOffsetY
+    endPositionCSS.left -= opts.groupOffsetX
+  }
 
   var curveString = this.buildPathString({
     start : startPositionCSS,

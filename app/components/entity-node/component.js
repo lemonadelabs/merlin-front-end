@@ -25,12 +25,7 @@ export default Ember.Component.extend({
     this.set('id', this.entity.id);
     var entityType = this.entity.attributes[0] || 'unknown'
     this.set('node-type',`entity-${entityType}`);
-    this.initDraggable(this)
-
-    console.log('asdf')
-    console.log(this.atributebindings)
-
-
+    this.initDraggable({context : this})
   },
 
 });

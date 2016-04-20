@@ -1,9 +1,9 @@
-export default function initDraggable (context) {
-  var self = context
-  var dragBar = self.element.getElementsByTagName('header')[0]
+export default function initDraggable (opts) {
+  var self = opts.context
+  var element = opts.element || self.element.getElementsByTagName('header')[0]
 
-  dragBar.addEventListener('mousedown', onMouseDown)
-  dragBar.addEventListener('mouseup', onMouseUp)
+  element.addEventListener('mousedown', onMouseDown)
+  element.addEventListener('mouseup', onMouseUp)
 
   function onMouseUp() {
     document.removeEventListener('mousemove', onMouseMove)
@@ -18,17 +18,23 @@ export default function initDraggable (context) {
   }
 
   function onMouseMove (e) {
-    var x = ( e.clientX * self.zoom.inverseScale - ( self.dragOffset.x * self.zoom.inverseScale) )
-    // var x = ( e.clientX * self.zoom.inverseScale - (self.initialPosition.left * self.zoom.inverseScale + self.dragOffset.x * self.zoom.inverseScale) )
-    var y = ( e.clientY * self.zoom.inverseScale - ( self.dragOffset.y * self.zoom.inverseScale) )
-    // var y = ( e.clientY * self.zoom.inverseScale - (self.initialPosition.top * self.zoom.inverseScale + self.dragOffset.y * self.zoom.inverseScale) )
+    var x = ( e.clientX  -  self.dragOffset.x )
+    var y = ( e.clientY - self.dragOffset.y )
+    if (self.groupOffsetX) {
+      x -= self.groupOffsetX
+      y -= self.groupOffsetY
+    }
 
     self.set('transformX', x)
     self.set('transformY', y)
-    self.updateCables({
-      type : self.get('node-type'),
-      id : self.get('id')
-    })
+    if (self.get('node-type')) {
+      self.updateCables({
+        type : self.get('node-type'),
+        id : self.get('id'),
+        groupOffsetX : self.groupOffsetX,
+        groupOffsetY : self.groupOffsetY
+      })
+    }
   }
 }
 

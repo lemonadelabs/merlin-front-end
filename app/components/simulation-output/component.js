@@ -10,9 +10,9 @@ export default Ember.Component.extend({
     var y = this.get('transformY')
     return Ember.String.htmlSafe(`transform:translate(${x}px,${y}px);`);
   }),
+  initDraggable: initDraggable,
   id: undefined,
   "node-type": "output-node",
-  initDraggable: initDraggable,
   zoom: {
     scale: 1,
     inverseScale: 1
@@ -22,6 +22,6 @@ export default Ember.Component.extend({
     this.outputNodes.push(this)
     this.outputNodes.arrayContentDidChange(this.outputNodes.length, 0, 1)
     this.set('id', this.simulationOutput.id);
-    this.initDraggable(this)
+    this.initDraggable({context : this})
   }
 });

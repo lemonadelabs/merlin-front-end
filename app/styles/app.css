@@ -3,6 +3,7 @@
 @import "node.css";
 @import "timeline.css";
 @import "node-based-editor-container.css";
+@import "svg-container.css";
 
 body {
   font-family: "sofia-pro", sans-serif;

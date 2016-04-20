@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import NodesGroup from './nodesGroup'
+import initDraggable from './draggable'
 
 export default Ember.Component.extend({
   draw: undefined,
@@ -8,10 +9,35 @@ export default Ember.Component.extend({
   updateCablesBound: Ember.computed( function() {
     return Ember.run.bind(this, this.updateCables)
   }),
+  attributeBindings: ['style'],
+  style:Ember.computed('transformX', 'transformY' , function () {
+    var x = this.get('transformX')
+    var y = this.get('transformY')
+    return Ember.String.htmlSafe(`transform:translate(${x}px,${y}px);`);
+  }),
+  zoom: {
+    scale: 1,
+    inverseScale: 1
+  },
+  initDraggable: initDraggable,
   didInsertElement() {
     document.onmousemove = document.onmousemove || this.updateInputPosition;
     this.initSVGDocument()
     this.initZooming()
+    // $(this.element).panzoom()
+    this.initPaning()
+  },
+
+  initPaning: function() {
+    // var nodeContainer = document.getElementById('node-based-editor-container')
+    // $('#svg-container').on('mousedown', function (e) {
+    //   console.log(e)
+    // })
+
+    this.initDraggable({
+      context : this,
+      element : document.getElementById('svg-container')
+    })
   },
 
   updateInputPosition: function(e){
@@ -26,7 +52,7 @@ export default Ember.Component.extend({
   },
 
   initSVGDocument: function () {
-    var draw = SVG('svg-container').size(window.innerWidth, window.innerHeight)
+    var draw = SVG('svg-container').size(window.innerWidth * 5, window.innerHeight * 5)
     this.set('draw', draw)
   },
 
@@ -55,9 +81,8 @@ export default Ember.Component.extend({
 
   initZooming: function() {
     this.element.addEventListener('wheel', function (e) {
-
       e.preventDefault()
-      console.log(e)
+      // console.log(e)
     })
 
   },
