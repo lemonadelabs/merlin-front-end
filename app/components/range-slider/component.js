@@ -8,7 +8,7 @@ export default Ember.Component.extend({
   bubbleElement:undefined,
   bubbleInlineStyle: Ember.computed('translateX', function(){
     var x = this.get('translateX');
-    return Ember.String.htmlSafe(`transform:translate(${x}px);`);
+    return `transform:translate(${x}px);`;
   }),
   // attributeBindings: ['min', 'max', 'step', 'type', 'name', 'list'],
   didInsertElement(){
