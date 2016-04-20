@@ -1,5 +1,4 @@
 export default function Node (opts) {
-  var self = this
   this.id = opts.id
   this.nodeType = opts.nodeType
   this.group = opts.draw.group()
