@@ -8,8 +8,8 @@ export default Ember.Component.extend({
   processPropertyData: undefined,
   outputData: undefined,
   inputConnectorData: undefined,
-  month: undefined,
-  timeframe: undefined,
+  // month: undefined,
+  // timeframe: undefined,
   entityComponents: [],
   outputComponents: [],
   updateCablesBound: Ember.computed( function() {
