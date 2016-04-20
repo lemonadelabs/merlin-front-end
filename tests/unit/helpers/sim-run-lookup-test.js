@@ -1,10 +1,10 @@
-import { objectLookup } from 'merlin/helpers/object-lookup';
+import { simRunLookup } from 'merlin/helpers/sim-run-lookup';
 import { module, test } from 'qunit';
 
-module('Unit | Helper | object lookup');
+module('Unit | Helper | sim run lookup');
 
 // Replace this with your real tests.
 test('it works', function(assert) {
-  let result = objectLookup([42]);
+  let result = simRunLookup([42]);
   assert.ok(result);
 });

@@ -8,14 +8,14 @@
 
 </p></header>
 
-{{object-lookup this.outputData this.simulationOutput.id}}
+
 {{!-- {{lookup this.outputData 1}} --}}
 
 <p class='node-subheading'>input</p>
 <div class='node-input-container'>
     <div>
       <div class='terminal input-terminal sim-output-terminal' id='{{this.simulationOutput.id}}'></div>
-      <p class='node-input-output'>{{this.simulationOutput.amount}} <span class='node-label'>{{this.simulationOutput.unit_type}}</span></p>
+      <p class='node-input-output'>{{sim-run-lookup this.outputData this.simulationOutput.id 0}} <span class='node-label'>{{this.simulationOutput.unit_type}}</span></p>
     </div>
 </div>
 
