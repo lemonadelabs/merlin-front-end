@@ -63,6 +63,11 @@ export default Ember.Component.extend({
     //   console.log(e)
     // })
 
+    console.log($('#nodes-and-svgs'))
+    // $('#nodes-and-svgs').css({
+    //   'transform' : `translate(${x}px,${y}px)`
+    // })
+
     this.initDraggable({
       context : this,
       element : document.getElementById('svg-container')

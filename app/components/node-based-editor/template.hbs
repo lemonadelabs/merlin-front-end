@@ -1,44 +1,46 @@
-<div id='svg-container'>
+<div id='nodes-and-svgs'>
+  <div id='svg-container'>
+  </div>
+
+  <div id='node-based-editor-container'>
+    {{#each this.model.entities as | entity index | }}
+      {{
+        entity-node
+        entity=entity
+
+        month=this.month
+
+        inputConnectorData=this.inputConnectorData
+        outputConnectorData=this.outputConnectorData
+        processPropertyData=this.processPropertyData
+
+
+        nodes=entityComponents
+        updateCables=this.updateCablesBound
+        groupOffsetX=this.transformX
+        groupOffsetY=this.transformY
+      }}
+    {{/each}}
+
+    {{#each this.model.outputs as | simulationOutput index | }}
+      {{
+        simulation-output
+        simulationOutput=simulationOutput
+        outputData=this.outputData
+
+        month=this.month
+
+        outputNodes=outputComponents
+        updateCables=this.updateCablesBound
+        groupOffsetX=this.transformX
+        groupOffsetY=this.transformY
+      }}
+    {{/each}}
+  </div>
 </div>
 
-<div id='node-based-editor-container'>
-  {{#each this.model.entities as | entity index | }}
-    {{
-      entity-node
-      entity=entity
-
-      month=this.month
-
-      inputConnectorData=this.inputConnectorData
-      outputConnectorData=this.outputConnectorData
-      processPropertyData=this.processPropertyData
-
-
-      nodes=entityComponents
-      updateCables=this.updateCablesBound
-      groupOffsetX=this.transformX
-      groupOffsetY=this.transformY
-    }}
-  {{/each}}
-
-  {{#each this.model.outputs as | simulationOutput index | }}
-    {{
-      simulation-output
-      simulationOutput=simulationOutput
-      outputData=this.outputData
-
-      month=this.month
-
-      outputNodes=outputComponents
-      updateCables=this.updateCablesBound
-      groupOffsetX=this.transformX
-      groupOffsetY=this.transformY
-    }}
-  {{/each}}
 
 <div id='time-input-container'>
   <p>Time Input 1 - {{this.timeframe}}</p>
   {{input value=this.month}}
-</div>
-
 </div>
