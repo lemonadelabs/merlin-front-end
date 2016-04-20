@@ -3,6 +3,9 @@
 var EmberApp = require('ember-cli/lib/broccoli/ember-app');
 var cssImport = require("postcss-import");
 var cssnext = require('postcss-cssnext')
+var simpleVars = require('postcss-simple-vars')
+var cssNested = require('postcss-nested')
+var cssMixins = require('postcss-mixins')
 
 module.exports = function(defaults) {
   var app = new EmberApp(defaults, {
@@ -14,6 +17,14 @@ module.exports = function(defaults) {
     },
     postcssOptions: {
       plugins: [
+
+        {
+          module:cssNested
+        },
+        {
+          module: simpleVars,
+          options: {}
+        },
         {
           module: cssImport,
           options: {
@@ -23,7 +34,11 @@ module.exports = function(defaults) {
         {
           module: cssnext,
           options: {}
-        }
+        },
+        {
+          module: cssMixins,
+          options: {}
+        },
       ]
     }
   });

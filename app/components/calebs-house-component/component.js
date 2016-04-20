@@ -49,6 +49,7 @@ export default Ember.Component.extend({
     },
     units:'months'
   },
+  testValue:100,
   timelineGridObjects:undefined,
   init(){
     this._super();
