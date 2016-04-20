@@ -47,6 +47,7 @@ input[type=range]::-moz-focus-outer {
 }
 .range-slider-container{
   position: relative;
+  margin-left: 10em;
 }
 .range-value {
   background: rgb(74, 144, 226);
