@@ -8,8 +8,6 @@ export default Ember.Component.extend({
   processPropertyData: undefined,
   outputData: undefined,
   inputConnectorData: undefined,
-  // month: undefined,
-  // timeframe: undefined,
   entityComponents: [],
   outputComponents: [],
   updateCablesBound: Ember.computed( function() {
@@ -26,7 +24,6 @@ export default Ember.Component.extend({
     document.onmousemove = document.onmousemove || this.updateInputPosition;
     this.initSVGDocument()
     this.initZooming()
-    // $(this.element).panzoom()
     this.initPaning()
   },
 
@@ -48,7 +45,6 @@ export default Ember.Component.extend({
       _.forEach(result, function (item){
         sortedData[item.type][item.id] = item
       })
-      // self.set('simulationData', sortedData)
 
       self.set('outputConnectorData', sortedData['OutputConnector'])
       self.set('processPropertyData', sortedData['ProcessProperty'])
@@ -58,16 +54,6 @@ export default Ember.Component.extend({
   }.on('init'),
 
   initPaning: function() {
-    // var nodeContainer = document.getElementById('node-based-editor-container')
-    // $('#svg-container').on('mousedown', function (e) {
-    //   console.log(e)
-    // })
-
-    console.log($('#nodes-and-svgs'))
-    // $('#nodes-and-svgs').css({
-    //   'transform' : `translate(${x}px,${y}px)`
-    // })
-
     this.initDraggable({
       context : this,
       element : document.getElementById('svg-container')
@@ -116,7 +102,6 @@ export default Ember.Component.extend({
   initZooming: function() {
     this.element.addEventListener('wheel', function (e) {
       e.preventDefault()
-      // console.log(e)
     })
 
   },
