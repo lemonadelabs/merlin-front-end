@@ -33,7 +33,7 @@ export default Ember.Component.extend({
         startValue = this.get('value'),
         maxValue = this.get('max');
 
-    let startOffset = (((rangeWidth - thumbWidth) / maxValue) * startValue) - (bubbleWidth*0.5)+7;
+    let startOffset = (((rangeWidth - thumbWidth) / maxValue) * startValue) - (bubbleWidth*0.5)+9;
     this.set('translateX', startOffset)
   }
 });
