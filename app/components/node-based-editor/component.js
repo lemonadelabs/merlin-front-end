@@ -15,10 +15,6 @@ export default Ember.Component.extend({
     var y = this.get('transformY')
     return Ember.String.htmlSafe(`transform:translate(${x}px,${y}px);`);
   }),
-  zoom: {
-    scale: 1,
-    inverseScale: 1
-  },
   initDraggable: initDraggable,
   didInsertElement() {
     document.onmousemove = document.onmousemove || this.updateInputPosition;

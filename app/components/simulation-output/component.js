@@ -13,11 +13,6 @@ export default Ember.Component.extend({
   initDraggable: initDraggable,
   id: undefined,
   "node-type": "output-node",
-  zoom: {
-    scale: 1,
-    inverseScale: 1
-  },
-
   didInsertElement: function () {
     this.outputNodes.push(this)
     this.outputNodes.arrayContentDidChange(this.outputNodes.length, 0, 1)

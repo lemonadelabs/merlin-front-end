@@ -13,10 +13,6 @@ export default Ember.Component.extend({
   id: undefined,
   initialPosition: undefined,
   "node-type":undefined,
-  zoom: {
-    scale: 1,
-    inverseScale: 1
-  },
   initDraggable: initDraggable,
 
   didInsertElement: function () {
