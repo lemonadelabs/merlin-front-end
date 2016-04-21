@@ -7,6 +7,7 @@ export default function initDraggable (opts) {
 
   function onMouseUp() {
     document.removeEventListener('mousemove', onMouseMove)
+    document.removeEventListener('mouseup', onMouseUp)
   }
 
   function onMouseDown (e) {
@@ -15,6 +16,7 @@ export default function initDraggable (opts) {
 
     self.set('dragOffset', dragOffset({e : e}))
     document.addEventListener('mousemove', onMouseMove)
+    document.addEventListener('mouseup', onMouseUp)
   }
 
   function onMouseMove (e) {
