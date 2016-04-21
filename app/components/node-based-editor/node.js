@@ -58,7 +58,8 @@ Node.prototype.findOutputTerminals = function(opts) {
 
 Node.prototype.position = function(opts) {
   this.$component.css({
-    'left' : `${ 400 * opts.itterate  + 40}px`
+    'left' : `${ 60 * opts.itterate  + 40}px`,
+    'top' : `${ 40 * opts.itterate  + 40}px`
   })
 };
 
