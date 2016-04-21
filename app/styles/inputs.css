@@ -47,19 +47,19 @@ input[type=range]::-moz-focus-outer {
 }
 .range-slider-container{
   position: relative;
-  margin-left: 10em;
 }
 .range-value {
   background: rgb(74, 144, 226);
   border-radius: 3px;
   color: white;
-  font-weight: 600;
+  font-weight: 500;
   margin: 0;
-  min-width: 33px;
+  min-width: 45px;
   padding: 3px 8px;
   position: absolute;
   user-select: none;
   text-align: center;
+  opacity: 1;
 }
 
 .range-value::after {
@@ -70,4 +70,40 @@ input[type=range]::-moz-focus-outer {
   bottom: -13px;
   width: 13px;
   left: calc(50% - 6.5px);
+}
+
+.toggle-switch {
+  width: 140px;
+  height: 30px;
+  background-color: rgba(0, 0, 0, 0.15);
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.toggle-switch-indicator {
+  transition: transform 300ms;
+  background-color: rgb(74, 144, 226);
+  width: 50%;
+  border-radius: inherit;
+  height: 100%;
+  vertical-align: middle;
+  padding-top: 7px;
+}
+
+.toggle-switch-label {
+  text-align: center;
+  color: white;
+  font-weight: 500;
+  font-size: 15px;
+  margin: 0;
+  user-select: none;
+  line-height: 12px;
+}
+
+.toggle-switch-indicator.switch-on{
+  transform: translateX(100%);
+}
+
+.toggle-switch-indicator.switch-off{
+  transform: translateX(0);
 }

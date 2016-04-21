@@ -65,6 +65,7 @@
   padding-bottom: 1px;
   border: solid 1px color( var(--default-node-color) whiteness(+15%) alpha(-50%) );
   position: absolute;
+  user-select: none;
 }
 
 .node .node-drag-bar {
@@ -74,6 +75,7 @@
   padding-bottom: 7px;
   border-radius: 2pt 2pt 0 0;
   cursor: move;
+  cursor: -webkit-grab;
   margin-left: -20px;
   margin-right: -20px;
 }

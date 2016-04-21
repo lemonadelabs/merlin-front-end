@@ -7,11 +7,15 @@ export default Ember.Component.extend({
   rangeElement:undefined,
   bubbleElement:undefined,
   bubbleInlineStyle: Ember.computed('translateX', function(){
-    var x = this.get('translateX');
-    return `transform:translate(${x}px);`;
+    let x =  this.get('translateX');
+    /*Check to see if we have calculated a position for the bubble,
+    if not hide it for now to avoid an awkward pop*/
+    var style = x ? `transform:translate(${x}px);` : 'opacity:0;';
+    return style
   }),
-  // attributeBindings: ['min', 'max', 'step', 'type', 'name', 'list'],
   didInsertElement(){
+    let {rangeElement} = this.getRangeAndBubbleElements()
+    rangeElement.value = this.get('value')
     Ember.run.next(this, this.calculateBubblePosition);
   },
   input() {
@@ -19,8 +23,7 @@ export default Ember.Component.extend({
     this.calculateBubblePosition();
   },
   updateValue(){
-    let componentElement = this.get('element')
-    let rangeElement = componentElement.querySelectorAll("input[type=range]")[0]
+    let rangeElement = this.get('rangeElement')
     this.set('value', Number(rangeElement.value).valueOf());
   },
   calculateBubblePosition(){
