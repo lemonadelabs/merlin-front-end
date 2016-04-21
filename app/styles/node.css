@@ -74,6 +74,7 @@
   padding-bottom: 7px;
   border-radius: 2pt 2pt 0 0;
   cursor: move;
+  cursor: -webkit-grab;
   margin-left: -20px;
   margin-right: -20px;
 }

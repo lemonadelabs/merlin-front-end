@@ -4,6 +4,7 @@ import initDraggable from './draggable'
 
 export default Ember.Component.extend({
   draw: undefined,
+  classNames: ['node-based-editor'],
   outputConnectorData: undefined,
   processPropertyData: undefined,
   outputData: undefined,
@@ -13,7 +14,6 @@ export default Ember.Component.extend({
   updateCablesBound: Ember.computed( function() {
     return Ember.run.bind(this, this.updateCables)
   }),
-  attributeBindings: ['style'],
   style:Ember.computed('transformX', 'transformY' , function () {
     var x = this.get('transformX')
     var y = this.get('transformY')
@@ -100,8 +100,9 @@ export default Ember.Component.extend({
   }.observes('draw'),
 
   initZooming: function() {
+    //Lets not override scrolling till we have zoom working
     this.element.addEventListener('wheel', function (e) {
-      e.preventDefault()
+      // e.preventDefault()
     })
 
   },
