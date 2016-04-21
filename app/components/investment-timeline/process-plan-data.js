@@ -7,16 +7,7 @@ export default function processPlanData (opts) {
     timelineObjects : timelineObjects,
     metadata : metadata
   })
-  // console.log(populatedSkeleton)
-  function sigmoid(t) {
-    return 1/(1+Math.pow(Math.E, -t));
-  }
-
-  var total = 0
-  for (var i = 0; i < 100; i++) {
-    console.log(sigmoid(i))
-    total += sigmoid(i)
-  };
+  return populatedSkeleton
 }
 
 function populateSkeleton(opts) {
@@ -27,19 +18,22 @@ function populateSkeleton(opts) {
   var maxValue = getMaxValue(units)
 
   _.forEach(timelineObjects, function (timelineObject) {
-    var capex = timelineObject.capex
+    var investment = timelineObject.capex
+    var operational = investment / 3
+    var totalExpenditure = operational + investment
+
     var start = timelineObject.start
     var end = timelineObject.end
-    var noOfcapexInstallments = findNoOfcapexInstallments({
+    var noOfInstallments = findNoOfInstallments({
       start : start,
       end : end,
       maxValue : maxValue
     })
 
-    var capexInstallment = capex / noOfcapexInstallments
+    var installment = totalExpenditure / noOfInstallments
 
     fillSkeletonSingleObject({
-      capexInstallment : capexInstallment,
+      installment : installment,
       skeleton : skeleton,
       timelineObject : timelineObject,
       maxValue : maxValue
@@ -49,7 +43,7 @@ function populateSkeleton(opts) {
 }
 
 function fillSkeletonSingleObject(opts) {
-  var capexInstallment = opts.capexInstallment
+  var installment = opts.installment
   var skeleton = opts.skeleton
   var timelineObject = opts.timelineObject
   var maxValue = opts.maxValue
@@ -58,7 +52,7 @@ function fillSkeletonSingleObject(opts) {
 
   if (start.year === end.year) {
     for (var j = start.value; j <= end.value; j++) {
-      skeleton[start.year][j] += capexInstallment
+      skeleton[start.year][j] += installment
     }
     return
   }
@@ -67,22 +61,22 @@ function fillSkeletonSingleObject(opts) {
     // skeleton[i] = {}
     if (i === start.year) {
       for (var j = start.value; j <= maxValue; j++) {
-        skeleton[i][j] += capexInstallment
+        skeleton[i][j] += installment
       }
     } else if (i === end.year) {
       for (var j = 1; j < end.value; j++) {
-        skeleton[i][j] += capexInstallment
+        skeleton[i][j] += installment
       }
     } else {
       for (var j = 1; j <= maxValue; j++) {
-        skeleton[i][j] += capexInstallment
+        skeleton[i][j] += installment
       }
     }
   }
   return
 }
 
-function findNoOfcapexInstallments(opts) {
+function findNoOfInstallments(opts) {
   var start = opts.start
   var end = opts.end
   var units = opts.units
