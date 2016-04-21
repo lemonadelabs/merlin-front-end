@@ -17,48 +17,41 @@ export default Ember.Component.extend({
     var labels = []
 
     var model = this.get('model')
-    var skeleton = this.processPlanData({
+    var processedData = this.processPlanData({
       metadata : model.metadata,
       timelineObjects : model.timelineObjects
     })
 
-    _.forEach(skeleton, function (object, year) {
-      _.forEach(object, function (expenditure, month) {
-        labels.push(`${year}, ${month}`)
-        data.push(expenditure)
+    var sortedData = {}
+
+    _.forEach(processedData, function (dataset, name) {
+      sortedData[name] = {
+        labels : [],
+        data : []
+      }
+      _.forEach(dataset, function (data, year) {
+        _.forEach(data, function (expenditure, month) {
+          if (month.length === 1) {month = '0' + String(month)}
+          sortedData[name].labels.push( `${year}/${month}` )
+          sortedData[name].data.push( expenditure )
+        })
       })
     })
-
-    var total = 0
-
-
-
-
-    function sigmoid(t) {
-      var xMultiplier = 1.3
-      var startingYModifier = - 0.5
-      var yMultiplier = 1.6
-      return ( 1 / ( 1 + Math.pow( Math.E, - ( t * xMultiplier ) ) ) + startingYModifier ) * yMultiplier;
-    }
-
-    // for (var i = 0; i < 100; i++) {
-    //   data.push(sigmoid(i))
-    //   labels.push(i)
-    // };
 
     let graphColour = 'rgb(245, 166, 35)';
     let axisColour = 'rgb(255, 255, 255)';
 
-    let totalExpenditure = new DataSet('test curve', data, graphColour);
-    totalExpenditure.setDashType('longDash')
+    let totalExpenditure = new DataSet('total expenditure', sortedData.totalExpenditure.data, graphColour);
+    let investment  = new DataSet('investment expenditure', sortedData.investment.data, graphColour);
+    let operational  = new DataSet('operational expenditure', sortedData.operational.data, graphColour);
+
+    // totalExpenditure.setDashType('longDash')
+    investment.setDashType('longDash')
+    operational.setDashType('dotted')
 
     let xAxes = new Axes('', axisColour);
     let yAxes = new Axes('', axisColour);
-    let chartParameters = new ChartParameters( [totalExpenditure], labels, [xAxes], [yAxes])
+    let chartParameters = new ChartParameters( [totalExpenditure,investment,operational], sortedData.totalExpenditure.labels, [xAxes], [yAxes])
     this.graphs.push(chartParameters)
-
-
-
-
   }
 });
