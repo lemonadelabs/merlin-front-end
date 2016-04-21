@@ -49,6 +49,7 @@ export default Ember.Component.extend({
     },
     units:'months'
   },
+  bool:false,
   testValue:300,
   timelineGridObjects:undefined,
   init(){
@@ -107,5 +108,8 @@ export default Ember.Component.extend({
     onInteractionEnd: function(){
       console.log('end yo!', this.timelineObjects);
     }
-  }
+  },
+  observeSwitch: function(){
+    console.log(this.get('bool'));
+  }.observes('bool')
 });
