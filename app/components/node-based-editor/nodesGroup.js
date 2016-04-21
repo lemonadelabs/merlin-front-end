@@ -27,7 +27,6 @@ export default function NodesGroup (opts) {
 NodesGroup.prototype.terminalListners = function() {
   var self = this
 
-  var allTerminals = {}
   _.forEach(this.outputTerminals, outputTerminalListners)
   _.forEach(this.inputTerminals, inputTerminalListners)
 
@@ -36,7 +35,7 @@ NodesGroup.prototype.terminalListners = function() {
   })
 
   function outputTerminalListners (terminal) {
-    terminal.$domElement.on('mousedown', function (e) {
+    terminal.$domElement.on('mousedown', function () {
       self.flyingCable = new Cable({
         cableParent : self.cableParent,
         outputTerminal : terminal,
@@ -44,7 +43,7 @@ NodesGroup.prototype.terminalListners = function() {
       })
     })
 
-    terminal.$domElement.on('mouseup', function (e) {
+    terminal.$domElement.on('mouseup', function () {
       console.log('mouseup!!!')
       var cable = self.flyingCable
       self.flyingCable = undefined
@@ -61,14 +60,14 @@ NodesGroup.prototype.terminalListners = function() {
   }
 
   function inputTerminalListners (terminal) {
-    terminal.$domElement.on('mousedown', function (e) {
+    terminal.$domElement.on('mousedown', function () {
       self.flyingCable = new Cable({
         cableParent : self.cableParent,
         inputTerminal : terminal,
         color : self.colorHash[terminal.nodeType]
       })
     })
-    terminal.$domElement.on('mouseup', function (e) {
+    terminal.$domElement.on('mouseup', function () {
       console.log('mouseup!!!')
       var cable = self.flyingCable
       self.flyingCable = undefined
@@ -116,7 +115,6 @@ NodesGroup.prototype.buildNodes = function(opts) {
 
 
     var nodeModel = (nodeType === 'output-node') ? _.find(self.outputModel, ['id', id]) : _.find(self.entityModel, ['id', id])
-    var entityData = _.find(self.entityModel, ['id', id])
 
     var node = new Node({
       id : id,
@@ -151,18 +149,19 @@ NodesGroup.prototype.initCables = function() {
     var cableColor = self.colorHash[nodeType]
 
 
-    _.forEach(entityDrawGroup.outputTerminals, function (outputTerminal, id) {
+    _.forEach(entityDrawGroup.outputTerminals, function (outputTerminal) {
 
       outputTerminal.$domElement.css('background-color', cableColor)
 
       var endpoints = outputTerminal.endpoints
       _.forEach(endpoints, function (endpoint) {
+        var inputTerminal, cable
         if (endpoint.input) {
 
-          var inputTerminal = self.inputTerminals[endpoint.input]
+          inputTerminal = self.inputTerminals[endpoint.input]
           inputTerminal.$domElement.css('background-color', cableColor)
 
-          var cable = new Cable({
+          cable = new Cable({
             cableParent : self.cableParent,
             outputTerminal : outputTerminal,
             inputTerminal : inputTerminal,
@@ -174,10 +173,10 @@ NodesGroup.prototype.initCables = function() {
         if (endpoint.sim_output) {
 
           var simulationOutputId = endpoint.sim_output
-          var inputTerminal = self.outputNodes[simulationOutputId].inputTerminals[simulationOutputId]
+          inputTerminal = self.outputNodes[simulationOutputId].inputTerminals[simulationOutputId]
           inputTerminal.$domElement.css('background-color', cableColor)
 
-          var cable = new Cable({
+          cable = new Cable({
             cableParent : self.cableParent,
             outputTerminal : outputTerminal,
             inputTerminal : inputTerminal,
@@ -193,10 +192,11 @@ NodesGroup.prototype.initCables = function() {
 NodesGroup.prototype.referenceCableInTerminals = function(opts) {
   var cable = opts.cable
   var inputTerminal = cable.inputTerminal
+  var inputNode
   if (_.includes(inputTerminal.nodeType, 'entity')) {
-    var inputNode = this.entityNodes[inputTerminal.entityId]
+    inputNode = this.entityNodes[inputTerminal.entityId]
   } else if (_.includes(inputTerminal.nodeType, 'output')) {
-    var inputNode = this.outputNodes[inputTerminal.entityId]
+    inputNode = this.outputNodes[inputTerminal.entityId]
   }
 
   inputNode.cables.push(cable)
