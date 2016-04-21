@@ -37,7 +37,7 @@ export default function mockData() {
       },
       capex: 1000000,
     }
-  ],
+  ]
   data.metadata = {
     start : {
       year : 2016,
@@ -47,7 +47,7 @@ export default function mockData() {
       year : 2019,
       value : 3
     },
-    units:'months'
+    units : 'months'
   }
 
   return data
