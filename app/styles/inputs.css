@@ -82,6 +82,7 @@ input[type=range]::-moz-focus-outer {
 
 .toggle-switch-indicator {
   transition: transform 300ms;
+  transition-timing-function: ease-out;
   background-color: rgb(74, 144, 226);
   width: 50%;
   border-radius: inherit;
