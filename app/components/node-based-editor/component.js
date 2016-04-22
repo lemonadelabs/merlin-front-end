@@ -111,32 +111,32 @@ export default Ember.Component.extend({
     this.nodesGroup.updateCablesForNode(opts)
   },
 
-  persistPosition: function (opts) {
-    return // false return, to kill function
+  // persistPosition: function (opts) {
+  //   return // false return, to kill function
 
-    var nodetype
-    if ((_.includes(opts.nodeType, 'output'))) {
-      nodetype = 'outputs'
-    } else if ((_.includes(opts.nodeType, 'entity'))) {
-      nodetype = 'entities'
-    }
+  //   var nodetype
+  //   if ((_.includes(opts.nodeType, 'output'))) {
+  //     nodetype = 'outputs'
+  //   } else if ((_.includes(opts.nodeType, 'entity'))) {
+  //     nodetype = 'entities'
+  //   }
 
-    var url = `${nodetype}/${opts.id}/`
+  //   var url = `${nodetype}/${opts.id}/`
 
-    var unModified = Ember.$.getJSON(url)
-    unModified.then(function (response) {
-      response.display_pos_x = opts.x
-      response.display_pos_y = opts.y
+  //   var unModified = Ember.$.getJSON(url)
+  //   unModified.then(function (response) {
+  //     response.display_pos_x = opts.x
+  //     response.display_pos_y = opts.y
 
-      Ember.$.ajax({
-        url: url,
-        type: 'PUT',
-        data: response,
-        success: function(result) {
-          console.log(result)
-        }
-      });
-    })
-  },
+  //     Ember.$.ajax({
+  //       url: url,
+  //       type: 'PUT',
+  //       data: response,
+  //       success: function(result) {
+  //         console.log(result)
+  //       }
+  //     });
+  //   })
+  // },
 
 });
