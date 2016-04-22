@@ -38,12 +38,15 @@ export default Ember.Component.extend({
       })
     })
 
-    let graphColour = 'rgb(245, 166, 35)';
+
+    let totalExpenditureColour = 'rgb(245, 166, 35)';
+    let investmentColour = 'rgb(60, 255, 122)';
+    let operationalColour = 'rgb(129, 65, 255)';
     let axisColour = 'rgb(255, 255, 255)';
 
-    let totalExpenditure = new DataSet('total expenditure', sortedData.totalExpenditure.data, graphColour);
-    let investment  = new DataSet('investment expenditure', sortedData.investment.data, graphColour);
-    let operational  = new DataSet('operational expenditure', sortedData.operational.data, graphColour);
+    let totalExpenditure = new DataSet('total expenditure', sortedData.totalExpenditure.data, totalExpenditureColour);
+    let investment  = new DataSet('investment expenditure', sortedData.investment.data, investmentColour);
+    let operational  = new DataSet('operational expenditure', sortedData.operational.data, operationalColour);
 
     // totalExpenditure.setDashType('longDash')
     investment.setDashType('longDash')
