@@ -101,7 +101,6 @@ NodesGroup.prototype.terminalListners = function() {
 };
 
 NodesGroup.prototype.buildNodes = function(opts) {
-  console.log(opts)
   var self = this
 
   var entityComponents = opts.entityComponents

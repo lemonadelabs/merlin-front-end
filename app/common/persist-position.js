@@ -1,8 +1,6 @@
 export default function persistPosition (e) {
-  console.log(e)
   var id = this.get('id')
   var nodeType = this.get('node-type')
-  console.log(nodeType)
 
   var nodetype
   if ((_.includes(nodeType, 'output'))) {
@@ -16,15 +14,16 @@ export default function persistPosition (e) {
   var unModified = Ember.$.getJSON(url)
   unModified.then(function (response) {
 
-    response.display_pos_x = e.clientX
-    response.display_pos_y = e.clientY
+    response.display_pos_x = e.clientX - e.offsetX
+    response.display_pos_y = e.clientY - e.offsetY
+    console.log(response)
 
     Ember.$.ajax({
       url: url,
       type: 'PUT',
       data: response,
       success: function(result) {
-        // console.log(result)
+        console.log('result', result)
       }
     });
   })
