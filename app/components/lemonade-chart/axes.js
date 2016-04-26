@@ -21,6 +21,9 @@ export default class Axes {
     this.ticks.beginAtZero = true;
     this.ticks.fontColor = fontColour;
   }
+  beginAtZero(bool){
+    this.ticks.beginAtZero = bool;
+  }
   hideGridLines(){
     this.gridLines.display = false;
   }

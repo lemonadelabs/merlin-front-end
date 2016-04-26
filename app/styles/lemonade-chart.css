@@ -5,6 +5,11 @@
   justify-content: center;
   color: white;
 }
+.lemonade-chart-container canvas{
+  height: inherit;
+  width: inherit;
+}
+
 .lemonade-chart-legend {
   transition: opacity 300ms;
   margin-right: 20px;
