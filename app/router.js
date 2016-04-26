@@ -9,6 +9,7 @@ Router.map(function() {
   this.route('wills-house');
   this.route('calebs-house');
   this.route('plan');
+  this.route('services',{ path: '/services/:service_id' });
 });
 
 export default Router;
