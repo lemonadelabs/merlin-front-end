@@ -1,3 +1,5 @@
+import putJSON from './put-json'
+
 export default function persistPosition (e) {
   var id = this.get('id')
   var nodeType = this.get('node-type')
@@ -16,19 +18,10 @@ export default function persistPosition (e) {
 
     response.display_pos_x = e.clientX - e.offsetX
     response.display_pos_y = e.clientY - e.offsetY
-    console.log(response)
 
-    Ember.$.ajax({
-      url: url,
-      type: 'PUT',
-      data: response,
-      success: function(result) {
-        console.log('result', result)
-      }
-    });
+    putJSON({
+      data : response,
+      url : url
+    })
   })
-
-
-
-
 }
