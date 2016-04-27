@@ -6,6 +6,7 @@
 @import "node-based-editor.css";
 @import "lemonade-chart.css";
 @import "node-editor-time-input.css";
+@import "plan.css";
 
 body {
   font-family: "sofia-pro", sans-serif;

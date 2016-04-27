@@ -3,6 +3,7 @@ import Ember from 'ember';
 export default Ember.Component.extend({
   classNames : ['lemonade-chart-container'],
   chart : undefined,
+  attributeBindings: ['style'],
   didInsertElement(){
     this.setUpDefaultValues();
     this.buildChart();
@@ -21,6 +22,7 @@ export default Ember.Component.extend({
     globalChartOptions.elements.line.tension = 0.01
     //Tooltip settings
     //globalChartOptions.tooltips
+    globalChartOptions.maintainAspectRatio = false;
   },
   buildChart(){
     var ctx = this.element.getElementsByTagName("canvas")[0];

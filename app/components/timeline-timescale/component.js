@@ -43,8 +43,8 @@ export default Ember.Component.extend({
         }
       }
       else {
-        for (var month = 0; month < 12; month++) {
-          timeUnits.push({'title':months[month],
+        for (var month = 1; month <= 12; month++) {
+          timeUnits.push({'title':months[month-1],
                           'value': month,
                           'year': timespan.start.year+year
                          });

@@ -4,6 +4,7 @@ export default class Axes {
     let fontColour = gridColour;
     let gridlineColor = chroma(gridColour).alpha(0.2).css()
     let firstGridlineColor = chroma(gridColour).alpha(0.8).css()
+    this.afterSetDimensions = afterSetDimensions.bind(this);
     this.scaleLabel = {}
     this.gridLines = {}
     this.ticks = {}
@@ -20,6 +21,13 @@ export default class Axes {
     //Ticks Settings
     this.ticks.beginAtZero = true;
     this.ticks.fontColor = fontColour;
+  }
+  getAxesWidth(){
+
+      return this.maxWidth;
+  }
+  beginAtZero(bool){
+    this.ticks.beginAtZero = bool;
   }
   hideGridLines(){
     this.gridLines.display = false;
@@ -42,7 +50,10 @@ export default class Axes {
     this.ticks.callback = Callback
   }
 }
-
 function formattingCallback(value){
   return (this.valueToPrepend || "") + value + (this.valueToApend || "")
+}
+
+function afterSetDimensions(scale){
+  this.maxWidth = scale.maxWidth;
 }
