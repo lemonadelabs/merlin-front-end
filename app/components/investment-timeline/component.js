@@ -36,18 +36,23 @@ export default Ember.Component.extend({
     let xAxes = new Axes('', axisColour);
     xAxes.hideGridLines();
     // xAxes.hideTicks();
-    let yAxes = new Axes('', axisColour);
-    yAxes.prependToTickLabel('$');
-    yAxes.beginAtZero(false);
+    let yAxes1 = new Axes('', axisColour);
+    yAxes1.prependToTickLabel('$');
+    yAxes1.beginAtZero(false);
 
-    this.set('axes',{'xAxes': xAxes, 'yAxes': yAxes})
-    let chartParameters = new ChartParameters( [totalExpenditure, investment, operational], graphData.totalExpenditure.labels, [xAxes], [yAxes])
+    let yAxes2 = new Axes('', axisColour);
+    yAxes2.prependToTickLabel('$');
+    yAxes2.beginAtZero(false);
+    yAxes2.setPosition('right');
+
+    this.set('axes',{'xAxes': xAxes, 'yAxes1': yAxes1})
+    let chartParameters = new ChartParameters( [totalExpenditure, investment, operational], graphData.totalExpenditure.labels, [xAxes], [yAxes1,yAxes2])
     this.graphs.push(chartParameters)
   },
 
   didInsertElement(){
     let axes = this.get('axes');
-    this.set('axesWidth', axes.yAxes.maxWidth);
+    this.set('axesWidth', axes.yAxes1.maxWidth);
   },
 
   processAndSortData(){
