@@ -43,12 +43,13 @@ export default Ember.Component.extend({
     this.set('axes',{'xAxes': xAxes, 'yAxes': yAxes})
     let chartParameters = new ChartParameters( [totalExpenditure, investment, operational], graphData.totalExpenditure.labels, [xAxes], [yAxes])
     this.graphs.push(chartParameters)
-
   },
+
   didInsertElement(){
     let axes = this.get('axes');
     this.set('axesWidth', axes.yAxes.maxWidth);
   },
+
   processAndSortData(){
     var model = this.get('model'),
         processedData = this.processPlanData({
@@ -70,7 +71,13 @@ export default Ember.Component.extend({
         })
       })
     })
+
+    _.forEach(sortedData, function (dataset) { // add a value on to the begining of the dataset, for layout reasons
+      dataset.labels.unshift(0)
+      dataset.data.unshift(0)
+    })
     return(sortedData);
+
   },
   actions:{
     recalculateInvestments:function(){
