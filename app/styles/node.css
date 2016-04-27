@@ -1,3 +1,59 @@
+.node.entity-external-capability {
+  background-color: color( var(--capability-color) alpha(-10%) shade(20%) saturation(+5%) );
+  border: solid 1px color( var(--capability-color) whiteness(+15%) alpha(-50%) );
+}
+.node.entity-external-capability .node-drag-bar {
+  background-color: var(--capability-color);
+}
+.node.entity-external-capability .node-subheading {
+  background-color:  color( var(--capability-color) alpha(-50%) );
+}
+.node.entity-external-capability input[type='text'] {
+  border: solid 1px var(--capability-color);
+}
+
+.node.entity-asset {
+  background-color: color( var(--fixed_asset-color) alpha(-10%) shade(20%) saturation(+5%) );
+  border: solid 1px color( var(--fixed_asset-color) whiteness(+15%) alpha(-50%) );
+}
+.node.entity-asset .node-drag-bar {
+  background-color: var(--fixed_asset-color);
+}
+.node.entity-asset .node-subheading {
+  background-color:  color( var(--fixed_asset-color) alpha(-50%) );
+}
+.node.entity-asset input[type='text'] {
+  border: solid 1px var(--fixed_asset-color);
+}
+
+.node.entity-external {
+  background-color: color( var(--capability-color) alpha(-10%) shade(20%) saturation(+5%) );
+  border: solid 1px color( var(--capability-color) whiteness(+15%) alpha(-50%) );
+}
+.node.entity-external .node-drag-bar {
+  background-color: var(--capability-color);
+}
+.node.entity-external .node-subheading {
+  background-color:  color( var(--capability-color) alpha(-50%) );
+}
+.node.entity-external input[type='text'] {
+  border: solid 1px var(--capability-color);
+}
+
+.node.entity-resource {
+  background-color: color( var(--resource-color) alpha(-10%) shade(20%) saturation(+5%) );
+  border: solid 1px color( var(--resource-color) whiteness(+15%) alpha(-50%) );
+}
+.node.entity-resource .node-drag-bar {
+  background-color: var(--resource-color);
+}
+.node.entity-resource .node-subheading {
+  background-color:  color( var(--resource-color) alpha(-50%) );
+}
+.node.entity-resource input[type='text'] {
+  border: solid 1px var(--resource-color);
+}
+
 .node.entity-capability {
   background-color: color( var(--capability-color) alpha(-10%) shade(20%) saturation(+5%) );
   border: solid 1px color( var(--capability-color) whiteness(+15%) alpha(-50%) );

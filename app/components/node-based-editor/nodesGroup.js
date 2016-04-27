@@ -19,7 +19,11 @@ export default function NodesGroup (opts) {
     "entity-capability" : "#03DEAD",
     "entity-budget" : "#7ED321",
     "entity-fixed_asset" : "#9013FE",
-    "output-node" : "#F5A623"
+    "entity-asset" : "#9013FE",
+    "output-node" : "#F5A623",
+    "entity-external" : "#03DEAD",
+    "entity-resource" : "#4A90E2",
+    "entity-external-capability" : "#03DEAD",
   }
   this.flyingCable = undefined
 }
@@ -150,7 +154,6 @@ NodesGroup.prototype.initCables = function() {
 
     var nodeType = entityDrawGroup.nodeType
     var cableColor = self.colorHash[nodeType]
-
 
     _.forEach(entityDrawGroup.outputTerminals, function (outputTerminal) {
 
