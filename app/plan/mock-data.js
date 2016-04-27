@@ -45,9 +45,9 @@ export default function mockData() {
     },
     end : {
       year : 2019,
-      value : 12
+      value : 4
     },
-    units : 'months'
+    units : 'quarters'
   }
 
   return data
