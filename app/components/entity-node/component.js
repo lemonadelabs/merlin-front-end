@@ -24,6 +24,7 @@ export default Ember.Component.extend({
     this.set('positionX', this.entity.display_pos_x)
     this.set('positionY', this.entity.display_pos_y)
     var entityType = this.entity.attributes[0] || 'unknown'
+    if (entityType) {entityType = entityType.replace(' ', '-')}
     this.set('node-type',`entity-${entityType}`);
     this.initDraggable({
       context : this,
