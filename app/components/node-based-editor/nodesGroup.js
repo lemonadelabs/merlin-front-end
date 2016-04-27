@@ -112,7 +112,8 @@ NodesGroup.prototype.buildNodes = function(opts) {
   function buildNode(component, i) {
     var id = component.get('id')
     var nodeType = component.get('node-type')
-
+    var positionX = component.get('positionX')
+    var positionY = component.get('positionY')
 
     var nodeModel = (nodeType === 'output-node') ? _.find(self.outputModel, ['id', id]) : _.find(self.entityModel, ['id', id])
 
@@ -122,6 +123,8 @@ NodesGroup.prototype.buildNodes = function(opts) {
       component : component,
       nodeModel : nodeModel,
       nodeType : nodeType,
+      positionX : positionX,
+      positionY : positionY,
       itterate : i
     })
 

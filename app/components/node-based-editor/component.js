@@ -39,17 +39,20 @@ export default Ember.Component.extend({
 
 
     Ember.$.getJSON('api/simulation-run/1').then(function (result) {
-      var timeframe = result[0].data.result.length
-      self.set('timeframe', timeframe)
-      self.set('month', timeframe)
-      _.forEach(result, function (item){
-        sortedData[item.type][item.id] = item
-      })
+      if (result[0].data.result) {
+        var timeframe = result[0].data.result.length
 
-      self.set('outputConnectorData', sortedData['OutputConnector'])
-      self.set('processPropertyData', sortedData['ProcessProperty'])
-      self.set('outputData', sortedData['Output'])
-      self.set('inputConnectorData', sortedData['InputConnector'])
+        self.set('timeframe', timeframe)
+        self.set('month', timeframe)
+        _.forEach(result, function (item){
+          sortedData[item.type][item.id] = item
+        })
+
+        self.set('outputConnectorData', sortedData['OutputConnector'])
+        self.set('processPropertyData', sortedData['ProcessProperty'])
+        self.set('outputData', sortedData['Output'])
+        self.set('inputConnectorData', sortedData['InputConnector'])
+      }
     })
   }.on('init'),
 
@@ -111,32 +114,32 @@ export default Ember.Component.extend({
     this.nodesGroup.updateCablesForNode(opts)
   },
 
-  persistPosition: function (opts) {
-    return // false return, to kill function
+  // persistPosition: function (opts) {
+  //   return // false return, to kill function
 
-    var nodetype
-    if ((_.includes(opts.nodeType, 'output'))) {
-      nodetype = 'outputs'
-    } else if ((_.includes(opts.nodeType, 'entity'))) {
-      nodetype = 'entities'
-    }
+  //   var nodetype
+  //   if ((_.includes(opts.nodeType, 'output'))) {
+  //     nodetype = 'outputs'
+  //   } else if ((_.includes(opts.nodeType, 'entity'))) {
+  //     nodetype = 'entities'
+  //   }
 
-    var url = `${nodetype}/${opts.id}/`
+  //   var url = `${nodetype}/${opts.id}/`
 
-    var unModified = Ember.$.getJSON(url)
-    unModified.then(function (response) {
-      response.display_pos_x = opts.x
-      response.display_pos_y = opts.y
+  //   var unModified = Ember.$.getJSON(url)
+  //   unModified.then(function (response) {
+  //     response.display_pos_x = opts.x
+  //     response.display_pos_y = opts.y
 
-      Ember.$.ajax({
-        url: url,
-        type: 'PUT',
-        data: response,
-        success: function(result) {
-          console.log(result)
-        }
-      });
-    })
-  },
+  //     Ember.$.ajax({
+  //       url: url,
+  //       type: 'PUT',
+  //       data: response,
+  //       success: function(result) {
+  //         console.log(result)
+  //       }
+  //     });
+  //   })
+  // },
 
 });

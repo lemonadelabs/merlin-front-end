@@ -1,13 +1,15 @@
 export default function initDraggable (opts) {
+  var persistPosition = opts.persistPosition
   var self = opts.context
   var element = opts.element || self.element.getElementsByTagName('header')[0]
 
   element.addEventListener('mousedown', onMouseDown)
   element.addEventListener('mouseup', onMouseUp)
 
-  function onMouseUp() {
+  function onMouseUp(e) {
     document.removeEventListener('mousemove', onMouseMove)
     document.removeEventListener('mouseup', onMouseUp)
+    persistPosition(e)
   }
 
   function onMouseDown (e) {
