@@ -10,14 +10,17 @@ export default Ember.Component.extend({
   graphData:undefined,
   graphs: [],
   axes: {},
-  axesWidth:undefined,
+  axes1Width:undefined,
+  axes2Width:undefined,
   init: function () {
     this._super();
     this.buildChart()
   },
-  chartInlineStyle:Ember.computed('axesWidth', function () {
-    let axesWidth = this.get('axesWidth');
-    return(`margin-left:-${axesWidth}px; width:calc(80% + ${axesWidth}px)`)
+  chartInlineStyle:Ember.computed('axes1Width','axes2Width', function () {
+    let axes1Width = this.get('axes1Width');
+    let axes2Width = this.get('axes2Width');
+    let widthOffset = axes1Width + axes2Width
+    return(`margin-left:-${axes1Width}px; width:calc(80% + ${widthOffset}px)`)
   }),
   buildChart: function () {
     let totalExpenditureColour = 'rgb(245, 166, 35)';
@@ -36,18 +39,27 @@ export default Ember.Component.extend({
     let xAxes = new Axes('', axisColour);
     xAxes.hideGridLines();
     xAxes.hideTicks();
-    let yAxes = new Axes('', axisColour);
-    yAxes.prependToTickLabel('$');
-    yAxes.beginAtZero(false);
-    this.set('axes',{'xAxes': xAxes, 'yAxes': yAxes})
-    let chartParameters = new ChartParameters( [totalExpenditure, investment, operational], graphData.totalExpenditure.labels, [xAxes], [yAxes])
-    this.graphs.push(chartParameters)
+    let yAxes1 = new Axes('', axisColour);
+    yAxes1.prependToTickLabel('$');
+    yAxes1.beginAtZero(false);
 
+    let yAxes2 = new Axes('', axisColour);
+    yAxes2.prependToTickLabel('$');
+    yAxes2.beginAtZero(false);
+    yAxes2.setPosition('right');
+    yAxes2.hideGridLines();
+
+    this.set('axes',{'xAxes': xAxes, 'yAxes1': yAxes1,'yAxes2': yAxes2})
+    let chartParameters = new ChartParameters( [totalExpenditure, investment, operational], graphData.totalExpenditure.labels, [xAxes], [yAxes1,yAxes2])
+    this.graphs.push(chartParameters)
   },
+
   didInsertElement(){
     let axes = this.get('axes');
-    this.set('axesWidth', axes.yAxes.maxWidth);
+    this.set('axes1Width', axes.yAxes1.maxWidth);
+    this.set('axes2Width', axes.yAxes2.maxWidth);
   },
+
   processAndSortData(){
     var model = this.get('model'),
         processedData = this.processPlanData({
@@ -69,7 +81,13 @@ export default Ember.Component.extend({
         })
       })
     })
+
+    _.forEach(sortedData, function (dataset) { // add a value on to the begining of the dataset, for layout reasons
+      dataset.labels.unshift(0)
+      dataset.data.unshift(0)
+    })
     return(sortedData);
+
   },
   actions:{
     recalculateInvestments:function(){
