@@ -90,7 +90,7 @@ function fillSkeletonSingleObject(opts) {
         itterate += 1
       }
     } else if (i === end.year) {
-      for (var j = 1; j < end.value; j++) {
+      for (var j = 1; j <= end.value; j++) {
         totalExpenditureSkeleton[i][j] += installment
         investmentSkeleton[i][j] += installment * sigmoid(itterate)
         operationalSkeleton[i][j] += installment - investmentSkeleton[i][j]
@@ -128,7 +128,7 @@ function findNoOfInstallments(opts) {
         installments += 1
       }
     } else if (i === end.year) {
-      for (var j = 1; j < end.value; j++) {
+      for (var j = 1; j <= end.value; j++) {
         installments += 1
       }
     } else {
@@ -156,7 +156,7 @@ function makeSkeleton(opts) {
         skeleton[i][j] = 0
       }
     } else if (i === end.year) {
-      for (var j = 1; j < end.value; j++) {
+      for (var j = 1; j <= end.value; j++) {
         skeleton[i][j] = 0
       }
     } else {
