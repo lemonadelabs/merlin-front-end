@@ -10,14 +10,17 @@ export default Ember.Component.extend({
   graphData:undefined,
   graphs: [],
   axes: {},
-  axesWidth:undefined,
+  axes1Width:undefined,
+  axes2Width:undefined,
   init: function () {
     this._super();
     this.buildChart()
   },
-  chartInlineStyle:Ember.computed('axesWidth', function () {
-    let axesWidth = this.get('axesWidth');
-    return(`margin-left:-${axesWidth}px; width:calc(80% + ${axesWidth}px)`)
+  chartInlineStyle:Ember.computed('axes1Width','axes2Width', function () {
+    let axes1Width = this.get('axes1Width');
+    let axes2Width = this.get('axes2Width');
+    let widthOffset = axes1Width + axes2Width
+    return(`margin-left:-${axes1Width}px; width:calc(80% + ${widthOffset}px)`)
   }),
   buildChart: function () {
     let totalExpenditureColour = 'rgb(245, 166, 35)';
@@ -45,14 +48,15 @@ export default Ember.Component.extend({
     yAxes2.beginAtZero(false);
     yAxes2.setPosition('right');
 
-    this.set('axes',{'xAxes': xAxes, 'yAxes1': yAxes1})
+    this.set('axes',{'xAxes': xAxes, 'yAxes1': yAxes1,'yAxes2': yAxes2})
     let chartParameters = new ChartParameters( [totalExpenditure, investment, operational], graphData.totalExpenditure.labels, [xAxes], [yAxes1,yAxes2])
     this.graphs.push(chartParameters)
   },
 
   didInsertElement(){
     let axes = this.get('axes');
-    this.set('axesWidth', axes.yAxes1.maxWidth);
+    this.set('axes1Width', axes.yAxes1.maxWidth);
+    this.set('axes2Width', axes.yAxes2.maxWidth);
   },
 
   processAndSortData(){
