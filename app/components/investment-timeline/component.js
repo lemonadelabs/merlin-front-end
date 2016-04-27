@@ -35,10 +35,11 @@ export default Ember.Component.extend({
 
     let xAxes = new Axes('', axisColour);
     xAxes.hideGridLines();
-    xAxes.hideTicks();
+    // xAxes.hideTicks();
     let yAxes = new Axes('', axisColour);
     yAxes.prependToTickLabel('$');
     yAxes.beginAtZero(false);
+
     this.set('axes',{'xAxes': xAxes, 'yAxes': yAxes})
     let chartParameters = new ChartParameters( [totalExpenditure, investment, operational], graphData.totalExpenditure.labels, [xAxes], [yAxes])
     this.graphs.push(chartParameters)
