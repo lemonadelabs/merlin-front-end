@@ -9,10 +9,16 @@ export default Ember.Component.extend({
   timelineGridObjects:undefined,
   graphData:undefined,
   graphs: [],
+  axes: {},
+  axesWidth:undefined,
   init: function () {
     this._super();
     this.buildChart()
   },
+  chartInlineStyle:Ember.computed('axesWidth', function () {
+    let axesWidth = this.get('axesWidth');
+    return(`margin-left:-${axesWidth}px; width:calc(80% + ${axesWidth}px)`)
+  }),
   buildChart: function () {
     let totalExpenditureColour = 'rgb(245, 166, 35)';
     let investmentColour = 'rgb(60, 255, 122)';
@@ -32,8 +38,14 @@ export default Ember.Component.extend({
     let yAxes = new Axes('', axisColour);
     yAxes.prependToTickLabel('$');
     yAxes.beginAtZero(false);
+    this.set('axes',{'xAxes': xAxes, 'yAxes': yAxes})
     let chartParameters = new ChartParameters( [totalExpenditure, investment, operational], graphData.totalExpenditure.labels, [xAxes], [yAxes])
     this.graphs.push(chartParameters)
+
+  },
+  didInsertElement(){
+    let axes = this.get('axes');
+    this.set('axesWidth', axes.yAxes.maxWidth);
   },
   processAndSortData(){
     var model = this.get('model'),
