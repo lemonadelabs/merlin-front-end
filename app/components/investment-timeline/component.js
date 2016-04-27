@@ -35,6 +35,7 @@ export default Ember.Component.extend({
 
     let xAxes = new Axes('', axisColour);
     xAxes.hideGridLines();
+    xAxes.hideTicks();
     let yAxes = new Axes('', axisColour);
     yAxes.prependToTickLabel('$');
     yAxes.beginAtZero(false);
