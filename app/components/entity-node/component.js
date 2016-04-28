@@ -18,9 +18,9 @@ export default Ember.Component.extend({
   persistPosition: persistPosition,
 
   didInsertElement: function () {
-    this.nodes.push(this)
-    this.nodes.arrayContentDidChange(this.nodes.length, 0, 1)
-    this.set('id', this.entity.id);
+    var id = this.entity.id
+    this.set('id', id);
+    this.nodes[id] = this
     this.set('positionX', this.entity.display_pos_x)
     this.set('positionY', this.entity.display_pos_y)
     var entityType = this.entity.attributes[0] || 'unknown'
@@ -30,5 +30,11 @@ export default Ember.Component.extend({
       context : this,
       persistPosition : this.persistPosition.bind(this)
     })
-  }
+  },
+  didDestroyElement: function () {
+    var nodes = this.get('nodes')
+    var id = this.get('id')
+    delete nodes[id]
+    this.set('nodes', nodes)
+  },
 });

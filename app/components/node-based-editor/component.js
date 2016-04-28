@@ -9,8 +9,8 @@ export default Ember.Component.extend({
   processPropertyData: undefined,
   outputData: undefined,
   inputConnectorData: undefined,
-  entityComponents: [],
-  outputComponents: [],
+  entityComponents: {},
+  outputComponents: {},
   updateCablesBound: Ember.computed( function() {
     return Ember.run.bind(this, this.updateCables)
   }),
@@ -21,9 +21,10 @@ export default Ember.Component.extend({
   }),
   initDraggable: initDraggable,
   didInsertElement() {
+    console.log('did insert element')
     document.onmousemove = document.onmousemove || this.updateInputPosition;
     this.initSVGDocument()
-    this.initZooming()
+    // this.initZooming()
     this.initPaning()
   },
 
@@ -80,9 +81,10 @@ export default Ember.Component.extend({
   },
 
   buldSVGNodes: function () {
+
     var self = this
 
-    if (this.entityComponents.length + this.outputComponents.length === this.model.entities.length + this.model.outputs.length ) {
+    if (Object.keys( this.entityComponents ).length + Object.keys( this.outputComponents ).length === this.model.entities.length + this.model.outputs.length ) {
       this.nodesGroup = new NodesGroup({
         draw : this.draw,
         entityModel : self.get('model').entities,
