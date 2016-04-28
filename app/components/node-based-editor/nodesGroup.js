@@ -43,7 +43,9 @@ NodesGroup.prototype.terminalListners = function() {
       self.flyingCable = new Cable({
         cableParent : self.cableParent,
         outputTerminal : terminal,
-        color : self.colorHash[terminal.nodeType]
+        color : self.colorHash[terminal.nodeType],
+        groupOffsetX : self.groupOffsetX,
+        groupOffsetY : self.groupOffsetY
       })
     })
 
@@ -53,7 +55,10 @@ NodesGroup.prototype.terminalListners = function() {
       self.flyingCable = undefined
       if (!cable.outputTerminal) {
         cable.outputTerminal = terminal
-        cable.updatePosition() // add in group offset here
+        cable.updatePosition({
+          groupOffsetX : self.groupOffsetX,
+          groupOffsetY : self.groupOffsetY
+        })
         self.referenceCableInTerminals({ cable : cable })
         var cableColor = self.colorHash[terminal.nodeType]
         cable.svg.attr({stroke : cableColor})
@@ -68,16 +73,23 @@ NodesGroup.prototype.terminalListners = function() {
       self.flyingCable = new Cable({
         cableParent : self.cableParent,
         inputTerminal : terminal,
-        color : self.colorHash[terminal.nodeType]
+        color : self.colorHash[terminal.nodeType],
+        groupOffsetX : self.groupOffsetX,
+        groupOffsetY : self.groupOffsetY
       })
     })
+
     terminal.$domElement.on('mouseup', function () {
       console.log('mouseup!!!')
       var cable = self.flyingCable
       self.flyingCable = undefined
       if (!cable.inputTerminal) {
         cable.inputTerminal = terminal
-        cable.updatePosition()
+
+        cable.updatePosition({
+          groupOffsetX : self.groupOffsetX,
+          groupOffsetY : self.groupOffsetY
+        })
         self.referenceCableInTerminals({ cable : cable })
       } else {
         cable.svg.remove()
@@ -91,7 +103,11 @@ NodesGroup.prototype.terminalListners = function() {
         x : e.clientX,
         y : e.clientY
       }
-      self.flyingCable.flyTo({ mouse : mouse })
+      self.flyingCable.flyTo({
+        mouse : mouse,
+        groupOffsetX : self.groupOffsetX,
+        groupOffsetY : self.groupOffsetY
+      })
     }
   })
 
