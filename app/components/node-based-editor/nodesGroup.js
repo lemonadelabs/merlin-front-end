@@ -77,7 +77,12 @@ NodesGroup.prototype.terminalListners = function() {
       self.flyingCable = undefined
       if (!cable.inputTerminal) {
         cable.inputTerminal = terminal
-        cable.updatePosition()
+
+        console.log(self.groupOffsetX)
+        cable.updatePosition({
+          groupOffsetX : self.groupOffsetX,
+          groupOffsetY : self.groupOffsetY
+        }) // get group offsets into here!
         self.referenceCableInTerminals({ cable : cable })
       } else {
         cable.svg.remove()

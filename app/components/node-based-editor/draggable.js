@@ -24,6 +24,7 @@ export default function initDraggable (opts) {
   function onMouseMove (e) {
     var x = ( e.clientX  -  self.dragOffset.x )
     var y = ( e.clientY - self.dragOffset.y )
+    console.log(self.groupOffsetX)
     if (self.groupOffsetX) {
       x -= self.groupOffsetX
       y -= self.groupOffsetY

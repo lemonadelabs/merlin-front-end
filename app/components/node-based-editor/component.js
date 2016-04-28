@@ -28,6 +28,14 @@ export default Ember.Component.extend({
     this.initPaning()
   },
 
+  updateNodesGroupOffsetX: function () {
+    this.nodesGroup.groupOffsetX = this.get('transformX')
+  }.observes('transformX'),
+
+  updateNodesGroupOffsetY: function () {
+    this.nodesGroup.groupOffsetY = this.get('transformY')
+  }.observes('transformY'),
+
   loadSimulation: function(){
     var self = this
 
