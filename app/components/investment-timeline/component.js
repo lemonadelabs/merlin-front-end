@@ -8,8 +8,7 @@ export default Ember.Component.extend({
   processPlanData: processPlanData,
   timelineGridObjects:undefined,
   graphData:undefined,
-  // graphs: [],
-  graphs: {},
+  investmentGraph:undefined,
   axes: {},
   axes1Width:undefined,
   axes2Width:undefined,
@@ -23,12 +22,6 @@ export default Ember.Component.extend({
     let widthOffset = axes1Width + axes2Width
     return(`margin-left:-${axes1Width}px; width:calc(80% + ${widthOffset}px)`)
   }),
-  willDestroyElement: function () {
-    // this.set('graphs', [])
-    // this.set('axes', {})
-    // this.set('graphData', undefined)
-    // console.log('destroy!!!')
-  },
   buildChart: function () {
     let totalExpenditureColour = 'rgb(245, 166, 35)';
     let investmentColour = 'rgb(60, 255, 122)';
@@ -39,7 +32,6 @@ export default Ember.Component.extend({
     let investment  = new DataSet('investment expenditure', graphData.investment.data, investmentColour);
     let operational  = new DataSet('operational expenditure', graphData.operational.data, operationalColour);
 
-    // totalExpenditure.setDashType('longDash')
     investment.setDashType('longDash')
     operational.setDashType('dotted')
 
@@ -58,9 +50,7 @@ export default Ember.Component.extend({
 
     this.set('axes',{'xAxes': xAxes, 'yAxes1': yAxes1,'yAxes2': yAxes2})
     let chartParameters = new ChartParameters( [totalExpenditure, investment, operational], graphData.totalExpenditure.labels, [xAxes], [yAxes1,yAxes2])
-    // this.graphs.push(chartParameters)
-    this.graphs['investmentGraph'] = chartParameters
-    // console.log(this.get('graphs'))
+    this.set('investmentGraph', chartParameters)
   },
 
   didInsertElement(){
@@ -101,7 +91,7 @@ export default Ember.Component.extend({
   actions:{
     recalculateInvestments:function(){
       let processedData = this.processAndSortData(),
-          investmentGraph = this.get('graphs.0'),
+          investmentGraph = this.get('investmentGraph'),
           dataSetIndex = {
             'totalExpenditure' : 0,
             'investment' : 1,
