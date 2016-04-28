@@ -21,7 +21,6 @@ export default Ember.Component.extend({
   }),
   initDraggable: initDraggable,
   didInsertElement() {
-    console.log('did insert element')
     document.onmousemove = document.onmousemove || this.updateInputPosition;
     this.initSVGDocument()
     // this.initZooming()
