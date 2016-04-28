@@ -1,5 +1,4 @@
 export default function Cable (opts) {
-  this.guides = []
   this.draw = opts.cableParent
 
   this.outputTerminal = opts.outputTerminal
