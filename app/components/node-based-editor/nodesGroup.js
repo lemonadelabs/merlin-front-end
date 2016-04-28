@@ -53,7 +53,7 @@ NodesGroup.prototype.terminalListners = function() {
       self.flyingCable = undefined
       if (!cable.outputTerminal) {
         cable.outputTerminal = terminal
-        cable.updatePosition()
+        cable.updatePosition() // add in group offset here
         self.referenceCableInTerminals({ cable : cable })
         var cableColor = self.colorHash[terminal.nodeType]
         cable.svg.attr({stroke : cableColor})
