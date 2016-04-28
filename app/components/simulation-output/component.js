@@ -16,14 +16,20 @@ export default Ember.Component.extend({
   id: undefined,
   "node-type": "output-node",
   didInsertElement: function () {
-    this.outputNodes.push(this)
-    this.outputNodes.arrayContentDidChange(this.outputNodes.length, 0, 1)
-    this.set('id', this.simulationOutput.id);
+    var id = this.simulationOutput.id
+    this.set('id', id);
+    this.outputNodes[id] = this
     this.set('positionX', this.simulationOutput.display_pos_x)
     this.set('positionY', this.simulationOutput.display_pos_y)
     this.initDraggable({
       context : this,
       persistPosition : this.persistPosition.bind(this)
     })
-  }
+  },
+  didDestroyElement: function () {
+    var outputNodes = this.get('outputNodes')
+    var id = this.get('id')
+    delete outputNodes[id]
+    this.set('outputNodes', outputNodes)
+  },
 });
