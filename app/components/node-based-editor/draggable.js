@@ -9,7 +9,7 @@ export default function initDraggable (opts) {
   function onMouseUp(e) {
     document.removeEventListener('mousemove', onMouseMove)
     document.removeEventListener('mouseup', onMouseUp)
-    persistPosition(e)
+    if ( persistPosition ) { persistPosition(e) }
   }
 
   function onMouseDown (e) {
