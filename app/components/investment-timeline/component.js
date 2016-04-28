@@ -8,7 +8,8 @@ export default Ember.Component.extend({
   processPlanData: processPlanData,
   timelineGridObjects:undefined,
   graphData:undefined,
-  graphs: [],
+  // graphs: [],
+  graphs: {},
   axes: {},
   axes1Width:undefined,
   axes2Width:undefined,
@@ -22,6 +23,12 @@ export default Ember.Component.extend({
     let widthOffset = axes1Width + axes2Width
     return(`margin-left:-${axes1Width}px; width:calc(80% + ${widthOffset}px)`)
   }),
+  willDestroyElement: function () {
+    // this.set('graphs', [])
+    // this.set('axes', {})
+    // this.set('graphData', undefined)
+    // console.log('destroy!!!')
+  },
   buildChart: function () {
     let totalExpenditureColour = 'rgb(245, 166, 35)';
     let investmentColour = 'rgb(60, 255, 122)';
@@ -51,7 +58,9 @@ export default Ember.Component.extend({
 
     this.set('axes',{'xAxes': xAxes, 'yAxes1': yAxes1,'yAxes2': yAxes2})
     let chartParameters = new ChartParameters( [totalExpenditure, investment, operational], graphData.totalExpenditure.labels, [xAxes], [yAxes1,yAxes2])
-    this.graphs.push(chartParameters)
+    // this.graphs.push(chartParameters)
+    this.graphs['investmentGraph'] = chartParameters
+    // console.log(this.get('graphs'))
   },
 
   didInsertElement(){
