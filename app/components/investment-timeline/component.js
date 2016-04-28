@@ -1,11 +1,11 @@
 import Ember from 'ember';
-import processPlanData from './process-plan-data'
+import processTimelineObjects from '../../business-logic/process-timeline-objects'
 import DataSet from '../lemonade-chart/dataSet';
 import Axes from '../lemonade-chart/axes';
 import ChartParameters from '../lemonade-chart/chartParameters';
 
 export default Ember.Component.extend({
-  processPlanData: processPlanData,
+  processTimelineObjects: processTimelineObjects,
   timelineGridObjects:undefined,
   graphData:undefined,
   investmentGraph:undefined,
@@ -61,7 +61,7 @@ export default Ember.Component.extend({
 
   processAndSortData(){
     var model = this.get('model'),
-        processedData = this.processPlanData({
+        processedData = this.processTimelineObjects({
           metadata : model.metadata,
           timelineObjects : model.timelineObjects
         }),
