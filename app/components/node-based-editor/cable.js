@@ -1,5 +1,4 @@
 export default function Cable (opts) {
-  this.guides = []
   this.draw = opts.cableParent
 
   this.outputTerminal = opts.outputTerminal
@@ -9,6 +8,7 @@ export default function Cable (opts) {
 
 
 Cable.prototype.init = function(opts) {
+
   var cableParent = opts.cableParent
   var outputTerminal = opts.outputTerminal
   var inputTerminal = opts.inputTerminal
@@ -22,14 +22,15 @@ Cable.prototype.init = function(opts) {
     cable.inputTerminal = inputTerminal
 
     var startPositionCSS = terminalCSSPosition(outputTerminal.$domElement)
-
     var endPositionCSS = terminalCSSPosition(inputTerminal.$domElement)
+
 
     var curveString = this.buildPathString({
       start : startPositionCSS,
       end : endPositionCSS
     })
     cable.plot( curveString )
+
   } else {
     console.log('cable is flying!')
   }
@@ -40,12 +41,32 @@ Cable.prototype.init = function(opts) {
 
 Cable.prototype.flyTo = function(opts) {
   var coords = {}
+
   if (this.outputTerminal) {
     coords.start = terminalCSSPosition(this.outputTerminal.$domElement)
-    coords.end = opts.mouse
+    coords.end = {
+      top : opts.mouse.y,
+      left : opts.mouse.x
+    }
   } else if (this.inputTerminal) {
-    coords.start = opts.mouse
+    coords.start = {
+      top : opts.mouse.y,
+      left : opts.mouse.x
+    }
     coords.end = terminalCSSPosition(this.inputTerminal.$domElement)
+  }
+
+  if (opts.groupOffsetX) {
+    coords.start = applyGroupOffset({
+      position : coords.start,
+      groupOffsetX : opts.groupOffsetX,
+      groupOffsetY : opts.groupOffsetY
+    })
+    coords.end = applyGroupOffset({
+      position : coords.end,
+      groupOffsetX : opts.groupOffsetX,
+      groupOffsetY : opts.groupOffsetY
+    })
   }
   var curveString = this.buildPathString(coords)
   this.svg.plot( curveString )
@@ -56,30 +77,25 @@ Cable.prototype.updatePosition = function(opts) {
   var endPositionCSS = terminalCSSPosition(this.inputTerminal.$domElement)
 
   if (opts.groupOffsetX) {
-    startPositionCSS.top -= opts.groupOffsetY
-    startPositionCSS.left -= opts.groupOffsetX
-    endPositionCSS.top -= opts.groupOffsetY
-    endPositionCSS.left -= opts.groupOffsetX
+    startPositionCSS = applyGroupOffset({
+      position : startPositionCSS,
+      groupOffsetX : opts.groupOffsetX,
+      groupOffsetY : opts.groupOffsetY
+    })
+    endPositionCSS = applyGroupOffset({
+      position : endPositionCSS,
+      groupOffsetX : opts.groupOffsetX,
+      groupOffsetY : opts.groupOffsetY
+    })
   }
 
   var curveString = this.buildPathString({
     start : startPositionCSS,
     end : endPositionCSS
   })
+
   this.svg.plot( curveString )
 };
-
-
-function terminalCSSPosition (terminal) {
-  var position = {}
-  var boundingBox = terminal[ 0 ].getBoundingClientRect()
-  position.left = boundingBox.left + boundingBox.width / 2
-  position.top = boundingBox.top + boundingBox.height / 2
-
-  return position
-
-}
-
 
 Cable.prototype.buildPathString = function (opts) {
   if (opts.start.top) {
@@ -100,10 +116,6 @@ Cable.prototype.buildPathString = function (opts) {
 
 Cable.prototype.buildReversePathString = function(opts) {
 
-  // _.forEach(this.guides, function ( guide) {
-  //   guide.remove()
-  // })
-
   var start = opts.start
   var end = opts.end
 
@@ -115,11 +127,9 @@ Cable.prototype.buildReversePathString = function(opts) {
 
   midPt.x = end.x - (end.x - start.x)/2
   midPt.y = start.y + (end.y - start.y) / 2
-  // this.guides.push( this.draw.rect(5, 5).fill('#ffffff').radius(5).translate(midPt.x, midPt.y) )
 
   controlPt1.x = start.x + ((start.x - end.x) / 10)
   controlPt1.y = start.y
-  // this.guides.push( this.draw.rect(5, 5).radius(5).translate(controlPt1.x, controlPt1.y) )
 
   controlPt2.x = controlPt1.x
   controlPt3.x = end.x + ((end.x - start.x) / 10)
@@ -134,12 +144,9 @@ Cable.prototype.buildReversePathString = function(opts) {
     controlPt2.y =  midPt.y
     controlPt3.y =  controlPt2.y
   }
-  // this.guides.push( this.draw.rect(5, 5).radius(5).translate(controlPt2.x, controlPt2.y) )
-  // this.guides.push( this.draw.rect(5, 5).radius(5).translate(controlPt3.x, controlPt3.y) )
 
   controlPt4.x = controlPt3.x
   controlPt4.y = end.y
-  // this.guides.push( this.draw.rect(5, 5).radius(5).translate(controlPt4.x, controlPt4.y) )
 
   return `M ${start.x} ${start.y}
           C ${controlPt1.x} ${controlPt1.y} ${controlPt2.x} ${controlPt2.y} ${midPt.x} ${midPt.y}
@@ -158,6 +165,19 @@ Cable.prototype.buildStandardPathString = function(opts) {
   controlPt2.y = end.y
 
   return `M ${start.x} ${start.y} C ${controlPt1.x} ${controlPt1.y} ${controlPt2.x} ${controlPt2.y} ${end.x} ${end.y}`
-
-
 };
+
+function applyGroupOffset(opts) {
+  var position = opts.position
+  position.top -= opts.groupOffsetY
+  position.left -= opts.groupOffsetX
+  return position
+}
+
+function terminalCSSPosition (terminal) {
+  var position = {}
+  var boundingBox = terminal[ 0 ].getBoundingClientRect()
+  position.left = boundingBox.left + boundingBox.width / 2
+  position.top = boundingBox.top + boundingBox.height / 2
+  return position
+}

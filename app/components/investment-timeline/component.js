@@ -8,7 +8,7 @@ export default Ember.Component.extend({
   processPlanData: processPlanData,
   timelineGridObjects:undefined,
   graphData:undefined,
-  graphs: [],
+  investmentGraph:undefined,
   axes: {},
   axes1Width:undefined,
   axes2Width:undefined,
@@ -32,7 +32,6 @@ export default Ember.Component.extend({
     let investment  = new DataSet('investment expenditure', graphData.investment.data, investmentColour);
     let operational  = new DataSet('operational expenditure', graphData.operational.data, operationalColour);
 
-    // totalExpenditure.setDashType('longDash')
     investment.setDashType('longDash')
     operational.setDashType('dotted')
 
@@ -51,7 +50,7 @@ export default Ember.Component.extend({
 
     this.set('axes',{'xAxes': xAxes, 'yAxes1': yAxes1,'yAxes2': yAxes2})
     let chartParameters = new ChartParameters( [totalExpenditure, investment, operational], graphData.totalExpenditure.labels, [xAxes], [yAxes1,yAxes2])
-    this.graphs.push(chartParameters)
+    this.set('investmentGraph', chartParameters)
   },
 
   didInsertElement(){
@@ -92,7 +91,7 @@ export default Ember.Component.extend({
   actions:{
     recalculateInvestments:function(){
       let processedData = this.processAndSortData(),
-          investmentGraph = this.get('graphs.0'),
+          investmentGraph = this.get('investmentGraph'),
           dataSetIndex = {
             'totalExpenditure' : 0,
             'investment' : 1,

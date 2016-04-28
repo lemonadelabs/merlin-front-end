@@ -1,12 +1,24 @@
 <div class='timeline-track-container'>
-  {{timeline-track
+  {{
+    timeline-track
     timelineGridObjects=this.timelineGridObjects
     timelineObjects=model.timelineObjects
     onInteractionEnd=(action 'recalculateInvestments')
   }}
 </div>
-{{timeline-timescale
+
+{{
+  timeline-timescale
   timelineGridObjects=this.timelineGridObjects
   timespan=model.metadata
 }}
-{{lemonade-chart style=this.chartInlineStyle class='plan-footer-graph' type='line' data=this.graphs.0.data options=this.graphs.0.options legend=false}}
+
+{{
+  lemonade-chart
+  style=this.chartInlineStyle
+  class='plan-footer-graph'
+  type='line'
+  data=this.investmentGraph.data
+  options=this.investmentGraph.options
+  legend=false
+}}
