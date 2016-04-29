@@ -7,12 +7,15 @@
 @import "lemonade-chart.css";
 @import "node-editor-time-input.css";
 @import "plan.css";
+@import "main-nav.css";
 
 body {
   font-family: "sofia-pro", sans-serif;
   font-feature-settings: "liga" off;
   -webkit-font-smoothing: antialiased;
-  background-color: rgb(46,46,46);
+  background-color: rgb(43, 35, 50);
+  margin: 0;
+  margin-top: 40px;
 }
 
 /* apply a natural box layout model to all elements, but allowing components to change */
@@ -20,40 +23,10 @@ html {
   box-sizing: border-box;
 }
 
-body {
-  margin: 0;
-}
-
 *, *:before, *:after {
   box-sizing: inherit;
 }
 
-foreignobject {
-  width: auto;
-  height: auto;
-}
-
 [data-ember-action]{
   cursor: pointer;
-}
-
-.main-nav {
-  width: 100%;
-  position: fixed;
-  height: 35px;
-  display: flex;
-  color: white;
-  z-index: 100;
-  background-color: #361C4D;
-  /*margin-bottom: 35px;*/
-
-  a {
-    color: white;
-    text-decoration: none;
-    padding-bottom: 1em;
-  }
-
-  a:hover {
-    border-bottom: solid 1px;
-  }
 }
