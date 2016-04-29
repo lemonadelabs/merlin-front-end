@@ -8,6 +8,7 @@ export default Ember.Component.extend({
   x:undefined,
   width:undefined,
   boundFinishManipulationFunc:undefined,
+  boundResizeFunc:undefined,
   style:Ember.computed('x','width','active', function(){
     var x = this.get('x');
     var width = this.get('width');
@@ -19,6 +20,7 @@ export default Ember.Component.extend({
   }),
   didInsertElement(){
     this.set('boundFinishManipulationFunc',this.finishManipulation.bind(this));
+    this.set('boundResizeFunc',this.handleResize.bind(this));
     document.onmousemove = document.onmousemove || this.updateInputPosition;
     document.onmouseup = document.onmouseup || this.envokeCancelEvent;
 
@@ -30,14 +32,15 @@ export default Ember.Component.extend({
       document.addEventListener("touchend", this.envokeCancelEvent);
       document.touchEndListener = true;
     }
-    window.onresize = Ember.run.bind(this, this.handleResize)
+    window.addEventListener('resize', this.boundResizeFunc)
 
   },
   willDestroy(){
     document.onmousemove = null;
+    document.removeEventListener('resize', this.boundResizeFunc)
   },
   handleResize: function () {
-    console.log('window has been resized')
+    Ember.run.debounce(this, this.setPositionFromGrid, 100);    
   },
   mouseDown(e){
     this.handleInputStart(e);
@@ -219,7 +222,6 @@ export default Ember.Component.extend({
     });
     return({'startTime':startTime,'endTime':endTime});
   },
-
   setPositionFromGrid: function(){
     var startPosInfo = this.searchForPositionFromTime(this.get('start'));
     this.set('x',startPosInfo.offsetLeft);
@@ -229,7 +231,7 @@ export default Ember.Component.extend({
   onGridSetup: function (){
     this.setPositionFromGrid();
   }.observes('timelineGridObjects'),
-  between:function(x, min, max) {
+  between: function(x, min, max) {
     return x >= min && x <= max;
   }
 });
