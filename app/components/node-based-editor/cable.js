@@ -1,4 +1,5 @@
 export default function Cable (opts) {
+  this.cssOffset = 2000
   this.draw = opts.cableParent
 
   this.outputTerminal = opts.outputTerminal
@@ -106,6 +107,11 @@ Cable.prototype.buildPathString = function (opts) {
     opts.end.x = opts.end.left
     opts.end.y = opts.end.top
   }
+
+  opts.start.x += this.cssOffset
+  opts.start.y += this.cssOffset
+  opts.end.x += this.cssOffset
+  opts.end.y += this.cssOffset
 
   if (opts.start.x > opts.end.x) {
     return this.buildReversePathString(opts)
