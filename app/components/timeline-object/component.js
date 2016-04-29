@@ -30,10 +30,14 @@ export default Ember.Component.extend({
       document.addEventListener("touchend", this.envokeCancelEvent);
       document.touchEndListener = true;
     }
+    window.onresize = Ember.run.bind(this, this.handleResize)
 
   },
   willDestroy(){
     document.onmousemove = null;
+  },
+  handleResize: function () {
+    console.log('window has been resized')
   },
   mouseDown(e){
     this.handleInputStart(e);
