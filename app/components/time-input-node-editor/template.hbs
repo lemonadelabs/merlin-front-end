@@ -1,2 +1,8 @@
-<p>Time Input 1 - {{this.timeframe}}</p>
-{{input value=this.month}}
+<div class='time-month-container'>
+  {{#each this.months as |month|}}
+    <div class="month" {{action 'changeMonth' month}}>
+      <span></span>
+      <p>{{month}}</p>
+    </div>
+  {{/each}}
+</div>
