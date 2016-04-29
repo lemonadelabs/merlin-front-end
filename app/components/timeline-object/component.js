@@ -40,7 +40,7 @@ export default Ember.Component.extend({
     document.removeEventListener('resize', this.boundResizeFunc)
   },
   handleResize: function () {
-    Ember.run.debounce(this, this.setPositionFromGrid, 100);    
+    Ember.run.debounce(this, this.setPositionFromGrid, 100);
   },
   mouseDown(e){
     this.handleInputStart(e);
