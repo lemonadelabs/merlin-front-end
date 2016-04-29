@@ -50,7 +50,7 @@ html {
     height: 100%;
   }
   a.active{
-    font-weight: 600;
+    font-weight: 700;
   }
   a:hover {
     p{
@@ -63,5 +63,13 @@ html {
   p{
     margin: 0;
     line-height: 1em;
+  }
+
+  .merlin-logo {
+    width: 65px;
+    margin-left: 1em;
+    margin-right: 0.5em;
+    margin-top: -0.1em;
+    height: auto;
   }
 }
