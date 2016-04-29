@@ -27,6 +27,10 @@ export default function initDraggable (opts) {
     if (self.groupOffsetX) {
       x -= self.groupOffsetX
       y -= self.groupOffsetY
+    } else {
+      var cssOffset = 2000
+      x += cssOffset
+      y += cssOffset
     }
 
     self.set('transformX', x)
