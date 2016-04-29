@@ -9,6 +9,8 @@ export default Ember.Component.extend({
   processPropertyData: undefined,
   outputData: undefined,
   inputConnectorData: undefined,
+  transformX: 0,
+  transformY: 0,
   entityComponents: {},
   outputComponents: {},
   updateCablesBound: Ember.computed( function() {
