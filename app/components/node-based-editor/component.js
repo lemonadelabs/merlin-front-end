@@ -85,7 +85,7 @@ export default Ember.Component.extend({
   },
 
   initSVGDocument: function () {
-    var draw = SVG('svg-container').size(window.innerWidth * 5, window.innerHeight * 5)
+    var draw = SVG('svg-container').size(window.innerWidth * 10, window.innerHeight * 10)
     this.set('draw', draw)
   },
 
