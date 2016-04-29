@@ -13,6 +13,9 @@
 }
 
 #svg-container {
+  /* these margins need to be accounted for in draggable.js and cable.js | they are refered to as `cssOffset` */
+  margin-top: -2000px;
+  margin-left: -2000px;
   width: 500%;
   height: 500%;
   cursor: move;
