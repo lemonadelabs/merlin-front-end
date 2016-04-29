@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import initDraggable from '../../common/persist-position'
+import initDraggable from '../../common/draggable'
 import persistPosition from '../../common/persist-position'
 
 export default Ember.Component.extend({
