@@ -1,4 +1,4 @@
-export default function processPlanData (opts) {
+export default function processTimelineObjects (opts) {
   var metadata = opts.metadata
   var timelineObjects = opts.timelineObjects
   var totalExpenditureSkeleton = makeSkeleton( { metadata : opts.metadata } )

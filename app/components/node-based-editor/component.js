@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import NodesGroup from './nodesGroup'
-import initDraggable from './draggable'
+import initDraggable from '../../common/persist-position'
 
 export default Ember.Component.extend({
   draw: undefined,
