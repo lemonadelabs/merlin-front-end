@@ -49,7 +49,9 @@ html {
     margin-left: 0.5em;
     height: 100%;
   }
-
+  a.active{
+    font-weight: 600;
+  }
   a:hover {
     p{
       margin-top: calc(0.05em + 1px);
