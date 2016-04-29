@@ -7,6 +7,7 @@
 @import "lemonade-chart.css";
 @import "node-editor-time-input.css";
 @import "plan.css";
+@import "main-nav.css";
 
 body {
   font-family: "sofia-pro", sans-serif;
@@ -28,48 +29,4 @@ html {
 
 [data-ember-action]{
   cursor: pointer;
-}
-
-.main-nav {
-  width: 100%;
-  top: 0;
-  position: fixed;
-  height: 40px;
-  display: flex;
-  color: white;
-  z-index: 100;
-  background-color: #532B77;
-  align-items: center;
-
-  a {
-    display: inline-flex;
-    align-items: center;
-    color: white;
-    text-decoration: none;
-    margin-left: 0.5em;
-    height: 100%;
-  }
-  a.active{
-    font-weight: 700;
-  }
-  a:hover {
-    p{
-      margin-top: calc(0.05em + 1px);
-      border-bottom: solid 1px;
-      padding-bottom: 0.05em;
-    }
-  }
-
-  p{
-    margin: 0;
-    line-height: 1em;
-  }
-
-  .merlin-logo {
-    width: 65px;
-    margin-left: 1em;
-    margin-right: 0.5em;
-    margin-top: -0.1em;
-    height: auto;
-  }
 }
