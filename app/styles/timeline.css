@@ -104,6 +104,7 @@
   position: absolute;
   top: 30px;
   user-select: none;
+  padding-left: 5px;
 }
 
 .timeline-object.active {
@@ -128,4 +129,18 @@
   position: absolute;
   top:0;
   width: 20px;
+}
+
+.object-name {
+  font-size: 10.5pt;
+  font-weight: 800;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  text-transform: capitalize;
+}
+
+.object-info {
+  font-size: 9.5pt;
+  margin-top: 0;
+  margin-bottom: 0px;
 }
