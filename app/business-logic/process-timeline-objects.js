@@ -1,14 +1,13 @@
 export default function processProjects (opts) {
   var metadata = opts.metadata
   var projects = opts.projects
-  // var totalInvestmentSkeleton = makeSkeleton( { metadata : opts.metadata } )
+
   var researchSkeleton = makeSkeleton( { metadata : opts.metadata } )
   var devSkeleton = makeSkeleton( { metadata : opts.metadata } )
   var ongoingCostSkeleton = makeSkeleton( { metadata : opts.metadata } )
   var capitalisationSkeleton = makeSkeleton( { metadata : opts.metadata } )
 
   populateSkeletons({
-    // totalInvestmentSkeleton : totalInvestmentSkeleton,
     researchSkeleton : researchSkeleton,
     devSkeleton : devSkeleton,
     ongoingCostSkeleton : ongoingCostSkeleton,

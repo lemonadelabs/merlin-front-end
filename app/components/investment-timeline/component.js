@@ -107,18 +107,18 @@ export default Ember.Component.extend({
 
   actions:{
     recalculateInvestments:function(){
-      console.log('recalculating investments')
       let processedData = this.processAndSortData(),
           investmentGraph = this.get('investmentGraph'),
           dataSetIndex = {
-            'totalExpenditure' : 0,
-            'investment' : 1,
-            'operational' : 2
+            'totalInvestment' : 0,
+            'ongoingCost' : 1,
+            'capitalisation' : 2
           }
-
       _.forEach(processedData, function(value, key){
         let index = dataSetIndex[key];
-        Ember.set(investmentGraph.data.datasets, `${index}.data`, value.data);
+        if(index !== undefined){
+          Ember.set(investmentGraph.data.datasets, `${index}.data`, value);
+        }
       });
 
     }
