@@ -12,7 +12,9 @@ export default Ember.Component.extend({
 
   },
   didInsertElement: function(){
-    this.set('timelineGridObjects', this.element.getElementsByClassName("timeline-grid"));
+    Ember.run.next(this, function(){
+      this.set('timelineGridObjects', this.element.getElementsByClassName("timeline-grid"));
+    });
   },
   buildYearsArray: function(timespan){
     //TODO Merge timeUnits into this func
