@@ -20,7 +20,7 @@ export default Ember.Component.extend({
     let axes1Width = this.get('axes1Width');
     let axes2Width = this.get('axes2Width');
     let widthOffset = axes1Width + axes2Width
-    return(`margin-left:-${axes1Width}px; width:calc(80% + ${widthOffset}px)`)
+    return Ember.String.htmlSafe(`margin-left:-${axes1Width}px; width:calc(80% + ${widthOffset}px)`)
   }),
   buildChart: function () {
     let ongoingCostColour = 'rgb(245, 166, 35)';
@@ -57,9 +57,11 @@ export default Ember.Component.extend({
   },
 
   didInsertElement(){
-    let axes = this.get('axes');
-    this.set('axes1Width', axes.yAxes1.maxWidth);
-    this.set('axes2Width', axes.yAxes2.maxWidth);
+    Ember.run.next(this,function(){
+      let axes = this.get('axes');
+      this.set('axes1Width', axes.yAxes1.maxWidth);
+      this.set('axes2Width', axes.yAxes2.maxWidth);
+    })
   },
 
   processAndSortData(){
