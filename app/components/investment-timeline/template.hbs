@@ -1,10 +1,14 @@
 <div class='timeline-track-container'>
-  {{
-    timeline-track
-    timelineGridObjects=this.timelineGridObjects
-    timelineObjects=model.timelineObjects
-    onInteractionEnd=(action 'recalculateInvestments')
-  }}
+  {{#each model.projects as |project|}}
+    {{log project}}
+    <p>{{project.name}}</p>
+    {{
+      timeline-track
+      timelineGridObjects=this.timelineGridObjects
+      model=project
+      onInteractionEnd=(action 'recalculateInvestments')
+    }}
+  {{/each}}
 </div>
 
 {{
