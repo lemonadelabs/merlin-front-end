@@ -54,9 +54,11 @@ export default Ember.Component.extend({
   },
 
   didInsertElement(){
-    let axes = this.get('axes');
-    this.set('axes1Width', axes.yAxes1.maxWidth);
-    this.set('axes2Width', axes.yAxes2.maxWidth);
+    Ember.run.next(this,function(){
+      let axes = this.get('axes');
+      this.set('axes1Width', axes.yAxes1.maxWidth);
+      this.set('axes2Width', axes.yAxes2.maxWidth);
+    })
   },
 
   processAndSortData(){
