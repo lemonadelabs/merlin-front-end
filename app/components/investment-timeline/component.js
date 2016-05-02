@@ -23,43 +23,44 @@ export default Ember.Component.extend({
     return(`margin-left:-${axes1Width}px; width:calc(80% + ${widthOffset}px)`)
   }),
   buildChart: function () {
-    let totalExpenditureColour = 'rgb(245, 166, 35)';
-    let investmentColour = 'rgb(60, 255, 122)';
-    let operationalColour = 'rgb(129, 65, 255)';
+    let ongoingCostColour = 'rgb(245, 166, 35)';
+    let capitalisationColor = 'rgb(60, 255, 122)';
+    let totalInvestmentColour = 'rgb(129, 65, 255)';
     let axisColour = 'rgb(255, 255, 255)';
     let graphData = this.processAndSortData();
 
 
-    // let totalExpenditure = new DataSet('total expenditure', graphData.totalExpenditure.data, totalExpenditureColour);
-    // let investment  = new DataSet('investment expenditure', graphData.investment.data, investmentColour);
-    // let operational  = new DataSet('operational expenditure', graphData.operational.data, operationalColour);
 
-    // investment.setDashType('longDash')
-    // operational.setDashType('dotted')
+    let totalInvestment = new DataSet('total investment', graphData.totalInvestment, totalInvestmentColour);
+    let capitalisation = new DataSet('capitalisation', graphData.capitalisation, capitalisationColor);
+    let ongoingCost = new DataSet('ongoing cost', graphData.ongoingCost, ongoingCostColour);
 
-    // let xAxes = new Axes('', axisColour);
-    // xAxes.hideGridLines();
-    // xAxes.hideTicks();
-    // let yAxes1 = new Axes('', axisColour);
-    // yAxes1.prependToTickLabel('$');
-    // yAxes1.beginAtZero(false);
+    capitalisation.setDashType('longDash')
+    ongoingCost.setDashType('dotted')
 
-    // let yAxes2 = new Axes('', axisColour);
-    // yAxes2.prependToTickLabel('$');
-    // yAxes2.beginAtZero(false);
-    // yAxes2.setPosition('right');
-    // yAxes2.hideGridLines();
+    let xAxes = new Axes('', axisColour);
+    xAxes.hideGridLines();
+    xAxes.hideTicks();
+    let yAxes1 = new Axes('', axisColour);
+    yAxes1.prependToTickLabel('$');
+    yAxes1.beginAtZero(false);
 
-    // this.set('axes',{'xAxes': xAxes, 'yAxes1': yAxes1,'yAxes2': yAxes2})
-    // let chartParameters = new ChartParameters( [totalExpenditure, investment, operational], graphData.totalExpenditure.labels, [xAxes], [yAxes1,yAxes2])
-    // this.set('investmentGraph', chartParameters)
+    let yAxes2 = new Axes('', axisColour);
+    yAxes2.prependToTickLabel('$');
+    yAxes2.beginAtZero(false);
+    yAxes2.setPosition('right');
+    yAxes2.hideGridLines();
+
+    this.set('axes',{'xAxes': xAxes, 'yAxes1': yAxes1,'yAxes2': yAxes2})
+    let chartParameters = new ChartParameters( [totalInvestment, ongoingCost, capitalisation], graphData.labels, [xAxes], [yAxes1,yAxes2])
+    this.set('investmentGraph', chartParameters)
   },
 
-  // didInsertElement(){
-  //   let axes = this.get('axes');
-  //   this.set('axes1Width', axes.yAxes1.maxWidth);
-  //   this.set('axes2Width', axes.yAxes2.maxWidth);
-  // },
+  didInsertElement(){
+    let axes = this.get('axes');
+    this.set('axes1Width', axes.yAxes1.maxWidth);
+    this.set('axes2Width', axes.yAxes2.maxWidth);
+  },
 
   processAndSortData(){
     var model = this.get('model')
@@ -67,31 +68,44 @@ export default Ember.Component.extend({
       metadata : model.metadata,
       projects : model.projects
     })
+
     var sortedData = {}
+    sortedData.labels = []
+    var labelsNotMadeYet = true
 
-    // _.forEach(processedData, function (dataset, name) {
-    //   sortedData[name] = {
-    //     labels : [],
-    //     data : []
-    //   }
-    //   _.forEach(dataset, function (data, year) {
-    //     _.forEach(data, function (expenditure, month) {
-    //       if (month.length === 1) {month = '0' + String(month)}
-    //       sortedData[name].labels.push( `${year}/${month}` )
-    //       sortedData[name].data.push( expenditure )
-    //     })
-    //   })
-    // })
+    _.forEach(processedData, function (dataset, name) {
+      sortedData[name] = []
+      _.forEach(dataset, function (data, year) {
+        _.forEach(data, function (expenditure, month) {
+          sortedData[name].push( expenditure )
 
-    // _.forEach(sortedData, function (dataset) { // add a value on to the begining of the dataset, for layout reasons
-    //   dataset.labels.unshift(0)
-    //   dataset.data.unshift(0)
-    // })
-    // return(sortedData);
+          if (labelsNotMadeYet) {
+            if (month.length === 1) {month = '0' + String(month)}
+            sortedData.labels.push( `${year}/${month}` )
+          }
+        })
+      })
+      labelsNotMadeYet = false
+    })
 
+    sortedData.totalInvestment = []
+
+    _.forEach(sortedData.research, function (datum, i) { // add up total investment
+      sortedData.totalInvestment.push(datum)
+      sortedData.totalInvestment[i] += sortedData.dev[i]
+    })
+
+
+    _.forEach(sortedData, function (dataset) { // add a value on to the begining of the dataset, for layout reasons
+      dataset.unshift(0)
+    })
+
+    return sortedData;
   },
+
   actions:{
     recalculateInvestments:function(){
+      console.log('recalculating investments')
       let processedData = this.processAndSortData(),
           investmentGraph = this.get('investmentGraph'),
           dataSetIndex = {
@@ -103,7 +117,6 @@ export default Ember.Component.extend({
       _.forEach(processedData, function(value, key){
         let index = dataSetIndex[key];
         Ember.set(investmentGraph.data.datasets, `${index}.data`, value.data);
-
       });
 
     }
