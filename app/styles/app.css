@@ -13,7 +13,7 @@ body {
   font-family: "sofia-pro", sans-serif;
   font-feature-settings: "liga" off;
   -webkit-font-smoothing: antialiased;
-  background-color: rgb(43, 35, 50);
+  background-color: var(--app-background-color);
   margin: 0;
   margin-top: 40px;
 }

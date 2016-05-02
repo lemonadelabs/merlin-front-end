@@ -1,7 +1,7 @@
 <div class='time-month-container'>
   {{#each this.months as |month|}}
     <div class="month" {{action 'changeMonth' month}}>
-      <span></span>
+      <span class="month-dot"></span>
       <p>{{month}}</p>
     </div>
   {{/each}}

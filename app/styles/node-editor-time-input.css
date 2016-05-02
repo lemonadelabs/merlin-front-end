@@ -6,10 +6,31 @@
   color: white;
   justify-content: center;
   font-size: 9pt;
+  border-top: solid 1px color(white alpha(-70%));
+}
+.node-based-editor::after{
+  content:"";
+  display: block;
+  width: 100%;
+  height: 60px;
+  background-color: var(--app-background-color);
+  background-color: linear-gradient(to bottom, color( var(--app-background-color) -99.9%), var(--app-background-color));
+  position: fixed;
+  bottom: 0;
 }
 
 .time-month-container {
+  margin-top: -0.5em;
   display: inline-flex;
   width: 40%;
   justify-content: space-around;
+}
+
+.month-dot{
+  display: block;
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  background-color: white;
+  margin: auto;
 }
