@@ -1,11 +1,11 @@
 import Ember from 'ember';
-import processTimelineObjects from '../../business-logic/process-timeline-objects'
+import processProjects from '../../business-logic/process-timeline-objects'
 import DataSet from '../lemonade-chart/dataSet';
 import Axes from '../lemonade-chart/axes';
 import ChartParameters from '../lemonade-chart/chartParameters';
 
 export default Ember.Component.extend({
-  processTimelineObjects: processTimelineObjects,
+  processProjects: processProjects,
   timelineGridObjects:undefined,
   graphData:undefined,
   investmentGraph:undefined,
@@ -28,64 +28,66 @@ export default Ember.Component.extend({
     let operationalColour = 'rgb(129, 65, 255)';
     let axisColour = 'rgb(255, 255, 255)';
     let graphData = this.processAndSortData();
-    let totalExpenditure = new DataSet('total expenditure', graphData.totalExpenditure.data, totalExpenditureColour);
-    let investment  = new DataSet('investment expenditure', graphData.investment.data, investmentColour);
-    let operational  = new DataSet('operational expenditure', graphData.operational.data, operationalColour);
 
-    investment.setDashType('longDash')
-    operational.setDashType('dotted')
 
-    let xAxes = new Axes('', axisColour);
-    xAxes.hideGridLines();
-    xAxes.hideTicks();
-    let yAxes1 = new Axes('', axisColour);
-    yAxes1.prependToTickLabel('$');
-    yAxes1.beginAtZero(false);
+    // let totalExpenditure = new DataSet('total expenditure', graphData.totalExpenditure.data, totalExpenditureColour);
+    // let investment  = new DataSet('investment expenditure', graphData.investment.data, investmentColour);
+    // let operational  = new DataSet('operational expenditure', graphData.operational.data, operationalColour);
 
-    let yAxes2 = new Axes('', axisColour);
-    yAxes2.prependToTickLabel('$');
-    yAxes2.beginAtZero(false);
-    yAxes2.setPosition('right');
-    yAxes2.hideGridLines();
+    // investment.setDashType('longDash')
+    // operational.setDashType('dotted')
 
-    this.set('axes',{'xAxes': xAxes, 'yAxes1': yAxes1,'yAxes2': yAxes2})
-    let chartParameters = new ChartParameters( [totalExpenditure, investment, operational], graphData.totalExpenditure.labels, [xAxes], [yAxes1,yAxes2])
-    this.set('investmentGraph', chartParameters)
+    // let xAxes = new Axes('', axisColour);
+    // xAxes.hideGridLines();
+    // xAxes.hideTicks();
+    // let yAxes1 = new Axes('', axisColour);
+    // yAxes1.prependToTickLabel('$');
+    // yAxes1.beginAtZero(false);
+
+    // let yAxes2 = new Axes('', axisColour);
+    // yAxes2.prependToTickLabel('$');
+    // yAxes2.beginAtZero(false);
+    // yAxes2.setPosition('right');
+    // yAxes2.hideGridLines();
+
+    // this.set('axes',{'xAxes': xAxes, 'yAxes1': yAxes1,'yAxes2': yAxes2})
+    // let chartParameters = new ChartParameters( [totalExpenditure, investment, operational], graphData.totalExpenditure.labels, [xAxes], [yAxes1,yAxes2])
+    // this.set('investmentGraph', chartParameters)
   },
 
-  didInsertElement(){
-    let axes = this.get('axes');
-    this.set('axes1Width', axes.yAxes1.maxWidth);
-    this.set('axes2Width', axes.yAxes2.maxWidth);
-  },
+  // didInsertElement(){
+  //   let axes = this.get('axes');
+  //   this.set('axes1Width', axes.yAxes1.maxWidth);
+  //   this.set('axes2Width', axes.yAxes2.maxWidth);
+  // },
 
   processAndSortData(){
-    var model = this.get('model'),
-        processedData = this.processTimelineObjects({
-          metadata : model.metadata,
-          timelineObjects : model.timelineObjects
-        }),
-        sortedData = {}
-
-    _.forEach(processedData, function (dataset, name) {
-      sortedData[name] = {
-        labels : [],
-        data : []
-      }
-      _.forEach(dataset, function (data, year) {
-        _.forEach(data, function (expenditure, month) {
-          if (month.length === 1) {month = '0' + String(month)}
-          sortedData[name].labels.push( `${year}/${month}` )
-          sortedData[name].data.push( expenditure )
-        })
-      })
+    var model = this.get('model')
+    var processedData = this.processProjects({
+      metadata : model.metadata,
+      projects : model.projects
     })
+    var sortedData = {}
 
-    _.forEach(sortedData, function (dataset) { // add a value on to the begining of the dataset, for layout reasons
-      dataset.labels.unshift(0)
-      dataset.data.unshift(0)
-    })
-    return(sortedData);
+    // _.forEach(processedData, function (dataset, name) {
+    //   sortedData[name] = {
+    //     labels : [],
+    //     data : []
+    //   }
+    //   _.forEach(dataset, function (data, year) {
+    //     _.forEach(data, function (expenditure, month) {
+    //       if (month.length === 1) {month = '0' + String(month)}
+    //       sortedData[name].labels.push( `${year}/${month}` )
+    //       sortedData[name].data.push( expenditure )
+    //     })
+    //   })
+    // })
+
+    // _.forEach(sortedData, function (dataset) { // add a value on to the begining of the dataset, for layout reasons
+    //   dataset.labels.unshift(0)
+    //   dataset.data.unshift(0)
+    // })
+    // return(sortedData);
 
   },
   actions:{

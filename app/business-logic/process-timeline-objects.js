@@ -1,53 +1,71 @@
-export default function processTimelineObjects (opts) {
+export default function processProjects (opts) {
   var metadata = opts.metadata
-  var timelineObjects = opts.timelineObjects
-  var totalExpenditureSkeleton = makeSkeleton( { metadata : opts.metadata } )
-  var investmentSkeleton = makeSkeleton( { metadata : opts.metadata } )
-  var operationalSkeleton = makeSkeleton( { metadata : opts.metadata } )
+  var projects = opts.projects
+  var totalInvestmentSkeleton = makeSkeleton( { metadata : opts.metadata } )
+  var researchSkeleton = makeSkeleton( { metadata : opts.metadata } )
+  var devSkeleton = makeSkeleton( { metadata : opts.metadata } )
+  var ongingCostSkeleton = makeSkeleton( { metadata : opts.metadata } )
+  var capitalisationSkeleton = makeSkeleton( { metadata : opts.metadata } )
+
   populateSkeletons({
-    totalExpenditureSkeleton : totalExpenditureSkeleton,
-    investmentSkeleton : investmentSkeleton,
-    operationalSkeleton : operationalSkeleton,
-    timelineObjects : timelineObjects,
+    totalInvestmentSkeleton : totalInvestmentSkeleton,
+    researchSkeleton : researchSkeleton,
+    devSkeleton : devSkeleton,
+    ongingCostSkeleton : ongingCostSkeleton,
+    capitalisationSkeleton : capitalisationSkeleton,
+
+    projects : projects,
     metadata : metadata
   })
-  return {
-    investment : investmentSkeleton,
-    operational : operationalSkeleton,
-    totalExpenditure : totalExpenditureSkeleton
-  }
+
+  // return {
+  //   investment : investmentSkeleton,
+  //   operational : operationalSkeleton,
+  //   totalExpenditure : totalExpenditureSkeleton
+  // }
 
 }
 
 function populateSkeletons(opts) {
-  var timelineObjects = opts.timelineObjects
+  var projects = opts.projects
   var metadata = opts.metadata
   var units = metadata.units
   var maxValue = getMaxValue(units)
 
-  _.forEach(timelineObjects, function (timelineObject) {
-    var investment = timelineObject.capex
-    var operational = investment / 3
-    var totalExpenditure = operational + investment
+  _.forEach(projects, function (project) {
+    console.log('doing a project')
 
-    var start = timelineObject.start
-    var end = timelineObject.end
-    var noOfInstallments = findNoOfInstallments({
-      start : start,
-      end : end,
+    var researchCost = project.research.cost
+    var researchStart = project.research.start
+    var researchEnd = project.research.end
+    var researchNoOfInstallments = findNoOfInstallments({
+      start : researchStart,
+      end : researchEnd,
       maxValue : maxValue
     })
+    var researchinstallment = researchCost / researchNoOfInstallments
 
-    var installment = totalExpenditure / noOfInstallments
-
-    fillSkeletonSingleObject({
-      totalExpenditureSkeleton : opts.totalExpenditureSkeleton,
-      investmentSkeleton : opts.investmentSkeleton,
-      operationalSkeleton : opts.operationalSkeleton,
-      installment : installment,
-      timelineObject : timelineObject,
-      maxValue : maxValue
+    distributeCost({
+      skeleton : opts.researchSkeleton,
+      start : researchStart,
+      end : researchEnd,
+      installment : researchinstallment,
+      type : 'research'
     })
+
+    // console.log(opts.researchSkeleton)
+
+    // fillSkeletonSingleObject({
+    //   totalInvestmentSkeleton : opts.totalInvestmentSkeleton,
+    //   researchSkeleton : opts.researchSkeleton,
+    //   devSkeleton : opts.devSkeleton,
+    //   ongingCostSkeleton : opts.ongingCostSkeleton,
+    //   capitalisationSkeleton : opts.capitalisationSkeleton,
+
+    //   installment : installment,
+    //   timelineObject : timelineObject,
+    //   maxValue : maxValue
+    // })
   })
 }
 
@@ -56,6 +74,45 @@ function sigmoid(t) {
   var startingYModifier = - 0.5
   var yMultiplier = 1.6
   return ( 1 / ( 1 + Math.pow( Math.E, - ( t * xMultiplier ) ) ) + startingYModifier ) * yMultiplier;
+}
+
+function distributeCost(opts) {
+  var skeleton = opts.skeleton
+  var start = opts.start
+  var end = opts.end
+  var installment = opts.installment
+  var type = opts.type
+  var maxValue = opts.maxValue
+
+  var itterate = 0
+
+  if (start.year === end.year) {
+    for (var j = start.value; j <= end.value; j++) {
+      skeleton[start.year][j] += installment
+      itterate += 1
+    }
+    return
+  }
+
+  for (var i = start.year; i <= end.year; i++) {
+    if (i === start.year) {
+      for (var j = start.value; j <= maxValue; j++) {
+        skeleton[i][j] += installment
+        itterate += 1
+      }
+    } else if (i === end.year) {
+      for (var j = 1; j <= end.value; j++) {
+        skeleton[i][j] += installment
+        itterate += 1
+      }
+    } else {
+      for (var j = 1; j <= maxValue; j++) {
+        skeleton[i][j] += installment
+        itterate += 1
+      }
+    }
+  }
+  console.log(skeleton)
 }
 
 function fillSkeletonSingleObject(opts) {

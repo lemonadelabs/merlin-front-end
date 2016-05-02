@@ -1,6 +1,6 @@
 <div class='timeline-track-container'>
   {{#each model.projects as |project|}}
-    {{log project}}
+    {{!-- {{log project}} --}}
     <p>{{project.name}}</p>
     {{
       timeline-track
@@ -17,7 +17,7 @@
   timespan=model.metadata
 }}
 
-{{
+{{!-- {{
   lemonade-chart
   style=this.chartInlineStyle
   class='plan-footer-graph'
@@ -26,3 +26,4 @@
   options=this.investmentGraph.options
   legend=false
 }}
+ --}}

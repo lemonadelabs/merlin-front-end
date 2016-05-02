@@ -6,7 +6,7 @@ export default Ember.Component.extend({
   init(){
     this._super();
     this.set('timelineObjects', []);
-    console.log(this.model);
+    // console.log(this.model);
     let self = this;
     _.forEach(this.model,function(value, key){
         if(typeof value === 'object'){
