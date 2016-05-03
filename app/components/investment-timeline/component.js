@@ -55,6 +55,7 @@ export default Ember.Component.extend({
     this.set('axes',{'xAxes': xAxes, 'yAxes1': yAxes1,'yAxes2': yAxes2})
     // let chartParameters = new ChartParameters( [totalInvestment, ongoingCost, capitalisation], graphData.labels, [xAxes], [yAxes1,yAxes2])
     let chartParameters = new ChartParameters( [totalInvestment, ongoingCost, remainingFunds], graphData.labels, [xAxes], [yAxes1,yAxes2])
+    // let chartParameters = new ChartParameters( [totalInvestment, ongoingCost], graphData.labels, [xAxes], [yAxes1,yAxes2])
     this.set('investmentGraph', chartParameters)
   },
 
@@ -104,8 +105,6 @@ export default Ember.Component.extend({
       dataset.unshift(0)
     })
     sortedData.remainingFunds[0] = 50000000
-    // sortedData.remainingFunds.push(0)
-    // console.log(sortedData.remainingFunds)
 
     return sortedData;
   },
