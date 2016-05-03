@@ -148,10 +148,15 @@ function populateSkeletons(opts) {
 function drainFuelTank (opts) {
   var toSubtract = opts.toSubtract
   var fuelTankSkeleton = opts.fuelTankSkeleton
-  var availableFunds = opts.availableFunds
+  var yearlyFunds = opts.availableFunds
+  var availableFunds = 0
 
 _.forEach(fuelTankSkeleton, function (data, year) {
   _.forEach(data, function (expenditure, month) {
+    if (month == 1) {
+      console.log('topping up')
+      availableFunds += yearlyFunds
+    }
     _.forEach(toSubtract, function (dataset) {
       availableFunds -= dataset[year][month]
     })

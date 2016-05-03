@@ -4,17 +4,31 @@ export default function mockData() {
     {
       name : "project1",
       research : {
-        cost : 10000000,
+        cost : 40000000,
         start : {
           year : 2016,
           value : 1,
         },
         end : {
           year : 2016,
-          value : 3
+          value : 4
         },
       },
       development : {
+        cost : 60000000,
+        start : {
+          year : 2017,
+          value : 1,
+        },
+        end : {
+          year : 2018,
+          value : 2
+        },
+      }
+    },
+    {
+      name : "project2",
+      research : {
         cost : 10000000,
         start : {
           year : 2016,
@@ -22,32 +36,18 @@ export default function mockData() {
         },
         end : {
           year : 2017,
-          value : 3
-        },
-      }
-    },
-    {
-      name : "project2",
-      research : {
-        cost : 5000000,
-        start : {
-          year : 2016,
-          value : 3,
-        },
-        end : {
-          year : 2017,
-          value : 3
+          value : 4
         },
       },
       development : {
-        cost : 15000000,
+        cost : 60000000,
         start : {
-          year : 2017,
-          value : 4,
+          year : 2018,
+          value : 1,
         },
         end : {
-          year : 2018,
-          value : 4
+          year : 2019,
+          value : 2
         },
       }
     },
@@ -60,19 +60,19 @@ export default function mockData() {
           value : 1,
         },
         end : {
-          year : 2017,
+          year : 2018,
           value : 2
         },
       },
       development : {
-        cost : 18000000,
+        cost : 30000000,
         start : {
-          year : 2018,
+          year : 2019,
           value : 1,
         },
         end : {
           year : 2019,
-          value : 1
+          value : 4
         },
       }
     },
@@ -87,7 +87,7 @@ export default function mockData() {
       value : 4
     },
     units : 'quarters',
-    availableFunds: 60000000
+    availableFunds: 50000000
   }
 
   return data

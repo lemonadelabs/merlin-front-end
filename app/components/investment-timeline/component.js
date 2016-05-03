@@ -103,6 +103,9 @@ export default Ember.Component.extend({
     _.forEach(sortedData, function (dataset) { // add a value on to the begining of the dataset, for layout reasons
       dataset.unshift(0)
     })
+    sortedData.remainingFunds[0] = 50000000
+    // sortedData.remainingFunds.push(0)
+    // console.log(sortedData.remainingFunds)
 
     return sortedData;
   },
