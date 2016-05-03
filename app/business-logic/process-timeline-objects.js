@@ -6,12 +6,14 @@ export default function processProjects (opts) {
   var devSkeleton = makeSkeleton( { metadata : opts.metadata } )
   var ongoingCostSkeleton = makeSkeleton( { metadata : opts.metadata } )
   var capitalisationSkeleton = makeSkeleton( { metadata : opts.metadata } )
+  var fuelTankSkeleton = makeSkeleton( { metadata : opts.metadata } )
 
   populateSkeletons({
     researchSkeleton : researchSkeleton,
     devSkeleton : devSkeleton,
     ongoingCostSkeleton : ongoingCostSkeleton,
     capitalisationSkeleton : capitalisationSkeleton,
+    fuelTankSkeleton : fuelTankSkeleton,
 
     projects : projects,
     metadata : metadata
@@ -21,7 +23,8 @@ export default function processProjects (opts) {
     research : researchSkeleton,
     dev : devSkeleton,
     ongoingCost : ongoingCostSkeleton,
-    capitalisation : capitalisationSkeleton
+    capitalisation : capitalisationSkeleton,
+    remainingFunds : fuelTankSkeleton
   }
 
 }
@@ -118,6 +121,66 @@ function populateSkeletons(opts) {
       maxValue : maxValue
     })
   })
+  ////////////////////////////////////////////////////////
+  // FUEL TANK
+  ////////////////////////////////////////////////////////
+
+  var availableFunds = metadata.availableFunds
+
+  // distributeCost({
+  //   skeleton : opts.fuelTankSkeleton,
+  //   start : metadata.start,
+  //   end : metadata.start,
+  //   installment : availableFunds,
+  //   maxValue : maxValue
+  // })
+
+  drainFuelTank({
+    fuelTankSkeleton : opts.fuelTankSkeleton,
+    toSubtract : [opts.devSkeleton, opts.researchSkeleton],
+    // start : metadata.start,
+    // end : metadata.start,
+    availableFunds : availableFunds
+  })
+
+}
+
+function drainFuelTank (opts) {
+  var toSubtract = opts.toSubtract
+  var fuelTankSkeleton = opts.fuelTankSkeleton
+  var yearlyFunds = opts.availableFunds
+  var availableFunds = 0
+
+_.forEach(fuelTankSkeleton, function (data, year) {
+  _.forEach(data, function (expenditure, month) {
+    if (month == 1) {
+      console.log('topping up')
+      availableFunds += yearlyFunds
+    }
+    _.forEach(toSubtract, function (dataset) {
+      availableFunds -= dataset[year][month]
+    })
+    fuelTankSkeleton[year][month] = availableFunds
+  })
+})
+
+
+// _.forEach(toSubtract, function (dataset) {
+//   _.forEach(dataset, function (data, year) {
+//     _.forEach(data, function (expenditure, month) {
+//       fuelTankSkeleton
+//       sortedData[name].push( expenditure )
+
+//       if (labelsNotMadeYet) {
+//         if (month.length === 1) {month = '0' + String(month)}
+//         sortedData.labels.push( `${year}/${month}` )
+//       }
+//     })
+//   })
+//   labelsNotMadeYet = false
+// })
+
+
 }
 
 

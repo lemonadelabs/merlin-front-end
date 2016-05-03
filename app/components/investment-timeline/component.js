@@ -34,6 +34,7 @@ export default Ember.Component.extend({
     let totalInvestment = new DataSet('total investment', graphData.totalInvestment, totalInvestmentColour);
     let capitalisation = new DataSet('capitalisation', graphData.capitalisation, capitalisationColor);
     let ongoingCost = new DataSet('ongoing cost', graphData.ongoingCost, ongoingCostColour);
+    let remainingFunds = new DataSet('remaining funds', graphData.remainingFunds, ongoingCostColour);
 
     capitalisation.setDashType('longDash')
     ongoingCost.setDashType('dotted')
@@ -52,7 +53,9 @@ export default Ember.Component.extend({
     yAxes2.hideGridLines();
 
     this.set('axes',{'xAxes': xAxes, 'yAxes1': yAxes1,'yAxes2': yAxes2})
-    let chartParameters = new ChartParameters( [totalInvestment, ongoingCost, capitalisation], graphData.labels, [xAxes], [yAxes1,yAxes2])
+    // let chartParameters = new ChartParameters( [totalInvestment, ongoingCost, capitalisation], graphData.labels, [xAxes], [yAxes1,yAxes2])
+    let chartParameters = new ChartParameters( [totalInvestment, ongoingCost, remainingFunds], graphData.labels, [xAxes], [yAxes1,yAxes2])
+    // let chartParameters = new ChartParameters( [totalInvestment, ongoingCost], graphData.labels, [xAxes], [yAxes1,yAxes2])
     this.set('investmentGraph', chartParameters)
   },
 
@@ -74,6 +77,7 @@ export default Ember.Component.extend({
     var sortedData = {}
     sortedData.labels = []
     var labelsNotMadeYet = true
+
 
     _.forEach(processedData, function (dataset, name) {
       sortedData[name] = []
@@ -97,10 +101,10 @@ export default Ember.Component.extend({
       sortedData.totalInvestment[i] += sortedData.dev[i]
     })
 
-
     _.forEach(sortedData, function (dataset) { // add a value on to the begining of the dataset, for layout reasons
       dataset.unshift(0)
     })
+    sortedData.remainingFunds[0] = 50000000
 
     return sortedData;
   },
@@ -112,7 +116,8 @@ export default Ember.Component.extend({
           dataSetIndex = {
             'totalInvestment' : 0,
             'ongoingCost' : 1,
-            'capitalisation' : 2
+            // 'capitalisation' : 2
+            'remainingFunds' : 2
           }
       _.forEach(processedData, function(value, key){
         let index = dataSetIndex[key];

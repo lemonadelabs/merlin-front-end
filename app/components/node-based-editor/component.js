@@ -48,21 +48,20 @@ export default Ember.Component.extend({
     }
 
 
-    Ember.$.getJSON('api/simulation-run/1').then(function (result) {
-      if (result[0].data.result) {
-        var timeframe = result[0].data.result.length
+    var timeframe = 10
 
-        self.set('timeframe', timeframe)
-        self.set('month', timeframe)
-        _.forEach(result, function (item){
-          sortedData[item.type][item.id] = item
-        })
+    Ember.$.getJSON(`api/simulation-run/1/?steps=${10}`).then(function (result) {
 
-        self.set('outputConnectorData', sortedData['OutputConnector'])
-        self.set('processPropertyData', sortedData['ProcessProperty'])
-        self.set('outputData', sortedData['Output'])
-        self.set('inputConnectorData', sortedData['InputConnector'])
-      }
+      self.set('timeframe', timeframe)
+      self.set('month', timeframe)
+      _.forEach(result, function (nodeData){
+        sortedData[nodeData.type][nodeData.id] = nodeData
+      })
+
+      self.set('outputConnectorData', sortedData['OutputConnector'])
+      self.set('processPropertyData', sortedData['ProcessProperty'])
+      self.set('outputData', sortedData['Output'])
+      self.set('inputConnectorData', sortedData['InputConnector'])
     })
   }.on('init'),
 
