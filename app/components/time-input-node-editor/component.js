@@ -58,7 +58,6 @@ export default Ember.Component.extend({
       let index = _.findIndex(months, function(o) {/*jshint eqeqeq: false*/ return o == month; });
 
       _.forEach(months,function(month, i){
-        console.log(i,index);
         if(i === index){
           self.set(`months.${i}.selected`,true);
         }

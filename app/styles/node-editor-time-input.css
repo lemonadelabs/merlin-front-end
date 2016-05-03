@@ -26,6 +26,15 @@
   justify-content: space-around;
 }
 
+.time-month-container .month.selected{
+  color: rgb(3, 222, 173);
+}
+
+.time-month-container .month.selected .month-dot{
+  background-color: rgb(3, 222, 173);
+
+}
+
 .month-dot{
   display: block;
   width: 1em;
