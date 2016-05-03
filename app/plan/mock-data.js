@@ -4,7 +4,7 @@ export default function mockData() {
     {
       name : "project1",
       research : {
-        cost : 250000,
+        cost : 10000000,
         start : {
           year : 2016,
           value : 1,
@@ -15,7 +15,7 @@ export default function mockData() {
         },
       },
       development : {
-        cost : 750000,
+        cost : 10000000,
         start : {
           year : 2016,
           value : 4,
@@ -29,7 +29,7 @@ export default function mockData() {
     {
       name : "project2",
       research : {
-        cost : 500000,
+        cost : 5000000,
         start : {
           year : 2016,
           value : 3,
@@ -40,7 +40,7 @@ export default function mockData() {
         },
       },
       development : {
-        cost : 2000000,
+        cost : 15000000,
         start : {
           year : 2017,
           value : 4,
@@ -54,7 +54,7 @@ export default function mockData() {
     {
       name : "project3",
       research : {
-        cost : 100000,
+        cost : 2000000,
         start : {
           year : 2017,
           value : 1,
@@ -65,7 +65,7 @@ export default function mockData() {
         },
       },
       development : {
-        cost : 4000000,
+        cost : 18000000,
         start : {
           year : 2018,
           value : 1,
@@ -86,7 +86,8 @@ export default function mockData() {
       year : 2019,
       value : 4
     },
-    units : 'quarters'
+    units : 'quarters',
+    availableFunds: 60000000
   }
 
   return data
