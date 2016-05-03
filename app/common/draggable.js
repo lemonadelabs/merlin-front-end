@@ -24,21 +24,23 @@ export default function initDraggable (opts) {
   function onMouseMove (e) {
     var x = ( e.clientX  -  self.dragOffset.x )
     var y = ( e.clientY - self.dragOffset.y )
-    if (self.groupOffsetX) {
+    console.log(self.groupOffsetX)
+    if (self.get('node-type')) { // for nodes
       x -= self.groupOffsetX
       y -= self.groupOffsetY
-    }
-
-    self.set('transformX', x)
-    self.set('transformY', y)
-    if (self.get('node-type')) {
       self.updateCables({
         type : self.get('node-type'),
         id : self.get('id'),
         groupOffsetX : self.groupOffsetX,
         groupOffsetY : self.groupOffsetY
       })
+    } else { // for the background
+      var cssOffset = 2000
+      x += cssOffset
+      y += cssOffset
     }
+    self.set('transformX', x)
+    self.set('transformY', y)
   }
 }
 

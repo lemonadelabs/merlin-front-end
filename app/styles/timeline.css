@@ -1,6 +1,6 @@
 .timeline-grid-container {
   display: flex;
-  width: 80%;
+  width: 80vw;
   color: white;
   flex-wrap: nowrap;
   align-items: stretch;
@@ -67,12 +67,26 @@
   margin-left: 10px;
 }
 
-.timeline-track{
-  width: 100%;
-  margin-top: 10px;
-  position: relative;
-  height: 50px;
+.timeline-track {
+    width: 100%;
+    position: relative;
+    height: 75px;
 }
+
+.timeline-track .track-name {
+    color: white;
+    margin-top: 10px;
+    margin-left: 10vw;
+    width: 80vw;
+    font-size: 10pt;
+    text-transform: capitalize;
+    border-bottom: solid 1px rgba(255,255,255,0.5);
+    /* background-color: rgba(255,255,255,0.1); */
+    padding-bottom: 3px;
+    padding-left: 7px;
+    font-weight: 600;
+}
+
 
 .timeline-track-container{
   position: absolute;
@@ -88,8 +102,9 @@
   cursor: -webkit-grab;
   min-height: 50px;
   position: absolute;
-  top:0;
+  top: 30px;
   user-select: none;
+  padding-left: 5px;
 }
 
 .timeline-object.active {
@@ -114,4 +129,18 @@
   position: absolute;
   top:0;
   width: 20px;
+}
+
+.object-name {
+  font-size: 10.5pt;
+  font-weight: 800;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  text-transform: capitalize;
+}
+
+.object-info {
+  font-size: 9.5pt;
+  margin-top: 0;
+  margin-bottom: 0px;
 }
