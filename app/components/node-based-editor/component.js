@@ -50,7 +50,7 @@ export default Ember.Component.extend({
 
     var timeframe = 10
 
-    Ember.$.getJSON(`api/simulation-run/1/?steps=${10}`).then(function (result) {
+    Ember.$.getJSON(`api/simulation-run/1/?steps=${timeframe}`).then(function (result) {
 
       self.set('timeframe', timeframe)
       self.set('month', timeframe)
