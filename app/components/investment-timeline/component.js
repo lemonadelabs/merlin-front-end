@@ -29,8 +29,6 @@ export default Ember.Component.extend({
     let axisColour = 'rgb(255, 255, 255)';
     let graphData = this.processAndSortData();
 
-
-
     let totalInvestment = new DataSet('total investment', graphData.totalInvestment, totalInvestmentColour);
     let capitalisation = new DataSet('capitalisation', graphData.capitalisation, capitalisationColor);
     let ongoingCost = new DataSet('ongoing cost', graphData.ongoingCost, ongoingCostColour);
@@ -38,6 +36,8 @@ export default Ember.Component.extend({
 
     capitalisation.setDashType('longDash')
     ongoingCost.setDashType('dotted')
+
+    this.set('remainingFundsDataSet',remainingFunds)
 
     let xAxes = new Axes('', axisColour);
     xAxes.hideGridLines();
@@ -61,9 +61,19 @@ export default Ember.Component.extend({
 
   didInsertElement(){
     Ember.run.next(this,function(){
+
       let axes = this.get('axes');
       this.set('axes1Width', axes.yAxes1.maxWidth);
       this.set('axes2Width', axes.yAxes2.maxWidth);
+      let element = this.get('element')
+      let remainingFundsDataSet = this.get('remainingFundsDataSet')
+      var ctx = element.getElementsByTagName("canvas")[0].getContext("2d");
+
+      var gradient = ctx.createLinearGradient(0, 0, 0, 250);
+      gradient.addColorStop(0, '#6CCF00');
+      gradient.addColorStop(1, '#DF0016');
+
+      remainingFundsDataSet.setBorderColor(gradient)
     })
   },
 

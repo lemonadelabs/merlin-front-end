@@ -23,7 +23,6 @@ export default class Axes {
     this.ticks.fontColor = fontColour;
   }
   getAxesWidth(){
-
       return this.maxWidth;
   }
   beginAtZero(bool){

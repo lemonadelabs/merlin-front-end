@@ -10,6 +10,12 @@ export default class DataSet {
     this.hidden = false;
     this.borderCapStyle = 'round';
   }
+  setBorderColor(Color){
+    this.borderColor = Color;
+    this.pointBackgroundColor = Color
+    this.backgroundColor = 'rgba(0,0,0,0)'
+    // console.log(Color);
+  }
   setAxisId(Id){
     this.yAxisID = Id;
   }
