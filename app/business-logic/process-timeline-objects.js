@@ -140,6 +140,7 @@ function populateSkeletons(opts) {
     toSubtract : [opts.devSkeleton, opts.researchSkeleton],
     // start : metadata.start,
     // end : metadata.start,
+    maxValue : maxValue,
     availableFunds : availableFunds
   })
 
@@ -149,40 +150,28 @@ function drainFuelTank (opts) {
   var toSubtract = opts.toSubtract
   var fuelTankSkeleton = opts.fuelTankSkeleton
   var yearlyFunds = opts.availableFunds
+  var maxValue = opts.maxValue
   var availableFunds = 0
 
-_.forEach(fuelTankSkeleton, function (data, year) {
-  _.forEach(data, function (expenditure, month) {
-    if (month == 1) {
-      console.log('topping up')
-      availableFunds += yearlyFunds
-    }
-    _.forEach(toSubtract, function (dataset) {
-      availableFunds -= dataset[year][month]
+  _.forEach(fuelTankSkeleton, function (data, year) {
+    _.forEach(data, function (expenditure, month) {
+      if (month == 1) {
+        console.log('topping up')
+        availableFunds += yearlyFunds
+      }
+
+      _.forEach(toSubtract, function (dataset) {
+        availableFunds -= dataset[year][month]
+      })
+
+      if (month == maxValue) {
+        if (availableFunds > 0) { availableFunds = 0 }
+      }
+
+      fuelTankSkeleton[year][month] = availableFunds
     })
-    fuelTankSkeleton[year][month] = availableFunds
   })
-})
-
-
-// _.forEach(toSubtract, function (dataset) {
-//   _.forEach(dataset, function (data, year) {
-//     _.forEach(data, function (expenditure, month) {
-//       fuelTankSkeleton
-//       sortedData[name].push( expenditure )
-
-//       if (labelsNotMadeYet) {
-//         if (month.length === 1) {month = '0' + String(month)}
-//         sortedData.labels.push( `${year}/${month}` )
-//       }
-//     })
-//   })
-//   labelsNotMadeYet = false
-// })
-
-
 }
-
 
 function incrementTimeBy1(opts) {
   var time = _.cloneDeep(opts.time)
