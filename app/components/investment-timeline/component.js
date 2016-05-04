@@ -3,6 +3,7 @@ import processProjects from '../../business-logic/process-timeline-objects'
 import DataSet from '../lemonade-chart/dataSet';
 import Axes from '../lemonade-chart/axes';
 import ChartParameters from '../lemonade-chart/chartParameters';
+import truncateBigNumbers from '../../common/truncateBigNumbers';
 
 export default Ember.Component.extend({
   processProjects: processProjects,
@@ -45,7 +46,7 @@ export default Ember.Component.extend({
     let yAxes1 = new Axes('', axisColour);
     yAxes1.prependToTickLabel('$');
     yAxes1.beginAtZero(false);
-
+    yAxes1.customFormatting(truncateBigNumbers)
     let yAxes2 = new Axes('', axisColour);
     yAxes2.prependToTickLabel('$');
     yAxes2.beginAtZero(false);
@@ -58,7 +59,6 @@ export default Ember.Component.extend({
     // let chartParameters = new ChartParameters( [totalInvestment, ongoingCost], graphData.labels, [xAxes], [yAxes1,yAxes2])
     this.set('investmentGraph', chartParameters)
   },
-
   didInsertElement(){
     Ember.run.next(this,function(){
       let axes = this.get('axes');

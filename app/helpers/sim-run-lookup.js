@@ -1,4 +1,6 @@
 import Ember from 'ember';
+import toTwoDP from '../common/toTwoDP';
+import commaSeperateNumber from '../common/commaSeperateNumber';
 
 // params list
 // 0 object
@@ -6,14 +8,21 @@ import Ember from 'ember';
 // 2 month
 
 export function simRunLookup(params/*, hash*/) {
-  var object = params[0]
-  var id = params[1]
-  var month = params[2]
+  let object = params[0],
+      id = params[1],
+      month = params[2],
+      objectData
   if (object) {
-    return (object[id].data.value) ? object[id].data.value[month - 1] : object[id].data.result[month - 1]
-
+    objectData = (object[id].data.value) ? object[id].data.value[month - 1] : object[id].data.result[month - 1]
     // console.log(object[id])
     // return object[id].data.result[month]
   }
+
+  if(objectData){
+    objectData = toTwoDP(objectData);
+    objectData = commaSeperateNumber(objectData)
+  }
+
+  return objectData;
 }
 export default Ember.Helper.helper(simRunLookup);
