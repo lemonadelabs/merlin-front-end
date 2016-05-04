@@ -54,9 +54,7 @@ export default class Axes {
 }
 
 function formattingCallback(value){
-  console.log(this);
   var returnString = this.customFormattingFunction ? this.customFormattingFunction(value) : value;
-  console.log(this.customFormattingFunction);
   if(this.customFormattingFunction){console.log(this.customFormattingFunction(returnString))};
   return (this.valueToPrepend || "") + returnString + (this.valueToApend || "")
 }
