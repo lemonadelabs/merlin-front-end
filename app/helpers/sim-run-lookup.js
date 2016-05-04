@@ -1,4 +1,6 @@
 import Ember from 'ember';
+import toTwoDP from '../common/toTwoDP';
+import commaSeperateNumber from '../common/commaSeperateNumber';
 
 // params list
 // 0 object
@@ -17,10 +19,8 @@ export function simRunLookup(params/*, hash*/) {
   }
 
   if(objectData){
-    if(objectData.toString().indexOf(".")>0){
-      objectData = objectData.toFixed(2)
-    }
-    objectData = objectData.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+    objectData = toTwoDP(objectData);
+    objectData = commaSeperateNumber(objectData)
   }
 
   return objectData;
