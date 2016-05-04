@@ -45,7 +45,7 @@ export default Ember.Component.extend({
     let yAxes1 = new Axes('', axisColour);
     yAxes1.prependToTickLabel('$');
     yAxes1.beginAtZero(false);
-
+    yAxes1.customFormatting(this.truncateBigNumbers)
     let yAxes2 = new Axes('', axisColour);
     yAxes2.prependToTickLabel('$');
     yAxes2.beginAtZero(false);
@@ -58,7 +58,15 @@ export default Ember.Component.extend({
     // let chartParameters = new ChartParameters( [totalInvestment, ongoingCost], graphData.labels, [xAxes], [yAxes1,yAxes2])
     this.set('investmentGraph', chartParameters)
   },
-
+  truncateBigNumbers: function(value){
+    if(value >= 1000000 || value <= -1000000){
+      return (value / 1000000) + "M"
+    }
+    else if(value >= 1000 || value <= -1000){
+      return (value / 1000) + "T"
+    }
+    return value;
+  },
   didInsertElement(){
     Ember.run.next(this,function(){
       let axes = this.get('axes');
