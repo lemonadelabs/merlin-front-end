@@ -20,6 +20,7 @@ export function simRunLookup(params/*, hash*/) {
     if(objectData.toString().indexOf(".")>0){
       objectData = objectData.toFixed(2)
     }
+    objectData = objectData.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
   }
 
   return objectData;
