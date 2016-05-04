@@ -23,8 +23,7 @@ export default class Axes {
     this.ticks.fontColor = fontColour;
   }
   getAxesWidth(){
-
-      return this.maxWidth;
+    return this.maxWidth;
   }
   beginAtZero(bool){
     this.ticks.beginAtZero = bool;
@@ -49,9 +48,15 @@ export default class Axes {
   addCallbackToTick(Callback){
     this.ticks.callback = Callback
   }
+  customFormatting(Function){
+    this.ticks.customFormattingFunction = Function
+  }
 }
+
 function formattingCallback(value){
-  return (this.valueToPrepend || "") + value + (this.valueToApend || "")
+  var returnString = this.customFormattingFunction ? this.customFormattingFunction(value) : value;
+  if(this.customFormattingFunction){console.log(this.customFormattingFunction(returnString))};
+  return (this.valueToPrepend || "") + returnString + (this.valueToApend || "")
 }
 
 function afterSetDimensions(scale){
