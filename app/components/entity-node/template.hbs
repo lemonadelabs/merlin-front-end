@@ -25,9 +25,20 @@
   {{#each this.entity.processes as | process | }}
     {{#each process.properties as | property | }}
 
+      {{!-- {{log this.processPropertyData}} --}}
+
+      {{
+        process-property
+        id=property.id
+        name=property.name
+        entityId=this.entity.id
+        processPropertyData=this.processPropertyData
+        month=this.month
+      }}
+
       <span class='node-label'>{{property.name}}</span>
       {{!-- {{sim-run-lookup this.processPropertyData property.id this.month}} --}}
-      {{input value=property.property_value}}
+      {{!-- {{input value=property.property_value}} --}}
     {{/each}}
   {{/each}}
 {{/if}}

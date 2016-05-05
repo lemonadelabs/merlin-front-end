@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import NodesGroup from './nodesGroup'
 import initDraggable from '../../common/draggable'
+import postJSON from '../../common/post-json'
 
 export default Ember.Component.extend({
   draw: undefined,
@@ -37,8 +38,40 @@ export default Ember.Component.extend({
     this.nodesGroup.groupOffsetY = this.get('transformY')
   }.observes('transformY'),
 
+  loadBaseline: function () {
+    var self = this
+    var id = this.model.id
+    var simSubstring = `api/simulations/${id}/`
+    var name = 'baseline'
+    Ember.$.getJSON("api/scenarios/").then(function (scenarios) {
+
+      var baseline = _.find(scenarios, function (scenario) {
+        return  ( _.includes(scenario.sim, simSubstring) && scenario.name === name)
+      })
+
+      if (baseline) {
+        self.set('baseline', baseline)
+      } else {
+        var postData = {
+          "name": "baseline",
+          "sim": "http://127.0.0.1:8000/api/simulations/" + id + '/',
+          "start_offset": 0
+        }
+        postJSON({
+          data : postData,
+          url : "api/scenarios/"
+        }).then(function (baseline) {
+          self.set('baseline', baseline)
+        })
+      }
+    })
+
+  }.on('init'),
+
   loadSimulation: function(){
     var self = this
+
+    var baselineId = this.baseline.id
 
     var sortedData = {
       'Output': {},
@@ -47,10 +80,9 @@ export default Ember.Component.extend({
       'OutputConnector': {},
     }
 
-
     var timeframe = 10
 
-    Ember.$.getJSON(`api/simulation-run/1/?steps=${timeframe}`).then(function (result) {
+    Ember.$.getJSON(`api/simulation-run/1/?steps=${timeframe}&s0=${baselineId}`).then(function (result) {
 
       self.set('timeframe', timeframe)
       self.set('month', timeframe)
@@ -63,7 +95,7 @@ export default Ember.Component.extend({
       self.set('outputData', sortedData['Output'])
       self.set('inputConnectorData', sortedData['InputConnector'])
     })
-  }.on('init'),
+  }.observes('baseline'),
 
   initPaning: function() {
     this.initDraggable({
@@ -123,33 +155,5 @@ export default Ember.Component.extend({
   updateCables: function (opts) {
     this.nodesGroup.updateCablesForNode(opts)
   },
-
-  // persistPosition: function (opts) {
-  //   return // false return, to kill function
-
-  //   var nodetype
-  //   if ((_.includes(opts.nodeType, 'output'))) {
-  //     nodetype = 'outputs'
-  //   } else if ((_.includes(opts.nodeType, 'entity'))) {
-  //     nodetype = 'entities'
-  //   }
-
-  //   var url = `${nodetype}/${opts.id}/`
-
-  //   var unModified = Ember.$.getJSON(url)
-  //   unModified.then(function (response) {
-  //     response.display_pos_x = opts.x
-  //     response.display_pos_y = opts.y
-
-  //     Ember.$.ajax({
-  //       url: url,
-  //       type: 'PUT',
-  //       data: response,
-  //       success: function(result) {
-  //         console.log(result)
-  //       }
-  //     });
-  //   })
-  // },
 
 });
