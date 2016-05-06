@@ -18,6 +18,7 @@ export default function persistPosition (e) {
 
     response.display_pos_x = e.clientX - e.offsetX
     response.display_pos_y = e.clientY - e.offsetY
+    response.description = null
 
     putJSON({
       data : response,
