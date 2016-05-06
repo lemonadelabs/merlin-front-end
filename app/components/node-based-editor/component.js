@@ -2,6 +2,7 @@ import Ember from 'ember';
 import NodesGroup from './nodesGroup'
 import initDraggable from '../../common/draggable'
 import postJSON from '../../common/post-json'
+import putJSON from '../../common/put-json'
 
 export default Ember.Component.extend({
   draw: undefined,
@@ -16,6 +17,9 @@ export default Ember.Component.extend({
   outputComponents: {},
   updateCablesBound: Ember.computed( function() {
     return Ember.run.bind(this, this.updateCables)
+  }),
+  updateBaselineBound: Ember.computed( function() {
+    return Ember.run.bind(this, this.updateBaseline)
   }),
   style:Ember.computed('transformX', 'transformY' , function () {
     var x = this.get('transformX')
@@ -38,7 +42,82 @@ export default Ember.Component.extend({
     this.nodesGroup.groupOffsetY = this.get('transformY')
   }.observes('transformY'),
 
+  updateBaseline: function (opts) {
+    var self = this
+
+    var propertyId = opts.propertyId
+    var entityId = opts.entityId
+    var value = opts.value
+    var month = opts.month
+    var baseline = this.get('baseline')
+
+    var newAction = {
+      "op": ":=",
+      "operand_1": {
+        "type": "Entity",
+        "params": [ entityId ],
+        "props": null
+      },
+      "operand_2": {
+        "type": "Property",
+        "params": [ propertyId, value ],
+        "props": null
+      }
+    }
+
+
+
+    var event
+    // first, look in the baseline for an event that matches the month.
+    var events = baseline.events
+    var foundEvents = _.filter(events, function (e) { return e.time == month } )
+    if (foundEvents.length > 1) { this.warn(foundEvents.length, 'event') }
+    var foundEvent = foundEvents[0]
+
+    if (foundEvent) {
+      // console.log('event exists')
+      event = foundEvent
+      event.actions = _.remove(event.actions, function (action) { // filter out any supurfelous actions
+        // console.log('in the remove: ', action.operand_1.params[0])
+        return (action.operand_1.params[0] == newAction.operand_1.params[0] && action.operand_2.params[0] == newAction.operand_2.params[0])
+      })
+
+      event.actions.push(newAction)
+
+      putJSON({
+        data : event,
+        url : `api/events/${event.id}/`
+      }).then(function (response) {
+        // console.log('returned', response)
+      })
+
+    } else {
+      // if event not exists
+      // console.log('event doesnt exists')
+      //   create new event with action
+      event = {
+        "scenario": "http://192.168.99.100:8000/api/scenarios/" + baseline.id + '/',
+        "time": String(month),
+        "actions": [ newAction ]
+      }
+      // push this event to the baseline
+      baseline.events.push(event)
+      // do a post request
+      postJSON({
+        data : event,
+        url : `api/events/`
+      }).then(function (response) {
+        // console.log('returned', response)
+      })
+    }
+
+    // this.set('baseline', baseline)
+    this.loadBaseline()
+  },
+  warn: function (amount, subject) { console.warn( `there are ${amount} ${subject}s returned in this case. There should only be 1.` ) },
+
   loadBaseline: function () {
+
     var self = this
     var id = this.model.id
     var simSubstring = `api/simulations/${id}/`
@@ -69,6 +148,7 @@ export default Ember.Component.extend({
   }.on('init'),
 
   loadSimulation: function(){
+    // console.log('load simulation')
     var self = this
 
     var baselineId = this.baseline.id
@@ -80,12 +160,17 @@ export default Ember.Component.extend({
       'OutputConnector': {},
     }
 
-    var timeframe = 10
+    var timeframe = 12
 
     Ember.$.getJSON(`api/simulation-run/1/?steps=${timeframe}&s0=${baselineId}`).then(function (result) {
 
       self.set('timeframe', timeframe)
-      self.set('month', timeframe)
+
+      if (result[result.length - 1].messages) {
+        var messages = result.pop()
+        _.forEach(messages.messages, function (message) { console.log(message.message)} )
+      }
+
       _.forEach(result, function (nodeData){
         sortedData[nodeData.type][nodeData.id] = nodeData
       })
