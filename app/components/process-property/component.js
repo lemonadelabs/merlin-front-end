@@ -21,7 +21,7 @@ export default Ember.Component.extend({
     if (this.valueIsLoaded) {
       var value = this.get('value')
       var valueFromData = this.get('processPropertyData')[this.id].data.value[ this.get('month') - 1 ]
-      if ( value != valueFromData ) {
+      if ( value != "" && value != valueFromData ) {
 
         var entityId = this.get('entityId')
         var id = this.get('id')
