@@ -1,6 +1,8 @@
 import Ember from 'ember';
 import NodesGroup from './nodesGroup'
 import initDraggable from '../../common/draggable'
+import postJSON from '../../common/post-json'
+import putJSON from '../../common/put-json'
 
 export default Ember.Component.extend({
   draw: undefined,
@@ -15,6 +17,9 @@ export default Ember.Component.extend({
   outputComponents: {},
   updateCablesBound: Ember.computed( function() {
     return Ember.run.bind(this, this.updateCables)
+  }),
+  updateBaselineBound: Ember.computed( function() {
+    return Ember.run.bind(this, this.updateBaseline)
   }),
   style:Ember.computed('transformX', 'transformY' , function () {
     var x = this.get('transformX')
@@ -37,9 +42,102 @@ export default Ember.Component.extend({
     this.nodesGroup.groupOffsetY = this.get('transformY')
   }.observes('transformY'),
 
-  loadSimulation: function(){
+  updateBaseline: function (opts) {
     var self = this
 
+    var propertyId = opts.propertyId
+    var entityId = opts.entityId
+    var value = opts.value
+    var month = opts.month
+    var baseline = this.get('baseline')
+
+    var newAction = {
+      "op": ":=",
+      "operand_1": {
+        "type": "Entity",
+        "params": [ entityId ],
+        "props": null
+      },
+      "operand_2": {
+        "type": "Property",
+        "params": [ propertyId, value ],
+        "props": null
+      }
+    }
+
+
+
+    var event
+    // first, look in the baseline for an event that matches the month.
+    var events = baseline.events
+    var foundEvents = _.filter(events, function (e) { return e.time == month } )
+    if (foundEvents.length > 1) { this.warn(foundEvents.length, 'event') }
+    var foundEvent = foundEvents[0]
+
+    if (foundEvent) {
+      event = foundEvent
+      event.actions = _.remove(event.actions, function (action) { // filter out any supurfelous actions
+        return (action.operand_1.params[0] == newAction.operand_1.params[0] && action.operand_2.params[0] == newAction.operand_2.params[0])
+      })
+
+      event.actions.push(newAction)
+
+      putJSON({
+        data : event,
+        url : `api/events/${event.id}/`
+      })
+
+    } else {
+      // if event not exists, create new event with action
+      event = {
+        "scenario": "http://192.168.99.100:8000/api/scenarios/" + baseline.id + '/',
+        "time": String(month),
+        "actions": [ newAction ]
+      }
+      // do a post request
+      postJSON({
+        data : event,
+        url : `api/events/`
+      })
+    }
+    this.loadBaseline() // refresh the system
+  },
+
+  warn: function (amount, subject) { console.warn( `there are ${amount} ${subject}s returned in this case. There should only be 1.` ) },
+
+  loadBaseline: function () {
+
+    var self = this
+    var id = this.model.id
+    var simSubstring = `api/simulations/${id}/`
+    var name = 'baseline'
+    Ember.$.getJSON("api/scenarios/").then(function (scenarios) {
+
+      var baseline = _.find(scenarios, function (scenario) {
+        return  ( _.includes(scenario.sim, simSubstring) && scenario.name === name)
+      })
+
+      if (baseline) {
+        self.set('baseline', baseline)
+      } else {
+        var postData = {
+          "name": "baseline",
+          "sim": "http://127.0.0.1:8000/api/simulations/" + id + '/',
+          "start_offset": 0
+        }
+        postJSON({
+          data : postData,
+          url : "api/scenarios/"
+        }).then(function (baseline) {
+          self.set('baseline', baseline)
+        })
+      }
+    })
+  }.on('init'),
+
+  loadSimulation: function(){
+    var self = this
+    var baselineId = this.baseline.id
     var sortedData = {
       'Output': {},
       'ProcessProperty': {},
@@ -47,13 +145,17 @@ export default Ember.Component.extend({
       'OutputConnector': {},
     }
 
+    var timeframe = 12
 
-    var timeframe = 10
-
-    Ember.$.getJSON(`api/simulation-run/1/?steps=${10}`).then(function (result) {
+    Ember.$.getJSON(`api/simulation-run/1/?steps=${timeframe}&s0=${baselineId}`).then(function (result) {
 
       self.set('timeframe', timeframe)
-      self.set('month', timeframe)
+
+      if (result[result.length - 1].messages) {
+        var messages = result.pop()
+        _.forEach(messages.messages, function (message) { console.log(message.message)} )
+      }
+
       _.forEach(result, function (nodeData){
         sortedData[nodeData.type][nodeData.id] = nodeData
       })
@@ -63,7 +165,7 @@ export default Ember.Component.extend({
       self.set('outputData', sortedData['Output'])
       self.set('inputConnectorData', sortedData['InputConnector'])
     })
-  }.on('init'),
+  }.observes('baseline'),
 
   initPaning: function() {
     this.initDraggable({
@@ -105,8 +207,6 @@ export default Ember.Component.extend({
       })
       this.nodesGroup.initCables()
       this.nodesGroup.terminalListners()
-
-
     } else {
       console.warn('the entity components haven\'t been built yet')
     }
@@ -123,33 +223,5 @@ export default Ember.Component.extend({
   updateCables: function (opts) {
     this.nodesGroup.updateCablesForNode(opts)
   },
-
-  // persistPosition: function (opts) {
-  //   return // false return, to kill function
-
-  //   var nodetype
-  //   if ((_.includes(opts.nodeType, 'output'))) {
-  //     nodetype = 'outputs'
-  //   } else if ((_.includes(opts.nodeType, 'entity'))) {
-  //     nodetype = 'entities'
-  //   }
-
-  //   var url = `${nodetype}/${opts.id}/`
-
-  //   var unModified = Ember.$.getJSON(url)
-  //   unModified.then(function (response) {
-  //     response.display_pos_x = opts.x
-  //     response.display_pos_y = opts.y
-
-  //     Ember.$.ajax({
-  //       url: url,
-  //       type: 'PUT',
-  //       data: response,
-  //       success: function(result) {
-  //         console.log(result)
-  //       }
-  //     });
-  //   })
-  // },
 
 });
