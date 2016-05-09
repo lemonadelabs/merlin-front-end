@@ -21,7 +21,7 @@ export default Ember.Component.extend({
     let axes1Width = this.get('axes1Width');
     let axes2Width = this.get('axes2Width');
     let widthOffset = axes1Width + axes2Width
-    return Ember.String.htmlSafe(`margin-left:-${axes1Width}px; width:calc(80% + ${widthOffset}px)`)
+    return Ember.String.htmlSafe(`margin-left:-${axes1Width}px; width:calc(80vw + ${widthOffset}px)`)
   }),
   buildChart: function () {
     let ongoingCostColour = 'rgb(245, 166, 35)';
