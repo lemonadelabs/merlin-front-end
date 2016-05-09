@@ -137,6 +137,7 @@ export default Ember.Component.extend({
 
   loadSimulation: function(){
     var self = this
+    var errors = {}
     var baselineId = this.baseline.id
     var sortedData = {
       'Output': {},
@@ -145,6 +146,7 @@ export default Ember.Component.extend({
       'OutputConnector': {},
     }
 
+
     var timeframe = 12
 
     Ember.$.getJSON(`api/simulation-run/1/?steps=${timeframe}&s0=${baselineId}`).then(function (result) {
@@ -152,13 +154,29 @@ export default Ember.Component.extend({
       self.set('timeframe', timeframe)
 
       if (result[result.length - 1].messages) {
+
         var messages = result.pop()
-        _.forEach(messages.messages, function (message) { console.log(message.message)} )
+        _.forEach(messages.messages, function (message) {
+          var processId = message.sender.id
+          var entities = self.get('model').entities
+
+          _.forEach(entities, function (entity) {
+            _.forEach(entity.processes, function (process) {
+              if (process.id === processId) {
+                if ( !errors[message.time] ) { errors[message.time] = {} }
+                errors[message.time][entity.id] = message
+              }
+            })
+          })
+        })
       }
 
       _.forEach(result, function (nodeData){
         sortedData[nodeData.type][nodeData.id] = nodeData
       })
+
+      self.set('errors', errors)
+      console.log(errors)
 
       self.set('outputConnectorData', sortedData['OutputConnector'])
       self.set('processPropertyData', sortedData['ProcessProperty'])

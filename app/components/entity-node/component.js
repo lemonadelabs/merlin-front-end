@@ -4,6 +4,7 @@ import persistPosition from '../../common/persist-position'
 
 export default Ember.Component.extend({
   classNames:['node'],
+  error:undefined,
   classNameBindings:['id',"node-type"],
   attributeBindings:['style'],
   style:Ember.computed('transformX', 'transformY' , function () {
@@ -37,4 +38,11 @@ export default Ember.Component.extend({
     delete nodes[id]
     this.set('nodes', nodes)
   },
+  checkForErrors: function() {
+    var id = this.get('id')
+    var month = this.get('month')
+    if (this.errors[month][id]){
+      this.set('error',this.errors[month][id].message)
+    }
+  }.observes('errors','month')
 });
