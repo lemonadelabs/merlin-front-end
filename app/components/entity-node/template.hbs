@@ -25,8 +25,6 @@
   {{#each this.entity.processes as | process | }}
     {{#each process.properties as | property | }}
 
-      {{!-- {{log this.processPropertyData}} --}}
-
       {{
         process-property
         updateBaseline=this.updateBaseline
@@ -37,9 +35,6 @@
         month=this.month
       }}
 
-      <span class='node-label'>{{property.name}}</span>
-      {{!-- {{sim-run-lookup this.processPropertyData property.id this.month}} --}}
-      {{!-- {{input value=property.property_value}} --}}
     {{/each}}
   {{/each}}
 {{/if}}

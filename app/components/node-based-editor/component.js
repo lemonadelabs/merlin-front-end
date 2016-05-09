@@ -75,10 +75,8 @@ export default Ember.Component.extend({
     var foundEvent = foundEvents[0]
 
     if (foundEvent) {
-      // console.log('event exists')
       event = foundEvent
       event.actions = _.remove(event.actions, function (action) { // filter out any supurfelous actions
-        // console.log('in the remove: ', action.operand_1.params[0])
         return (action.operand_1.params[0] == newAction.operand_1.params[0] && action.operand_2.params[0] == newAction.operand_2.params[0])
       })
 
@@ -87,33 +85,24 @@ export default Ember.Component.extend({
       putJSON({
         data : event,
         url : `api/events/${event.id}/`
-      }).then(function (response) {
-        // console.log('returned', response)
       })
 
     } else {
-      // if event not exists
-      // console.log('event doesnt exists')
-      //   create new event with action
+      // if event not exists, create new event with action
       event = {
         "scenario": "http://192.168.99.100:8000/api/scenarios/" + baseline.id + '/',
         "time": String(month),
         "actions": [ newAction ]
       }
-      // push this event to the baseline
-      baseline.events.push(event)
       // do a post request
       postJSON({
         data : event,
         url : `api/events/`
-      }).then(function (response) {
-        // console.log('returned', response)
       })
     }
-
-    // this.set('baseline', baseline)
-    this.loadBaseline()
+    this.loadBaseline() // refresh the system
   },
+
   warn: function (amount, subject) { console.warn( `there are ${amount} ${subject}s returned in this case. There should only be 1.` ) },
 
   loadBaseline: function () {
@@ -144,15 +133,11 @@ export default Ember.Component.extend({
         })
       }
     })
-
   }.on('init'),
 
   loadSimulation: function(){
-    // console.log('load simulation')
     var self = this
-
     var baselineId = this.baseline.id
-
     var sortedData = {
       'Output': {},
       'ProcessProperty': {},
@@ -222,8 +207,6 @@ export default Ember.Component.extend({
       })
       this.nodesGroup.initCables()
       this.nodesGroup.terminalListners()
-
-
     } else {
       console.warn('the entity components haven\'t been built yet')
     }
