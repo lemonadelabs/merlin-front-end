@@ -5,8 +5,17 @@
   {{else}}
     Unamed
   {{/if}}
-
 </p></header>
+
+{{#if this.errorsForNode}}
+  <p class='errors-subheading node-subheading'>Error</p>
+  <div class='errors-container'>
+    {{#each-in this.errorsForNode as |id content|}}
+      <p class='error-message'>{{content.message}}</p>
+    {{/each-in}}
+  </div>
+{{/if}}
+
 {{#if this.entity.inputs}}
   <p class='node-subheading'>inputs</p>
 

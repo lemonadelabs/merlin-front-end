@@ -17,7 +17,7 @@ export default Ember.Component.extend({
     }
   }.observes('month'),
 
-  updateProperty: function () {
+  persistProperty: function () {
     if (this.valueIsLoaded) {
       var value = this.get('value')
       var valueFromData = this.get('processPropertyData')[this.id].data.value[ this.get('month') - 1 ]
@@ -27,7 +27,8 @@ export default Ember.Component.extend({
         var id = this.get('id')
         var month = this.get('month')
 
-        this.updateBaseline({
+
+        this.updateBaselineDebounced({
           propertyId : id,
           entityId : entityId,
           value : value,
@@ -36,5 +37,20 @@ export default Ember.Component.extend({
       }
     }
   }.observes('value'),
+
+  updateBaselineDebounced: function (opts) {
+    var self = this
+    var interval = 500
+    var timeout = this.get('timeout')
+
+    if (timeout) {
+      clearTimeout(timeout)
+    }
+
+    timeout = setTimeout(function () {
+      self.updateBaseline(opts)
+    }, interval)
+    this.set('timeout', timeout)
+  }
 
 });
