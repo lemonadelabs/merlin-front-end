@@ -218,3 +218,32 @@
   margin-left: -28px;
   margin-right: 10px;
 }
+
+.node .errors-subheading {
+  /*HACKY*/
+  background-color: #8E0C19!important;
+}
+
+.errors-container {
+  background-color: #4E1717;
+  text-align: center;
+  font-size: 11px;
+  line-height: 30px;
+  text-transform: capitalize;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+  margin-top: -5px;
+  margin-bottom: -15px;
+  margin-left: -20px;
+  margin-right: -20px;
+}
+
+.node .error-message {
+  font-size: 11px;
+  font-weight: 300;
+  line-height: 15px;
+  margin: 0;
+  /*margin-bottom: 0;*/
+}

@@ -110,18 +110,17 @@ export default Ember.Component.extend({
     var self = this
     var id = this.model.id
     var simSubstring = `api/simulations/${id}/`
-    var name = 'baseline'
     Ember.$.getJSON("api/scenarios/").then(function (scenarios) {
 
       var baseline = _.find(scenarios, function (scenario) {
-        return  ( _.includes(scenario.sim, simSubstring) && scenario.name === name)
+        return  ( _.includes(scenario.sim, simSubstring) && scenario.name === 'baseline')
       })
 
       if (baseline) {
         self.set('baseline', baseline)
       } else {
         var postData = {
-          "name": "baseline",
+          "name": 'baseline',
           "sim": "http://127.0.0.1:8000/api/simulations/" + id + '/',
           "start_offset": 0
         }
@@ -135,9 +134,29 @@ export default Ember.Component.extend({
     })
   }.on('init'),
 
-  loadSimulation: function(){
+  sortErrors: function (opts) {
     var self = this
     var errors = {}
+
+    _.forEach(opts.messages, function (message) {
+      var processId = message.sender.id
+      var entities = self.get('model').entities
+
+      _.forEach(entities, function (entity) {
+        _.forEach(entity.processes, function (process) {
+          if (process.id === processId) {
+            if ( !errors[message.time] ) { errors[message.time] = {} }
+            if ( !errors[message.time][entity.id] ) { errors[message.time][entity.id] = {} }
+            errors[message.time][entity.id][message.message_id] = message
+          }
+        })
+      })
+    })
+    self.set('errors', errors)
+  },
+
+  loadSimulation: function(){
+    var self = this
     var baselineId = this.baseline.id
     var sortedData = {
       'Output': {},
@@ -146,37 +165,21 @@ export default Ember.Component.extend({
       'OutputConnector': {},
     }
 
-
     var timeframe = 12
 
     Ember.$.getJSON(`api/simulation-run/1/?steps=${timeframe}&s0=${baselineId}`).then(function (result) {
 
       self.set('timeframe', timeframe)
 
+      var messages
       if (result[result.length - 1].messages) {
-
-        var messages = result.pop()
-        _.forEach(messages.messages, function (message) {
-          var processId = message.sender.id
-          var entities = self.get('model').entities
-
-          _.forEach(entities, function (entity) {
-            _.forEach(entity.processes, function (process) {
-              if (process.id === processId) {
-                if ( !errors[message.time] ) { errors[message.time] = {} }
-                errors[message.time][entity.id] = message
-              }
-            })
-          })
-        })
+        messages = result.pop().messages
       }
+      self.sortErrors( { messages : messages } )
 
       _.forEach(result, function (nodeData){
         sortedData[nodeData.type][nodeData.id] = nodeData
       })
-
-      self.set('errors', errors)
-      console.log(errors)
 
       self.set('outputConnectorData', sortedData['OutputConnector'])
       self.set('processPropertyData', sortedData['ProcessProperty'])
