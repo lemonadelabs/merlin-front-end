@@ -1,6 +1,6 @@
 export default function convertTime (time) {
   return {
-    toQuarterFormat() {
+    toQuarter() {
       var year = Number( time.substring(0,4) )
       var month = Number( time.substring(5,7) )
 
@@ -21,7 +21,7 @@ export default function convertTime (time) {
       }
     },
 
-    quarterToBackendFormat() {
+    quarterToBackend() {
       var year = String(time.year)
       var quarter = time.value
       var day = '01'

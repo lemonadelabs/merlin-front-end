@@ -127,8 +127,8 @@ export default Ember.Component.extend({
     var testEntity = childrenWithAttribute[0]
     var processProperties = this.processPropertiesFromEntity({ entity : testEntity })
 
-    var quarterFormat = convertTime("2016-01-01").toQuarterFormat()
-    console.log(convertTime(quarterFormat).quarterToBackendFormat())
+    var quarterFormat = convertTime("2016-01-01").toQuarter()
+    console.log(convertTime(quarterFormat).quarterToBackend())
 
 
   }.on('init'),
