@@ -4,6 +4,8 @@ import DataSet from '../lemonade-chart/dataSet';
 import Axes from '../lemonade-chart/axes';
 import ChartParameters from '../lemonade-chart/chartParameters';
 import truncateBigNumbers from '../../common/truncateBigNumbers';
+import convertTime from '../../common/convert-time'
+
 
 export default Ember.Component.extend({
   processProjects: processProjects,
@@ -124,7 +126,10 @@ export default Ember.Component.extend({
 
     var testEntity = childrenWithAttribute[0]
     var processProperties = this.processPropertiesFromEntity({ entity : testEntity })
-    console.log(processProperties)
+
+    var quarterFormat = convertTime("2016-01-01").toQuarterFormat()
+    console.log(convertTime(quarterFormat).quarterToBackendFormat())
+
 
   }.on('init'),
 
