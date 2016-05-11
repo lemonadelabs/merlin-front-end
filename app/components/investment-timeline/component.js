@@ -68,10 +68,10 @@ export default Ember.Component.extend({
   },
 
   processAndSortData(){
-    var model = this.get('model')
+    var plan = this.get('plan')
     var processedData = this.processProjects({
-      metadata : model.metadata,
-      projects : model.projects
+      metadata : plan.metadata,
+      projects : plan.projects
     })
 
     var sortedData = {}

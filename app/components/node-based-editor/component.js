@@ -167,7 +167,10 @@ export default Ember.Component.extend({
 
     var timeframe = 12
 
-    Ember.$.getJSON(`api/simulation-run/1/?steps=${timeframe}&s0=${baselineId}`).then(function (result) {
+    var id = this.get('model').id
+
+
+    Ember.$.getJSON(`api/simulation-run/${id}/?steps=${timeframe}&s0=${baselineId}`).then(function (result) {
 
       self.set('timeframe', timeframe)
 
