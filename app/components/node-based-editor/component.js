@@ -42,7 +42,7 @@ export default Ember.Component.extend({
     this.nodesGroup.groupOffsetY = this.get('transformY')
   }.observes('transformY'),
 
-  updateBaseline: function (opts) {
+    updateBaseline: function (opts) {
     var self = this
 
     var propertyId = opts.propertyId
@@ -155,7 +155,7 @@ export default Ember.Component.extend({
     self.set('errors', errors)
   },
 
-  loadSimulation: function(){
+  runSimulation: function(){
     var self = this
     var baselineId = this.baseline.id
     var sortedData = {

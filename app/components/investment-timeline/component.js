@@ -109,6 +109,100 @@ export default Ember.Component.extend({
     return sortedData;
   },
 
+  dothings: function () {
+    var self = this
+    var serviceModels = this.get('serviceModels')
+    var serviceModel = serviceModels[0]
+    var serviceModelChildren = this.findChildrenForServiceModel({ serviceModel : serviceModel })
+    var attributesForChildren = this.findAttributesFromEntities({ entities : serviceModelChildren })
+
+    var testAttribute = attributesForChildren[0]
+    var childrenWithAttribute = this.filterEntitiesByAttribute({
+      entities : serviceModelChildren,
+      attribute : testAttribute
+    })
+
+    var testEntity = childrenWithAttribute[0]
+    var processProperties = this.processPropertiesFromEntity({ entity : testEntity })
+    console.log(processProperties)
+
+  }.on('init'),
+
+
+  processPropertiesFromEntity: function (opts) {
+    var entity = opts.entity
+    var processProperties = _.map(entity.processes, function (process) {
+      return process.properties
+    })
+    processProperties = _.flatten(processProperties)
+    return processProperties
+  },
+
+  filterEntitiesByAttribute: function (opts) {
+    var attribute = opts.attribute
+    var entities = opts.entities
+
+    var filteredEntities = _.filter( entities, function (entity) {
+      return _.includes(entity.attributes, attribute)
+    })
+    return filteredEntities
+  },
+
+  findAttributesFromEntities: function (opts) {
+    var entities = opts.entities
+    var attributes = []
+    _.forEach(entities, function (entity) {
+      attributes.push(entity.attributes)
+    })
+    attributes = _.uniq( ( _.flatten( attributes ) ) )
+    return attributes
+  },
+
+
+  findChildrenForServiceModel: function (opts) {
+    var serviceModel = opts.serviceModel
+    var childrenUrls = serviceModel.children
+    var ids = _.map(childrenUrls, this.getIdFromUrl)
+    var simulation = this.get('simulation')
+    var childEntities = _.filter(simulation.entities, function (entity) {
+      return _.includes(ids, String(entity.id))
+    })
+    return childEntities
+  },
+
+  getIdFromUrl: function (url) {
+    var slashless = url.slice(0, -1)
+    var id = slashless.substring(slashless.lastIndexOf('/') + 1, slashless.length)
+    return id
+  },
+
+  setParentEntity: function () {
+    var simulation = this.get('simulation')
+    var parentEntity = _.find(simulation.entities, function (entity) {
+      return entity.parent === null
+    })
+    this.set('parentEntity', parentEntity)
+  }.on('init'),
+
+
+  setServiceModels: function () {
+    var self = this
+    var serviceModels = []
+    var simulation = this.get('simulation')
+    var parentEntity = this.get('parentEntity')
+    _.forEach(parentEntity.children, function (childUrl) {
+      var childId = self.getIdFromUrl(childUrl)
+      var serviceModel = _.find(simulation.entities, function (entity) {
+        return entity.id == childId
+      })
+      serviceModels.push(serviceModel)
+    })
+    this.set('serviceModels', serviceModels)
+  }.observes('parentEntity'),
+
+
+
+
   actions:{
     recalculateInvestments:function(){
       let processedData = this.processAndSortData(),
