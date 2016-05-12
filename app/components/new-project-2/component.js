@@ -10,7 +10,19 @@ export default Ember.Component.extend({
     },
     units:'quarters'
   },
+  showNewPhase:false,
+  showNewModelModification:false,
+  toggleBool(variablepath){
+    let toggleBool = this.get(variablepath) ? false : true;
+    this.set(variablepath, toggleBool);
+  },
   actions: {
+    toggleNewPhase () {
+      this.toggleBool('showNewPhase');
+    },
+    toggleNewModelModification () {
+      this.toggleBool('showNewModelModification');
+    },
     next () {
       this.set('submitted', true);
       // do things regarding data, like validation
