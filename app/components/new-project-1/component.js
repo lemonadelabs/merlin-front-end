@@ -1,6 +1,9 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
+  didInsertElement(){
+    this.sendAction('setTitle', 'Add Investment Project - Project Info')
+  },
   actions: {
     next () {
       this.set('submitted', true);

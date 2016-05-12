@@ -12,6 +12,9 @@ export default Ember.Component.extend({
   },
   showNewPhase:false,
   showNewModelModification:false,
+  didInsertElement(){
+    this.sendAction('setTitle', 'Add Investment Project - Add Phases')
+  },
   toggleBool(variablepath){
     let toggleBool = this.get(variablepath) ? false : true;
     this.set(variablepath, toggleBool);
