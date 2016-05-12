@@ -5,7 +5,7 @@ export default Ember.Component.extend({
   steps: ['new-project-1', 'new-project-2', 'new-project-3'],
   currentStep: undefined,
   newProjectData: {},
-
+  modalTitle : undefined,
   init: function () {
     this._super()
     this.set('currentStep', this.get('steps')[0])
@@ -29,7 +29,9 @@ export default Ember.Component.extend({
     cancel () {
       // this.transitionToRoute('somewhere-else');
     },
-
+    setTitle (newTitle) {
+      this.set('modalTitle', newTitle);
+    },
     finish () {
       // this.transitionToRoute('wizard-finished');
     }

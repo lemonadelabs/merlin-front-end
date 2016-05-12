@@ -4,6 +4,10 @@ export default Ember.Component.extend({
 
   errors: {},
 
+  didInsertElement(){
+    this.sendAction('setTitle', 'Add Investment Project - Project Info')
+  },
+
   validateName: function () {
     var name = this.get('name')
 
