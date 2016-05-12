@@ -40,7 +40,7 @@ html {
   width: $modal-width;
   height: $modal-height;
   top:0;
-  transform: translate(calc( 50vw - ( $modal-width / 2 ) ), calc( 50vh - ( $modal-height / 1.8 ) ));
+  transform: translate( calc( 50vw - ( $modal-width / 2 ) ), calc( 50vh - ( $modal-height / 1.9 ) ) );
   background-color: rgb(28, 92, 167);
   border: solid 1px var(--resource-color);
   border-radius: 2px;
