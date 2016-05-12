@@ -5,6 +5,17 @@
   timespan=this.timespan
 }}
 <p {{action 'toggleNewPhase'}}>New Phase</p>
+{{#if this.showNewPhase}}
+  <div class="modal-extra-slider">
+    <p>New Phase</p>
+    <footer>
+      <button {{action "toggleNewPhase"}}>cancel</button>
+    </footer>
+  </div>
+{{/if}}
+{{#if this.showNewModelModification}}
+
+{{/if}}
 <footer>
   <button {{action "back"}}>Previous</button>
   <button {{action "next"}}>Next</button>
