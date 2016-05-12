@@ -32,13 +32,15 @@ html {
 }
 
 .modal {
+  $modal-width: 650px;
+  $modal-height: 450px;
   color: white;
-  position: relative;
-  margin-left: auto;
-  margin-right: auto;
-  z-index: 102;
-  width: 650px;
-  height: 450px;
+  position: fixed;
+  z-index: 101;
+  width: $modal-width;
+  height: $modal-height;
+  top:0;
+  transform: translate(calc( 50vw - ( $modal-width / 2 ) ), calc( 50vh - ( $modal-height / 1.8 ) ));
   background-color: rgb(28, 92, 167);
   border: solid 1px var(--resource-color);
   border-radius: 2px;
@@ -77,7 +79,7 @@ html {
   justify-content: flex-end;
 }
 
-.modal::after{
+.modal-shade{
   content:"";
   position: fixed;
   z-index: -1;
