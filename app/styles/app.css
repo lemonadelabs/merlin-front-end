@@ -33,12 +33,14 @@ html {
 
 .modal {
   color: white;
-  position: relative;;
+  position: relative;
   margin-left: auto;
   margin-right: auto;
+  z-index: 102;
   width: 650px;
   height: 450px;
   background-color: rgb(28, 92, 167);
+  border: solid 1px var(--resource-color);
   border-radius: 2px;
 }
 
@@ -73,6 +75,17 @@ html {
 
 .modal footer.one-item{
   justify-content: flex-end;
+}
+
+.modal::after{
+  content:"";
+  position: fixed;
+  z-index: -1;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0,0,0,0.2);
 }
 
 .step-indicator{
