@@ -170,7 +170,8 @@
   margin-top: 0;
 }
 
-.node .node-label {
+.node .node-label{
+  color: white;
   font-size: 10px;
   font-weight: 300;
   text-transform: capitalize;

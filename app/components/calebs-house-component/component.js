@@ -54,7 +54,7 @@ export default Ember.Component.extend({
   timelineGridObjects:undefined,
   init(){
     this._super();
-    this.setupGrapData();
+    // this.setupGrapData();
   },
   didInsertElement(){
   },
@@ -75,7 +75,7 @@ export default Ember.Component.extend({
     let model = this.get('model')
     let graphs = this.get('graphs')
     var self = this;
-    
+
     _.forEach(model,function(value) {
       let data = value.data.result || value.data.value;
       let dataSet = new DataSet(value.name, data, graphColour);

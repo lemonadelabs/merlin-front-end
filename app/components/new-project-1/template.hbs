@@ -1,2 +1,26 @@
-<h1>step 1</h1>
+<p>step 1 of 3</p>
+<div>
+  <label>Project Name</label>
+  {{input}}
+</div>
+<div>
+  <label>Project Description</label>
+  {{textarea}}
+</div>
+<div>
+  <label>Ring fenced</label>
+  {{toggle-switch enabled=this.bool}}
+</div>
+<div>
+  <label>Priority</label>
+  {{input}}
+</div>
+<div>
+  <label>Achievability</label>
+  {{range-slider value=this.testValue min=1 max=10}}
+</div>
+<div>
+  <label>Attractiveness</label>
+  {{range-slider value=this.testValue min=1 max=10}}
+</div>
 <h3><button {{action "next"}}>next</button></h3>
