@@ -1,6 +1,21 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
+
+  errors: {},
+
+  validateName: function () {
+    var name = this.get('name')
+
+    if ( name.length > 0 ) {
+      this.set('newProjectData.name', name)
+      this.set('errors.name', undefined)
+    } else {
+      this.set('newProjectData.name', undefined)
+      this.set('errors.name', 'Name must not be blank')
+    }
+  }.observes('name'),
+
   actions: {
     next () {
       this.set('submitted', true);
@@ -10,7 +25,8 @@ export default Ember.Component.extend({
 
     cancel () {
       this.sendAction('cancel');
-    }
+    },
+
   }
 
 });

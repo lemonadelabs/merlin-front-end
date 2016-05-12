@@ -1,7 +1,12 @@
 <p class='step-indicator'>step 1 of 3</p>
+
+
 <div>
+  {{#if this.errors.name}}
+    <p>{{this.errors.name}}</p>
+  {{/if}}
   <label>Project Name</label>
-  {{input}}
+  {{input value=this.name}}
 </div>
 <div>
   <label>Project Description</label>
