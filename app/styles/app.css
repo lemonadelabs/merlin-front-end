@@ -30,3 +30,53 @@ html {
 [data-ember-action]{
   cursor: pointer;
 }
+
+.modal {
+  color: white;
+  position: relative;;
+  margin-left: auto;
+  margin-right: auto;
+  width: 650px;
+  height: 450px;
+  background-color: rgb(28, 92, 167);
+  border-radius: 2px;
+}
+
+.modal .timeline-year-container {
+  width: 85%;
+}
+.modal .timeline-grid-container {
+  margin-left: auto;
+  margin-right: auto;
+  width: 85%;
+  height: 90px;
+}
+
+.modal .timeline-grid-title {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.modal .timeline-grid-shade{
+  background-color: black;
+  opacity: 0.15;
+}
+
+.modal footer{
+  position: absolute;
+  display: flex;
+  justify-content: space-between;
+  bottom: 25px;
+  width: 85%;
+  margin-left: 7.5%;
+}
+
+.modal footer.one-item{
+  justify-content: flex-end;
+}
+
+.step-indicator{
+  width: 100%;
+  text-align: center;
+  font-size: 9.5pt;
+}

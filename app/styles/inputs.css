@@ -140,5 +140,5 @@ button:hover,button:focus{
 
 button:active{
   transform: translateY(2px);
-  box-shadow: 0px -2px 0px color(var(--resource-color) shade(40%))
+  box-shadow: 0px -2px 0px  0px color(var(--resource-color) shade(40%))
 }

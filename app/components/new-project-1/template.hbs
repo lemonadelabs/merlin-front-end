@@ -1,4 +1,4 @@
-<p>step 1 of 3</p>
+<p class='step-indicator'>step 1 of 3</p>
 <div>
   <label>Project Name</label>
   {{input}}
@@ -23,4 +23,4 @@
   <label>Attractiveness</label>
   {{range-slider value=this.testValue min=1 max=10}}
 </div>
-<h3><button {{action "next"}}>next</button></h3>
+<footer class="one-item"><button {{action "next"}}>next</button></footer>

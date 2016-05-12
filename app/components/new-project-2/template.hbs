@@ -1,7 +1,10 @@
-<p>step 2 of 3</p>
+<p class='step-indicator'>step 2 of 3</p>
 {{
   timeline-timescale
   timelineGridObjects=this.timelineGridObjects
   timespan=this.timespan
 }}
-<button {{action "back"}}>Previous</button><button {{action "next"}}>Next</button>
+<footer>
+  <button {{action "back"}}>Previous</button>
+  <button {{action "next"}}>Next</button>
+</footer>
