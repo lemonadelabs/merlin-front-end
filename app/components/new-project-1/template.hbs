@@ -1,12 +1,18 @@
 <p class='step-indicator'>step 1 of 3</p>
 
 <div class="info-form-container">
-  <div>
-    {{#if this.errors.name}}
-      <p>{{this.errors.name}}</p>
-    {{/if}}
-    <label>Project Name</label>
-    {{input value=this.newProjectData.name}}
+  <div class="side-by-side">
+    <div>
+      {{#if this.errors.name}}
+        <p>{{this.errors.name}}</p>
+      {{/if}}
+      <label>Project Name</label>
+      {{input value=this.newProjectData.name}}
+    </div>
+    <div>
+      <label>Type</label>
+      {{input value=this.newProjectData.type}}
+    </div>
   </div>
   <div>
     <label>Project Description</label>
@@ -33,6 +39,12 @@
     <div>
       <label>Attractiveness</label>
       {{range-slider value=this.newProjectData.attractiveness min=1 max=10}}
+    </div>
+  </div>
+  <div class="side-by-side">
+    <div>
+      <label>Strategic Alignment</label>
+      {{range-slider value=this.newProjectData.alignment min=1 max=10}}
     </div>
   </div>
 
