@@ -133,9 +133,11 @@ textarea {
   width: 100%;
   height: 55px;
   font-size: 14px;
+  line-height: 20px;
   color: white;
   resize: none;
   padding-left: 0.6em;
+  padding-top: 0.4em;
 }
 
 label{
