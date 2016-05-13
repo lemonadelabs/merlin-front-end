@@ -4,7 +4,9 @@ export default Ember.Component.extend({
   classNames: ['modal'],
   steps: ['new-project-1', 'new-project-2', 'new-project-3'],
   currentStep: undefined,
-  newProjectData: {},
+  newProjectData: {
+    is_ringfenced: false
+  },
   modalTitle : undefined,
   init: function () {
     this._super()
