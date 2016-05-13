@@ -32,6 +32,6 @@
     {{range-slider value=this.newProjectData.attractiveness min=1 max=10}}
   </div>
 </div>
-{{#if this.canContinue}}
+{{#if this.validation.canContinue}}
   <footer class="one-item"><button {{action "next"}}>next</button></footer>
 {{/if}}

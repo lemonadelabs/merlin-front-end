@@ -3,9 +3,9 @@ import Ember from 'ember';
 export default Ember.Component.extend({
 
   errors: {},
-  validated: false,
-  requiredFileds: false,
-  canContinue: false,
+  // validated: false,
+  // requiredFileds: false,
+  // canContinue: false,
 
   didInsertElement(){
     this.sendAction('setTitle', 'Add Investment Project - Project Info')
@@ -37,25 +37,24 @@ export default Ember.Component.extend({
         return
       }
     })
-    this.set('validated', validated)
-  }.observes('errors.priority','errors.name'), // list all potential error
+    this.set('validation.validated', validated)
+  }.observes('errors.priority','errors.name'), // list all error properties
 
   checkForRequiredFieleds: function () {
     if (this.get('newProjectData.name') && this.get('newProjectData.priority') ) {
-      this.set('requiredFileds', true)
+      this.set('validation.requiredFileds', true)
     } else {
-      this.set('requiredFileds', false)
+      this.set('validation.requiredFileds', false)
     }
   }.observes('newProjectData.name', 'newProjectData.priority' ), // list all required fields
 
   updateCanContinue: function () {
-    if (this.get('requiredFileds') && this.get('validated') ) {
-      this.set( 'canContinue', true )
+    if (this.get('validation.requiredFileds') && this.get('validation.validated') ) {
+      this.set( 'validation.canContinue', true )
     } else {
-      this.set( 'canContinue', false )
+      this.set( 'validation.canContinue', false )
     }
-    console.log('can continue', this.get('canContinue'))
-  }.observes('requiredFileds', 'validated'),
+  }.observes('validation.requiredFileds', 'validation.validated'),
 
 
   actions: {
@@ -67,7 +66,6 @@ export default Ember.Component.extend({
     cancel () {
       this.sendAction('cancel');
     },
-
   }
 
 });
