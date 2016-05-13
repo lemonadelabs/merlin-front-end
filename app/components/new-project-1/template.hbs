@@ -6,18 +6,21 @@
       <p>{{this.errors.name}}</p>
     {{/if}}
     <label>Project Name</label>
-    {{input value=this.name}}
+    {{input value=this.newProjectData.name}}
   </div>
   <div>
     <label>Project Description</label>
-    {{textarea}}
+    {{textarea value=this.newProjectData.description}}
   </div>
   <div class="side-by-side">
     <div>
       <label>Ring fenced</label>
-      {{toggle-switch enabled=this.bool}}
+      {{toggle-switch enabled=this.newProjectData.is_ringfenced}}
     </div>
     <div>
+      {{#if this.errors.priority}}
+        <p>{{this.errors.priority}}</p>
+      {{/if}}
       <label>Priority</label>
       {{input}}
     </div>
@@ -25,13 +28,15 @@
   <div class="side-by-side">
     <div>
       <label>Achievability</label>
-      {{range-slider value=50 min=1 max=100}}
+      {{range-slider value=this.newProjectData.achievability min=1 max=10}}
     </div>
     <div>
       <label>Attractiveness</label>
-      {{range-slider value=5 min=1 max=10}}
+      {{range-slider value=this.newProjectData.attractiveness min=1 max=10}}
     </div>
   </div>
 
 </div>
-<footer class="one-item"><button {{action "next"}}>next</button></footer>
+{{#if this.canContinue}}
+  <footer class="one-item"><button {{action "next"}}>next</button></footer>
+{{/if}}
