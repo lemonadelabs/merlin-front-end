@@ -1,36 +1,53 @@
 <p class='step-indicator'>step 1 of 3</p>
 
 <div class="info-form-container">
-  <div>
-    {{#if this.errors.name}}
-      <p>{{this.errors.name}}</p>
-    {{/if}}
-    <label>Project Name</label>
-    {{input value=this.newProjectData.name}}
+  <div class="side-by-side">
+    <div>
+      {{#if this.errors.name}}
+        <p>{{this.errors.name}}</p>
+      {{/if}}
+      <label>Project Name</label>
+      {{input value=this.newProjectData.name}}
+    </div>
+    <div>
+      <label>Type</label>
+      {{input value=this.newProjectData.type}}
+    </div>
   </div>
   <div>
     <label>Project Description</label>
     {{textarea value=this.newProjectData.description}}
   </div>
-  <div>
-    <label>Ring fenced</label>
-    {{toggle-switch enabled=this.newProjectData.is_ringfenced}}
+  <div class="side-by-side">
+    <div>
+      <label>Ring fenced</label>
+      {{toggle-switch enabled=this.newProjectData.is_ringfenced}}
+    </div>
+    <div>
+      {{#if this.errors.priority}}
+        <p>{{this.errors.priority}}</p>
+      {{/if}}
+      <label>Priority</label>
+      {{input value=this.newProjectData.priority}}
+    </div>
   </div>
-  <div>
-    {{#if this.errors.priority}}
-      <p>{{this.errors.priority}}</p>
-    {{/if}}
-    <label>Priority</label>
-    {{input value=this.newProjectData.priority}}
+  <div class="side-by-side">
+    <div>
+      <label>Achievability</label>
+      {{range-slider value=this.newProjectData.achievability min=1 max=10}}
+    </div>
+    <div>
+      <label>Attractiveness</label>
+      {{range-slider value=this.newProjectData.attractiveness min=1 max=10}}
+    </div>
   </div>
-  <div>
-    <label>Achievability</label>
-    {{range-slider value=this.newProjectData.achievability min=1 max=10}}
+  <div class="side-by-side">
+    <div>
+      <label>Strategic Alignment</label>
+      {{range-slider value=this.newProjectData.alignment min=1 max=10}}
+    </div>
   </div>
-  <div>
-    <label>Attractiveness</label>
-    {{range-slider value=this.newProjectData.attractiveness min=1 max=10}}
-  </div>
+
 </div>
 {{#if this.validation.canContinue}}
   <footer class="one-item"><button {{action "next"}}>next</button></footer>

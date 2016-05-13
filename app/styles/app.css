@@ -32,3 +32,19 @@ html {
 [data-ember-action]{
   cursor: pointer;
 }
+
+.side-by-side {
+  display: inline-flex;
+  align-content: stretch;
+  width: 100%;
+}
+
+.side-by-side > *{
+  flex: 1 auto;
+  margin-left: 20px;
+  width: 50%;
+}
+
+.side-by-side > *:first-child{
+  margin-left:0;
+}
