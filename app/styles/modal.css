@@ -63,6 +63,7 @@
   background-color: rgb(28, 92, 167);
   z-index: 10;
 }
+
 .modal-extra-slider::before{
   $height: 20px;
   height: $height;
@@ -75,8 +76,19 @@
   background-image: linear-gradient(-180deg, rgba(0,0,0,0.00) 30%, rgba(0,0,0,0.14) 100%);
 }
 
-/*new project specific classes and workaround*/
+.modal-extra-slider-header{
+  text-align: center;
+  font-size: 10.5pt;
+  margin-bottom: 0;
+}
 
+.modal-extra-slider-content{
+  width: 85%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/*new project specific classes and workaround*/
 .info-form-container{
   width: 85%;
   margin: auto;

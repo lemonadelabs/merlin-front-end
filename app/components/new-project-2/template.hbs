@@ -13,24 +13,26 @@
 <p {{action 'toggleNewPhase'}}>New Phase</p>
 {{#if this.showNewPhase}}
   <div class="modal-extra-slider">
-    <p>New Phase</p>
-    <div>
-      <label>Phase Name</label>
-      {{input}}
-    </div>
-    <div class="side-by-side">
+    <h1 class="modal-extra-slider-header">New Phase</h1>
+    <div class="modal-extra-slider-content">
       <div>
-        <label>Capital Input</label>
+        <label>Phase Name</label>
         {{input}}
       </div>
-      <div>
-        <label>Opex Contribution</label>
-        {{input}}
+      <div class="side-by-side">
+        <div>
+          <label>Capital Input</label>
+          {{input}}
+        </div>
+        <div>
+          <label>Opex Contribution</label>
+          {{input}}
+        </div>
       </div>
-    </div>
-    <div>
-      <label>Phase Description</label>
-      {{textarea}}
+      <div>
+        <label>Phase Description</label>
+        {{textarea}}
+      </div>
     </div>
     <footer>
       <button {{action "toggleNewPhase"}}>cancel</button>
