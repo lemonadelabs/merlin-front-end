@@ -20,13 +20,16 @@
     <label>Priority</label>
     {{input}}
   </div>
-  <div>
-    <label>Achievability</label>
-    {{range-slider value=this.testValue min=1 max=10}}
+  <div class="side-by-side">
+    <div>
+      <label>Achievability</label>
+      {{range-slider value=50 min=1 max=100}}
+    </div>
+    <div>
+      <label>Attractiveness</label>
+      {{range-slider value=5 min=1 max=10}}
+    </div>
   </div>
-  <div>
-    <label>Attractiveness</label>
-    {{range-slider value=this.testValue min=1 max=10}}
-  </div>
+
 </div>
 <footer class="one-item"><button {{action "next"}}>next</button></footer>

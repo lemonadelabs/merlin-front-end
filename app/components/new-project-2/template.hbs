@@ -4,10 +4,32 @@
   timelineGridObjects=this.timelineGridObjects
   timespan=this.timespan
 }}
+{{
+  timeline-track
+  timelineGridObjects=this.timelineGridObjects
+  model=newProjectData.phases
+  onInteractionEnd=(action 'updatePhase')
+}}
 <p {{action 'toggleNewPhase'}}>New Phase</p>
 {{#if this.showNewPhase}}
   <div class="modal-extra-slider">
     <p>New Phase</p>
+    <div>
+      <label>Phase Name</label>
+      {{input}}
+    </div>
+    <div>
+      <label>Capital Input</label>
+      {{input}}
+    </div>
+    <div>
+      <label>Opex Contribution</label>
+      {{input}}
+    </div>
+    <div>
+      <label>Phase Description</label>
+      {{textarea}}
+    </div>
     <footer>
       <button {{action "toggleNewPhase"}}>cancel</button>
       <button {{action "addNewPhase"}}>Add Phase</button>

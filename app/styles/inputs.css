@@ -21,6 +21,7 @@ input[type=range]{
   -webkit-appearance: none;
   background-color: transparent;
   margin-top: 42px;
+  width: 100%;
 }
 
 input[type=range]::-webkit-slider-runnable-track{
@@ -111,11 +112,13 @@ input[type=range]::-moz-focus-outer {
 }
 
 label{
+  display: block;
   color: white;
   font-size: 9.5pt;
   font-weight: 300;
   text-transform: capitalize;
-  margin-bottom: 0;
+  margin-bottom: 0.5em;
+  margin-top: 0.5em;
   line-height: 10px;
 }
 

@@ -29,6 +29,9 @@ export default Ember.Component.extend({
     addNewPhase () {
       this.toggleBool('showNewPhase');
     },
+    updatePhase () {
+      //this is needed for the timeline-track component, we might want to do something here anyway
+    },
     next () {
       this.set('submitted', true);
       // do things regarding data, like validation
