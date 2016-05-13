@@ -22,14 +22,14 @@ module.exports = function(defaults) {
           module:cssNested
         },
         {
-          module: simpleVars,
-          options: {}
-        },
-        {
           module: cssImport,
           options: {
             path: ["app/styles"]
           }
+        },
+        {
+          module: simpleVars,
+          options: {}
         },
         {
           module: cssnext,
