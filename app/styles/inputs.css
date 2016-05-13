@@ -135,6 +135,7 @@ textarea {
   font-size: 14px;
   color: white;
   resize: none;
+  padding-left: 0.6em;
 }
 
 label{
