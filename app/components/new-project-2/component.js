@@ -26,6 +26,9 @@ export default Ember.Component.extend({
     toggleNewModelModification () {
       this.toggleBool('showNewModelModification');
     },
+    addNewPhase () {
+      this.toggleBool('showNewPhase');
+    },
     next () {
       this.set('submitted', true);
       // do things regarding data, like validation
