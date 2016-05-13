@@ -1,6 +1,36 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
+  checkForErrors: function () {
+    var validated = true
+    _.forEach(this.get('errors'), function ( error ) {
+      if (error) {
+        validated = false
+        return
+      }
+    })
+    this.set('validated', validated)
+  }.observes('errors.priority','errors.name'), // list all error properties
+
+  checkForRequiredFieleds: function () {
+    if (this.get('newProjectData.name') && this.get('newProjectData.priority') ) {
+      this.set('requiredFileds', true)
+    } else {
+      this.set('requiredFileds', false)
+    }
+  }.observes('newProjectData.name', 'newProjectData.priority' ), // list all required fields
+
+  updateCanContinue: function () {
+    if (this.get('requiredFileds') && this.get('validated') ) {
+      this.set( 'canContinue', true )
+    } else {
+      this.set( 'canContinue', false )
+    }
+    console.log('can continue', this.get('canContinue'))
+  }.observes('requiredFileds', 'validated'),
+
+
+
   timespan:{
     start:{
       year:2016
