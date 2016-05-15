@@ -14,24 +14,37 @@
 {{#if this.showNewPhase}}
   <div class="modal-extra-slider">
     <h1 class="modal-extra-slider-header">New Phase</h1>
-    <div class="modal-extra-slider-content">
-      <div>
-        <label>Phase Name</label>
-        {{input}}
-      </div>
-      <div class="side-by-side">
+    <div class="modal-extra-slider-content new-phase-options">
+      <div class="phase-basic-info">
         <div>
-          <label>Capital Input</label>
+          <label>Phase Name</label>
           {{input}}
         </div>
+        <div class="side-by-side">
+          <div>
+            <label>Capital Input</label>
+            {{input}}
+          </div>
+          <div>
+            <label>Opex Contribution</label>
+            {{input}}
+          </div>
+        </div>
         <div>
-          <label>Opex Contribution</label>
-          {{input}}
+          <label>Phase Description</label>
+          {{textarea}}
         </div>
       </div>
-      <div>
-        <label>Phase Description</label>
-        {{textarea}}
+      <div class="phase-senario-options">
+        <p>
+          Resources
+        </p>
+        <p>
+          Impacts
+        </p>
+        <p>
+          Outcomes
+        </p>
       </div>
     </div>
     <footer>

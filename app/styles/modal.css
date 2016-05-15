@@ -125,3 +125,16 @@
 .modal .toggle-switch {
   width: 100%;
 }
+
+.new-phase-options{
+  display: flex;
+}
+
+.phase-basic-info{
+  width: 50%;
+  margin-left: 10px;
+}
+
+.phase-basic-info::after{
+  
+}
