@@ -28,9 +28,6 @@ export default Ember.Component.extend({
     }
     console.log('can continue', this.get('canContinue'))
   }.observes('requiredFileds', 'validated'),
-
-
-
   timespan:{
     start:{
       year:2016
@@ -73,6 +70,12 @@ export default Ember.Component.extend({
     },
     cancel () {
       this.sendAction('cancel');
+    },
+    addResources () {
+
+    },
+    addImpacts () {
+
     }
   }
 });
