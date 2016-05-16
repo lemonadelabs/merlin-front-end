@@ -29,7 +29,7 @@ html {
   box-sizing: inherit;
 }
 
-[data-ember-action]{
+[data-ember-action] {
   cursor: pointer;
 }
 
@@ -39,12 +39,26 @@ html {
   width: 100%;
 }
 
-.side-by-side > *{
+.side-by-side > * {
   flex: 1 auto;
   margin-left: 20px;
   width: 50%;
 }
 
-.side-by-side > *:first-child{
+.side-by-side > *:first-child {
   margin-left:0;
+}
+
+.ruled-sub-header {
+  display: block;
+  color: white;
+  font-size: 9.5pt;
+  font-weight: 300;
+  text-transform: capitalize;
+  margin-bottom: 0.5em;
+  margin-top: 0.5em;
+  line-height: 10px;
+  border-bottom: solid 1px var(--resource-color);
+  width: 100%;
+  padding-bottom: 6px;
 }

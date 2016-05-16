@@ -131,10 +131,14 @@
 }
 
 .phase-basic-info{
-  width: 50%;
-  margin-left: 10px;
+  width: calc( 50% - 10px);
+  margin-right: 10px;
 }
 
+.phase-senario-options{
+  width: calc( 50% - 10px);
+  margin-left: 10px;
+}
 .phase-basic-info::after{
-  
+
 }
