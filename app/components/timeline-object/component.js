@@ -33,7 +33,11 @@ export default Ember.Component.extend({
       document.touchEndListener = true;
     }
     window.addEventListener('resize', this.boundResizeFunc)
-
+    this.findAndSetTrackOffset();
+  },
+  findAndSetTrackOffset(){
+    let trackOffset = this.get('parentView.element').getBoundingClientRect().left
+    this.set('trackOffset',trackOffset);
   },
   willDestroy(){
     document.onmousemove = null;
@@ -41,6 +45,7 @@ export default Ember.Component.extend({
   },
   handleResize: function () {
     Ember.run.debounce(this, this.setPositionFromGrid, 100);
+    this.findAndSetTrackOffset();
   },
   mouseDown(e){
     this.handleInputStart(e);
