@@ -9,6 +9,7 @@ export default Ember.Component.extend({
   phases: [],
   timelineGridObjects: undefined,
   selectedServiceModel: undefined,
+  showNextLayer: false,
 
   setUpThings: function () {
     var simulation = this.get('simulation')
@@ -81,7 +82,7 @@ export default Ember.Component.extend({
     },
     units:'quarters'
   },
-  showNewPhase:false,
+  showNextLayer:false,
   showNewModelModification:false,
   didInsertElement(){
     this.sendAction('setTitle', 'Add Investment Project - Add Phases')
@@ -91,8 +92,8 @@ export default Ember.Component.extend({
     this.set(variablepath, toggleBool);
   },
   actions: {
-    toggleNewPhase () {
-      this.toggleBool('showNewPhase');
+    toggleChildLayer () {
+      this.toggleBool('showNextLayer');
     },
     addNewPhase () {
       var phases = this.get('phases')
@@ -126,7 +127,7 @@ export default Ember.Component.extend({
       this.phases.arrayContentDidChange(this.phases.length, 0, 1)
 
       this.resetNewPhaseForm()
-      this.toggleBool('showNewPhase');
+      this.toggleBool('showNextLayer');
     },
     updatePhase () {
       //this is needed for the timeline-track component, we might want to do something here anyway
