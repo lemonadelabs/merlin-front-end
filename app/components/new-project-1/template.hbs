@@ -11,7 +11,13 @@
     </div>
     <div>
       <label>Type</label>
-      {{input value=this.newProjectData.type}}
+      {{#x-select placeholder="select a type" value=this.newProjectData.type}}
+        {{#x-option value=""}} Select type{{/x-option}}
+        {{#x-option value='run'}}Run{{/x-option}}
+        {{#x-option value='grow'}}Grow{{/x-option}}
+        {{#x-option value='transform'}}Transform{{/x-option}}
+        {{#x-option value='other'}}Other{{/x-option}}
+      {{/x-select}}
     </div>
   </div>
   <div>
@@ -49,6 +55,4 @@
   </div>
 
 </div>
-{{#if this.validation.canContinue}}
-  <footer class="one-item"><button {{action "next"}}>next</button></footer>
-{{/if}}
+<footer class="one-item"><button {{action "next"}} disabled={{validation.disableButton}}>next</button></footer>

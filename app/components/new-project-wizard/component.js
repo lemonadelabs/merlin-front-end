@@ -9,6 +9,7 @@ export default Ember.Component.extend({
       validated: false,
       requiredFileds: false,
       canContinue: false,
+      disableButton: true,
     }
   },
   phases: [],
