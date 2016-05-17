@@ -9,6 +9,7 @@ export default Ember.Component.extend({
   width:undefined,
   boundFinishManipulationFunc:undefined,
   boundResizeFunc:undefined,
+  trackOffset:0,
   style:Ember.computed('x','width','active', function(){
     var x = this.get('x');
     var width = this.get('width');
@@ -33,7 +34,15 @@ export default Ember.Component.extend({
       document.touchEndListener = true;
     }
     window.addEventListener('resize', this.boundResizeFunc)
+    this.findAndSetTrackOffset();
 
+    if(this.get('timelineGridObjects')){
+      this.setPositionFromGrid();
+    }
+  },
+  findAndSetTrackOffset(){
+    let trackOffset = this.get('parentView.element').getBoundingClientRect().left
+    this.set('trackOffset',trackOffset);
   },
   willDestroy(){
     document.onmousemove = null;
@@ -41,6 +50,7 @@ export default Ember.Component.extend({
   },
   handleResize: function () {
     Ember.run.debounce(this, this.setPositionFromGrid, 100);
+    this.findAndSetTrackOffset();
   },
   mouseDown(e){
     this.handleInputStart(e);
@@ -139,10 +149,12 @@ export default Ember.Component.extend({
     console.warn("Missing action on interaction end");
   },
   updateMyWidthRight: function(args){
-    var offset = args.offset;
-    var x = this.get('x');
+    var offset = args.offset,
+        x = this.get('x'),
+        trackOffset = this.get('trackOffset'),
+        relativeInputPosition = document.inputX - trackOffset
 
-    var newWidth = document.inputX - x + offset;
+    var newWidth = relativeInputPosition - x + offset;
     if(newWidth>0){
       this.set('width', newWidth);
     }
@@ -152,13 +164,16 @@ export default Ember.Component.extend({
     }
   },
   updateMyWidthLeft: function(args){
-    var offset = args.offset;
-    var x = this.get('x');
-    var width = this.get('width');
+    var offset = args.offset,
+        x = this.get('x'),
+        width = this.get('width'),
+        trackOffset = this.get('trackOffset'),
+        relativeInputPosition = document.inputX - trackOffset
 
-    if(x !== x+ (x - document.inputX)){
-      this.set('x', x - (x - document.inputX + offset) );
-      this.set('width', width + (x - document.inputX + offset) );
+
+    if(x !== x+ (x - relativeInputPosition)){
+      this.set('x', x - (x - relativeInputPosition + offset) );
+      this.set('width', width + (x - relativeInputPosition + offset) );
     }
 
     if(this.get('active')){
@@ -167,8 +182,11 @@ export default Ember.Component.extend({
 
   },
   updateMyPosition: function(args){
-    var offset = args.offset;
-    this.set('x', document.inputX - offset);
+    var offset = args.offset,
+        trackOffset = this.get('trackOffset'),
+        relativeInputPosition = document.inputX - trackOffset
+
+    this.set('x', relativeInputPosition - offset);
     if(this.get('active')){
       this.set('updateMyPositionRunLoop' , Ember.run.next(this, this.updateMyPosition, {'offset':offset}) );
     }

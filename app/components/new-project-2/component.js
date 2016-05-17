@@ -7,7 +7,7 @@ export default Ember.Component.extend({
   operational: undefined,
   description: undefined,
   phases: [],
-
+  timelineGridObjects:undefined,
   checkForErrors: function () {
     var validated = true
     _.forEach(this.get('errors'), function ( error ) {

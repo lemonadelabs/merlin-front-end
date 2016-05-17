@@ -12,7 +12,10 @@
 
   onInteractionEnd=(action 'updatePhase')
 }}
-<p {{action 'toggleNewPhase'}}>New Phase</p>
+<div class="new-phase-trigger" {{action 'toggleNewPhase'}}>
+  <img src="images/icons/new-phase-icon.svg" alt="" />
+  <p>Add New Phase</p>
+</div>
 {{#if this.showNewPhase}}
   <div class="modal-extra-slider">
     <h1 class="modal-extra-slider-header">New Phase</h1>
