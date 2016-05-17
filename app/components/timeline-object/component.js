@@ -34,6 +34,10 @@ export default Ember.Component.extend({
     }
     window.addEventListener('resize', this.boundResizeFunc)
     this.findAndSetTrackOffset();
+    
+    if(this.get('timelineGridObjects')){
+      this.setPositionFromGrid();
+    }
   },
   findAndSetTrackOffset(){
     let trackOffset = this.get('parentView.element').getBoundingClientRect().left
