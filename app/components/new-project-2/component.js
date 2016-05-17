@@ -76,9 +76,6 @@ export default Ember.Component.extend({
     toggleNewPhase () {
       this.toggleBool('showNewPhase');
     },
-    toggleNewModelModification () {
-      this.toggleBool('showNewModelModification');
-    },
     addNewPhase () {
       var phases = this.get('phases')
       var lastPhase = phases[ phases.length - 1 ]
@@ -129,10 +126,13 @@ export default Ember.Component.extend({
       this.sendAction('cancel');
     },
     addResources () {
-
+      this.toggleBool('showNewModelModification');
     },
     addImpacts () {
-
+      this.toggleBool('showNewModelModification');
+    },
+    cancelResources () {
+      this.toggleBool('showNewModelModification');
     }
   }
 });

@@ -56,9 +56,15 @@
       <button {{action "addNewPhase"}}>Add Phase</button>
     </footer>
   </div>
-{{/if}}
-{{#if this.showNewModelModification}}
-
+  {{#if this.showNewModelModification}}
+  <div class="modal-extra-slider half-size">
+    <h1 class="modal-extra-slider-header">Add Resources - Choose Service</h1>
+    <footer>
+      <button {{action "cancelResources"}}>cancel</button>
+      <button {{action "addResources"}}>Add Resources</button>
+    </footer>
+  </div>
+  {{/if}}
 {{/if}}
 <footer>
   <button {{action "back"}}>Previous</button>

@@ -50,7 +50,7 @@ export default Ember.Component.extend({
     units:'months'
   },
   bool:false,
-  testValue:300,
+  testValue:3,
   timelineGridObjects:undefined,
   init(){
     this._super();
