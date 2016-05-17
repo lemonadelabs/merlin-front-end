@@ -6,8 +6,6 @@ export default Ember.Component.extend({
   operational: undefined,
   description: undefined,
   phases: [],
-  // phasesArray: [],
-
 
   checkForErrors: function () {
     var validated = true
@@ -44,6 +42,18 @@ export default Ember.Component.extend({
     this.set('operational', undefined)
   },
 
+  incrementTimeBy1: function (opts) {
+    var maxValue = opts.maxValue || 4
+    var time = _.cloneDeep(opts.time)
+    if (time.value === maxValue) {
+      time.year +=1
+      time.value = 1
+    } else {
+      time.value += 1
+    }
+    return time
+  },
+
   timespan:{
     start:{
       year:2016
@@ -70,21 +80,36 @@ export default Ember.Component.extend({
       this.toggleBool('showNewModelModification');
     },
     addNewPhase () {
-      var phase = {
+      var phases = this.get('phases')
+      var lastPhase = phases[ phases.length - 1 ]
+
+      var newPhase = {
         "name": this.get('phaseName'),
         "description": this.get('description'),
         "cost": Number( this.get('capital') ) + Number( this.get('operational') ),
-        start: {
+      }
+
+      if (lastPhase) {
+        newPhase.start = this.incrementTimeBy1({ time : lastPhase.end })
+        newPhase.end = {
+          year : newPhase.start.year + 1,
+          value : newPhase.start.value
+        }
+      } else {
+        newPhase.start = {
           year : 2016,
-          value : 1,
+          value : 1
         },
-        end : {
-          year : 2019,
-          value : 4
+        newPhase.end = {
+          year : 2017,
+          value : 1
         }
       }
-      this.get('phases').push(phase)
+
+      phases.push(newPhase)
+      this.set('phases', phases)
       this.phases.arrayContentDidChange(this.phases.length, 0, 1)
+
       this.resetNewPhaseForm()
       this.toggleBool('showNewPhase');
     },
