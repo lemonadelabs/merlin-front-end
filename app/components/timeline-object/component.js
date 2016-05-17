@@ -9,6 +9,7 @@ export default Ember.Component.extend({
   width:undefined,
   boundFinishManipulationFunc:undefined,
   boundResizeFunc:undefined,
+  trackOffset:0,
   style:Ember.computed('x','width','active', function(){
     var x = this.get('x');
     var width = this.get('width');
@@ -34,7 +35,7 @@ export default Ember.Component.extend({
     }
     window.addEventListener('resize', this.boundResizeFunc)
     this.findAndSetTrackOffset();
-    
+
     if(this.get('timelineGridObjects')){
       this.setPositionFromGrid();
     }
@@ -176,8 +177,10 @@ export default Ember.Component.extend({
 
   },
   updateMyPosition: function(args){
-    var offset = args.offset;
-    this.set('x', document.inputX - offset);
+    var offset = args.offset,
+        trackOffset = this.get('trackOffset')
+
+    this.set('x', (document.inputX - offset) - trackOffset);
     if(this.get('active')){
       this.set('updateMyPositionRunLoop' , Ember.run.next(this, this.updateMyPosition, {'offset':offset}) );
     }
