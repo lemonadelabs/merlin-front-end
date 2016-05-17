@@ -183,9 +183,10 @@ export default Ember.Component.extend({
   },
   updateMyPosition: function(args){
     var offset = args.offset,
-        trackOffset = this.get('trackOffset')
+        trackOffset = this.get('trackOffset'),
+        relativeInputPosition = document.inputX - trackOffset
 
-    this.set('x', (document.inputX - offset) - trackOffset);
+    this.set('x', relativeInputPosition - offset);
     if(this.get('active')){
       this.set('updateMyPositionRunLoop' , Ember.run.next(this, this.updateMyPosition, {'offset':offset}) );
     }
