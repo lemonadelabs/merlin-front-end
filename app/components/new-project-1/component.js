@@ -50,9 +50,9 @@ export default Ember.Component.extend({
 
   updateCanContinue: function () {
     if (this.get('validation.requiredFileds') && this.get('validation.validated') ) {
-      this.set( 'validation.canContinue', true )
+      this.set( 'validation.disableButton', false )
     } else {
-      this.set( 'validation.canContinue', false )
+      this.set( 'validation.disableButton', true )
     }
   }.observes('validation.requiredFileds', 'validation.validated'),
 

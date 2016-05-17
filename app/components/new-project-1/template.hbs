@@ -49,6 +49,4 @@
   </div>
 
 </div>
-{{#if this.validation.canContinue}}
-  <footer class="one-item"><button {{action "next"}}>next</button></footer>
-{{/if}}
+<footer class="one-item"><button {{action "next"}} disabled={{validation.disableButton}}>next</button></footer>
