@@ -151,9 +151,10 @@ export default Ember.Component.extend({
   updateMyWidthRight: function(args){
     var offset = args.offset,
         x = this.get('x'),
-        trackOffset = this.get('trackOffset')
+        trackOffset = this.get('trackOffset'),
+        relativeInputPosition = document.inputX - trackOffset
 
-    var newWidth = (document.inputX - trackOffset) - x + offset;
+    var newWidth = relativeInputPosition - x + offset;
     if(newWidth>0){
       this.set('width', newWidth);
     }
@@ -163,13 +164,16 @@ export default Ember.Component.extend({
     }
   },
   updateMyWidthLeft: function(args){
-    var offset = args.offset;
-    var x = this.get('x');
-    var width = this.get('width');
+    var offset = args.offset,
+        x = this.get('x'),
+        width = this.get('width'),
+        trackOffset = this.get('trackOffset'),
+        relativeInputPosition = document.inputX - trackOffset
 
-    if(x !== x+ (x - document.inputX)){
-      this.set('x', x - (x - document.inputX + offset) );
-      this.set('width', width + (x - document.inputX + offset) );
+
+    if(x !== x+ (x - relativeInputPosition)){
+      this.set('x', x - (x - relativeInputPosition + offset) );
+      this.set('width', width + (x - relativeInputPosition + offset) );
     }
 
     if(this.get('active')){
