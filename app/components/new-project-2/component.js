@@ -1,6 +1,14 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
+  phaseName: undefined,
+  capital: undefined,
+  operational: undefined,
+  description: undefined,
+  phases: [],
+  // phasesArray: [],
+
+
   checkForErrors: function () {
     var validated = true
     _.forEach(this.get('errors'), function ( error ) {
@@ -28,6 +36,14 @@ export default Ember.Component.extend({
     }
     console.log('can continue', this.get('canContinue'))
   }.observes('requiredFileds', 'validated'),
+
+  resetNewPhaseForm: function () {
+    this.set('phaseName', undefined)
+    this.set('description', undefined)
+    this.set('capital', undefined)
+    this.set('operational', undefined)
+  },
+
   timespan:{
     start:{
       year:2016
@@ -54,6 +70,22 @@ export default Ember.Component.extend({
       this.toggleBool('showNewModelModification');
     },
     addNewPhase () {
+      var phase = {
+        "name": this.get('phaseName'),
+        "description": this.get('description'),
+        "cost": Number( this.get('capital') ) + Number( this.get('operational') ),
+        start: {
+          year : 2016,
+          value : 1,
+        },
+        end : {
+          year : 2019,
+          value : 4
+        }
+      }
+      this.get('phases').push(phase)
+      this.phases.arrayContentDidChange(this.phases.length, 0, 1)
+      this.resetNewPhaseForm()
       this.toggleBool('showNewPhase');
     },
     updatePhase () {

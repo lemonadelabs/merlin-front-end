@@ -7,7 +7,9 @@
 {{
   timeline-track
   timelineGridObjects=this.timelineGridObjects
-  model=newProjectData.phases
+
+  timelineObjects=this.phases
+
   onInteractionEnd=(action 'updatePhase')
 }}
 <p {{action 'toggleNewPhase'}}>New Phase</p>
@@ -18,21 +20,21 @@
       <div class="phase-basic-info">
         <div>
           <label>Phase Name</label>
-          {{input}}
+          {{input value=this.phaseName}}
         </div>
         <div class="side-by-side">
           <div>
             <label>Capital Input</label>
-            {{input}}
+            {{input value=this.capital}}
           </div>
           <div>
             <label>Opex Contribution</label>
-            {{input}}
+            {{input value=this.operational}}
           </div>
         </div>
         <div>
           <label>Phase Description</label>
-          {{textarea}}
+          {{textarea value=this.description}}
         </div>
       </div>
       <div class="phase-senario-options">
