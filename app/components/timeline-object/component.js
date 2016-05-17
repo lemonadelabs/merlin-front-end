@@ -149,10 +149,11 @@ export default Ember.Component.extend({
     console.warn("Missing action on interaction end");
   },
   updateMyWidthRight: function(args){
-    var offset = args.offset;
-    var x = this.get('x');
+    var offset = args.offset,
+        x = this.get('x'),
+        trackOffset = this.get('trackOffset')
 
-    var newWidth = document.inputX - x + offset;
+    var newWidth = (document.inputX - trackOffset) - x + offset;
     if(newWidth>0){
       this.set('width', newWidth);
     }
