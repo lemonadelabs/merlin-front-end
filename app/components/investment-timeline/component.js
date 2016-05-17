@@ -112,23 +112,24 @@ export default Ember.Component.extend({
   },
 
   dothings: function () {
-    var self = this
-    var serviceModels = this.get('serviceModels')
-    var serviceModel = serviceModels[0]
-    var serviceModelChildren = this.findChildrenForServiceModel({ serviceModel : serviceModel })
-    var attributesForChildren = this.findAttributesFromEntities({ entities : serviceModelChildren })
+    // var self = this
+    // var serviceModels = this.get('serviceModels')
+    // console.log('serviceModels', serviceModels)
+    // var serviceModel = serviceModels[0]
+    // var serviceModelChildren = this.findChildrenForServiceModel({ serviceModel : serviceModel })
+    // var attributesForChildren = this.findAttributesFromEntities({ entities : serviceModelChildren })
 
-    var testAttribute = attributesForChildren[0]
-    var childrenWithAttribute = this.filterEntitiesByAttribute({
-      entities : serviceModelChildren,
-      attribute : testAttribute
-    })
+    // var testAttribute = attributesForChildren[0]
+    // var childrenWithAttribute = this.filterEntitiesByAttribute({
+    //   entities : serviceModelChildren,
+    //   attribute : testAttribute
+    // })
 
-    var testEntity = childrenWithAttribute[0]
-    var processProperties = this.processPropertiesFromEntity({ entity : testEntity })
+    // var testEntity = childrenWithAttribute[0]
+    // var processProperties = this.processPropertiesFromEntity({ entity : testEntity })
 
-    var quarterFormat = convertTime("2016-01-01").toQuarter()
-    console.log(convertTime(quarterFormat).quarterToBackend())
+    // var quarterFormat = convertTime("2016-01-01").toQuarter()
+    // console.log(convertTime(quarterFormat).quarterToBackend())
 
 
   }.on('init'),
