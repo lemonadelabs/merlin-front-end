@@ -108,6 +108,11 @@
   display: none;
 }
 
+.modal .timeline-object{
+  background-color: var(--resource-color);
+  top: 10px;
+}
+
 .modal .timeline-year-container {
   width: 85%;
 }
@@ -115,7 +120,7 @@
   margin-left: auto;
   margin-right: auto;
   width: 85%;
-  height: 87px;
+  height: 77px;
 }
 
 .modal .timeline-grid-title {
