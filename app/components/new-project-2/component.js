@@ -73,6 +73,9 @@ export default Ember.Component.extend({
     },
     addImpacts () {
       this.toggleBool('showNewModelModification');
+    },
+    cancelResources () {
+      this.toggleBool('showNewModelModification');
     }
   }
 });
