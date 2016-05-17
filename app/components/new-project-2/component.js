@@ -7,7 +7,24 @@ export default Ember.Component.extend({
   operational: undefined,
   description: undefined,
   phases: [],
-  timelineGridObjects:undefined,
+  timelineGridObjects: undefined,
+  selectedServiceModel: undefined,
+
+  setUpThings: function () {
+    var simulation = this.get('simulation')
+    var serviceModels = simTraverse.getServiceModelsFromSimulation({simulation : simulation})
+    this.set('serviceModels', serviceModels)
+  }.on('init'),
+
+  findAttributesAfterServicemodel: function () {
+    var selectedServiceModel = this.get('selectedServiceModel')
+    var attributes = simTraverse.getChildAttributesFromServiceModel({
+      serviceModel : selectedServiceModel,
+      simulation : this.get('simulation')
+    })
+    console.log(attributes)
+  }.observes('selectedServiceModel'),
+
   checkForErrors: function () {
     var validated = true
     _.forEach(this.get('errors'), function ( error ) {

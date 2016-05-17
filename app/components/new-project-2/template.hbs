@@ -62,9 +62,16 @@
   {{#if this.showNewModelModification}}
   <div class="modal-extra-slider half-size">
     <h1 class="modal-extra-slider-header">Add Resources - Choose Service</h1>
+
+    {{#x-select value=this.selectedServiceModel}}
+      {{#each this.serviceModels as |serviceModel|}}
+        {{#x-option value=serviceModel}}{{serviceModel.name}}{{/x-option}}
+      {{/each}}
+    {{/x-select}}
+
     <footer>
       <button {{action "cancelResources"}}>cancel</button>
-      <button {{action "addResources"}}>Add Resources</button>
+      <button {{action "addResources"}}>Next</button>
     </footer>
   </div>
   {{/if}}
