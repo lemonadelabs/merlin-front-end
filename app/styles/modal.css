@@ -52,7 +52,7 @@
 }
 
 .modal-extra-slider{
-  $height: 60%;
+  $height: 62%;
   animation: slide-up 250ms;
   position: absolute;
   width: 100%;
@@ -85,7 +85,7 @@
 .modal-extra-slider-header{
   text-align: center;
   font-size: 10.5pt;
-  margin-bottom: 0;
+  margin-bottom: 0.8em;
 }
 
 .modal-extra-slider-content{
@@ -95,6 +95,7 @@
 }
 
 /*new project specific classes and workaround*/
+
 .info-form-container{
   width: 85%;
   margin: auto;
@@ -166,14 +167,21 @@
 }
 
 .phase-basic-info{
-  width: calc( 50% - 10px);
-  margin-right: 10px;
+  width: calc( 50% - 20px);
+  margin-right: 20px;
 }
 
 .phase-senario-options{
-  width: calc( 50% - 10px);
-  margin-left: 10px;
+  width: calc( 50% - 20px);
+  margin-left: 20px;
 }
-.phase-basic-info::after{
-
+.phase-basic-info::after {
+  content: "";
+  display: block;
+  height: 65%;
+  width: 1px;
+  background-color: rgb(74, 144, 226);
+  position: absolute;
+  left: 50%;
+  top: 13%;
 }
