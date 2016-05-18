@@ -66,9 +66,9 @@ input[type=range]::-moz-focus-outer {
   min-width: 30px;
   padding: 3px 8px;
   position: absolute;
-  user-select: none;
   text-align: center;
   opacity: 1;
+  pointer-events: none;
 }
 
 .range-value::after {
