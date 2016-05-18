@@ -25,7 +25,7 @@
       <p class="ruled-sub-header">
         Resources
       </p>
-      <p {{action 'addResources'}}>Add Resources</p>
+      <p {{action 'toggleChildLayer'}}>Add Resources</p>
       <p class="ruled-sub-header">
         Impacts
       </p>
@@ -40,8 +40,27 @@
     <button {{action "addNewPhase"}}>Add Phase</button>
   </footer>
 </div>
-{{#if this.showNewModelModification}}
+{{#if this.showChildLayer}}
+
   {{
-    new-project-2-a-i
+    component
+    currentStep
+    simulation=this.simulation
+
+    selectedServiceModel=this.selectedServiceModel
+    selectedAttribute=this.selectedAttribute
+    selectedEntity=this.selectedEntity
+    processPropertyValues=this.processPropertyValues
+
+    nextChild="nextChild"
+    previousChild="previousChild"
+    childSequenceComplete="childSequenceComplete"
+    toggleChildLayer="toggleChildLayer"
   }}
+  {{!-- finish="finish" --}}
+  {{!-- newProjectData=this.newProjectData --}}
+  {{!-- setTitle="setTitle" --}}
+  {{!-- validation=validation.newProject1 --}}
+
+
 {{/if}}

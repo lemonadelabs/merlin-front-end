@@ -1,4 +1,8 @@
-export function getServiceModelsFromSimulation (opts) {
+/////////////////////////////////////////////////////////////////////////
+////////////////////////////////// API //////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+
+export function getServiceModelsFromSimulation (opts) { // 2-a-i
   var simulation = opts.simulation
   var parentEntity = getParentEntity({ simulation : simulation})
   var serviceModels = getServiceModels({
@@ -8,7 +12,7 @@ export function getServiceModelsFromSimulation (opts) {
   return serviceModels
 }
 
-export function getChildAttributesFromServiceModel (opts) {
+export function getChildAttributesFromServiceModel (opts) { // used in 2-a-ii
   var serviceModel = opts.serviceModel
   var simulation = opts.simulation
   var children = getChildrenForServiceModel({
@@ -18,6 +22,29 @@ export function getChildAttributesFromServiceModel (opts) {
   var attributes = getAttributesFromEntities({ entities : children })
   return attributes
 }
+
+export function filterEntitiesByAttribute (opts) {  // used in 2-a-iii
+  var attribute = opts.attribute
+  var entities = opts.entities
+
+  var filteredEntities = _.filter( entities, function (entity) {
+    return _.includes(entity.attributes, attribute)
+  })
+  return filteredEntities
+}
+
+export function getProcessPropertiesFromEntity (opts) {  // used in 2-a-iiii
+  var entity = opts.entity
+  var processProperties = _.map(entity.processes, function (process) {
+    return process.properties
+  })
+  processProperties = _.flatten(processProperties)
+  return processProperties
+}
+
+/////////////////////////////////////////////////////////////////////////
+//////////////////////////////// PRIVATE ////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
 
 function getChildrenForServiceModel (opts) {
   var simulation = opts.simulation
@@ -40,24 +67,6 @@ function getAttributesFromEntities (opts) {
   return attributes
 }
 
-export function filterEntitiesByAttribute (opts) {
-  var attribute = opts.attribute
-  var entities = opts.entities
-
-  var filteredEntities = _.filter( entities, function (entity) {
-    return _.includes(entity.attributes, attribute)
-  })
-  return filteredEntities
-}
-
-export function getProcessPropertiesFromEntity (opts) {
-  var entity = opts.entity
-  var processProperties = _.map(entity.processes, function (process) {
-    return process.properties
-  })
-  processProperties = _.flatten(processProperties)
-  return processProperties
-}
 
 function getParentEntity (opts) {
   var simulation = opts.simulation

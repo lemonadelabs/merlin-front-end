@@ -17,10 +17,11 @@
   <p>Add New Phase</p>
 </div>
 
-{{#if this.showNextLayer}}
+{{#if this.showChildLayer}}
   {{
     new-project-2-a
-    serviceModels=this.serviceModels
+    simulation=this.simulation
+    phases=this.phases
     toggleChildLayer='toggleChildLayer'
   }}
 {{/if}}
