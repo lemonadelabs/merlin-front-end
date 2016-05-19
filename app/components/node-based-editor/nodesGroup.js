@@ -124,10 +124,18 @@ NodesGroup.prototype.buildNodes = function(opts) {
   var self = this
 
   var entityComponents = opts.entityComponents
-  _.forEach(entityComponents, buildNode)
+
+  var counter = 0
+  _.forEach(entityComponents, function (component, id) {
+    buildNode(component, counter)
+    counter ++
+  })
 
   var outputComponents = opts.outputComponents
-  _.forEach(outputComponents, buildNode)
+  _.forEach(outputComponents, function (component, id) {
+    buildNode(component, counter)
+    counter ++
+  })
 
   function buildNode(component, i) {
     var id = component.get('id')
