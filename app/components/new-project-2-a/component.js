@@ -9,15 +9,11 @@ export default Ember.Component.extend({
   selectedServiceModel: undefined, // updated in child component 2-a-i
   selectedAttribute: undefined, // updated in child component 2-a-ii
   selectedEntity: undefined, // updated in child component 2-a-iii
-  processPropertyValues: undefined, // updated in child component 2-a-iiii
+  processPropertyValues: undefined, // passed down in `childSequenceComplete` action
 
   init: function () {
     this._super()
     this.set('currentStep', this.get('steps')[0])
-    // var self = this
-    // setInterval(function () {
-    //   console.log(self.get('processPropertyValues'))
-    // },3000)
   },
 
   resetNewPhaseForm: function () {
@@ -74,12 +70,20 @@ export default Ember.Component.extend({
           value : 4
         }
       }
+
+      //add in a scenario
+
+
+
+
       phases.push(newPhase)
       this.set('phases', phases)
       this.phases.arrayContentDidChange(this.phases.length, 0, 1)
 
       this.resetNewPhaseForm()
       this.sendAction('toggleChildLayer')
+
+
     },
     updatePhase: function () {
       //this is needed for the timeline-track component, we might want to do something here anyway
@@ -102,7 +106,8 @@ export default Ember.Component.extend({
 
       this.set('currentStep', steps.get(index - 1));
     },
-    childSequenceComplete: function () {
+    childSequenceComplete: function (processPropertyValues) {
+      this.set('processPropertyValues', processPropertyValues)
       console.log('child sequence complete')
       this.toggleBool('showChildLayer');
       this.set('currentStep', this.get('steps')[0])

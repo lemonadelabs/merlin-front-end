@@ -12,18 +12,19 @@ export default Ember.Component.extend({
       disableButton: true,
     }
   },
-  phases: [],
+
   newProjectData: {
     is_ringfenced: false,
     achievability: 5,
     attractiveness: 5,
     phases: [],
   },
+
   modalTitle : undefined,
 
   init: function () {
     this._super()
-    this.set('currentStep', this.get('steps')[1])
+    this.set('currentStep', this.get('steps')[0])
   },
 
   actions: {
@@ -47,7 +48,7 @@ export default Ember.Component.extend({
     setTitle (newTitle) {
       this.set('modalTitle', newTitle);
     },
-    finish () {
+    finish (data) {
       // this.transitionToRoute('wizard-finished');
     }
   },

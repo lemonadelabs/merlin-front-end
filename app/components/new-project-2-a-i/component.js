@@ -3,7 +3,6 @@ import * as simTraverse from '../../common/simulation-traversal'
 
 export default Ember.Component.extend({
   serviceModels: undefined,
-  // selectedServiceModel: undefined,
 
   findServiceModels: function () {
     var simulation = this.get('simulation')

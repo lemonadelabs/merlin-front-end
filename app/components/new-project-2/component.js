@@ -6,19 +6,13 @@ export default Ember.Component.extend({
   capital: undefined,
   operational: undefined,
   description: undefined,
-  phases: [],
   timelineGridObjects: undefined,
   selectedServiceModel: undefined,
   showChildLayer: false,
 
-  // findAttributesAfterServicemodel: function () {
-  //   var selectedServiceModel = this.get('selectedServiceModel')
-  //   var attributes = simTraverse.getChildAttributesFromServiceModel({
-  //     serviceModel : selectedServiceModel,
-  //     simulation : this.get('simulation')
-  //   })
-  //   console.log(attributes)
-  // }.observes('selectedServiceModel'),
+  // newPhases: [] // new phaes is passed to the clild layer
+  // should
+
 
   checkForErrors: function () {
     var validated = true
