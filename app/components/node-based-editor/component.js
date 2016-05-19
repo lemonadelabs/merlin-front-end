@@ -165,9 +165,11 @@ export default Ember.Component.extend({
       'OutputConnector': {},
     }
 
-    var timeframe = 12
+    var timeframe = 48
 
-    Ember.$.getJSON(`api/simulation-run/1/?steps=${timeframe}&s0=${baselineId}`).then(function (result) {
+    var simulationId = this.get('router.url').replace("/services/", "")
+
+    Ember.$.getJSON(`api/simulation-run/${simulationId}/?steps=${timeframe}&s0=${baselineId}`).then(function (result) {
 
       self.set('timeframe', timeframe)
 
