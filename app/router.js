@@ -10,6 +10,7 @@ Router.map(function() {
   this.route('calebs-house');
   this.route('plan');
   this.route('services',{ path: '/services/:service_id' });
+  this.route('review');
 });
 
 export default Router;

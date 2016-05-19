@@ -1,0 +1,6 @@
+{{#each this.cards as |card|}}
+  <div class="review-card">
+    <h1>{{card.name}}</h1>
+    {{lemonade-chart type='line' data=card.graph.data options=card.graph.options legend=true}}
+  </div>
+{{/each}}
