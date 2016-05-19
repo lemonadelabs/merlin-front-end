@@ -5,17 +5,11 @@ export default Ember.Component.extend({
     this.sendAction('setTitle', 'Add Investment Project - Dependancies')
   },
   actions: {
-    next () {
-      this.set('submitted', true);
-      // do things regarding data, like validation
-      this.sendAction('next');
-    },
-    back () {
-      // this.set('submitted', true);
+    back: function () {
       this.sendAction('back');
     },
-    cancel () {
-      this.sendAction('cancel');
-    }
+    persistProject: function () {
+      this.sendAction('persistProject')
+    },
   }
 });

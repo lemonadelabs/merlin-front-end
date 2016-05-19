@@ -24,10 +24,23 @@ export default Ember.Component.extend({
 
   init: function () {
     this._super()
-    this.set('currentStep', this.get('steps')[0])
+    this.set('currentStep', this.get('steps')[1])
   },
 
   actions: {
+
+    persistProject: function (data) {
+      // we need
+
+      // new project data
+      var newProjectData = this.get('newProjectData')
+      var phases = newProjectData.phases
+      console.log(phases)
+      // phases
+        // data for scenario
+        // data for actions
+    },
+
     next () {
       let steps = this.get('steps'),
       index = steps.indexOf(this.get('currentStep'));
@@ -45,12 +58,9 @@ export default Ember.Component.extend({
     cancel () {
       // this.transitionToRoute('somewhere-else');
     },
-    setTitle (newTitle) {
-      this.set('modalTitle', newTitle);
-    },
-    finish (data) {
-      // this.transitionToRoute('wizard-finished');
-    }
+    // setTitle (newTitle) {
+    //   this.set('modalTitle', newTitle);
+    // },
   },
 
 });
