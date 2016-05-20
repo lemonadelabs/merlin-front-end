@@ -16,8 +16,11 @@ export default Ember.Component.extend({
   }.observes('selectedEntity'),
 
   actions:{
-    complete: function () {
-      this.sendAction('childSequenceComplete', this.get('processPropertyValues'))
+    sendProcessPropertyValues: function () {
+      this.sendAction('childSequenceComplete')
+      this.sendAction('packageResourceData', this.get('processPropertyValues'))
+
+
     },
     previous: function () {
       this.sendAction('previousChild')

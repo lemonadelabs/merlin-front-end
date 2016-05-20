@@ -22,7 +22,6 @@ export default Ember.Component.extend({
   actions: {
     next: function () {
       this.sendAction('nextChild')
-      console.log('asdfasdfasdfdsfdsa')
     },
     previous: function () {
       this.sendAction('previousChild')

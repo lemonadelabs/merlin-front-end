@@ -9,6 +9,7 @@ export default Ember.Component.extend({
       this.sendAction('back');
     },
     persistProject: function () {
+      console.log('persistProject, 3')
       this.sendAction('persistProject')
     },
   }

@@ -4,12 +4,15 @@ export default Ember.Component.extend({
 
   showChildLayer: false,
   currentStep: undefined,
+  resourcesHoldingPen: [],
   steps: ['new-project-2-a-i', 'new-project-2-a-ii', 'new-project-2-a-iii', 'new-project-2-a-iiii'],
 
-  selectedServiceModel: undefined, // updated in child component 2-a-i
-  selectedAttribute: undefined, // updated in child component 2-a-ii
-  selectedEntity: undefined, // updated in child component 2-a-iii
-  processPropertyValues: undefined, // passed down in `childSequenceComplete` action
+  selectedServiceModel: undefined,
+  selectedAttribute: undefined,
+  selectedEntity: undefined,
+
+
+  // processPropertyValues: undefined, // passed down in `childSequenceComplete` action
 
   init: function () {
     this._super()
@@ -28,25 +31,20 @@ export default Ember.Component.extend({
     this.set(variablepath, toggleBool);
   },
 
-  processNewResource: function () {
-    var selectedServiceModel = this.get('selectedServiceModel')
-    var selectedAttribute = this.get('selectedAttribute')
-    var selectedEntity = this.get('selectedEntity')
-    var processPropertyValues = this.get('processPropertyValues')
-
-    console.log('selectedServiceModel: ', selectedServiceModel)
-    console.log('selectedAttribute: ', selectedAttribute)
-    console.log('selectedEntity: ', selectedEntity)
-    console.log('processPropertyValues: ', processPropertyValues)
-
-  },
+  // processNewResource: function () {
+  // },
   actions: {
 
     removeThisLayer: function () {
       this.sendAction('toggleChildLayer')
     },
     addNewPhase: function () {
-      console.log('addNewPhase')
+
+      var resourcePen = this.get('resourcesHoldingPen')
+      var resources = _.cloneDeep( resourcePen )
+      this.set('resourcesHoldingPen', [])
+
+
 
       var phases = this.get('phases')
       var lastPhase = phases[ phases.length - 1 ]
@@ -55,6 +53,7 @@ export default Ember.Component.extend({
         "name": this.get('phaseName'),
         "description": this.get('description'),
         "cost": Number( this.get('capital') ) + Number( this.get('operational') ),
+        'resources' : resources,
       }
 
       if (lastPhase) {
@@ -71,20 +70,40 @@ export default Ember.Component.extend({
         }
       }
 
-      //add in a scenario
-
-
-
-
       phases.push(newPhase)
       this.set('phases', phases)
       this.phases.arrayContentDidChange(this.phases.length, 0, 1)
 
+
       this.resetNewPhaseForm()
       this.sendAction('toggleChildLayer')
+    },
+
+    packageResourceData: function (values) {
+      var resourcePen =  this.get('resourcesHoldingPen')
+
+      var processPropertyValues = values
+      var selectedServiceModel = _.cloneDeep( this.get('selectedServiceModel') )
+      var selectedAttribute = _.cloneDeep( this.get('selectedAttribute') )
+      var selectedEntity = _.cloneDeep( this.get('selectedEntity') )
+
+      var resourceInfo = {
+        processPropertyValues : processPropertyValues,
+        selectedServiceModel : selectedServiceModel,
+        selectedAttribute : selectedAttribute,
+        selectedEntity : selectedEntity
+      }
+
+      resourcePen.push(resourceInfo)
+      this.set('resourcesHoldingPen', resourcePen)
+
+      this.set('selectedServiceModel', undefined)
+      this.set('selectedAttribute', undefined)
+      this.set('selectedEntity', undefined)
 
 
     },
+
     updatePhase: function () {
       //this is needed for the timeline-track component, we might want to do something here anyway
     },
@@ -106,14 +125,11 @@ export default Ember.Component.extend({
 
       this.set('currentStep', steps.get(index - 1));
     },
+
     childSequenceComplete: function (processPropertyValues) {
-      this.set('processPropertyValues', processPropertyValues)
-      console.log('child sequence complete')
       this.toggleBool('showChildLayer');
       this.set('currentStep', this.get('steps')[0])
-      this.processNewResource()
     },
-
   }
 });
 

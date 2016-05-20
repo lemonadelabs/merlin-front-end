@@ -66,6 +66,10 @@ export default Ember.Component.extend({
     cancel () {
       this.sendAction('cancel');
     },
+
+    persistProject: function (data) {
+      this.sendAction('persistProject', data)
+    }
   }
 
 });
