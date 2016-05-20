@@ -11,9 +11,6 @@ export default Ember.Component.extend({
   selectedAttribute: undefined,
   selectedEntity: undefined,
 
-
-  // processPropertyValues: undefined, // passed down in `childSequenceComplete` action
-
   init: function () {
     this._super()
     this.set('currentStep', this.get('steps')[0])
@@ -79,16 +76,15 @@ export default Ember.Component.extend({
       this.sendAction('toggleChildLayer')
     },
 
-    packageResourceData: function (values) {
+    packageResourceData: function (processProperties) {
       var resourcePen =  this.get('resourcesHoldingPen')
 
-      var processPropertyValues = values
       var selectedServiceModel = _.cloneDeep( this.get('selectedServiceModel') )
       var selectedAttribute = _.cloneDeep( this.get('selectedAttribute') )
       var selectedEntity = _.cloneDeep( this.get('selectedEntity') )
 
       var resourceInfo = {
-        processPropertyValues : processPropertyValues,
+        processProperties : processProperties,
         selectedServiceModel : selectedServiceModel,
         selectedAttribute : selectedAttribute,
         selectedEntity : selectedEntity
@@ -126,14 +122,14 @@ export default Ember.Component.extend({
       this.set('currentStep', steps.get(index - 1));
     },
 
-    childSequenceComplete: function (processPropertyValues) {
+    childSequenceComplete: function () {
       this.toggleBool('showChildLayer');
       this.set('currentStep', this.get('steps')[0])
     },
   }
 });
 
-function incrementTimeBy1 (opts) {
+function incrementTimeBy1 (opts) { // move this into convert time lib
   var maxValue = opts.maxValue || 4
   var time = _.cloneDeep(opts.time)
   if (time.value === maxValue) {
@@ -145,7 +141,7 @@ function incrementTimeBy1 (opts) {
   return time
 }
 
-function incrementTimeBy3(opts) {
+function incrementTimeBy3(opts) {  // move this into convert time lib
   var time = opts.time
   var one = incrementTimeBy1({ time : time })
   var two = incrementTimeBy1({ time : one })

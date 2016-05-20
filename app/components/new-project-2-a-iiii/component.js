@@ -2,7 +2,7 @@ import Ember from 'ember';
 import * as simTraverse from '../../common/simulation-traversal'
 
 export default Ember.Component.extend({
-  processPropertyValues: undefined,
+  processPropertiesNew: undefined,
 
   init: function () {
     this._super()
@@ -12,13 +12,13 @@ export default Ember.Component.extend({
   getProcessPropertiesForSelectedEntity: function () {
     var selectedEntity = this.get('selectedEntity')
     var processProperties = simTraverse.getProcessPropertiesFromEntity({ entity : selectedEntity })
-    this.set('processPropertyValues', processProperties)
+    this.set('processPropertiesNew', _.cloneDeep(processProperties) )
   }.observes('selectedEntity'),
 
   actions:{
-    sendProcessPropertyValues: function () {
+    sendProcessProperties: function () {
       this.sendAction('childSequenceComplete')
-      this.sendAction('packageResourceData', this.get('processPropertyValues'))
+      this.sendAction('packageResourceData', this.get('processPropertiesNew'))
 
 
     },

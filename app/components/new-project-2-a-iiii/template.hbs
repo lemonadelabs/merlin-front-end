@@ -1,7 +1,7 @@
 <div class="modal-extra-slider half-size">
   <h1 class="modal-extra-slider-header">Add Resources - Required Resources</h1>
 
-  {{#each this.processPropertyValues as | processProperty |}}
+  {{#each this.processPropertiesNew as | processProperty |}}
     <p>{{processProperty.name}}</p>
     {{input value=processProperty.property_value}}
   {{/each}}
@@ -9,7 +9,7 @@
 
   <footer>
     <button {{action "previous"}}>Previous</button>
-    <button {{action "sendProcessPropertyValues"}}>Add Resource</button>
+    <button {{action "sendProcessProperties"}}>Add Resource</button>
   </footer>
 </div>
 
