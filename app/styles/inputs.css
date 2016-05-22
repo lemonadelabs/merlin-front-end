@@ -199,6 +199,6 @@ select {
   font-size: 14px;
   padding-left: 0.6em;
   padding-top: 0;
-  background: url(../images/selectArrow.svg) no-repeat 97% rgba(0, 0, 0, 0.15);
+  background: url(../images/selectArrow.svg) no-repeat calc(100% - 8px) rgba(0, 0, 0, 0.15);
   background-size: auto 70%;
 }
