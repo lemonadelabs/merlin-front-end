@@ -37,6 +37,7 @@ export default Ember.Component.extend({
     return chartParameters;
   },
   createCards(){
+    this.set('cards', []);
     this.createFinanceCard();
     this.createStaffCard();
     this.createOutputCard();
@@ -44,13 +45,15 @@ export default Ember.Component.extend({
   createFinanceCard(){
     let expences = this.get('graphData.expences');
     let revenue = this.get('graphData.revenue');
+    let surplus = this.get('graphData.surplus');
+
     let financeCard = {};
     financeCard.name = "Finance";
     financeCard.graph = this.newGraph(
       [
         'rgb(126, 211, 33)',
+        'rgb(126, 211, 33)',
         'rgb(126, 211, 33)'
-
       ],
       [
         {
@@ -60,12 +63,18 @@ export default Ember.Component.extend({
         {
           name: 'Revenue',
           data: revenue
+        },
+        {
+          name: 'Surplus',
+          data: surplus
         }
       ],
       [
         'shortDash',
-        'solid'
+        'solid',
+        'dotted',
       ]);
+    financeCard.filterCategories = ['Revenue', 'Expences', 'Surplus']
     this.get('cards').push(financeCard)
   },
   createStaffCard(){
@@ -92,7 +101,9 @@ export default Ember.Component.extend({
         'longDash',
         'dotted'
       ]
-  );
+    );
+    staffCard.filterCategories = ['Staff Numbers', 'Utilisation']
+
     this.get('cards').push(staffCard)
   },
   createOutputCard(){
@@ -100,6 +111,7 @@ export default Ember.Component.extend({
     let graphData = this.get('graphData.outputs');
     outputCard.name = "Outputs";
     outputCard.graph = this.newGraph(['rgb(245, 166, 35)'], [{name: 'Outputs', data:graphData}]);
+    outputCard.filterCategories = ['Indexed Outputs','Service Level']
     this.get('cards').push(outputCard)
   },
   generateGraphData(){
@@ -118,6 +130,11 @@ export default Ember.Component.extend({
     for (let i = 0; i < 10; i++) {
       let rando = Math.random()*100;
       this.get('graphData.expences').push(rando);
+    }
+    this.set('graphData.surplus',[])
+    for (let i = 0; i < 10; i++) {
+      let rando = Math.random()*100;
+      this.get('graphData.surplus').push(rando);
     }
     this.set('graphData.lineStaff',[])
     for (let i = 0; i < 10; i++) {
