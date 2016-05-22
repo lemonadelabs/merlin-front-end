@@ -25,11 +25,11 @@
       <p class="ruled-sub-header">
         Resources
       </p>
-      <p {{action 'toggleChildLayer'}}>Add Resources</p>
+      <p {{action 'toggleResourcesLayer'}}>Add Resources</p>
       <p class="ruled-sub-header">
         Impacts
       </p>
-      <p {{action 'addImpacts'}}>Add Impacts</p>
+      <p {{action 'toggleImpactsLayer'}}>Add Impacts</p>
       <p class="ruled-sub-header">
         Outcomes
       </p>
@@ -40,11 +40,14 @@
     <button {{action "addNewPhase"}}>Add Phase</button>
   </footer>
 </div>
-{{#if this.showChildLayer}}
+{{#if this.showResourcesLayer}}
 
   {{
     component
     currentStep
+
+    layerType='Resources'
+
     simulation=this.simulation
 
     selectedServiceModel=this.selectedServiceModel

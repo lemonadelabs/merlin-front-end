@@ -35,12 +35,8 @@ export default Ember.Component.extend({
 
   init: function () {
     this._super()
-    this.set('currentStep', this.get('steps')[0])
+    this.set('currentStep', this.get('steps')[1])
   },
-
-  testThings: function () {
-
-  }.on('init'),
 
   actions: {
 

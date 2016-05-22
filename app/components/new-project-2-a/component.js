@@ -3,6 +3,9 @@ import Ember from 'ember';
 export default Ember.Component.extend({
 
   showChildLayer: false,
+  showResourcesLayer: false,
+  showImpactsLayer: false,
+
   currentStep: undefined,
   resourcesHoldingPen: [],
   steps: ['new-project-2-a-i', 'new-project-2-a-ii', 'new-project-2-a-iii', 'new-project-2-a-iiii'],
@@ -100,12 +103,20 @@ export default Ember.Component.extend({
 
     },
 
-    updatePhase: function () {
-      //this is needed for the timeline-track component, we might want to do something here anyway
+    // updatePhase: function () {
+    //   //this is needed for the timeline-track component, we might want to do something here anyway
+    // },
+
+    toggleChildLayer: function (layerType) {
+      this.toggleBool(`show${layerType}Layer`);
     },
 
-    toggleChildLayer: function () {
-      this.toggleBool('showChildLayer');
+    toggleResourcesLayer: function () {
+      this.toggleBool('showResourcesLayer');
+    },
+
+    toggleImpactsLayer: function () {
+      this.toggleBool('showImpactsLayer');
     },
 
     nextChild: function () {
