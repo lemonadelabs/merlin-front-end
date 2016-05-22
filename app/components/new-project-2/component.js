@@ -1,12 +1,19 @@
 import Ember from 'ember';
+// import * as simTraverse from '../../common/simulation-traversal'
 
 export default Ember.Component.extend({
   phaseName: undefined,
   capital: undefined,
   operational: undefined,
   description: undefined,
-  phases: [],
-  timelineGridObjects:undefined,
+  timelineGridObjects: undefined,
+  selectedServiceModel: undefined,
+  showChildLayer: false,
+
+  // newPhases: [] // new phaes is passed to the clild layer
+  // should
+
+
   checkForErrors: function () {
     var validated = true
     _.forEach(this.get('errors'), function ( error ) {
@@ -35,24 +42,6 @@ export default Ember.Component.extend({
     console.log('can continue', this.get('canContinue'))
   }.observes('requiredFileds', 'validated'),
 
-  resetNewPhaseForm: function () {
-    this.set('phaseName', undefined)
-    this.set('description', undefined)
-    this.set('capital', undefined)
-    this.set('operational', undefined)
-  },
-
-  incrementTimeBy1: function (opts) {
-    var maxValue = opts.maxValue || 4
-    var time = _.cloneDeep(opts.time)
-    if (time.value === maxValue) {
-      time.year +=1
-      time.value = 1
-    } else {
-      time.value += 1
-    }
-    return time
-  },
 
   timespan:{
     start:{
@@ -63,7 +52,6 @@ export default Ember.Component.extend({
     },
     units:'quarters'
   },
-  showNewPhase:false,
   showNewModelModification:false,
   didInsertElement(){
     this.sendAction('setTitle', 'Add Investment Project - Add Phases')
@@ -73,42 +61,8 @@ export default Ember.Component.extend({
     this.set(variablepath, toggleBool);
   },
   actions: {
-    toggleNewPhase () {
-      this.toggleBool('showNewPhase');
-    },
-    addNewPhase () {
-      var phases = this.get('phases')
-      var lastPhase = phases[ phases.length - 1 ]
-
-      var newPhase = {
-        "name": this.get('phaseName'),
-        "description": this.get('description'),
-        "cost": Number( this.get('capital') ) + Number( this.get('operational') ),
-      }
-
-      if (lastPhase) {
-        newPhase.start = this.incrementTimeBy1({ time : lastPhase.end })
-        newPhase.end = {
-          year : newPhase.start.year + 1,
-          value : newPhase.start.value
-        }
-      } else {
-        newPhase.start = {
-          year : 2016,
-          value : 1
-        },
-        newPhase.end = {
-          year : 2017,
-          value : 1
-        }
-      }
-
-      phases.push(newPhase)
-      this.set('phases', phases)
-      this.phases.arrayContentDidChange(this.phases.length, 0, 1)
-
-      this.resetNewPhaseForm()
-      this.toggleBool('showNewPhase');
+    toggleChildLayer () {
+      this.toggleBool('showChildLayer');
     },
     updatePhase () {
       //this is needed for the timeline-track component, we might want to do something here anyway

@@ -37,6 +37,6 @@ export default function convertTime (time) {
       }
       var formatted = `${year}-${month}-${day}`
       return formatted
-    }
+    },
   }
 }

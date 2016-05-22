@@ -165,10 +165,8 @@ export default Ember.Component.extend({
       'OutputConnector': {},
     }
 
-    var timeframe = 12
-
+    var timeframe = 48
     var id = this.get('model').id
-
 
     Ember.$.getJSON(`api/simulation-run/${id}/?steps=${timeframe}&s0=${baselineId}`).then(function (result) {
 

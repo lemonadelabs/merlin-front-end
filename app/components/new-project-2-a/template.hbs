@@ -1,0 +1,62 @@
+<div class="modal-extra-slider">
+  <h1 class="modal-extra-slider-header">New Phase</h1>
+  <div class="modal-extra-slider-content new-phase-options">
+    <div class="phase-basic-info">
+      <div>
+        <label>Phase Name</label>
+        {{input value=this.phaseName}}
+      </div>
+      <div class="side-by-side">
+        <div>
+          <label>Capital Input</label>
+          {{input value=this.capital}}
+        </div>
+        <div>
+          <label>Opex Contribution</label>
+          {{input value=this.operational}}
+        </div>
+      </div>
+      <div>
+        <label>Phase Description</label>
+        {{textarea value=this.description}}
+      </div>
+    </div>
+    <div class="phase-senario-options">
+      <p class="ruled-sub-header">
+        Resources
+      </p>
+      <p {{action 'toggleChildLayer'}}>Add Resources</p>
+      <p class="ruled-sub-header">
+        Impacts
+      </p>
+      <p {{action 'addImpacts'}}>Add Impacts</p>
+      <p class="ruled-sub-header">
+        Outcomes
+      </p>
+    </div>
+  </div>
+  <footer>
+    <button {{action "removeThisLayer"}}>cancel</button>
+    <button {{action "addNewPhase"}}>Add Phase</button>
+  </footer>
+</div>
+{{#if this.showChildLayer}}
+
+  {{
+    component
+    currentStep
+    simulation=this.simulation
+
+    selectedServiceModel=this.selectedServiceModel
+    selectedAttribute=this.selectedAttribute
+    selectedEntity=this.selectedEntity
+
+    packageResourceData="packageResourceData"
+    nextChild="nextChild"
+    previousChild="previousChild"
+    childSequenceComplete="childSequenceComplete"
+    toggleChildLayer="toggleChildLayer"
+  }}
+
+
+{{/if}}

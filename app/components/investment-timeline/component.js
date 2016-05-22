@@ -114,6 +114,7 @@ export default Ember.Component.extend({
   dothings: function () {
     var self = this
     var serviceModels = this.get('serviceModels')
+    console.log('serviceModels', serviceModels)
     var serviceModel = serviceModels[0]
     var serviceModelChildren = this.findChildrenForServiceModel({ serviceModel : serviceModel })
     var attributesForChildren = this.findAttributesFromEntities({ entities : serviceModelChildren })
@@ -132,7 +133,6 @@ export default Ember.Component.extend({
 
 
   }.on('init'),
-
 
   processPropertiesFromEntity: function (opts) {
     var entity = opts.entity
