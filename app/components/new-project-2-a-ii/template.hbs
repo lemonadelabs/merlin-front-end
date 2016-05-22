@@ -1,12 +1,13 @@
 <div class="modal-extra-slider half-size">
   <h1 class="modal-extra-slider-header">Add Resources - Choose Resource Type</h1>
-
-  {{#x-select value=this.selectedAttribute}}
-    {{#each this.attributes as |attribute|}}
-      {{#x-option value=attribute}}{{attribute}}{{/x-option}}
-    {{/each}}
-  {{/x-select}}
-
+  <section class="modal-extra-slider-content">
+    <label for="">Choose Resource Type</label>
+    {{#x-select value=this.selectedAttribute}}
+      {{#each this.attributes as |attribute|}}
+        {{#x-option value=attribute}}{{attribute}}{{/x-option}}
+      {{/each}}
+    {{/x-select}}
+  </section>
   <footer>
     <button {{action "previous"}}>Previous</button>
     <button {{action "next"}}>Next</button>

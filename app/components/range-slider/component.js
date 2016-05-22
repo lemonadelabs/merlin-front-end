@@ -31,10 +31,11 @@ export default Ember.Component.extend({
     let {rangeElement, bubbleElement} = this.getRangeAndBubbleElements(),
         {rangeWidth, bubbleWidth} = this.getRangeAndBubbleWidths(rangeElement,bubbleElement),
         thumbWidth = 16,
-        startValue = this.get('value'),
-        maxValue = this.get('max');
-    console.log(rangeWidth);
-    let startOffset = (((rangeWidth - thumbWidth) / maxValue) * startValue) - (bubbleWidth*0.5)+9;
+        value = this.get('value'),
+        minValue = this.get('min'),
+        maxValue = this.get('max'),
+        iterationWidth = (rangeWidth - thumbWidth) / (maxValue - minValue);
+    let startOffset = ( iterationWidth * value ) - iterationWidth - (bubbleWidth / 2 )+9;
     this.set('translateX', startOffset)
   },
   getRangeAndBubbleElements(){
@@ -53,7 +54,6 @@ export default Ember.Component.extend({
   getRangeAndBubbleWidths(rangeElement, bubbleElement){
     let rangeWidth = rangeElement.getBoundingClientRect().width,
         bubbleWidth = bubbleElement.getBoundingClientRect().width
-    console.log(bubbleElement.getBoundingClientRect().width);
     return {rangeWidth, bubbleWidth}
   }
 });

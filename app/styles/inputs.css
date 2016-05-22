@@ -1,4 +1,4 @@
-input:focus, button:focus, textarea:focus { outline: none; }
+input:focus, button:focus, textarea:focus, select:focus { outline: none; }
 
 input:disabled, button:disabled {
   /*opacity: 0.5;*/
@@ -66,9 +66,9 @@ input[type=range]::-moz-focus-outer {
   min-width: 30px;
   padding: 3px 8px;
   position: absolute;
-  user-select: none;
   text-align: center;
   opacity: 1;
+  pointer-events: none;
 }
 
 .range-value::after {
@@ -130,6 +130,7 @@ input[type='text'] {
   border-radius: 2pt;
   font-size: 14px;
   padding-left: 0.6em;
+  padding-top: 0;
 }
 
 textarea {
@@ -184,4 +185,20 @@ button:disabled:hover,button:disabled:focus{
 button:active{
   transform: translateY(2px);
   box-shadow: 0px -2px 0px  0px color(var(--resource-color) shade(25%))
+}
+
+select {
+  appearance: none;
+  border: solid 1px var(--resource-color);
+  text-align: left;
+  font-family: "sofia-pro", sans-serif;
+  color: white;
+  height: 30px;
+  width: 100%;
+  border-radius: 2pt;
+  font-size: 14px;
+  padding-left: 0.6em;
+  padding-top: 0;
+  background: url(../images/selectArrow.svg) no-repeat 97% rgba(0, 0, 0, 0.15);
+  background-size: auto 70%;
 }
