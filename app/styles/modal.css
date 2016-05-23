@@ -139,6 +139,18 @@
   width: 100%;
 }
 
+.modal-extra-slider-content.flex-container{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  max-height: 110px;
+}
+
+.process-property-input{
+  max-width: 200px;
+  min-width: 175px;
+}
+
 .new-phase-trigger {
   $width: 105px;
   width: $width;

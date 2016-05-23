@@ -62,3 +62,8 @@ html {
   width: 100%;
   padding-bottom: 6px;
 }
+
+.overflow-catcher{
+  width: 100%;
+  overflow-x: auto;
+}
