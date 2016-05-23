@@ -1,4 +1,4 @@
-<div class="modal-extra-slider half-size">
+<div class="modal-extra-slider half-size no-animate">
   <h1 class="modal-extra-slider-header">
     {{#if this.resourceLayerShowing}}
       Add Resources - Choose Resource Type
@@ -6,8 +6,9 @@
       Add Impacts - Choose Type
     {{/if}}
   </h1>
-  <section class="modal-extra-slider-content">
-    <label for="">Choose {{#if this.resourceLayerShowing}}Resource {{/if}}Type</label>
+  <p class='step-indicator'>step 2 of 4</p>
+  <section class="modal-extra-slider-content single-item">
+    <label for="">Choose Resource Type</label>
     {{#x-select value=this.selectedAttribute}}
       {{#each this.attributes as |attribute|}}
         {{#x-option value=attribute}}{{attribute}}{{/x-option}}

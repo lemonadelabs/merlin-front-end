@@ -25,6 +25,7 @@
       <p class="ruled-sub-header">
         Resources
       </p>
+<<<<<<< HEAD
       <p {{action 'toggleResourcesLayer'}}>Add Resources</p>
       <p class="ruled-sub-header">
         Impacts
@@ -32,7 +33,22 @@
       <p {{action 'toggleImpactsLayer'}}>Add Impacts</p>
       <p class="ruled-sub-header">
         Outcomes
+=======
+      <p class="new-impact-resource" {{action 'toggleChildLayer'}}>
+        <img src="images/icons/new-impact-resource-icon.svg" alt="" />
+        Add Resources
       </p>
+      <p class="ruled-sub-header">
+        Impacts
+      </p>
+      <p class="new-impact-resource" {{action 'addImpacts'}}>
+        <img src="images/icons/new-impact-resource-icon.svg" alt="" />
+        Add Impacts
+>>>>>>> db8df4a5c7fc6190d425b08fe267713b565646f4
+      </p>
+      {{!-- <p class="ruled-sub-header">
+        Outcomes
+      </p> --}}
     </div>
   </div>
   <footer>
@@ -76,10 +92,13 @@
     selectedAttribute=this.selectedAttributeImpacts
     selectedEntity=this.selectedEntityImpacts
 
+<<<<<<< HEAD
     packageData="packageChildData"
     nextChild="nextChild"
     previousChild="previousChild"
     childSequenceComplete="childSequenceComplete"
     toggleChildLayer="toggleChildLayer"
   }}
+=======
+>>>>>>> db8df4a5c7fc6190d425b08fe267713b565646f4
 {{/if}}

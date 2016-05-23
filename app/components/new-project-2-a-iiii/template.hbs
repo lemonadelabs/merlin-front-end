@@ -1,4 +1,4 @@
-<div class="modal-extra-slider half-size">
+<div class="modal-extra-slider half-size no-animate">
   <h1 class="modal-extra-slider-header">
     {{#if this.resourceLayerShowing}}
       Add Resources - Required Resources
@@ -7,17 +7,19 @@
     {{/if}}
 
   </h1>
-
-  {{#each this.processPropertiesNew as | processProperty |}}
-    <p>{{processProperty.name}}</p>
-    {{input value=processProperty.property_value}}
-  {{/each}}
-
-
+  <p class='step-indicator'>step 4 of 4</p>
+  <div class="overflow-catcher">
+    <section class="modal-extra-slider-content flex-container">
+      {{#each this.processPropertiesNew as | processProperty |}}
+        <div class='process-property-input'>
+          <label>{{processProperty.name}}</label>
+          {{input value=processProperty.property_value}}
+        </div>
+      {{/each}}
+    </section>
+  </div>
   <footer>
     <button {{action "previous"}}>Previous</button>
     <button {{action "sendProcessProperties"}}>Add {{#if this.resourceLayerShowing}}Resource{{else}}Impact{{/if}}</button>
   </footer>
 </div>
-
-
