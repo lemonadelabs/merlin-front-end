@@ -228,3 +228,23 @@
   left: 50%;
   top: 13%;
 }
+
+.new-impact-resource{
+  position: relative;
+  color: white;
+  font-size: 9.5pt;
+  font-weight: 600;
+  text-transform: capitalize;
+  margin-bottom: 0.5em;
+  margin-top: 0.5em;
+  line-height: 10px;
+  width: 100%;
+}
+
+.new-impact-resource img{
+  position: relative;
+  top:3px;
+  width: 14px;
+  height: auto;
+  margin-right: 4px;
+}
