@@ -18,7 +18,7 @@ export default Ember.Component.extend({
   actions:{
     sendProcessProperties: function () {
       this.sendAction('childSequenceComplete', this.get('layerType'))
-      this.sendAction('packageResourceData', this.get('processPropertiesNew'), this.get('layerType'))
+      this.sendAction('packageData', this.get('processPropertiesNew'), this.get('layerType'))
 
 
     },

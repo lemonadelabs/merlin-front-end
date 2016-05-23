@@ -1,5 +1,12 @@
 <div class="modal-extra-slider half-size">
-  <h1 class="modal-extra-slider-header">Add Resources - Required Resources</h1>
+  <h1 class="modal-extra-slider-header">
+    {{#if this.resourceLayerShowing}}
+      Add Resources - Required Resources
+    {{else}}
+      Add Impacts - Desired Changes
+    {{/if}}
+
+  </h1>
 
   {{#each this.processPropertiesNew as | processProperty |}}
     <p>{{processProperty.name}}</p>
@@ -9,7 +16,7 @@
 
   <footer>
     <button {{action "previous"}}>Previous</button>
-    <button {{action "sendProcessProperties"}}>Add Resource</button>
+    <button {{action "sendProcessProperties"}}>Add {{#if this.resourceLayerShowing}}Resource{{else}}Impact{{/if}}</button>
   </footer>
 </div>
 

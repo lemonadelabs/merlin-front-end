@@ -50,11 +50,11 @@
 
     simulation=this.simulation
 
-    selectedServiceModel=this.selectedServiceModel
-    selectedAttribute=this.selectedAttribute
-    selectedEntity=this.selectedEntity
+    selectedServiceModel=this.selectedServiceModelResources
+    selectedAttribute=this.selectedAttributeResources
+    selectedEntity=this.selectedEntityResources
 
-    packageResourceData="packageResourceData"
+    packageData="packageChildData"
     nextChild="nextChild"
     previousChild="previousChild"
     childSequenceComplete="childSequenceComplete"
@@ -65,18 +65,18 @@
 {{#if this.showImpactsLayer}}
   {{
     component
-    currentStepResources
+    currentStepImpacts
 
     layerType='Impacts'
     resourceLayerShowing=this.showResourcesLayer
 
     simulation=this.simulation
 
-    selectedServiceModel=this.selectedServiceModel
-    selectedAttribute=this.selectedAttribute
-    selectedEntity=this.selectedEntity
+    selectedServiceModel=this.selectedServiceModelImpacts
+    selectedAttribute=this.selectedAttributeImpacts
+    selectedEntity=this.selectedEntityImpacts
 
-    packageResourceData="packageResourceData"
+    packageData="packageChildData"
     nextChild="nextChild"
     previousChild="previousChild"
     childSequenceComplete="childSequenceComplete"

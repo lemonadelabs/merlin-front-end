@@ -15,9 +15,13 @@ export default Ember.Component.extend({
 
   steps: ['new-project-2-a-i', 'new-project-2-a-ii', 'new-project-2-a-iii', 'new-project-2-a-iiii'],
 
-  selectedServiceModel: undefined,
-  selectedAttribute: undefined,
-  selectedEntity: undefined,
+  selectedServiceModelResources: undefined,
+  selectedAttributeResources: undefined,
+  selectedEntityResources: undefined,
+
+  selectedServiceModelImpacts: undefined,
+  selectedAttributeImpacts: undefined,
+  selectedEntityImpacts: undefined,
 
   // setLayertypeBool: function () {
   //   console.log('showResourcesLayer', this.get('showResourcesLayer'))
@@ -98,7 +102,7 @@ export default Ember.Component.extend({
       this.sendAction('toggleChildLayer')
     },
 
-    packageResourceData: function (processProperties, layerType) {
+    packageChildData: function (processProperties, layerType) {
       var resourcePen =  this.get(`resourcesHoldingPen${layerType}`)
 
       var selectedServiceModel = _.cloneDeep( this.get('selectedServiceModel') )
@@ -115,9 +119,9 @@ export default Ember.Component.extend({
       resourcePen.push(resourceInfo)
       this.set(`resourcesHoldingPen${layerType}`, resourcePen)
 
-      this.set('selectedServiceModel', undefined)
-      this.set('selectedAttribute', undefined)
-      this.set('selectedEntity', undefined)
+      this.set(`selectedServiceModel${layerType}`, undefined)
+      this.set(`selectedAttribute${layerType}`, undefined)
+      this.set(`selectedEntity${layerType}`, undefined)
 
 
     },
@@ -137,7 +141,6 @@ export default Ember.Component.extend({
     },
 
     nextChild: function (layerType) {
-      console.log('next chil')
       let steps = this.get('steps'),
       index = steps.indexOf(this.get(`currentStep${layerType}`));
       this.set(`currentStep${layerType}`, steps[index + 1]);
@@ -148,7 +151,7 @@ export default Ember.Component.extend({
       this.set(`currentStep${layerType}`, steps.get(index - 1));
     },
     childSequenceComplete: function (layerType) {
-      this.toggleChildLayer(layerType);
+      this.toggleBool(`show${layerType}Layer`)
       this.set(`currentStep${layerType}`, this.get('steps')[0])
     },
   }
