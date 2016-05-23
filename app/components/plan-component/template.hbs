@@ -1,7 +1,7 @@
 <p {{action "newProject"}}>New Project</p>
 {{#if this.showNewProjectWiz}}
   <div class="modal-shade" {{action "hideNewProject"}}></div>
-  {{new-project-wizard simulation=this.simulation}}
+  {{new-project-wizard simulation=this.simulation hideNewProject="hideNewProject"}}
 {{/if}}
 {{
   investment-timeline

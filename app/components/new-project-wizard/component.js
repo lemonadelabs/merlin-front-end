@@ -144,8 +144,12 @@ export default Ember.Component.extend({
               data : startEvent,
               url : `api/events/`
             })
+          }).then(function() {
+              //if we the hideNewProject action is there hide it
+              if(self.get('hideNewProject')){
+                self.sendAction('hideNewProject')
+              }
           })
-
         })
       })
     },

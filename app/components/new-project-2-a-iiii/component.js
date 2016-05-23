@@ -20,7 +20,6 @@ export default Ember.Component.extend({
       this.sendAction('childSequenceComplete', this.get('layerType'))
       this.sendAction('packageData', this.get('processPropertiesNew'), this.get('layerType'))
 
-
     },
     previous: function () {
       this.sendAction('previousChild', this.get('layerType'))
