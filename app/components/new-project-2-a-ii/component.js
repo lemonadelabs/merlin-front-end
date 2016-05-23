@@ -21,10 +21,10 @@ export default Ember.Component.extend({
 
   actions: {
     next: function () {
-      this.sendAction('nextChild', this.get('layerType'))
+      this.sendAction('nextChild')
     },
     previous: function () {
-      this.sendAction('previousChild', this.get('layerType'))
+      this.sendAction('previousChild')
     }
 
   },

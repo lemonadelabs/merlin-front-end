@@ -25,15 +25,6 @@
       <p class="ruled-sub-header">
         Resources
       </p>
-<<<<<<< HEAD
-      <p {{action 'toggleResourcesLayer'}}>Add Resources</p>
-      <p class="ruled-sub-header">
-        Impacts
-      </p>
-      <p {{action 'toggleImpactsLayer'}}>Add Impacts</p>
-      <p class="ruled-sub-header">
-        Outcomes
-=======
       <p class="new-impact-resource" {{action 'toggleChildLayer'}}>
         <img src="images/icons/new-impact-resource-icon.svg" alt="" />
         Add Resources
@@ -44,7 +35,6 @@
       <p class="new-impact-resource" {{action 'addImpacts'}}>
         <img src="images/icons/new-impact-resource-icon.svg" alt="" />
         Add Impacts
->>>>>>> db8df4a5c7fc6190d425b08fe267713b565646f4
       </p>
       {{!-- <p class="ruled-sub-header">
         Outcomes
@@ -56,49 +46,23 @@
     <button {{action "addNewPhase"}}>Add Phase</button>
   </footer>
 </div>
-{{#if this.showResourcesLayer}}
+{{#if this.showChildLayer}}
+
   {{
     component
-    currentStepResources
-
-    layerType='Resources'
-    resourceLayerShowing=this.showResourcesLayer
-
+    currentStep
     simulation=this.simulation
 
-    selectedServiceModel=this.selectedServiceModelResources
-    selectedAttribute=this.selectedAttributeResources
-    selectedEntity=this.selectedEntityResources
+    selectedServiceModel=this.selectedServiceModel
+    selectedAttribute=this.selectedAttribute
+    selectedEntity=this.selectedEntity
 
-    packageData="packageChildData"
+    packageResourceData="packageResourceData"
     nextChild="nextChild"
     previousChild="previousChild"
     childSequenceComplete="childSequenceComplete"
     toggleChildLayer="toggleChildLayer"
   }}
-{{/if}}
 
-{{#if this.showImpactsLayer}}
-  {{
-    component
-    currentStepImpacts
 
-    layerType='Impacts'
-    resourceLayerShowing=this.showResourcesLayer
-
-    simulation=this.simulation
-
-    selectedServiceModel=this.selectedServiceModelImpacts
-    selectedAttribute=this.selectedAttributeImpacts
-    selectedEntity=this.selectedEntityImpacts
-
-<<<<<<< HEAD
-    packageData="packageChildData"
-    nextChild="nextChild"
-    previousChild="previousChild"
-    childSequenceComplete="childSequenceComplete"
-    toggleChildLayer="toggleChildLayer"
-  }}
-=======
->>>>>>> db8df4a5c7fc6190d425b08fe267713b565646f4
 {{/if}}

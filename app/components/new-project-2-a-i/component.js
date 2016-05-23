@@ -12,10 +12,10 @@ export default Ember.Component.extend({
 
   actions: {
     next: function () {
-      this.sendAction('nextChild', this.get('layerType'))
+      this.sendAction('nextChild')
     },
     removeThisLayer: function () {
-      this.sendAction('toggleChildLayer', this.get('layerType'))
+      this.sendAction('toggleChildLayer')
     },
   }
 });
