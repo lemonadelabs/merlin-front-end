@@ -2,21 +2,32 @@ import Ember from 'ember';
 
 export default Ember.Component.extend({
 
-  showChildLayer: false,
+  // showChildLayer: false,
   showResourcesLayer: false,
   showImpactsLayer: false,
 
-  currentStep: undefined,
-  resourcesHoldingPen: [],
+  // currentStep: undefined,
+  currentStepResources: undefined,
+  currentStepImpacts: undefined,
+
+  resourcesHoldingPenResources: [],
+  resourcesHoldingPenImpacts: [],
+
   steps: ['new-project-2-a-i', 'new-project-2-a-ii', 'new-project-2-a-iii', 'new-project-2-a-iiii'],
 
   selectedServiceModel: undefined,
   selectedAttribute: undefined,
   selectedEntity: undefined,
 
+  // setLayertypeBool: function () {
+  //   console.log('showResourcesLayer', this.get('showResourcesLayer'))
+  //   console.log('showImpactsLayer', this.get('showImpactsLayer'))
+  // }.observes('showResourcesLayer', 'showImpactsLayer'),
+
   init: function () {
     this._super()
-    this.set('currentStep', this.get('steps')[0])
+    this.set('currentStepResources', this.get('steps')[0])
+    this.set('currentStepImpacts', this.get('steps')[0])
   },
 
   resetNewPhaseForm: function () {
@@ -40,9 +51,14 @@ export default Ember.Component.extend({
     },
     addNewPhase: function () {
 
-      var resourcePen = this.get('resourcesHoldingPen')
+      var resourcePen = this.get('resourcesHoldingPenResources')
+      var impactPen = this.get('resourcesHoldingPenImpacts')
+
       var resources = _.cloneDeep( resourcePen )
-      this.set('resourcesHoldingPen', [])
+      var impacts = _.cloneDeep( impactPen )
+
+      this.set('resourcesHoldingPenResources', [])
+      this.set('resourcesHoldingPenImpacts', [])
 
 
 
@@ -54,7 +70,10 @@ export default Ember.Component.extend({
         "description": this.get('description'),
         "cost": Number( this.get('capital') ) + Number( this.get('operational') ),
         'resources' : resources,
+        'impacts' : impacts,
       }
+
+      console.log(newPhase)
 
       if (lastPhase) {
         newPhase.start = incrementTimeBy1({ time : lastPhase.end })
@@ -79,8 +98,8 @@ export default Ember.Component.extend({
       this.sendAction('toggleChildLayer')
     },
 
-    packageResourceData: function (processProperties) {
-      var resourcePen =  this.get('resourcesHoldingPen')
+    packageResourceData: function (processProperties, layerType) {
+      var resourcePen =  this.get(`resourcesHoldingPen${layerType}`)
 
       var selectedServiceModel = _.cloneDeep( this.get('selectedServiceModel') )
       var selectedAttribute = _.cloneDeep( this.get('selectedAttribute') )
@@ -94,7 +113,7 @@ export default Ember.Component.extend({
       }
 
       resourcePen.push(resourceInfo)
-      this.set('resourcesHoldingPen', resourcePen)
+      this.set(`resourcesHoldingPen${layerType}`, resourcePen)
 
       this.set('selectedServiceModel', undefined)
       this.set('selectedAttribute', undefined)
@@ -110,32 +129,27 @@ export default Ember.Component.extend({
     toggleChildLayer: function (layerType) {
       this.toggleBool(`show${layerType}Layer`);
     },
-
     toggleResourcesLayer: function () {
       this.toggleBool('showResourcesLayer');
     },
-
     toggleImpactsLayer: function () {
       this.toggleBool('showImpactsLayer');
     },
 
-    nextChild: function () {
+    nextChild: function (layerType) {
+      console.log('next chil')
       let steps = this.get('steps'),
-      index = steps.indexOf(this.get('currentStep'));
-
-      this.set('currentStep', steps[index + 1]);
+      index = steps.indexOf(this.get(`currentStep${layerType}`));
+      this.set(`currentStep${layerType}`, steps[index + 1]);
     },
-
-    previousChild: function () {
+    previousChild: function (layerType) {
       let steps = this.get('steps'),
-      index = steps.indexOf(this.get('currentStep'));
-
-      this.set('currentStep', steps.get(index - 1));
+      index = steps.indexOf(this.get(`currentStep${layerType}`));
+      this.set(`currentStep${layerType}`, steps.get(index - 1));
     },
-
-    childSequenceComplete: function () {
-      this.toggleBool('showChildLayer');
-      this.set('currentStep', this.get('steps')[0])
+    childSequenceComplete: function (layerType) {
+      this.toggleChildLayer(layerType);
+      this.set(`currentStep${layerType}`, this.get('steps')[0])
     },
   }
 });

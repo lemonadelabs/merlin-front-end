@@ -5,8 +5,6 @@ export default Ember.Component.extend({
   serviceModels: undefined,
 
   findServiceModels: function () {
-    console.log(this.get('type'))
-
     var simulation = this.get('simulation')
     var serviceModels = simTraverse.getServiceModelsFromSimulation({simulation : simulation})
     this.set('serviceModels', serviceModels)
@@ -14,7 +12,7 @@ export default Ember.Component.extend({
 
   actions: {
     next: function () {
-      this.sendAction('nextChild')
+      this.sendAction('nextChild', this.get('layerType'))
     },
     removeThisLayer: function () {
       this.sendAction('toggleChildLayer', this.get('layerType'))

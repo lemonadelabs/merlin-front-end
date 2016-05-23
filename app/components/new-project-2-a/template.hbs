@@ -41,12 +41,12 @@
   </footer>
 </div>
 {{#if this.showResourcesLayer}}
-
   {{
     component
-    currentStep
+    currentStepResources
 
     layerType='Resources'
+    resourceLayerShowing=this.showResourcesLayer
 
     simulation=this.simulation
 
@@ -60,6 +60,26 @@
     childSequenceComplete="childSequenceComplete"
     toggleChildLayer="toggleChildLayer"
   }}
+{{/if}}
 
+{{#if this.showImpactsLayer}}
+  {{
+    component
+    currentStepResources
 
+    layerType='Impacts'
+    resourceLayerShowing=this.showResourcesLayer
+
+    simulation=this.simulation
+
+    selectedServiceModel=this.selectedServiceModel
+    selectedAttribute=this.selectedAttribute
+    selectedEntity=this.selectedEntity
+
+    packageResourceData="packageResourceData"
+    nextChild="nextChild"
+    previousChild="previousChild"
+    childSequenceComplete="childSequenceComplete"
+    toggleChildLayer="toggleChildLayer"
+  }}
 {{/if}}

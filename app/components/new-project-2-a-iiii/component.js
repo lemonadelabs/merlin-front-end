@@ -17,13 +17,13 @@ export default Ember.Component.extend({
 
   actions:{
     sendProcessProperties: function () {
-      this.sendAction('childSequenceComplete')
-      this.sendAction('packageResourceData', this.get('processPropertiesNew'))
+      this.sendAction('childSequenceComplete', this.get('layerType'))
+      this.sendAction('packageResourceData', this.get('processPropertiesNew'), this.get('layerType'))
 
 
     },
     previous: function () {
-      this.sendAction('previousChild')
+      this.sendAction('previousChild', this.get('layerType'))
     }
   }
 
