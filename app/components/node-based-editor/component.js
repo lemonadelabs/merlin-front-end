@@ -65,24 +65,26 @@ export default Ember.Component.extend({
       }
     }
 
-
-
-    var event
     // first, look in the baseline for an event that matches the month.
     var events = baseline.events
+    // var events = _.cloneDeep(baseline.events)
     var foundEvents = _.filter(events, function (e) { return e.time == month } )
+
     if (foundEvents.length > 1) { this.warn(foundEvents.length, 'event') }
+
     var foundEvent = foundEvents[0]
 
+    var event, request
     if (foundEvent) {
       event = foundEvent
-      event.actions = _.remove(event.actions, function (action) { // filter out any supurfelous actions
+      _.remove(event.actions, function (action) { // filter out any supurfelous actions
+
         return (action.operand_1.params[0] == newAction.operand_1.params[0] && action.operand_2.params[0] == newAction.operand_2.params[0])
       })
 
       event.actions.push(newAction)
 
-      putJSON({
+      request = putJSON({
         data : event,
         url : `api/events/${event.id}/`
       })
@@ -95,18 +97,17 @@ export default Ember.Component.extend({
         "actions": [ newAction ]
       }
       // do a post request
-      postJSON({
+      request = postJSON({
         data : event,
         url : `api/events/`
       })
     }
-    this.loadBaseline() // refresh the system
+    request.then(function () { self.loadBaseline() })
   },
 
   warn: function (amount, subject) { console.warn( `there are ${amount} ${subject}s returned in this case. There should only be 1.` ) },
 
   loadBaseline: function () {
-
     var self = this
     var id = this.model.id
     var simSubstring = `api/simulations/${id}/`
@@ -165,9 +166,11 @@ export default Ember.Component.extend({
       'OutputConnector': {},
     }
 
-    var timeframe = 12
+    var timeframe = 48
 
-    Ember.$.getJSON(`api/simulation-run/1/?steps=${timeframe}&s0=${baselineId}`).then(function (result) {
+    var simulationId = this.get('router.url').replace("/services/", "")
+
+    Ember.$.getJSON(`api/simulation-run/${simulationId}/?steps=${timeframe}&s0=${baselineId}`).then(function (result) {
 
       self.set('timeframe', timeframe)
 
