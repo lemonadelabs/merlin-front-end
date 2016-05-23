@@ -105,9 +105,9 @@ export default Ember.Component.extend({
     packageChildData: function (processProperties, layerType) {
       var resourcePen =  this.get(`resourcesHoldingPen${layerType}`)
 
-      var selectedServiceModel = _.cloneDeep( this.get('selectedServiceModel') )
-      var selectedAttribute = _.cloneDeep( this.get('selectedAttribute') )
-      var selectedEntity = _.cloneDeep( this.get('selectedEntity') )
+      var selectedServiceModel = _.cloneDeep( this.get(`selectedServiceModel${layerType}`) )
+      var selectedAttribute = _.cloneDeep( this.get(`selectedAttribute${layerType}`) )
+      var selectedEntity = _.cloneDeep( this.get(`selectedEntity${layerType}`) )
 
       var resourceInfo = {
         processProperties : processProperties,
