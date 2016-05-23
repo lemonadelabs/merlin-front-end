@@ -46,32 +46,46 @@
     <button {{action "addNewPhase"}}>Add Phase</button>
   </footer>
 </div>
-{{#if this.showChildLayer}}
-
+{{#if this.showResourcesLayer}}
   {{
     component
-    currentStep
+    currentStepResources
+
+    layerType='Resources'
+    resourceLayerShowing=this.showResourcesLayer
+
     simulation=this.simulation
 
-    selectedServiceModel=this.selectedServiceModel
-    selectedAttribute=this.selectedAttribute
-    selectedEntity=this.selectedEntity
+    selectedServiceModel=this.selectedServiceModelResources
+    selectedAttribute=this.selectedAttributeResources
+    selectedEntity=this.selectedEntityResources
 
-    packageResourceData="packageResourceData"
-    nextChild="nextChild"
-    previousChild="previousChild"
-    childSequenceComplete="childSequenceComplete"
-    toggleChildLayer="toggleChildLayer"
-  }}
-
-
-<<<<<<< HEAD
-=======
     packageData="packageChildData"
     nextChild="nextChild"
     previousChild="previousChild"
     childSequenceComplete="childSequenceComplete"
     toggleChildLayer="toggleChildLayer"
   }}
->>>>>>> origin/feature/wizard-will
+{{/if}}
+
+{{#if this.showImpactsLayer}}
+  {{
+    component
+    currentStepImpacts
+
+    layerType='Impacts'
+    resourceLayerShowing=this.showResourcesLayer
+
+    simulation=this.simulation
+
+    selectedServiceModel=this.selectedServiceModelImpacts
+    selectedAttribute=this.selectedAttributeImpacts
+    selectedEntity=this.selectedEntityImpacts
+
+    packageData="packageChildData"
+    nextChild="nextChild"
+    previousChild="previousChild"
+    childSequenceComplete="childSequenceComplete"
+    toggleChildLayer="toggleChildLayer"
+  }}
 {{/if}}
