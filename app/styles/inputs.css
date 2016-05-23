@@ -201,4 +201,5 @@ select {
   padding-top: 0;
   background: url(../images/selectArrow.svg) no-repeat calc(100% - 8px) rgba(0, 0, 0, 0.15);
   background-size: auto 70%;
+  text-transform: capitalize;
 }

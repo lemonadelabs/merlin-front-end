@@ -6,6 +6,7 @@ var cssnext = require('postcss-cssnext')
 var simpleVars = require('postcss-simple-vars')
 var cssNested = require('postcss-nested')
 var cssMixins = require('postcss-mixins')
+var quantityQueries = require('postcss-quantity-queries')
 
 module.exports = function(defaults) {
   var app = new EmberApp(defaults, {
@@ -37,6 +38,10 @@ module.exports = function(defaults) {
         },
         {
           module: cssMixins,
+          options: {}
+        },
+        {
+          module: quantityQueries,
           options: {}
         },
       ]
