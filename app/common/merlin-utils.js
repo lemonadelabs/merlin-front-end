@@ -31,6 +31,12 @@ export function modifyProcessAction(opts) {
   }
 }
 
+export function createInvertedAction (opts) {
+  var action = _.cloneDeep(opts.action)
+  action.operand_2.params[1] = (action.operand_2.params[1]) * ( -1 )
+  return action
+}
+
 export function newEventObject(opts) {
   var scenarioId = opts.scenarioId,
       time = opts.time

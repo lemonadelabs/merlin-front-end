@@ -57,6 +57,93 @@ export default Ember.Component.extend({
     })
   },
 
+  processResourceIntoActions: function (opts) {
+
+    var startEvent = opts.startEvent
+    var endEvent = opts.endEvent
+
+    var resource = opts.resource
+    var simulation = this.get('simulation')
+    // find the matching entity from the simulation
+    var entity = _.find( simulation.entities, function (e) { return e.id === resource.selectedEntity.id })
+    // loop over each new process property
+    _.forEach(resource.processProperties, function (newProcessProperty) {
+
+      // get processProperties for the entity from the sim
+      var processProperties = simTraverse.getProcessPropertiesFromEntity({ entity : entity })
+      // find the matching processProperty from the entity from the simulation
+      var processProperty = _.find( processProperties, function (property) { return property.id === newProcessProperty.id })
+      if (processProperty.property_value != newProcessProperty.property_value) {
+        // create action that represents change
+        var startAction = merlinUtils.modifyProcessAction({
+          'entityId': entity.id,
+          'processPropertyId': processProperty.id,
+          'newValue': newProcessProperty.property_value,
+          'oldValue': processProperty.property_value
+        })// add to beginningEvent
+        startEvent.actions.push(startAction)
+
+        var endAction = merlinUtils.modifyProcessAction({
+          'entityId': entity.id,
+          'processPropertyId': processProperty.id,
+          'newValue': newProcessProperty.property_value,
+          'oldValue': processProperty.property_value,
+          'revert':true
+        })
+        // add to endEvent
+        endEvent.actions.push(endAction)
+      }
+    })
+  },
+
+  makeActions: function (opts) {
+    var self = this
+    var resource = opts.resource
+    var simulation = this.get('simulation')
+    var actions = []
+
+    // find the matching entity from the simulation
+    var entity = _.find( simulation.entities, function (e) { return e.id === resource.selectedEntity.id })
+    // loop over each new process property
+    _.forEach(resource.processProperties, function (newProcessProperty) {
+      var action = self.makeAction({
+        newProcessProperty : newProcessProperty,
+        entity : entity,
+      })
+      if (action) {actions.push(action)}
+    })
+    return actions
+  },
+
+  makeAction: function (opts) {
+    var newProcessProperty = opts.newProcessProperty
+    var entity = opts.entity
+    // get processProperties for the entity from the sim
+    var processProperties = simTraverse.getProcessPropertiesFromEntity({ entity : entity })
+    // find the matching processProperty from the entity from the simulation
+    var processProperty = _.find( processProperties, function (property) { return property.id === newProcessProperty.id })
+    if (processProperty.property_value != newProcessProperty.property_value) {
+      // create action that represents change
+      var action = merlinUtils.modifyProcessAction({
+        'entityId': entity.id,
+        'processPropertyId': processProperty.id,
+        'newValue': newProcessProperty.property_value,
+        'oldValue': processProperty.property_value
+      })
+      return action
+    }
+  },
+
+  invertActions : function (opts) {
+    var self = this
+    var actions = opts.actions
+    var invertedActions = []
+    _.forEach(actions, function (action) {
+      invertedActions.push( merlinUtils.createInvertedAction({action : action}) )
+    })
+    return invertActions
+  },
+
   actions: {
 
     // catchProcessPropertyValues: function (values) {
@@ -91,45 +178,28 @@ export default Ember.Component.extend({
             a : phase.start,
             b : phase.end
           })
-
           var endEvent = merlinUtils.newEventObject({
             scenarioId: scenario.id,
             time: clicksBetween
           })
 
-          // loop over each `phase.resources` as | newValue |
 
           _.forEach(phase.resources, function (resource) {
-            // find the matching entity from the simulation
-            var entity = _.find( simulation.entities, function (e) { return e.id === resource.selectedEntity.id })
-            // loop over each new process property
-            _.forEach(resource.processProperties, function (newProcessProperty) {
-
-              // get processProperties for the entity from the sim
-              var processProperties = simTraverse.getProcessPropertiesFromEntity({ entity : entity })
-              // find the matching processProperty from the entity from the simulation
-              var processProperty = _.find( processProperties, function (property) { return property.id === newProcessProperty.id })
-              if (processProperty.property_value != newProcessProperty.property_value) {
-                // create action that represents change
-                var startAction = merlinUtils.modifyProcessAction({
-                  'entityId': entity.id,
-                  'processPropertyId': processProperty.id,
-                  'newValue': newProcessProperty.property_value,
-                  'oldValue': processProperty.property_value
-                })// add to beginningEvent
-                startEvent.actions.push(startAction)
-
-                var endAction = merlinUtils.modifyProcessAction({
-                  'entityId': entity.id,
-                  'processPropertyId': processProperty.id,
-                  'newValue': newProcessProperty.property_value,
-                  'oldValue': processProperty.property_value,
-                  'revert':true
-                })
-                // add to endEvent
-                endEvent.actions.push(endAction)
-              }
+            var resourceActions = self.makeActions({
+              resource : resource,
             })
+            startEvent.actions = _.concat(startEvent.actions, resourceActions)
+            var inverseActions = self.invertActions({
+              actions : resourceActions
+            })
+            endEvent.actions = _.concat(endEvent.actions, inverseActions)
+          })
+
+          _.forEach(phase.impacts, function (impact) {
+            var impactActions = self.makeActions({
+              resource : impact,
+            })
+            endEvent.actions = _.concat(endEvent.actions, impactActions)
           })
 
           console.log('startEvent', startEvent)
@@ -139,13 +209,11 @@ export default Ember.Component.extend({
           postJSON({
             data : endEvent,
             url : `api/events/`
-          }).then(function () {
-            postJSON({
-              data : startEvent,
-              url : `api/events/`
-            })
           })
-
+          postJSON({
+            data : startEvent,
+            url : `api/events/`
+          })
         })
       })
     },
