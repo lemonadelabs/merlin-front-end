@@ -38,9 +38,24 @@ export default Ember.Component.extend({
     this.set('currentStep', this.get('steps')[1])
   },
 
-  testThings: function () {
+  persistScenarioForPhase: function (opts) {
+    var phase = opts.phase
+    var simulation = this.get('simulation')
+    var newProjectData = this.get('newProjectData')
 
-  }.on('init'),
+    var scenarioPostData = {
+      "name": `${newProjectData.name}, ${phase.name}`,
+      "sim": "http://127.0.0.1:8000/api/simulations/" + simulation.id + '/',
+      "start_offset": convertTime.clicksBetween({
+        a : simulation.start_date,
+        b : phase.start
+      })
+    }
+    return postJSON({
+      data : scenarioPostData,
+      url : "api/scenarios/"
+    })
+  },
 
   actions: {
 
@@ -49,6 +64,8 @@ export default Ember.Component.extend({
     // },
 
     persistProject: function () {
+
+      var self = this
 
       var simulation = this.get('simulation')
       var newProjectData = this.get('newProjectData')
@@ -59,21 +76,10 @@ export default Ember.Component.extend({
       // loop over phases as | phase |
       _.forEach(phases, function (phase) {
         // create scenario
-        var scenarioPostData = {
-          "name": `${newProjectData.name}, ${phase.name}`,
-          "sim": "http://127.0.0.1:8000/api/simulations/" + simulation.id + '/',
-          "start_offset": convertTime.clicksBetween({
-            a : simulation.start_date,
-            b : phase.start
-          })
-        }
 
-        var scenarioPost = postJSON({
-          data : scenarioPostData,
-          url : "api/scenarios/"
-        })
+        var scenarioPostRequest = self.persistScenarioForPhase({ phase : phase })
 
-        scenarioPost.then( function (scenario) {
+        scenarioPostRequest.then( function (scenario) {
           // create beginningEvent
           var startEvent = merlinUtils.newEventObject({
             scenarioId: scenario.id,
@@ -92,11 +98,13 @@ export default Ember.Component.extend({
           })
 
           // loop over each `phase.resources` as | newValue |
+
           _.forEach(phase.resources, function (resource) {
             // find the matching entity from the simulation
             var entity = _.find( simulation.entities, function (e) { return e.id === resource.selectedEntity.id })
             // loop over each new process property
             _.forEach(resource.processProperties, function (newProcessProperty) {
+
               // get processProperties for the entity from the sim
               var processProperties = simTraverse.getProcessPropertiesFromEntity({ entity : entity })
               // find the matching processProperty from the entity from the simulation
