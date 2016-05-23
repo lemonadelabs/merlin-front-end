@@ -168,8 +168,10 @@ export default Ember.Component.extend({
       this.set('currentStep', steps.get(index - 1));
     },
 
-    cancel () {
-      // this.transitionToRoute('somewhere-else');
+    close () {
+      if(this.get('hideNewProject')){
+        this.sendAction('hideNewProject')
+      }
     },
     setTitle (newTitle) {
       this.set('modalTitle', newTitle);
