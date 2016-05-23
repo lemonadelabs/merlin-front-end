@@ -1,12 +1,5 @@
 <div class="modal-extra-slider half-size no-animate">
-  <h1 class="modal-extra-slider-header">
-    {{#if this.resourceLayerShowing}}
-      Add Resources - Required Resources
-    {{else}}
-      Add Impacts - Desired Changes
-    {{/if}}
-
-  </h1>
+  <h1 class="modal-extra-slider-header">Add Resources - Required Resources</h1>
   <p class='step-indicator'>step 4 of 4</p>
   <div class="overflow-catcher">
     <section class="modal-extra-slider-content flex-container">
@@ -20,6 +13,6 @@
   </div>
   <footer>
     <button {{action "previous"}}>Previous</button>
-    <button {{action "sendProcessProperties"}}>Add {{#if this.resourceLayerShowing}}Resource{{else}}Impact{{/if}}</button>
+    <button {{action "sendProcessProperties"}}>Add Resource</button>
   </footer>
 </div>

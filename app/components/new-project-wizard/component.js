@@ -102,7 +102,7 @@ export default Ember.Component.extend({
     _.forEach(actions, function (action) {
       invertedActions.push( merlinUtils.createInvertedAction({action : action}) )
     })
-    return invertActions
+    return invertedActions
   },
 
   actions: {
@@ -117,8 +117,6 @@ export default Ember.Component.extend({
 
       var simulation = this.get('simulation')
       var newProjectData = this.get('newProjectData')
-
-      console.log('persistProject', newProjectData)
 
       var phases = newProjectData.phases
       // loop over phases as | phase |
@@ -167,13 +165,21 @@ export default Ember.Component.extend({
           // console.log('endEvent', endEvent)
 
           // add events to scenario
-          postJSON({
+          var endRequest = postJSON({
             data : endEvent,
             url : `api/events/`
           })
-          postJSON({
-            data : startEvent,
-            url : `api/events/`
+          endRequest.then(function () {
+            var startRequest = postJSON({
+              data : startEvent,
+              url : `api/events/`
+            })
+            startRequest.then(function() {
+              //if we the hideNewProject action is there hide it
+              if(self.get('hideNewProject')){
+                self.sendAction('hideNewProject')
+              }
+            })
           })
         })
       })
@@ -193,8 +199,10 @@ export default Ember.Component.extend({
       this.set('currentStep', steps.get(index - 1));
     },
 
-    cancel () {
-      // this.transitionToRoute('somewhere-else');
+    close () {
+      if(this.get('hideNewProject')){
+        this.sendAction('hideNewProject')
+      }
     },
     setTitle (newTitle) {
       this.set('modalTitle', newTitle);
