@@ -1,0 +1,16 @@
+<div class="modal-extra-slider half-size no-animate">
+  <h1 class="modal-extra-slider-header">Add Resources - Choose {{this.selectedAttribute}}</h1>
+  <p class='step-indicator'>step 3 of 4</p>
+  <section class="modal-extra-slider-content single-item">
+    <label for="">Choose {{this.selectedAttribute}}</label>
+    {{#x-select value=this.selectedEntity}}
+      {{#each this.entitiesWithAttribute as | entity |}}
+        {{#x-option value=entity}}{{entity.name}}{{/x-option}}
+      {{/each}}
+    {{/x-select}}
+  </section>
+  <footer>
+    <button {{action "previous"}}>Previous</button>
+    <button {{action "next"}}>Next</button>
+  </footer>
+</div>

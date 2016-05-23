@@ -1,0 +1,19 @@
+<img class="modal-close" src="images/icons/close-icon.svg" alt="close form" {{action 'close'}}/>
+<h1 class="modal-header">{{this.modalTitle}}</h1>
+{{
+  component
+  currentStep
+
+  simulation=this.simulation
+
+  newProjectData=this.newProjectData
+  processPropertyValues=this.processPropertyValues
+
+  validation=validation.newProject1
+
+  setTitle="setTitle"
+  next="next"
+  back="back"
+  cancel="cancel"
+  persistProject="persistProject"
+}}

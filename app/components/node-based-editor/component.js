@@ -42,7 +42,7 @@ export default Ember.Component.extend({
     this.nodesGroup.groupOffsetY = this.get('transformY')
   }.observes('transformY'),
 
-  updateBaseline: function (opts) {
+    updateBaseline: function (opts) {
     var self = this
 
     var propertyId = opts.propertyId
@@ -156,7 +156,7 @@ export default Ember.Component.extend({
     self.set('errors', errors)
   },
 
-  loadSimulation: function(){
+  runSimulation: function(){
     var self = this
     var baselineId = this.baseline.id
     var sortedData = {
@@ -167,10 +167,9 @@ export default Ember.Component.extend({
     }
 
     var timeframe = 48
+    var id = this.get('model').id
 
-    var simulationId = this.get('router.url').replace("/services/", "")
-
-    Ember.$.getJSON(`api/simulation-run/${simulationId}/?steps=${timeframe}&s0=${baselineId}`).then(function (result) {
+    Ember.$.getJSON(`api/simulation-run/${id}/?steps=${timeframe}&s0=${baselineId}`).then(function (result) {
 
       self.set('timeframe', timeframe)
 

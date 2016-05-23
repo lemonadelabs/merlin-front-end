@@ -1,0 +1,91 @@
+<div class="modal-extra-slider">
+  <h1 class="modal-extra-slider-header">New Phase</h1>
+  <div class="modal-extra-slider-content new-phase-options">
+    <div class="phase-basic-info">
+      <div>
+        <label>Phase Name</label>
+        {{input value=this.phaseName}}
+      </div>
+      <div class="side-by-side">
+        <div>
+          <label>Capital Input</label>
+          {{input value=this.capital}}
+        </div>
+        <div>
+          <label>Opex Contribution</label>
+          {{input value=this.operational}}
+        </div>
+      </div>
+      <div>
+        <label>Phase Description</label>
+        {{textarea value=this.description}}
+      </div>
+    </div>
+    <div class="phase-senario-options">
+      <p class="ruled-sub-header">
+        Resources
+      </p>
+      <p class="new-impact-resource" {{action 'toggleResourcesLayer'}}>
+        <img src="images/icons/new-impact-resource-icon.svg" alt="" />
+        Add Resources
+      </p>
+      <p class="ruled-sub-header">
+        Impacts
+      </p>
+      <p class="new-impact-resource" {{action 'toggleImpactsLayer'}}>
+        <img src="images/icons/new-impact-resource-icon.svg" alt="" />
+        Add Impacts
+      </p>
+      {{!-- <p class="ruled-sub-header">
+        Outcomes
+      </p> --}}
+    </div>
+  </div>
+  <footer>
+    <button {{action "removeThisLayer"}}>cancel</button>
+    <button {{action "addNewPhase"}}>Add Phase</button>
+  </footer>
+</div>
+{{#if this.showResourcesLayer}}
+  {{
+    component
+    currentStepResources
+
+    layerType='Resources'
+    resourceLayerShowing=this.showResourcesLayer
+
+    simulation=this.simulation
+
+    selectedServiceModel=this.selectedServiceModelResources
+    selectedAttribute=this.selectedAttributeResources
+    selectedEntity=this.selectedEntityResources
+
+    packageData="packageChildData"
+    nextChild="nextChild"
+    previousChild="previousChild"
+    childSequenceComplete="childSequenceComplete"
+    toggleChildLayer="toggleChildLayer"
+  }}
+{{/if}}
+
+{{#if this.showImpactsLayer}}
+  {{
+    component
+    currentStepImpacts
+
+    layerType='Impacts'
+    resourceLayerShowing=this.showResourcesLayer
+
+    simulation=this.simulation
+
+    selectedServiceModel=this.selectedServiceModelImpacts
+    selectedAttribute=this.selectedAttributeImpacts
+    selectedEntity=this.selectedEntityImpacts
+
+    packageData="packageChildData"
+    nextChild="nextChild"
+    previousChild="previousChild"
+    childSequenceComplete="childSequenceComplete"
+    toggleChildLayer="toggleChildLayer"
+  }}
+{{/if}}
