@@ -38,10 +38,6 @@ export default Ember.Component.extend({
     this.set('currentStep', this.get('steps')[1])
   },
 
-  testThings: function () {
-
-  }.on('init'),
-
   actions: {
 
     // catchProcessPropertyValues: function (values) {

@@ -1,7 +1,11 @@
 <div class="modal-extra-slider half-size">
-  <h1 class="modal-extra-slider-header">Add Resources - Choose Service</h1>
+
+  <h1 class="modal-extra-slider-header">
+    Add {{#if this.resourceLayerShowing}}Resources {{else}}Impacts {{/if}}- Choose Service
+  </h1>
   <p class='step-indicator'>step 1 of 4</p>
   <section class="modal-extra-slider-content single-item">
+
     <label for="">Choose Service</label>
     {{#x-select value=this.selectedServiceModel}}
       {{#each this.serviceModels as |serviceModel|}}
