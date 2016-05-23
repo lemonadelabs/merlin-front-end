@@ -77,7 +77,7 @@
 }
 
 .modal-extra-slider.half-size {
-  $height: 42%;
+  $height: 45%;
   height: $height;
   bottom: calc($height * -1);
 }
