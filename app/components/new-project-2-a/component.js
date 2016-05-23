@@ -2,11 +2,9 @@ import Ember from 'ember';
 
 export default Ember.Component.extend({
 
-  // showChildLayer: false,
   showResourcesLayer: false,
   showImpactsLayer: false,
 
-  // currentStep: undefined,
   currentStepResources: undefined,
   currentStepImpacts: undefined,
 
@@ -22,11 +20,6 @@ export default Ember.Component.extend({
   selectedServiceModelImpacts: undefined,
   selectedAttributeImpacts: undefined,
   selectedEntityImpacts: undefined,
-
-  // setLayertypeBool: function () {
-  //   console.log('showResourcesLayer', this.get('showResourcesLayer'))
-  //   console.log('showImpactsLayer', this.get('showImpactsLayer'))
-  // }.observes('showResourcesLayer', 'showImpactsLayer'),
 
   init: function () {
     this._super()
@@ -46,8 +39,6 @@ export default Ember.Component.extend({
     this.set(variablepath, toggleBool);
   },
 
-  // processNewResource: function () {
-  // },
   actions: {
 
     removeThisLayer: function () {
@@ -76,8 +67,6 @@ export default Ember.Component.extend({
         'resources' : resources,
         'impacts' : impacts,
       }
-
-      console.log(newPhase)
 
       if (lastPhase) {
         newPhase.start = incrementTimeBy1({ time : lastPhase.end })

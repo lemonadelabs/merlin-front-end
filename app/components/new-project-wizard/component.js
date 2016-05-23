@@ -57,45 +57,6 @@ export default Ember.Component.extend({
     })
   },
 
-  processResourceIntoActions: function (opts) {
-
-    var startEvent = opts.startEvent
-    var endEvent = opts.endEvent
-
-    var resource = opts.resource
-    var simulation = this.get('simulation')
-    // find the matching entity from the simulation
-    var entity = _.find( simulation.entities, function (e) { return e.id === resource.selectedEntity.id })
-    // loop over each new process property
-    _.forEach(resource.processProperties, function (newProcessProperty) {
-
-      // get processProperties for the entity from the sim
-      var processProperties = simTraverse.getProcessPropertiesFromEntity({ entity : entity })
-      // find the matching processProperty from the entity from the simulation
-      var processProperty = _.find( processProperties, function (property) { return property.id === newProcessProperty.id })
-      if (processProperty.property_value != newProcessProperty.property_value) {
-        // create action that represents change
-        var startAction = merlinUtils.modifyProcessAction({
-          'entityId': entity.id,
-          'processPropertyId': processProperty.id,
-          'newValue': newProcessProperty.property_value,
-          'oldValue': processProperty.property_value
-        })// add to beginningEvent
-        startEvent.actions.push(startAction)
-
-        var endAction = merlinUtils.modifyProcessAction({
-          'entityId': entity.id,
-          'processPropertyId': processProperty.id,
-          'newValue': newProcessProperty.property_value,
-          'oldValue': processProperty.property_value,
-          'revert':true
-        })
-        // add to endEvent
-        endEvent.actions.push(endAction)
-      }
-    })
-  },
-
   makeActions: function (opts) {
     var self = this
     var resource = opts.resource
@@ -202,8 +163,8 @@ export default Ember.Component.extend({
             endEvent.actions = _.concat(endEvent.actions, impactActions)
           })
 
-          console.log('startEvent', startEvent)
-          console.log('endEvent', endEvent)
+          // console.log('startEvent', startEvent)
+          // console.log('endEvent', endEvent)
 
           // add events to scenario
           postJSON({
