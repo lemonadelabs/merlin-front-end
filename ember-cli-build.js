@@ -18,10 +18,6 @@ module.exports = function(defaults) {
     },
     postcssOptions: {
       plugins: [
-
-        {
-          module:cssNested
-        },
         {
           module: cssImport,
           options: {
@@ -29,6 +25,18 @@ module.exports = function(defaults) {
           }
         },
         {
+          module:cssNested
+        },
+        {
+<<<<<<< HEAD
+=======
+          module: cssImport,
+          options: {
+            path: ["app/styles"]
+          }
+        },
+        {
+>>>>>>> master
           module: simpleVars,
           options: {}
         },

@@ -2,6 +2,14 @@ import Ember from 'ember';
 
 export default Ember.Component.extend({
   classNames: ['time-input-container'],
+  selectedYear: "2016/17",
+  yearOffset:0,
+  years: [
+    {label:"2016 / 17", offset:0},
+    {label:"2017 / 18", offset:12},
+    {label:"2018 / 19", offset:24},
+    {label:"2020 / 21", offset:36}
+  ],
   months: [
     {
       name:'Jul',
@@ -52,9 +60,24 @@ export default Ember.Component.extend({
       selected:false
     }],
   actions:{
+    changeYear:function(label, offset){
+      this.set('changeYear',false);
+
+      let month = this.get('month'),
+          oldYearOffset = this.get('yearOffset'),
+          monthNoOffset = month - oldYearOffset;
+      this.set('month', offset + monthNoOffset);
+      this.set('yearOffset',offset)
+      this.set('selectedYear',label);
+    },
+    selectNewYear:function(){
+      this.set('changeYear',true);
+    },
     changeMonth: function(month){
+      this.set('changeYear',false);
       let self = this;
       let months = this.get('months');
+      let yearOffset = this.get('yearOffset');
       let index = _.findIndex(months, function(o) {/*jshint eqeqeq: false*/ return o == month; });
 
       _.forEach(months,function(month, i){
@@ -66,7 +89,7 @@ export default Ember.Component.extend({
         }
       })
 
-      this.set('month', index+1);
+      this.set('month', yearOffset+(index+1));
     }
   }
 });
