@@ -25,6 +25,15 @@
       <p class="ruled-sub-header">
         Resources
       </p>
+      {{#each this.resourcesHoldingPenResources as | resource |}}
+        {{#each resource.processProperties as | processProperty |}}
+
+          {{#if processProperty.change}}
+            <p class='impact-resource'>{{processProperty.sign}}{{processProperty.change}} {{processProperty.name}} at {{resource.selectedEntity.name}} from {{resource.selectedServiceModel.name}}.</p>
+          {{/if}}
+
+        {{/each}}
+      {{/each}}
       <p class="new-impact-resource" {{action 'toggleResourcesLayer'}}>
         <img src="images/icons/new-impact-resource-icon.svg" alt="" />
         Add Resources
@@ -32,6 +41,15 @@
       <p class="ruled-sub-header">
         Impacts
       </p>
+      {{#each this.resourcesHoldingPenImpacts as | impact |}}
+        {{#each impact.processProperties as | processProperty |}}
+
+          {{#if processProperty.change}}
+            <p class='impact-resource'>{{processProperty.change}} {{processProperty.name}} at {{impact.selectedEntity.name}} from {{impact.selectedServiceModel.name}}.</p>
+          {{/if}}
+
+        {{/each}}
+      {{/each}}
       <p class="new-impact-resource" {{action 'toggleImpactsLayer'}}>
         <img src="images/icons/new-impact-resource-icon.svg" alt="" />
         Add Impacts

@@ -79,17 +79,11 @@ export default Ember.Component.extend({
   makeAction: function (opts) {
     var newProcessProperty = opts.newProcessProperty
     var entity = opts.entity
-    // get processProperties for the entity from the sim
-    var processProperties = simTraverse.getProcessPropertiesFromEntity({ entity : entity })
-    // find the matching processProperty from the entity from the simulation
-    var processProperty = _.find( processProperties, function (property) { return property.id === newProcessProperty.id })
-    if (processProperty.property_value != newProcessProperty.property_value) {
-      // create action that represents change
-      var action = merlinUtils.modifyProcessAction({
-        'entityId': entity.id,
-        'processPropertyId': processProperty.id,
-        'newValue': newProcessProperty.property_value,
-        'oldValue': processProperty.property_value
+
+    if (newProcessProperty.change) {
+      var action = merlinUtils.createModifyProcessAction({
+        newProcessProperty : newProcessProperty,
+        entityId : entity.id,
       })
       return action
     }
@@ -161,8 +155,8 @@ export default Ember.Component.extend({
             endEvent.actions = _.concat(endEvent.actions, impactActions)
           })
 
-          // console.log('startEvent', startEvent)
-          // console.log('endEvent', endEvent)
+          console.log('startEvent', startEvent)
+          console.log('endEvent', endEvent)
 
           // add events to scenario
           var endRequest = postJSON({

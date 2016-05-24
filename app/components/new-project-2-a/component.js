@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import * as simTraverse from '../../common/simulation-traversal'
 
 export default Ember.Component.extend({
 
@@ -37,6 +38,31 @@ export default Ember.Component.extend({
   toggleBool: function (variablepath){
     let toggleBool = this.get(variablepath) ? false : true;
     this.set(variablepath, toggleBool);
+  },
+
+  addChangeAttributeToProcessProperties: function (opts) {
+    var self = this
+    var newProcessProperties = opts.newProcessProperties
+    var entity = opts.entity
+
+    _.forEach(newProcessProperties, function (newProcessProperty) {
+      self.addChangeAttributeToProcessProperty({
+        entity : entity,
+        newProcessProperty : newProcessProperty
+      })
+    })
+  },
+
+  addChangeAttributeToProcessProperty: function (opts) {
+    var newProcessProperty = opts.newProcessProperty
+    var entity = opts.entity
+    // get processProperties for the entity from the sim
+    var processProperties = simTraverse.getProcessPropertiesFromEntity({ entity : entity })
+    // find the matching processProperty from the entity from the simulation
+    var processProperty = _.find( processProperties, function (property) { return property.id === newProcessProperty.id })
+    var change = newProcessProperty.property_value - processProperty.property_value
+    newProcessProperty.change = change
+    if (change > 0.0) { newProcessProperty.sign = '+' }
   },
 
   actions: {
@@ -98,6 +124,11 @@ export default Ember.Component.extend({
       var selectedAttribute = _.cloneDeep( this.get(`selectedAttribute${layerType}`) )
       var selectedEntity = _.cloneDeep( this.get(`selectedEntity${layerType}`) )
 
+      this.addChangeAttributeToProcessProperties({
+        newProcessProperties : processProperties,
+        entity : selectedEntity
+      })
+
       var resourceInfo = {
         processProperties : processProperties,
         selectedServiceModel : selectedServiceModel,
@@ -107,6 +138,7 @@ export default Ember.Component.extend({
 
       resourcePen.push(resourceInfo)
       this.set(`resourcesHoldingPen${layerType}`, resourcePen)
+      this[`resourcesHoldingPen${layerType}`].arrayContentDidChange(resourcePen.length, 0, 1)
 
       this.set(`selectedServiceModel${layerType}`, undefined)
       this.set(`selectedAttribute${layerType}`, undefined)

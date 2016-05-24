@@ -1,21 +1,32 @@
-export function modifyProcessAction(opts) {
+export function createModifyProcessAction(opts) {
   var entityId = opts.entityId
-  var processPropertyId = opts.processPropertyId
-  var newValue = Number( opts.newValue )
-  var oldValue = Number( opts.oldValue )
+  var props, value, processPropertyId
   var revert = opts.revert
 
-  var props, value
-  if (oldValue) {
-    value = newValue - oldValue
+  if (opts.newProcessProperty) {
+    var newProcessProperty = opts.newProcessProperty
+
+    value = opts.newProcessProperty.change
+    processPropertyId = newProcessProperty.id
     props = { 'additive' : true }
   } else {
-    value = newValue
-    props = null
+    processPropertyId = opts.processPropertyId
+    var newValue = Number( opts.newValue )
+    var oldValue = Number( opts.oldValue )
+
+    if (oldValue) {
+      value = newValue - oldValue
+      props = { 'additive' : true }
+    } else {
+      value = newValue
+      props = null
+    }
   }
+
   if(revert){
-    value = -value
+    value = value * -1
   }
+
   return {
     "op": ":=",
     "operand_1": {
