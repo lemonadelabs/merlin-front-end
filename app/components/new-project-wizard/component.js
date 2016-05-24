@@ -93,6 +93,69 @@ export default Ember.Component.extend({
     return invertedActions
   },
 
+  createEvents: function (opts) {
+    var self = this
+
+    var scenario = opts.scenario
+    var phase = opts.phase
+    // create beginningEvent
+    var startEvent = merlinUtils.newEventObject({
+      scenarioId: scenario.id,
+      time:1
+    })
+
+    // create endEvent
+    var clicksBetween = convertTime.clicksBetween({
+      a : phase.start,
+      b : phase.end
+    })
+
+    var endEvent = merlinUtils.newEventObject({
+      scenarioId: scenario.id,
+      time: clicksBetween
+    })
+
+    _.forEach(phase.resources, function (resource) {
+      var resourceActions = self.makeActions({
+        resource : resource,
+      })
+      startEvent.actions = _.concat(startEvent.actions, resourceActions)
+      var inverseActions = self.invertActions({
+        actions : resourceActions
+      })
+      endEvent.actions = _.concat(endEvent.actions, inverseActions)
+    })
+
+    _.forEach(phase.impacts, function (impact) {
+      var impactActions = self.makeActions({
+        resource : impact,
+      })
+      endEvent.actions = _.concat(endEvent.actions, impactActions)
+    })
+
+    console.log('startEvent', startEvent)
+    console.log('endEvent', endEvent)
+
+    // add events to scenario
+    var endRequest = postJSON({
+      data : endEvent,
+      url : `api/events/`
+    })
+    endRequest.then(function () {
+      var startRequest = postJSON({
+        data : startEvent,
+        url : `api/events/`
+      })
+      startRequest.then(function() {
+        //if the hideNewProject action is there hide it
+        if(self.get('hideNewProject')){
+          self.sendAction('hideNewProject')
+        }
+      })
+    })
+
+  },
+
   actions: {
 
     // catchProcessPropertyValues: function (values) {
@@ -110,67 +173,17 @@ export default Ember.Component.extend({
       // loop over phases as | phase |
       _.forEach(phases, function (phase) {
         // create scenario
-
         var scenarioPostRequest = self.persistScenarioForPhase({ phase : phase })
 
         scenarioPostRequest.then( function (scenario) {
-          // create beginningEvent
-          var startEvent = merlinUtils.newEventObject({
-            scenarioId: scenario.id,
-            time:1
-          })
-
-          // create endEvent
-          var clicksBetween = convertTime.clicksBetween({
-            a : phase.start,
-            b : phase.end
-          })
-          var endEvent = merlinUtils.newEventObject({
-            scenarioId: scenario.id,
-            time: clicksBetween
-          })
-
-
-          _.forEach(phase.resources, function (resource) {
-            var resourceActions = self.makeActions({
-              resource : resource,
-            })
-            startEvent.actions = _.concat(startEvent.actions, resourceActions)
-            var inverseActions = self.invertActions({
-              actions : resourceActions
-            })
-            endEvent.actions = _.concat(endEvent.actions, inverseActions)
-          })
-
-          _.forEach(phase.impacts, function (impact) {
-            var impactActions = self.makeActions({
-              resource : impact,
-            })
-            endEvent.actions = _.concat(endEvent.actions, impactActions)
-          })
-
-          console.log('startEvent', startEvent)
-          console.log('endEvent', endEvent)
-
-          // add events to scenario
-          var endRequest = postJSON({
-            data : endEvent,
-            url : `api/events/`
-          })
-          endRequest.then(function () {
-            var startRequest = postJSON({
-              data : startEvent,
-              url : `api/events/`
-            })
-            startRequest.then(function() {
-              //if we the hideNewProject action is there hide it
-              if(self.get('hideNewProject')){
-                self.sendAction('hideNewProject')
-              }
-            })
+          self.createEvents({
+            scenario : scenario,
+            phase : phase
           })
         })
+        // also need to crate a project in here!!!!!
       })
+
     },
 
     next () {
