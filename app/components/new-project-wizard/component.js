@@ -17,20 +17,14 @@ export default Ember.Component.extend({
       disableButton: true,
     }
   },
-
   newProjectData: {
     is_ringfenced: false,
     achievability: 5,
     attractiveness: 5,
     phases: [],
-
-    name: 'asdf',
-    description: 'asdf',
     priority: 1,
-
-
+    alignment: 5,
   },
-
   modalTitle : undefined,
 
   init: function () {
