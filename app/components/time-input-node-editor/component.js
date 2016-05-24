@@ -8,7 +8,7 @@ export default Ember.Component.extend({
     {label:"2016 / 17", offset:0},
     {label:"2017 / 18", offset:12},
     {label:"2018 / 19", offset:24},
-    {label:"2020 /21", offset:36}
+    {label:"2020 / 21", offset:36}
   ],
   months: [
     {
@@ -62,12 +62,13 @@ export default Ember.Component.extend({
   actions:{
     changeYear:function(label, offset){
       this.set('changeYear',false);
+
+      let month = this.get('month'),
+          oldYearOffset = this.get('yearOffset'),
+          monthNoOffset = month - oldYearOffset;
+      this.set('month', offset + monthNoOffset);
       this.set('yearOffset',offset)
-      this.set('selectedYear',label)
-      let month = this.get('month');
-      let months = this.get('months');
-      let index = _.findIndex(months, function(o) {/*jshint eqeqeq: false*/ return o == month; });
-      this.set('month', offset+(index+1));
+      this.set('selectedYear',label);
     },
     selectNewYear:function(){
       this.set('changeYear',true);
