@@ -17,19 +17,18 @@ module.exports = function(defaults) {
     },
     postcssOptions: {
       plugins: [
-
+        {
+          module: cssImport,
+          options: {
+            path: ["app/styles"]
+          }
+        },
         {
           module:cssNested
         },
         {
           module: simpleVars,
           options: {}
-        },
-        {
-          module: cssImport,
-          options: {
-            path: ["app/styles"]
-          }
         },
         {
           module: cssnext,
