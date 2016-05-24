@@ -29,7 +29,7 @@
         {{#each resource.processProperties as | processProperty |}}
 
           {{#if processProperty.change}}
-            <p class='impact-resource'>{{processProperty.change}} {{processProperty.name}} at {{resource.selectedEntity.name}} from {{resource.selectedServiceModel.name}}.</p>
+            <p class='impact-resource'>{{processProperty.sign}}{{processProperty.change}} {{processProperty.name}} at {{resource.selectedEntity.name}} from {{resource.selectedServiceModel.name}}.</p>
           {{/if}}
 
         {{/each}}

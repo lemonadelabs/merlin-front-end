@@ -62,6 +62,7 @@ export default Ember.Component.extend({
     var processProperty = _.find( processProperties, function (property) { return property.id === newProcessProperty.id })
     var change = newProcessProperty.property_value - processProperty.property_value
     newProcessProperty.change = change
+    if (change > 0.0) { newProcessProperty.sign = '+' }
   },
 
   actions: {
@@ -135,7 +136,6 @@ export default Ember.Component.extend({
         selectedEntity : selectedEntity
       }
 
-      console.log(resourceInfo)
       resourcePen.push(resourceInfo)
       this.set(`resourcesHoldingPen${layerType}`, resourcePen)
       this[`resourcesHoldingPen${layerType}`].arrayContentDidChange(resourcePen.length, 0, 1)
