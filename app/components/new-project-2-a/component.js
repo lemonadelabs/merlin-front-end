@@ -78,10 +78,11 @@ export default Ember.Component.extend({
       var resources = _.cloneDeep( resourcePen )
       var impacts = _.cloneDeep( impactPen )
 
-      this.set('resourcesHoldingPenResources', [])
-      this.set('resourcesHoldingPenImpacts', [])
+      resourcePen.length = 0
+      impactPen.length = 0
 
-
+      this.resourcesHoldingPenResources.arrayContentDidChange(0, resources.length, 0)
+      this.resourcesHoldingPenImpacts.arrayContentDidChange(0, impacts.length, 0)
 
       var phases = this.get('phases')
       var lastPhase = phases[ phases.length - 1 ]
