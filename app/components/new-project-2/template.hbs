@@ -1,0 +1,34 @@
+<p class='step-indicator'>step 2 of 3</p>
+{{
+  timeline-timescale
+  timelineGridObjects=this.timelineGridObjects
+  timespan=this.timespan
+}}
+{{
+  timeline-track
+  timelineGridObjects=this.timelineGridObjects
+
+  timelineObjects=this.newProjectData.phases
+
+  onInteractionEnd=(action 'updatePhase')
+}}
+<div class="new-phase-trigger" {{action 'toggleChildLayer'}}>
+  <img src="images/icons/new-phase-icon.svg" alt="" />
+  <p>Add New Phase</p>
+</div>
+
+{{#if this.showChildLayer}}
+  {{
+    new-project-2-a
+
+    simulation=this.simulation
+    phases=this.newProjectData.phases
+
+    toggleChildLayer='toggleChildLayer'
+  }}
+{{/if}}
+
+<footer>
+  <button {{action "back"}}>Previous</button>
+  <button {{action "next"}}>Next</button>
+</footer>
