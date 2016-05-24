@@ -22,8 +22,9 @@
 .time-month-container {
   margin-top: -0.5em;
   display: inline-flex;
-  width: 40%;
+  width: 40vw;
   justify-content: space-around;
+  margin-right: 5vw
 }
 
 .time-month-container .month.selected{
@@ -48,4 +49,34 @@
 .month-name{
   margin-top: 0.3em;
   margin-bottom: 0.5em;
+}
+
+.time-year-selector{
+  min-width: 75px;
+  $height: 2em;
+  background-color: rgb(3, 222, 173);
+  border-radius: 1em;
+  margin-right: 5vw;
+  height: $height;
+  margin-top: calc(($height / 2) * -1);
+  padding: 0.5em 1em;
+}
+
+.time-year-selector.change-year{
+  $height: 7em;
+  margin-right: 5vw;
+  height: $height;
+  margin-top: calc(($height / 1.2) * -1);
+}
+
+.time-year-selector p{
+  margin: 0;
+  line-height: 11px;
+  font-weight: 800;
+}
+
+.time-year-selector.change-year p{
+  margin-top: 0.5em;
+  line-height: 11px;
+  font-weight: 800;
 }
