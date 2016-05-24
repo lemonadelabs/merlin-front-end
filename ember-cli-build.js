@@ -18,15 +18,14 @@ module.exports = function(defaults) {
     },
     postcssOptions: {
       plugins: [
-
-        {
-          module:cssNested
-        },
         {
           module: cssImport,
           options: {
             path: ["app/styles"]
           }
+        },
+        {
+          module:cssNested
         },
         {
           module: simpleVars,
