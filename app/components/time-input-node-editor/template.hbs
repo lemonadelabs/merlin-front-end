@@ -1,3 +1,13 @@
+<div class="time-year-selector {{if this.changeYear 'change-year'}}">
+  {{#if this.changeYear}}
+    {{#each this.years as |year|}}
+     <p  {{action 'changeYear' year.label year.offset}}>{{year.label}}</p>
+    {{/each}}
+  {{else}}
+    <p {{action 'selectNewYear'}}>{{this.selectedYear}}</p>
+  {{/if}}
+
+</div>
 <div class='time-month-container'>
   {{#each this.months as |month|}}
     <div class="month {{if month.selected 'selected'}}" {{action 'changeMonth' month}}>

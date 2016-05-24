@@ -22,7 +22,9 @@ export default Ember.Component.extend({
     var numYears = timespan.end.year - timespan.start.year + 1;
 
     for(var i = 0; i < numYears; i++){
-      years.push(timespan.start.year+i);
+      var year = timespan.start.year+i
+      var financialYear = (timespan.start.year+i+1) - 2000;
+      years.push(`${year}/${financialYear}`);
 
       if(i === 1){
         this.set('useMonths',false);

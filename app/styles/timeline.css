@@ -46,11 +46,10 @@
 
 .timeline-year-container {
   display: flex;
-  width: 80%;
+  width: 80vw;
   color: white;
   flex-wrap: nowrap;
-  margin-left:auto;
-  margin-right: auto;
+  margin-left: 10vw;
   user-select: none;
 }
 
