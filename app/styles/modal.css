@@ -261,3 +261,14 @@
   height: auto;
   margin-right: 4px;
 }
+
+.impact-resource {
+  position: relative;
+  color: white;
+  font-size: 9.5pt;
+  text-transform: capitalize;
+  margin-bottom: 0.5em;
+  margin-top: 0.5em;
+  line-height: 10px;
+  width: 100%;
+}
