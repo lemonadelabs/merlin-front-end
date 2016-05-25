@@ -112,9 +112,18 @@ html {
     line-height: 10px;
     margin-top:0;
 }
+
+.review-card-filter p:first-of-type{
+    margin-left: 0;
+}
+
 .review-card-filter p:last-of-type{
     padding-right: 0;
     border-right: solid 0px white;
+}
+
+.review-card-filter p.selected {
+  font-weight: 700;
 }
 
 .review-filter{

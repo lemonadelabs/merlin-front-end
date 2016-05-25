@@ -4,7 +4,7 @@ export default Ember.Component.extend({
   selectedCategory:undefined,
   selectGraph:undefined,
   didInsertElement(){
-    let firstCategory = this.get('cardData.filterCategories.0');
+    let firstCategory = this.get('cardData.filterCategories.0.label');
     this.set('selectedCategory',firstCategory)
     let selectedGraph = this.get(`cardData.graphs.${firstCategory}`);
     this.set('selectedGraph', selectedGraph)
@@ -14,7 +14,6 @@ export default Ember.Component.extend({
       this.set('selectedCategory',catagory)
       let selectedGraph = this.get(`cardData.graphs.${catagory}`);
       this.set('selectedGraph', selectedGraph)
-      console.log(catagory, selectedGraph);
     }
   }
 });

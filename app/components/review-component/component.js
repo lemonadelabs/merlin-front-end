@@ -11,10 +11,10 @@ export default Ember.Component.extend({
   init(){
     this._super();
     this.initCharts();
-    this.createCards();
   },
   initCharts(){
     this.generateGraphData();
+    this.createCards();
   },
   newGraph(graphColours, GraphData, lineTypes, yAxesName){
     let axisColour = 'rgb(255, 255, 255)',
@@ -45,18 +45,22 @@ export default Ember.Component.extend({
   createFinanceCard(){
     let revenueBudgeted = this.get('graphData.revenueBudgeted');
     let revenuePlanned = this.get('graphData.revenuePlanned');
+    let revenueHaircut = this.get('graphData.revenueHaircut');
 
     let expencesBudgeted = this.get('graphData.expencesBudgeted');
     let expencesPlanned = this.get('graphData.expencesPlanned');
+    let expencesHaircut = this.get('graphData.expencesHaircut');
 
     let surplusBudgeted = this.get('graphData.surplusBudgeted');
     let surplusPlanned = this.get('graphData.surplusPlanned');
+    let surplusHaircut = this.get('graphData.surplusHaircut');
 
     let financeCard = {};
     financeCard.name = "Finance";
     financeCard.graphs = {};
     financeCard.graphs["Revenue"] = this.newGraph(
       [
+        'rgb(126, 211, 33)',
         'rgb(126, 211, 33)',
         'rgb(126, 211, 33)',
       ],
@@ -68,15 +72,21 @@ export default Ember.Component.extend({
         {
           name: 'Revenue Planned',
           data: revenuePlanned
+        },
+        {
+          name: 'Revenue Haircut',
+          data: revenueHaircut
         }
       ],
       [
         'solid',
         'dotted',
+        'longDash',
       ]);
 
     financeCard.graphs["Expences"] = this.newGraph(
       [
+        'rgb(126, 211, 33)',
         'rgb(126, 211, 33)',
         'rgb(126, 211, 33)',
       ],
@@ -88,15 +98,21 @@ export default Ember.Component.extend({
         {
           name: 'Expences Planned',
           data: expencesPlanned
+        },
+        {
+          name: 'Expences Haircut',
+          data: expencesHaircut
         }
       ],
       [
         'solid',
         'dotted',
+        'longDash',
       ]);
 
     financeCard.graphs["Surplus"] = this.newGraph(
       [
+        'rgb(126, 211, 33)',
         'rgb(126, 211, 33)',
         'rgb(126, 211, 33)',
       ],
@@ -108,13 +124,31 @@ export default Ember.Component.extend({
         {
           name: 'Surplus Planned',
           data: surplusPlanned
+        },
+        {
+          name: 'Surplus Haircut',
+          data: surplusHaircut
         }
       ],
       [
         'solid',
         'dotted',
+        'longDash',
       ]);
-    financeCard.filterCategories = ['Revenue', 'Expences', 'Surplus']
+    financeCard.filterCategories = [
+      {
+        label:'Revenue',
+        selected:true
+      },
+      {
+        label:'Expences',
+        selected:false
+      },
+      {
+        label:'Surplus',
+        selected:false
+      }
+    ]
     this.get('cards').push(financeCard)
   },
   createStaffCard(){
@@ -126,14 +160,20 @@ export default Ember.Component.extend({
     let lineStaffPlanned = this.get('graphData.lineStaffPlanned');
     let OhStaffPlanned = this.get('graphData.OhStaffPlanned');
 
+    let lineStaffHaircut = this.get('graphData.lineStaffHaircut');
+    let OhStaffHaircut = this.get('graphData.OhStaffHaircut');
+
     let staffUtilisationBudgeted = this.get('graphData.staffUtilisationBudgeted');
     let staffUtilisationPlanned = this.get('graphData.staffUtilisationPlanned');
+    let staffUtilisationHaircut = this.get('graphData.staffUtilisationHaircut');
 
 
     staffCard.name = "Staff";
     staffCard.graphs = {};
     staffCard.graphs["Staff Numbers"] = this.newGraph(
       [
+        'rgb(74, 144, 226)',
+        'rgb(74, 217, 226)',
         'rgb(74, 144, 226)',
         'rgb(74, 217, 226)',
         'rgb(74, 144, 226)',
@@ -145,12 +185,16 @@ export default Ember.Component.extend({
         {name: 'Overhead Staff Budgeted', data:OhStaffBudgeted},
         {name: 'Line Staff Planned', data:lineStaffPlanned},
         {name: 'Overhead Staff Planned', data:OhStaffPlanned},
+        {name: 'Line Staff Haircut', data:lineStaffHaircut},
+        {name: 'Overhead Staff Haircut', data:OhStaffHaircut},
       ],
       [
         'solid',
         'solid',
         'dotted',
-        'dotted'
+        'dotted',
+        'longDash',
+        'longDash'
       ]
     );
 
@@ -158,19 +202,31 @@ export default Ember.Component.extend({
       [
         'rgb(74, 144, 226)',
         'rgb(74, 144, 226)',
+        'rgb(74, 144, 226)',
       ],
       [
         {name: 'Utilisation Budgeted', data:staffUtilisationBudgeted},
-        {name: 'Utilisation Planned', data:staffUtilisationPlanned}
+        {name: 'Utilisation Planned', data:staffUtilisationPlanned},
+        {name: 'Utilisation Haircut', data:staffUtilisationHaircut}
 
       ],
       [
         'solid',
-        'dotted'
+        'dotted',
+        'longDash',
       ]
     );
 
-    staffCard.filterCategories = ['Staff Numbers', 'Utilisation']
+    staffCard.filterCategories = [
+      {
+        label:'Utilisation',
+        selected:true
+      },
+      {
+        label:'Staff Numbers',
+        selected:false
+      }
+    ]
 
     this.get('cards').push(staffCard)
   },
@@ -178,24 +234,58 @@ export default Ember.Component.extend({
     let outputCard = {};
     let outputsPlanned = this.get('graphData.outputsPlanned');
     let outputsBudgeted = this.get('graphData.outputsBudgeted');
+    let outputsHaircut = this.get('graphData.outputsHaircut');
+
+    let outputsSlaPlanned = this.get('graphData.outputsSlaPlanned');
+    let outputsSlaBudgeted = this.get('graphData.outputsSlaBudgeted');
+    let outputsSlaHaircut = this.get('graphData.outputsSlaHaircut');
 
     outputCard.name = "Outputs";
     outputCard.graphs = {};
     outputCard.graphs["Indexed Outputs"] = this.newGraph(
       [
         'rgb(245, 166, 35)',
+        'rgb(245, 166, 35)',
         'rgb(245, 166, 35)'
       ],
       [
-        {name: 'Outputs', data:outputsPlanned},
-        {name: 'Outputs', data:outputsBudgeted}
+        {name: 'Outputs Planned', data:outputsPlanned},
+        {name: 'Outputs Budgeted', data:outputsBudgeted},
+        {name: 'Outputs Haircut', data:outputsHaircut}
       ],
       [
         'solid',
-        'dotted'
+        'dotted',
+        'longDash'
       ]
     );
-    outputCard.filterCategories = ['Indexed Outputs','Service Level']
+    outputCard.graphs["Service Level"] = this.newGraph(
+      [
+        'rgb(245, 166, 35)',
+        'rgb(245, 166, 35)',
+        'rgb(245, 166, 35)'
+      ],
+      [
+        {name: 'Service Level Planned', data:outputsSlaPlanned},
+        {name: 'Service Level Budgeted', data:outputsSlaBudgeted},
+        {name: 'Service Level Haircut', data:outputsSlaHaircut}
+      ],
+      [
+        'solid',
+        'dotted',
+        'longDash'
+      ]
+    );
+    outputCard.filterCategories = [
+      {
+        label:'Indexed Outputs',
+        selected:true
+      },
+      {
+        label:'Service Level',
+        selected:false
+      }
+    ]
     this.get('cards').push(outputCard)
   },
   generateGraphData(){
@@ -211,12 +301,34 @@ export default Ember.Component.extend({
       let rando = Math.random()*100;
       this.get('graphData.outputsPlanned').push(rando);
     }
+    this.set('graphData.outputsSlaPlanned',[])
+    for (let i = 0; i < 10; i++) {
+      let rando = Math.random()*100;
+      this.get('graphData.outputsSlaPlanned').push(rando);
+    }
 
     //Budgeted (from the 'baseline' senarios)
     this.set('graphData.outputsBudgeted',[])
     for (let i = 0; i < 10; i++) {
       let rando = Math.random()*100;
       this.get('graphData.outputsBudgeted').push(rando);
+    }
+    this.set('graphData.outputsSlaBudgeted',[])
+    for (let i = 0; i < 10; i++) {
+      let rando = Math.random()*100;
+      this.get('graphData.outputsSlaBudgeted').push(rando);
+    }
+
+    //Haircut (from the 'haircut' senarios)
+    this.set('graphData.outputsHaircut',[])
+    for (let i = 0; i < 10; i++) {
+      let rando = Math.random()*100;
+      this.get('graphData.outputsHaircut').push(rando);
+    }
+    this.set('graphData.outputsSlaHaircut',[])
+    for (let i = 0; i < 10; i++) {
+      let rando = Math.random()*100;
+      this.get('graphData.outputsSlaHaircut').push(rando);
     }
   },
   generateStaffData(){
@@ -254,6 +366,24 @@ export default Ember.Component.extend({
     for (let i = 0; i < 10; i++) {
       let rando = Math.random()*10;
       this.get('graphData.staffUtilisationBudgeted').push(rando);
+    }
+
+    //Haircut (from the 'haircut' senarios)
+    this.set('graphData.lineStaffHaircut',[])
+    for (let i = 0; i < 10; i++) {
+      let rando = Math.random()*10;
+      this.get('graphData.lineStaffHaircut').push(rando);
+    }
+    this.set('graphData.OhStaffHaircut',[])
+    for (let i = 0; i < 10; i++) {
+      let rando = Math.random()*5;
+      this.get('graphData.OhStaffHaircut').push(rando);
+    }
+
+    this.set('graphData.staffUtilisationHaircut',[])
+    for (let i = 0; i < 10; i++) {
+      let rando = Math.random()*10;
+      this.get('graphData.staffUtilisationHaircut').push(rando);
     }
   },
   generateFinancialData(){
@@ -293,6 +423,25 @@ export default Ember.Component.extend({
     for (let i = 0; i < 10; i++) {
       let rando = Math.random()*100;
       this.get('graphData.surplusBudgeted').push(rando);
+    }
+
+    //Haircut (from the 'haircut' senarios)
+    this.set('graphData.revenueHaircut',[])
+    for (let i = 0; i < 10; i++) {
+      let rando = Math.random()*100;
+      this.get('graphData.revenueHaircut').push(rando);
+    }
+
+    this.set('graphData.expencesHaircut',[])
+    for (let i = 0; i < 10; i++) {
+      let rando = Math.random()*100;
+      this.get('graphData.expencesHaircut').push(rando);
+    }
+
+    this.set('graphData.surplusHaircut',[])
+    for (let i = 0; i < 10; i++) {
+      let rando = Math.random()*100;
+      this.get('graphData.surplusHaircut').push(rando);
     }
   },
   generateYearLabels:function(){
