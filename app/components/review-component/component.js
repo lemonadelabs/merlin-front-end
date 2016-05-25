@@ -39,8 +39,8 @@ export default Ember.Component.extend({
   createCards(){
     this.set('cards', []);
     this.createFinanceCard();
-    this.createStaffCard();
-    this.createOutputCard();
+    // this.createStaffCard();
+    // this.createOutputCard();
   },
   createFinanceCard(){
     let expences = this.get('graphData.expences');
@@ -49,31 +49,43 @@ export default Ember.Component.extend({
 
     let financeCard = {};
     financeCard.name = "Finance";
-    financeCard.graph = this.newGraph(
+    financeCard.graphs = {};
+    financeCard.graphs["Revenue"] = this.newGraph(
       [
         'rgb(126, 211, 33)',
-        'rgb(126, 211, 33)',
-        'rgb(126, 211, 33)'
       ],
       [
-        {
-          name: 'Expences',
-          data: expences
-        },
         {
           name: 'Revenue',
           data: revenue
-        },
-        {
-          name: 'Surplus',
-          data: surplus
         }
       ],
       [
-        'shortDash',
         'solid',
-        'dotted',
       ]);
+
+      financeCard.graphs["Expences"] = this.newGraph(
+        [
+          'rgb(126, 211, 33)',
+        ],
+        [
+          {
+            name: 'Expences',
+            data: expences
+          }
+        ],
+        [
+          'longDash',
+        ]);
+      // ,
+      // {
+      //   name: 'Revenue',
+      //   data: revenue
+      // },
+      // {
+      //   name: 'Surplus',
+      //   data: surplus
+      // }
     financeCard.filterCategories = ['Revenue', 'Expences', 'Surplus']
     this.get('cards').push(financeCard)
   },

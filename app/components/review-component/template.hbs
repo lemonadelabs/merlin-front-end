@@ -1,7 +1,3 @@
 {{#each this.cards as |card|}}
-  <div class="review-card">
-    <h1>{{card.name}}</h1>
-    {{review-card-filter categories=card.filterCategories}}
-    {{lemonade-chart type='line' data=card.graph.data options=card.graph.options legend=true}}
-  </div>
+  {{review-card cardData=card}}
 {{/each}}
