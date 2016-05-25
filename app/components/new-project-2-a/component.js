@@ -90,7 +90,8 @@ export default Ember.Component.extend({
       var newPhase = {
         "name": this.get('phaseName'),
         "description": this.get('description'),
-        "cost": Number( this.get('capital') ) + Number( this.get('operational') ),
+        "investment_cost" : this.get('capital'),
+        "service_cost" : this.get('operational'),
         'resources' : resources,
         'impacts' : impacts,
       }
