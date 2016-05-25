@@ -24,14 +24,7 @@ export default Ember.Route.extend({
   },
 
   convertTimePhases: function (project) {
-    _.forEach(project.phases, this.convertTimesInObject)
+    _.forEach(project.phases, convertTime.convertTimesInObject)
   },
-
-  convertTimesInObject: function (object) {
-    _.forEach(object, function (value, key) {
-      object[key] = (key.indexOf('date') > -1) ? convertTime.toQuater(value) : value
-    })
-  },
-
 
 });

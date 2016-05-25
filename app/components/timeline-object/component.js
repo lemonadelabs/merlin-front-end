@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import * as scenarioInteractions from '../../common/scenario-interactions'
 
 export default Ember.Component.extend({
   active:false,
@@ -23,14 +24,14 @@ export default Ember.Component.extend({
     this.set('boundFinishManipulationFunc',this.finishManipulation.bind(this));
     this.set('boundResizeFunc',this.handleResize.bind(this));
     document.onmousemove = document.onmousemove || this.updateInputPosition;
-    document.onmouseup = document.onmouseup || this.envokeCancelEvent;
+    document.onmouseup = document.onmouseup || this.envokeCancelEvent.bind(this);
 
     if(!document.touchMoveListener){
       document.addEventListener("touchmove", this.updateInputPosition);
       document.touchMoveListener = true;
     }
     if(!document.touchEndListener){
-      document.addEventListener("touchend", this.envokeCancelEvent);
+      document.addEventListener("touchend", this.envokeCancelEvent.bind(this));
       document.touchEndListener = true;
     }
     window.addEventListener('resize', this.boundResizeFunc)
@@ -206,6 +207,17 @@ export default Ember.Component.extend({
     or a different aproach should the need for IE come up.*/
     var ev = new Event("cancelManipulation", {"bubbles":false, "cancelable":false});
     document.dispatchEvent(ev);
+
+    this.persistDatesToBackend()
+  },
+  persistDatesToBackend: function() {
+    scenarioInteractions.updatePhaseTimes({
+      "id": this.get('id'),
+      "start_date": this.get('start'),
+      "end_date": this.get('end'),
+      scenarioId: this.get('scenarioId')
+
+    })
   },
   searchForPositionFromTime:function(time){
     var grid = this.get('timelineGridObjects');

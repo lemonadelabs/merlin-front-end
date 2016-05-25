@@ -207,12 +207,12 @@ export default Ember.Component.extend({
           })
 
           var endEventRequest = postJSON({
-            data : events.end,
+            data : events.start,
             url : `api/events/`
           })
           endEventRequest.then(function () {
             var startEventRequest = postJSON({
-              data : events.start,
+              data : events.end,
               url : `api/events/`
             })
 
