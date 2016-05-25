@@ -173,27 +173,27 @@ export default Ember.Component.extend({
     staffCard.graphs["Staff Numbers"] = this.newGraph(
       [
         'rgb(74, 144, 226)',
-        'rgb(74, 217, 226)',
+        'rgb(74, 144, 226)',
         'rgb(74, 144, 226)',
         'rgb(74, 217, 226)',
-        'rgb(74, 144, 226)',
+        'rgb(74, 217, 226)',
         'rgb(74, 217, 226)',
 
       ],
       [
         {name: 'Line Staff Budgeted', data:lineStaffBudgeted},
-        {name: 'Overhead Staff Budgeted', data:OhStaffBudgeted},
         {name: 'Line Staff Planned', data:lineStaffPlanned},
-        {name: 'Overhead Staff Planned', data:OhStaffPlanned},
         {name: 'Line Staff Haircut', data:lineStaffHaircut},
+        {name: 'Overhead Staff Budgeted', data:OhStaffBudgeted},
+        {name: 'Overhead Staff Planned', data:OhStaffPlanned},
         {name: 'Overhead Staff Haircut', data:OhStaffHaircut},
       ],
       [
         'solid',
-        'solid',
-        'dotted',
         'dotted',
         'longDash',
+        'solid',
+        'dotted',
         'longDash'
       ]
     );
