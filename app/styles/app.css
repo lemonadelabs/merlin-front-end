@@ -76,7 +76,7 @@ html {
   width: 80vw;
   margin: auto;
   margin-top: 56px;
-  margin-bottom: 1em;
+  margin-bottom: 60px;
 }
 
 .review-card {
@@ -130,8 +130,16 @@ html {
   position: fixed;
   bottom:0;
   left:0;
-  padding-left: 10%;
-  width: 100%;
+  padding-left: 10vw;
+  padding-top: 10px;
+  width: 100vw;
   height: 50px;
-  background-color: rgba(55,55,55,0.8)
+  background-color:rgba(23, 5, 38, 0.9);
+}
+
+.review-filter select{
+  border: solid 1px #4D1182;
+  max-width: 200px;
+  background: url(../images/selectArrowFilter.svg) no-repeat calc(100% - 8px) rgba(0, 0, 0, 0.15);
+
 }
