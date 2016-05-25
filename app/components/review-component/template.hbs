@@ -6,8 +6,7 @@
   {{#x-select value=this.selectedService}}
     {{#x-option value='all'}}All Services{{/x-option}}
     {{#each this.services as |service|}}
-      {{#x-option value='service'}}service{{/x-option}}
+      {{#x-option value=service.id}}{{service.name}}{{/x-option}}
     {{/each}}
   {{/x-select}}
 </footer>
-{{log this.model}}

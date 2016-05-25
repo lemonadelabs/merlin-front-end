@@ -2,9 +2,11 @@ import Ember from 'ember';
 import DataSet from '../lemonade-chart/dataSet';
 import Axes from '../lemonade-chart/axes';
 import ChartParameters from '../lemonade-chart/chartParameters';
+import * as simTraverse from '../../common/simulation-traversal';
 
 export default Ember.Component.extend({
   classNames : ['review-component'],
+  services : undefined,
   graphData : {},
   graphs : [],
   cards : [],
@@ -15,6 +17,14 @@ export default Ember.Component.extend({
   initCharts(){
     this.generateGraphData();
     this.createCards();
+  },
+  didInsertElement(){
+    Ember.run.next(this,this.setupServicesFilter);
+  },
+  setupServicesFilter(){
+    var simulation = this.get('model.simulation')
+    var serviceModels = simTraverse.getServiceModelsFromSimulation({simulation : simulation})
+    this.set('services', serviceModels)
   },
   newGraph(graphColours, GraphData, lineTypes, yAxesName){
     let axisColour = 'rgb(255, 255, 255)',
