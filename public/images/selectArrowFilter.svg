@@ -7,8 +7,8 @@
     <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <g id="Dropdown" transform="translate(-166.000000, -20.000000)">
             <g id="dropdownArrow" transform="translate(165.000000, 20.000000)">
-                <path d="M1.5,0.5 L1.5,14.5" id="Line" stroke="#4D1182" stroke-linecap="square"></path>
-                <polyline id="Path-49" stroke="#4D1182" stroke-width="2" points="9 5.00917319 12.9935662 9 17 5"></polyline>
+                <path d="M1.5,0.5 L1.5,14.5" id="Line" stroke="#591496" stroke-linecap="square"></path>
+                <polyline id="Path-49" stroke="#591496" stroke-width="2" points="9 5.00917319 12.9935662 9 17 5"></polyline>
             </g>
         </g>
     </g>

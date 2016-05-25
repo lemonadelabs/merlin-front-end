@@ -138,7 +138,7 @@ html {
 }
 
 .review-filter select{
-  border: solid 1px #4D1182;
+  border: solid 1px rgb(89, 20, 150);
   max-width: 200px;
   background: url(../images/selectArrowFilter.svg) no-repeat calc(100% - 8px) rgba(0, 0, 0, 0.15);
 
