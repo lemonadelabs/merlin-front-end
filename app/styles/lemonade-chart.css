@@ -1,11 +1,17 @@
-.lemonade-chart-container footer {
+.lemonade-chart footer {
   width: 100%;
   display: flex;
   align-content: center;
   justify-content: center;
   color: white;
 }
-.lemonade-chart-container canvas{
+
+.lemonade-chart .chart-container{
+  height: 300px;
+  width: 100%;
+}
+
+.lemonade-chart canvas{
   height: inherit;
   width: inherit;
 }
