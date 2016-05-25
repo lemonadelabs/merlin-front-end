@@ -1,9 +1,9 @@
 <div class='timeline-track-container'>
-  {{#each plan.projects as |project|}}
+  {{#each projects as |project|}}
     {{
       timeline-track
       timelineGridObjects=this.timelineGridObjects
-      model=project
+      project=project
       onInteractionEnd=(action 'recalculateInvestments')
     }}
   {{/each}}

@@ -3,10 +3,13 @@
   <div class="modal-shade" {{action "hideNewProject"}}></div>
   {{new-project-wizard simulation=this.simulation hideNewProject="hideNewProject"}}
 {{/if}}
+
 {{
   investment-timeline
-  model=this.plan
-
-  plan=this.plan
   simulation=this.simulation
+
+  projects=this.projects
+
+  model=this.plan
+  plan=this.plan
 }}
