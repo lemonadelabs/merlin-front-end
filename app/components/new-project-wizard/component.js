@@ -23,7 +23,7 @@ export default Ember.Component.extend({
     attractiveness: 5,
     phases: [],
     priority: 1,
-    alignment: 5,
+    alignment: 5
   },
   modalTitle : undefined,
 
@@ -133,27 +133,27 @@ export default Ember.Component.extend({
       endEvent.actions = _.concat(endEvent.actions, impactActions)
     })
 
-    console.log('startEvent', startEvent)
-    console.log('endEvent', endEvent)
+    // console.log('startEvent', startEvent)
+    // console.log('endEvent', endEvent)
 
-    // add events to scenario
-    var endRequest = postJSON({
-      data : endEvent,
-      url : `api/events/`
-    })
-    endRequest.then(function () {
-      var startRequest = postJSON({
-        data : startEvent,
-        url : `api/events/`
-      })
-      startRequest.then(function() {
-        //if the hideNewProject action is there hide it
-        if(self.get('hideNewProject')){
-          self.sendAction('hideNewProject')
-        }
-      })
-    })
+    // return event
+    return {
+      start: startEvent,
+      end: endEvent
+    }
+  },
 
+  hideNewProjectButton: function () {
+    if ( this.get('hideNewProject') ) {
+      this.sendAction('hideNewProject')
+    }
+  },
+
+  postProject: function (project) {
+    return postJSON({
+      data : project,
+      url : `api/projects/`
+    })
   },
 
   actions: {
@@ -165,21 +165,70 @@ export default Ember.Component.extend({
     persistProject: function () {
 
       var self = this
-
       var simulation = this.get('simulation')
       var newProjectData = this.get('newProjectData')
+
+      var newProjectJSON = {
+        name: newProjectData.name,
+        description: newProjectData.description,
+        priority: newProjectData.priority,
+        type: newProjectData.type, // may not be empty
+        is_ringfenced: newProjectData.is_ringfenced,
+        is_active: newProjectData.is_active,
+        achievability: newProjectData.achievability,
+        attractiveness: newProjectData.attractiveness,
+        // dependencies: null, // may not be empty
+        phases: []
+      }
+
 
       var phases = newProjectData.phases
       // loop over phases as | phase |
       _.forEach(phases, function (phase) {
         // create scenario
         var scenarioPostRequest = self.persistScenarioForPhase({ phase : phase })
-
         scenarioPostRequest.then( function (scenario) {
-          self.createEvents({
+
+          console.log(phase)
+          var newPhaseJSON = {
+            "name": phase.name,
+            "description": phase.description,
+            "scenario": scenario.id,
+            "investment_cost": Number(phase.investment_cost),
+            "service_cost": Number(phase.service_cost),
+            "start_date": convertTime.quarterToBackend(phase.start),
+            "end_date": convertTime.quarterToBackend(phase.end),
+            "is_active": false
+          }
+
+          var events = self.createEvents({
             scenario : scenario,
             phase : phase
           })
+
+          var endEventRequest = postJSON({
+            data : events.end,
+            url : `api/events/`
+          })
+          endEventRequest.then(function () {
+            var startEventRequest = postJSON({
+              data : events.start,
+              url : `api/events/`
+            })
+
+            startEventRequest.then( function () {
+              console.log('in startEvent then')
+              // add the phase to the new project data
+              newProjectJSON.phases.push(newPhaseJSON)
+              if (phases.length === newProjectJSON.phases.length ) {
+                self.postProject(newProjectJSON)
+                self.hideNewProjectButton()
+              }
+
+            })
+
+          })
+
         })
         // also need to crate a project in here!!!!!
       })
