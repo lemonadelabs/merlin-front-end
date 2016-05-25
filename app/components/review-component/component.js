@@ -39,13 +39,18 @@ export default Ember.Component.extend({
   createCards(){
     this.set('cards', []);
     this.createFinanceCard();
-    // this.createStaffCard();
-    // this.createOutputCard();
+    this.createStaffCard();
+    this.createOutputCard();
   },
   createFinanceCard(){
-    let expences = this.get('graphData.expences');
-    let revenue = this.get('graphData.revenue');
-    let surplus = this.get('graphData.surplus');
+    let revenueBudgeted = this.get('graphData.revenueBudgeted');
+    let revenuePlanned = this.get('graphData.revenuePlanned');
+
+    let expencesBudgeted = this.get('graphData.expencesBudgeted');
+    let expencesPlanned = this.get('graphData.expencesPlanned');
+
+    let surplusBudgeted = this.get('graphData.surplusBudgeted');
+    let surplusPlanned = this.get('graphData.surplusPlanned');
 
     let financeCard = {};
     financeCard.name = "Finance";
@@ -53,116 +58,241 @@ export default Ember.Component.extend({
     financeCard.graphs["Revenue"] = this.newGraph(
       [
         'rgb(126, 211, 33)',
+        'rgb(126, 211, 33)',
       ],
       [
         {
-          name: 'Revenue',
-          data: revenue
+          name: 'Revenue Budgeted',
+          data: revenueBudgeted
+        },
+        {
+          name: 'Revenue Planned',
+          data: revenuePlanned
         }
       ],
       [
         'solid',
+        'dotted',
       ]);
 
-      financeCard.graphs["Expences"] = this.newGraph(
-        [
-          'rgb(126, 211, 33)',
-        ],
-        [
-          {
-            name: 'Expences',
-            data: expences
-          }
-        ],
-        [
-          'longDash',
-        ]);
-      // ,
-      // {
-      //   name: 'Revenue',
-      //   data: revenue
-      // },
-      // {
-      //   name: 'Surplus',
-      //   data: surplus
-      // }
+    financeCard.graphs["Expences"] = this.newGraph(
+      [
+        'rgb(126, 211, 33)',
+        'rgb(126, 211, 33)',
+      ],
+      [
+        {
+          name: 'Expences Budgeted',
+          data: expencesBudgeted
+        },
+        {
+          name: 'Expences Planned',
+          data: expencesPlanned
+        }
+      ],
+      [
+        'solid',
+        'dotted',
+      ]);
+
+    financeCard.graphs["Surplus"] = this.newGraph(
+      [
+        'rgb(126, 211, 33)',
+        'rgb(126, 211, 33)',
+      ],
+      [
+        {
+          name: 'Surplus Budgeted',
+          data: surplusBudgeted
+        },
+        {
+          name: 'Surplus Planned',
+          data: surplusPlanned
+        }
+      ],
+      [
+        'solid',
+        'dotted',
+      ]);
     financeCard.filterCategories = ['Revenue', 'Expences', 'Surplus']
     this.get('cards').push(financeCard)
   },
   createStaffCard(){
     //Utilisation needs to be on another axis
     let staffCard = {};
-    let lineStaffData = this.get('graphData.lineStaff');
-    let OhStaffData = this.get('graphData.OhStaff');
-    let staffUtilisationData = this.get('graphData.staffUtilisation');
+    let lineStaffBudgeted = this.get('graphData.lineStaffBudgeted');
+    let OhStaffBudgeted = this.get('graphData.OhStaffBudgeted');
+
+    let lineStaffPlanned = this.get('graphData.lineStaffPlanned');
+    let OhStaffPlanned = this.get('graphData.OhStaffPlanned');
+
+    let staffUtilisationBudgeted = this.get('graphData.staffUtilisationBudgeted');
+    let staffUtilisationPlanned = this.get('graphData.staffUtilisationPlanned');
+
 
     staffCard.name = "Staff";
-    staffCard.graph = this.newGraph(
+    staffCard.graphs = {};
+    staffCard.graphs["Staff Numbers"] = this.newGraph(
       [
         'rgb(74, 144, 226)',
+        'rgb(74, 217, 226)',
         'rgb(74, 144, 226)',
-        'rgb(74, 144, 226)'
+        'rgb(74, 217, 226)',
+
       ],
       [
-        {name: 'Line Staff', data:lineStaffData},
-        {name: 'Overhead Staff', data:OhStaffData},
-        {name: 'Utilisation', data:staffUtilisationData}
+        {name: 'Line Staff Budgeted', data:lineStaffBudgeted},
+        {name: 'Overhead Staff Budgeted', data:OhStaffBudgeted},
+        {name: 'Line Staff Planned', data:lineStaffPlanned},
+        {name: 'Overhead Staff Planned', data:OhStaffPlanned},
       ],
       [
         'solid',
-        'longDash',
+        'solid',
+        'dotted',
         'dotted'
       ]
     );
+
+    staffCard.graphs["Utilisation"] = this.newGraph(
+      [
+        'rgb(74, 144, 226)',
+        'rgb(74, 144, 226)',
+      ],
+      [
+        {name: 'Utilisation Budgeted', data:staffUtilisationBudgeted},
+        {name: 'Utilisation Planned', data:staffUtilisationPlanned}
+
+      ],
+      [
+        'solid',
+        'dotted'
+      ]
+    );
+
     staffCard.filterCategories = ['Staff Numbers', 'Utilisation']
 
     this.get('cards').push(staffCard)
   },
   createOutputCard(){
     let outputCard = {};
-    let graphData = this.get('graphData.outputs');
+    let outputsPlanned = this.get('graphData.outputsPlanned');
+    let outputsBudgeted = this.get('graphData.outputsBudgeted');
+
     outputCard.name = "Outputs";
-    outputCard.graph = this.newGraph(['rgb(245, 166, 35)'], [{name: 'Outputs', data:graphData}]);
+    outputCard.graphs = {};
+    outputCard.graphs["Indexed Outputs"] = this.newGraph(
+      [
+        'rgb(245, 166, 35)',
+        'rgb(245, 166, 35)'
+      ],
+      [
+        {name: 'Outputs', data:outputsPlanned},
+        {name: 'Outputs', data:outputsBudgeted}
+      ],
+      [
+        'solid',
+        'dotted'
+      ]
+    );
     outputCard.filterCategories = ['Indexed Outputs','Service Level']
     this.get('cards').push(outputCard)
   },
   generateGraphData(){
-    // console.log('yo');
-    this.set('graphData.outputs',[])
+    this.generateOutputData()
+    this.generateStaffData()
+    this.generateFinancialData();
+
+  },
+  generateOutputData(){
+    //Planned (from the projects senarios)
+    this.set('graphData.outputsPlanned',[])
     for (let i = 0; i < 10; i++) {
       let rando = Math.random()*100;
-      this.get('graphData.outputs').push(rando);
-    }
-    this.set('graphData.revenue',[])
-    for (let i = 0; i < 10; i++) {
-      let rando = Math.random()*100;
-      this.get('graphData.revenue').push(rando);
-    }
-    this.set('graphData.expences',[])
-    for (let i = 0; i < 10; i++) {
-      let rando = Math.random()*100;
-      this.get('graphData.expences').push(rando);
-    }
-    this.set('graphData.surplus',[])
-    for (let i = 0; i < 10; i++) {
-      let rando = Math.random()*100;
-      this.get('graphData.surplus').push(rando);
-    }
-    this.set('graphData.lineStaff',[])
-    for (let i = 0; i < 10; i++) {
-      let rando = Math.random()*10;
-      this.get('graphData.lineStaff').push(rando);
-    }
-    this.set('graphData.OhStaff',[])
-    for (let i = 0; i < 10; i++) {
-      let rando = Math.random()*5;
-      this.get('graphData.OhStaff').push(rando);
+      this.get('graphData.outputsPlanned').push(rando);
     }
 
-    this.set('graphData.staffUtilisation',[])
+    //Budgeted (from the 'baseline' senarios)
+    this.set('graphData.outputsBudgeted',[])
+    for (let i = 0; i < 10; i++) {
+      let rando = Math.random()*100;
+      this.get('graphData.outputsBudgeted').push(rando);
+    }
+  },
+  generateStaffData(){
+    //Planned (from the projects senarios)
+    this.set('graphData.lineStaffPlanned',[])
     for (let i = 0; i < 10; i++) {
       let rando = Math.random()*10;
-      this.get('graphData.staffUtilisation').push(rando);
+      this.get('graphData.lineStaffPlanned').push(rando);
+    }
+    this.set('graphData.OhStaffPlanned',[])
+    for (let i = 0; i < 10; i++) {
+      let rando = Math.random()*5;
+      this.get('graphData.OhStaffPlanned').push(rando);
+    }
+
+    this.set('graphData.staffUtilisationPlanned',[])
+    for (let i = 0; i < 10; i++) {
+      let rando = Math.random()*10;
+      this.get('graphData.staffUtilisationPlanned').push(rando);
+    }
+
+    //Budgeted (from the 'baseline' senarios)
+    this.set('graphData.lineStaffBudgeted',[])
+    for (let i = 0; i < 10; i++) {
+      let rando = Math.random()*10;
+      this.get('graphData.lineStaffBudgeted').push(rando);
+    }
+    this.set('graphData.OhStaffBudgeted',[])
+    for (let i = 0; i < 10; i++) {
+      let rando = Math.random()*5;
+      this.get('graphData.OhStaffBudgeted').push(rando);
+    }
+
+    this.set('graphData.staffUtilisationBudgeted',[])
+    for (let i = 0; i < 10; i++) {
+      let rando = Math.random()*10;
+      this.get('graphData.staffUtilisationBudgeted').push(rando);
+    }
+  },
+  generateFinancialData(){
+    //Planned (from the projects senarios)
+    this.set('graphData.revenuePlanned',[])
+    for (let i = 0; i < 10; i++) {
+      let rando = Math.random()*100;
+      this.get('graphData.revenuePlanned').push(rando);
+    }
+
+    this.set('graphData.expencesPlanned',[])
+    for (let i = 0; i < 10; i++) {
+      let rando = Math.random()*100;
+      this.get('graphData.expencesPlanned').push(rando);
+    }
+
+    this.set('graphData.surplusPlanned',[])
+    for (let i = 0; i < 10; i++) {
+      let rando = Math.random()*100;
+      this.get('graphData.surplusPlanned').push(rando);
+    }
+
+    //Budgeted (from the 'baseline' senarios)
+    this.set('graphData.revenueBudgeted',[])
+    for (let i = 0; i < 10; i++) {
+      let rando = Math.random()*100;
+      this.get('graphData.revenueBudgeted').push(rando);
+    }
+
+    this.set('graphData.expencesBudgeted',[])
+    for (let i = 0; i < 10; i++) {
+      let rando = Math.random()*100;
+      this.get('graphData.expencesBudgeted').push(rando);
+    }
+
+    this.set('graphData.surplusBudgeted',[])
+    for (let i = 0; i < 10; i++) {
+      let rando = Math.random()*100;
+      this.get('graphData.surplusBudgeted').push(rando);
     }
   },
   generateYearLabels:function(){

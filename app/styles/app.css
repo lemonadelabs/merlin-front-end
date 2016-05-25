@@ -94,3 +94,35 @@ html {
   margin-top: 0;
   color: white;
 }
+
+.review-card-filter{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  color: white;
+}
+
+.review-card-filter p{
+    margin-left: 0.5em;
+    padding-top: 3px;
+    padding-bottom: 4px;
+    padding-right: 0.5em;
+    border-right: solid 1px white;
+    font-size: 12px;
+    line-height: 10px;
+    margin-top:0;
+}
+.review-card-filter p:last-of-type{
+    padding-right: 0;
+    border-right: solid 0px white;
+}
+
+.review-filter{
+  position: fixed;
+  bottom:0;
+  left:0;
+  padding-left: 10%;
+  width: 100%;
+  height: 50px;
+  background-color: rgba(55,55,55,0.8)
+}
