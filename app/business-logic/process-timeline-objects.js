@@ -1,12 +1,19 @@
 export default function processProjects (opts) {
   var metadata = opts.metadata
   var projects = opts.projects
+  var projectsReal = opts.projectsReal
 
+  // needs : start, end, units,
   var researchSkeleton = makeSkeleton( { metadata : opts.metadata } )
   var devSkeleton = makeSkeleton( { metadata : opts.metadata } )
   var ongoingCostSkeleton = makeSkeleton( { metadata : opts.metadata } )
   var capitalisationSkeleton = makeSkeleton( { metadata : opts.metadata } )
   var fuelTankSkeleton = makeSkeleton( { metadata : opts.metadata } )
+
+  var capexSkeleton = makeSkeleton( { metadata : opts.metadata } )
+  var opexSkeleton = makeSkeleton( { metadata : opts.metadata } )
+
+
 
   populateSkeletons({
     researchSkeleton : researchSkeleton,
@@ -14,72 +21,118 @@ export default function processProjects (opts) {
     ongoingCostSkeleton : ongoingCostSkeleton,
     capitalisationSkeleton : capitalisationSkeleton,
     fuelTankSkeleton : fuelTankSkeleton,
+    capexSkeleton : capexSkeleton,
+    opexSkeleton : opexSkeleton,
 
     projects : projects,
+    projectsReal : projectsReal,
     metadata : metadata
   })
 
   return {
-    research : researchSkeleton,
-    dev : devSkeleton,
-    ongoingCost : ongoingCostSkeleton,
-    capitalisation : capitalisationSkeleton,
-    remainingFunds : fuelTankSkeleton
+    // ongoingCost : ongoingCostSkeleton,
+    // capitalisation : capitalisationSkeleton,
+    remainingFunds : fuelTankSkeleton,
+
+    capex : capexSkeleton,
+    opex : opexSkeleton
+
   }
 
 }
 
 function populateSkeletons(opts) {
+  var fuelTankSkeleton = opts.fuelTankSkeleton
+  var capexSkeleton = opts.capexSkeleton
+  var opexSkeleton = opts.opexSkeleton
+
+  var projectsReal = opts.projectsReal
   var projects = opts.projects
   var metadata = opts.metadata
   var units = metadata.units
   var maxValue = getMaxValue(units)
 
+  _.forEach(projectsReal, function (project) {
+    _.forEach(project.phases, function (phase) {
+      var opex = phase.service_cost
+      var capex = phase.investment_cost
+      var installments = findNoOfInstallments({
+        start : phase.start_date,
+        end : phase.end_date,
+      })
+
+      var capexInstallment = capex / installments
+      var opexInstallment = capex / installments
+
+      distributeCost({
+        skeleton : capexSkeleton,
+        start : phase.start_date,
+        end : phase.end_date,
+        installment : capexInstallment,
+      })
+
+      distributeCost({
+        skeleton : opexSkeleton,
+        start : phase.start_date,
+        end : phase.end_date,
+        installment : opexInstallment,
+      })
+
+
+    })
+  })
+
+
+
+
+
+
   _.forEach(projects, function (project) {
 
     ////////////////////////////////////////////////////////
-    // RESEARCH COST
-    ////////////////////////////////////////////////////////
+    // // RESEARCH COST
+    // ////////////////////////////////////////////////////////
 
-    var researchCost = project.research.cost
-    var researchStart = project.research.start
-    var researchEnd = project.research.end
-    var researchNoOfInstallments = findNoOfInstallments({
-      start : researchStart,
-      end : researchEnd,
-      maxValue : maxValue
-    })
-    var researchinstallment = researchCost / researchNoOfInstallments
+    // var researchCost = project.research.cost
+    // var researchStart = project.research.start
+    // var researchEnd = project.research.end
+    // var researchNoOfInstallments = findNoOfInstallments({
+    //   start : researchStart,
+    //   end : researchEnd,
+    //   maxValue : maxValue
+    // })
+    // var researchinstallment = researchCost / researchNoOfInstallments
 
-    distributeCost({
-      skeleton : opts.researchSkeleton,
-      start : researchStart,
-      end : researchEnd,
-      installment : researchinstallment,
-      maxValue : maxValue
-    })
+    // distributeCost({
+    //   skeleton : opts.researchSkeleton,
+    //   start : researchStart,
+    //   end : researchEnd,
+    //   installment : researchinstallment,
+    //   maxValue : maxValue
+    // })
 
-    ////////////////////////////////////////////////////////
-    // DEV COST
-    ////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////
+    // // DEV COST
+    // ////////////////////////////////////////////////////////
 
-    var devCost = project.development.cost
-    var devStart = project.development.start
-    var devEnd = project.development.end
-    var devNoOfInstallments = findNoOfInstallments({
-      start : devStart,
-      end : devEnd,
-      maxValue : maxValue
-    })
-    var devinstallment = devCost / devNoOfInstallments
+    // var devCost = project.development.cost
+    // var devStart = project.development.start
+    // var devEnd = project.development.end
+    // var devNoOfInstallments = findNoOfInstallments({
+    //   start : devStart,
+    //   end : devEnd,
+    //   maxValue : maxValue
+    // })
+    // var devinstallment = devCost / devNoOfInstallments
 
-    distributeCost({
-      skeleton : opts.devSkeleton,
-      start : devStart,
-      end : devEnd,
-      installment : devinstallment,
-      maxValue : maxValue
-    })
+    // distributeCost({
+    //   skeleton : opts.devSkeleton,
+    //   start : devStart,
+    //   end : devEnd,
+    //   installment : devinstallment
+    // })
+
+
 
     ////////////////////////////////////////////////////////
     // CAPITALISATION
@@ -135,14 +188,16 @@ function populateSkeletons(opts) {
   //   maxValue : maxValue
   // })
 
+
   drainFuelTank({
-    fuelTankSkeleton : opts.fuelTankSkeleton,
-    toSubtract : [opts.devSkeleton, opts.researchSkeleton],
+    fuelTankSkeleton : fuelTankSkeleton,
+    toSubtract : [opts.opexSkeleton, opts.capexSkeleton],
     // start : metadata.start,
     // end : metadata.start,
     maxValue : maxValue,
     availableFunds : availableFunds
   })
+
 
 }
 
@@ -150,7 +205,7 @@ function drainFuelTank (opts) {
   var toSubtract = opts.toSubtract
   var fuelTankSkeleton = opts.fuelTankSkeleton
   var yearlyFunds = opts.availableFunds
-  var maxValue = opts.maxValue
+  var maxValue = opts.maxValue || 4
   var availableFunds = 0
 
   _.forEach(fuelTankSkeleton, function (data, year) {
@@ -190,7 +245,7 @@ function distributeCost(opts) {
   var start = opts.start
   var end = opts.end
   var installment = opts.installment
-  var maxValue = opts.maxValue
+  var maxValue = opts.maxValue || 4
 
   var itterate = 0
 
@@ -231,7 +286,7 @@ function fillSkeletonSingleObject(opts) {
   var investmentSkeleton = opts.investmentSkeleton
   var operationalSkeleton = opts.operationalSkeleton
   var timelineObject = opts.timelineObject
-  var maxValue = opts.maxValue
+  var maxValue = opts.maxValue || 4
   var start = timelineObject.start
   var end = timelineObject.end
 
@@ -313,7 +368,7 @@ function findNoOfInstallments(opts) {
   var start = opts.start
   var end = opts.end
   var units = opts.units
-  var maxValue = opts.maxValue
+  var maxValue = opts.maxValue || 4
   var installments = 0
 
   if (start.year === end.year) {

@@ -15,29 +15,25 @@ export default Ember.Route.extend({
 
   model: function (params) {
     var simulationId = params.simulation_id
-    this.getProjects(simulationId)
+
     return Ember.RSVP.hash({
       simulation: Ember.$.getJSON(`api/simulations/${simulationId}/`),
-      plan: mockData(),
+      projects: Ember.$.getJSON('api/projects/'),
+      simulationId: simulationId,
+      plan: mockData(),// delete later!!!
     });
   },
 
   setupController: function (controller, models) {
-    this.convertTimeInModels(models)
+    this.convertTimeInProjects(models.projects)
+    this.runSimulation(models)
     controller.setProperties(models);
   },
 
-  getProjects: function (simulationId) {
+  runSimulation: function(models) {
     var self = this
-    Ember.$.getJSON('api/projects/').then( function ( projects ) {
-      self.set('projects', projects)
-      self.runSimulation(simulationId)
-    })
-  },
-
-  runSimulation: function(simulationId) {
-    var self = this
-    var projects = this.get('projects')
+    var simulationId = models.simulationId
+    var projects = models.projects
     var scenarioIds = projectsTraversal.getScenarioIds(projects)
     var url = merlinUtils.simulationRunUrl({
       scenarioIds : scenarioIds,
@@ -50,8 +46,7 @@ export default Ember.Route.extend({
     })
   },
 
-  convertTimeInModels: function (models) {
-    var projects = models.projects
+  convertTimeInProjects: function (projects) {
     _.forEach(projects, this.convertTimePhases.bind(this))
   },
 

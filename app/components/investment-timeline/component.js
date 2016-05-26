@@ -17,6 +17,18 @@ export default Ember.Component.extend({
   axes: {},
   axes1Width:undefined,
   axes2Width:undefined,
+  hardCodedMetadata: {
+    start : {
+      year : 2016,
+      value : 1
+    },
+    end : {
+      year : 2019,
+      value : 4
+    },
+    units : 'quarters',
+    availableFunds: 50000000
+  },
   init: function () {
     this._super();
     this.buildChart()
@@ -28,30 +40,31 @@ export default Ember.Component.extend({
     return Ember.String.htmlSafe(`margin-left:-${axes1Width}px; width:calc(80vw + ${widthOffset}px)`)
   }),
   buildChart: function () {
-    let ongoingCostColour = 'rgb(245, 166, 35)';
-    let capitalisationColor = 'rgb(60, 255, 122)';
-    let totalInvestmentColour = 'rgb(129, 65, 255)';
-    let axisColour = 'rgb(255, 255, 255)';
+    let opexColor = 'rgb(245, 166, 35)';
+    let capexColor = 'rgb(60, 255, 122)';
+    let totalInvestmentColor = 'rgb(129, 65, 255)';
+    let axisColor = 'rgb(255, 255, 255)';
     let graphData = this.processAndSortData();
+    console.log(graphData)
 
 
 
-    let totalInvestment = new DataSet('total investment', graphData.totalInvestment, totalInvestmentColour);
-    let capitalisation = new DataSet('capitalisation', graphData.capitalisation, capitalisationColor);
-    let ongoingCost = new DataSet('ongoing cost', graphData.ongoingCost, ongoingCostColour);
-    let remainingFunds = new DataSet('remaining funds', graphData.remainingFunds, ongoingCostColour);
+    let capex = new DataSet('total investment', graphData.capex, capexColor);
+    let opex = new DataSet('opex', graphData.opex, opexColor);
+    let totalInvestment = new DataSet('ongoing cost', graphData.totalInvestment, totalInvestmentColor);
+    let remainingFunds = new DataSet('remaining funds', graphData.remainingFunds, totalInvestmentColor);
 
-    capitalisation.setDashType('longDash')
-    ongoingCost.setDashType('dotted')
+    opex.setDashType('longDash')
+    totalInvestment.setDashType('dotted')
 
-    let xAxes = new Axes('', axisColour);
+    let xAxes = new Axes('', axisColor);
     xAxes.hideGridLines();
     xAxes.hideTicks();
-    let yAxes1 = new Axes('', axisColour);
+    let yAxes1 = new Axes('', axisColor);
     yAxes1.prependToTickLabel('$');
     yAxes1.beginAtZero(false);
     yAxes1.customFormatting(truncateBigNumbers)
-    let yAxes2 = new Axes('', axisColour);
+    let yAxes2 = new Axes('', axisColor);
     yAxes2.prependToTickLabel('$');
     yAxes2.beginAtZero(false);
     yAxes2.setPosition('right');
@@ -59,7 +72,7 @@ export default Ember.Component.extend({
 
     this.set('axes',{'xAxes': xAxes, 'yAxes1': yAxes1,'yAxes2': yAxes2})
     // let chartParameters = new ChartParameters( [totalInvestment, ongoingCost, capitalisation], graphData.labels, [xAxes], [yAxes1,yAxes2])
-    let chartParameters = new ChartParameters( [totalInvestment, ongoingCost, remainingFunds], graphData.labels, [xAxes], [yAxes1,yAxes2])
+    let chartParameters = new ChartParameters( [totalInvestment, capex, opex, remainingFunds], graphData.labels, [xAxes], [yAxes1,yAxes2])
     // let chartParameters = new ChartParameters( [totalInvestment, ongoingCost], graphData.labels, [xAxes], [yAxes1,yAxes2])
     this.set('investmentGraph', chartParameters)
   },
@@ -72,10 +85,13 @@ export default Ember.Component.extend({
   },
 
   processAndSortData(){
-    var plan = this.get('plan')
+    var plan = this.get('plan') // remove later
+    var projects = this.get('projects')
+
     var processedData = this.processProjects({
-      metadata : plan.metadata,
-      projects : plan.projects
+      metadata : this.get('hardCodedMetadata'),
+      projects : plan.projects,  // remove later
+      projectsReal : projects
     })
 
     var sortedData = {}
@@ -98,12 +114,14 @@ export default Ember.Component.extend({
       labelsNotMadeYet = false
     })
 
+
     sortedData.totalInvestment = []
 
-    _.forEach(sortedData.research, function (datum, i) { // add up total investment
+    _.forEach(sortedData.capex, function (datum, i) { // add up total investment
       sortedData.totalInvestment.push(datum)
-      sortedData.totalInvestment[i] += sortedData.dev[i]
+      sortedData.totalInvestment[i] += sortedData.opex[i]
     })
+    console.log(sortedData)
 
     _.forEach(sortedData, function (dataset) { // add a value on to the begining of the dataset, for layout reasons
       dataset.unshift(0)
