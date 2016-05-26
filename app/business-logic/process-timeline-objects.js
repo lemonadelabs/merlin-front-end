@@ -1,6 +1,5 @@
 export default function processProjects (opts) {
   var metadata = opts.metadata
-  var projects = opts.projects
   var projectsReal = opts.projectsReal
 
   // needs : start, end, units,
@@ -24,7 +23,6 @@ export default function processProjects (opts) {
     capexSkeleton : capexSkeleton,
     opexSkeleton : opexSkeleton,
 
-    projects : projects,
     projectsReal : projectsReal,
     metadata : metadata
   })
@@ -47,7 +45,6 @@ function populateSkeletons(opts) {
   var opexSkeleton = opts.opexSkeleton
 
   var projectsReal = opts.projectsReal
-  var projects = opts.projects
   var metadata = opts.metadata
   var units = metadata.units
   var maxValue = getMaxValue(units)
@@ -87,93 +84,93 @@ function populateSkeletons(opts) {
 
 
 
-  _.forEach(projects, function (project) {
+  // _.forEach(projects, function (project) {
 
-    ////////////////////////////////////////////////////////
-    // // RESEARCH COST
-    // ////////////////////////////////////////////////////////
+  //   ////////////////////////////////////////////////////////
+  //   // // RESEARCH COST
+  //   // ////////////////////////////////////////////////////////
 
-    // var researchCost = project.research.cost
-    // var researchStart = project.research.start
-    // var researchEnd = project.research.end
-    // var researchNoOfInstallments = findNoOfInstallments({
-    //   start : researchStart,
-    //   end : researchEnd,
-    //   maxValue : maxValue
-    // })
-    // var researchinstallment = researchCost / researchNoOfInstallments
+  //   // var researchCost = project.research.cost
+  //   // var researchStart = project.research.start
+  //   // var researchEnd = project.research.end
+  //   // var researchNoOfInstallments = findNoOfInstallments({
+  //   //   start : researchStart,
+  //   //   end : researchEnd,
+  //   //   maxValue : maxValue
+  //   // })
+  //   // var researchinstallment = researchCost / researchNoOfInstallments
 
-    // distributeCost({
-    //   skeleton : opts.researchSkeleton,
-    //   start : researchStart,
-    //   end : researchEnd,
-    //   installment : researchinstallment,
-    //   maxValue : maxValue
-    // })
+  //   // distributeCost({
+  //   //   skeleton : opts.researchSkeleton,
+  //   //   start : researchStart,
+  //   //   end : researchEnd,
+  //   //   installment : researchinstallment,
+  //   //   maxValue : maxValue
+  //   // })
 
-    // ////////////////////////////////////////////////////////
-    // // DEV COST
-    // ////////////////////////////////////////////////////////
+  //   // ////////////////////////////////////////////////////////
+  //   // // DEV COST
+  //   // ////////////////////////////////////////////////////////
 
-    // var devCost = project.development.cost
-    // var devStart = project.development.start
-    // var devEnd = project.development.end
-    // var devNoOfInstallments = findNoOfInstallments({
-    //   start : devStart,
-    //   end : devEnd,
-    //   maxValue : maxValue
-    // })
-    // var devinstallment = devCost / devNoOfInstallments
+  //   // var devCost = project.development.cost
+  //   // var devStart = project.development.start
+  //   // var devEnd = project.development.end
+  //   // var devNoOfInstallments = findNoOfInstallments({
+  //   //   start : devStart,
+  //   //   end : devEnd,
+  //   //   maxValue : maxValue
+  //   // })
+  //   // var devinstallment = devCost / devNoOfInstallments
 
-    // distributeCost({
-    //   skeleton : opts.devSkeleton,
-    //   start : devStart,
-    //   end : devEnd,
-    //   installment : devinstallment
-    // })
+  //   // distributeCost({
+  //   //   skeleton : opts.devSkeleton,
+  //   //   start : devStart,
+  //   //   end : devEnd,
+  //   //   installment : devinstallment
+  //   // })
 
 
 
-    ////////////////////////////////////////////////////////
-    // CAPITALISATION
-    ////////////////////////////////////////////////////////
+  //   ////////////////////////////////////////////////////////
+  //   // CAPITALISATION
+  //   ////////////////////////////////////////////////////////
 
-    var devCost = project.development.cost
-    var capitalisationAmount = devCost * 0.75
+  //   var devCost = project.development.cost
+  //   var capitalisationAmount = devCost * 0.75
 
-    // var capitalisationStart = incrementTimeBy1({
-    //   time : project.development.end,
-    //   maxValue : maxValue
-    // })
-    var capitalisationStart = project.development.end
+  //   // var capitalisationStart = incrementTimeBy1({
+  //   //   time : project.development.end,
+  //   //   maxValue : maxValue
+  //   // })
+  //   var capitalisationStart = project.development.end
 
-    var capitalisationEnd = metadata.end
+  //   var capitalisationEnd = metadata.end
 
-    distributeCost({
-      skeleton : opts.capitalisationSkeleton,
-      start : capitalisationStart,
-      end : capitalisationEnd,
-      installment : capitalisationAmount,
-      maxValue : maxValue
-    })
+  //   distributeCost({
+  //     skeleton : opts.capitalisationSkeleton,
+  //     start : capitalisationStart,
+  //     end : capitalisationEnd,
+  //     installment : capitalisationAmount,
+  //     maxValue : maxValue
+  //   })
 
-    ////////////////////////////////////////////////////////
-    // ONGOING COST
-    ////////////////////////////////////////////////////////
+  //   ////////////////////////////////////////////////////////
+  //   // ONGOING COST
+  //   ////////////////////////////////////////////////////////
 
-    var ongoingCostYearly = capitalisationAmount * 0.25
-    var ongoingCostInstallment = ongoingCostYearly / maxValue
-    var ongoingCostStart = capitalisationStart
-    var ongoingCostEnd = metadata.end
+  //   var ongoingCostYearly = capitalisationAmount * 0.25
+  //   var ongoingCostInstallment = ongoingCostYearly / maxValue
+  //   var ongoingCostStart = capitalisationStart
+  //   var ongoingCostEnd = metadata.end
 
-    distributeCost({
-      skeleton : opts.ongoingCostSkeleton,
-      start : ongoingCostStart,
-      end : ongoingCostEnd,
-      installment : ongoingCostInstallment,
-      maxValue : maxValue
-    })
-  })
+  //   distributeCost({
+  //     skeleton : opts.ongoingCostSkeleton,
+  //     start : ongoingCostStart,
+  //     end : ongoingCostEnd,
+  //     installment : ongoingCostInstallment,
+  //     maxValue : maxValue
+  //   })
+  // })
   ////////////////////////////////////////////////////////
   // FUEL TANK
   ////////////////////////////////////////////////////////
