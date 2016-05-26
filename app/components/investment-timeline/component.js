@@ -6,6 +6,7 @@ import ChartParameters from '../lemonade-chart/chartParameters';
 import truncateBigNumbers from '../../common/truncateBigNumbers';
 import convertTime from '../../common/convert-time'
 import * as scenarioInteractions from '../../common/scenario-interactions'
+import * as simTraverse from '../../common/simulation-traversal'
 
 
 export default Ember.Component.extend({
@@ -112,19 +113,13 @@ export default Ember.Component.extend({
     return sortedData;
   },
 
-  getIdFromUrl: function (url) {
-    var slashless = url.slice(0, -1)
-    var id = slashless.substring(slashless.lastIndexOf('/') + 1, slashless.length)
-    return id
-  },
-
   setServiceModels: function () {
     var self = this
     var serviceModels = []
     var simulation = this.get('simulation')
     var parentEntity = this.get('parentEntity')
     _.forEach(parentEntity.children, function (childUrl) {
-      var childId = self.getIdFromUrl(childUrl)
+      var childId = simTraverse.getIdFromUrl(childUrl)
       var serviceModel = _.find(simulation.entities, function (entity) {
         return entity.id == childId
       })
