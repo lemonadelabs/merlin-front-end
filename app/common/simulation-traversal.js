@@ -55,6 +55,13 @@ export function getProcessPropertiesFromEntity (opts) {  // used in 2-a-iiii
   return processProperties
 }
 
+export function getIdFromUrl(url) {
+  var slashless = url.slice(0, -1)
+  var id = slashless.substring(slashless.lastIndexOf('/') + 1, slashless.length)
+  return id
+}
+
+
 /////////////////////////////////////////////////////////////////////////
 //////////////////////////////// PRIVATE ////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
@@ -102,11 +109,4 @@ function getServiceModels (opts) {
     serviceModels.push(serviceModel)
   })
   return serviceModels
-}
-
-
-function getIdFromUrl(url) {
-  var slashless = url.slice(0, -1)
-  var id = slashless.substring(slashless.lastIndexOf('/') + 1, slashless.length)
-  return id
 }
