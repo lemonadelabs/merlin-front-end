@@ -41,6 +41,7 @@ export default Ember.Component.extend({
       this.setPositionFromGrid();
     }
   },
+
   findAndSetTrackOffset(){
     let trackOffset = this.get('parentView.element').getBoundingClientRect().left
     this.set('trackOffset',trackOffset);
@@ -98,7 +99,7 @@ export default Ember.Component.extend({
     var timeFromPosition = this.searchForTimeFromPosition(this.get('x'),this.get('width'));
     this.set('start',timeFromPosition.startTime);
     this.set('end',timeFromPosition.endTime);
-    interActEndFunc();
+    interActEndFunc(this);
     this.removeCancelEventListener();
 
   },
@@ -208,17 +209,16 @@ export default Ember.Component.extend({
     var ev = new Event("cancelManipulation", {"bubbles":false, "cancelable":false});
     document.dispatchEvent(ev);
 
-    this.persistDatesToBackend()
   },
-  persistDatesToBackend: function() {
-    scenarioInteractions.updatePhaseTimes({
-      "id": this.get('id'),
-      "start_date": this.get('start'),
-      "end_date": this.get('end'),
-      scenarioId: this.get('scenarioId')
-
-    })
-  },
+  // persistDatesToBackend: function() {
+  //   //////////////////////////
+  //   scenarioInteractions.updatePhaseTimes({
+  //     "id": this.get('id'),
+  //     "start_date": this.get('start'),
+  //     "end_date": this.get('end'),
+  //     scenarioId: this.get('scenarioId')
+  //   })
+  // },
   searchForPositionFromTime:function(time){
     var grid = this.get('timelineGridObjects');
     var offsetLeft;

@@ -34,6 +34,7 @@ export function toQuater (time) {
 }
 
 export function quarterToBackend(time) {
+  if (typeof time === 'string') { return time }
   var year = String(time.year)
   var quarter = time.value
   var day = '01'
