@@ -37,15 +37,15 @@ export default Ember.Component.extend({
     var simulation = this.get('simulation')
     var newProjectData = this.get('newProjectData')
 
-    console.log('phase', phase)
+    var clicksBetween = convertTime.clicksBetween({
+      a : simulation.start_date,
+      b : phase.start_date
+    })
 
     var scenarioPostData = {
       "name": `${newProjectData.name}, ${phase.name}`,
       "sim": "http://127.0.0.1:8000/api/simulations/" + simulation.id + '/',
-      "start_offset": convertTime.clicksBetween({
-        a : simulation.start_date,
-        b : phase.start_date
-      })
+      "start_offset": clicksBetween
     }
     return postJSON({
       data : scenarioPostData,
