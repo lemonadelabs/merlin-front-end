@@ -23,6 +23,19 @@ export function getChildAttributesFromServiceModel (opts) { // used in 2-a-ii
   return attributes
 }
 
+export function getChildEntitiesByAttribute(opts){ //used by haircut
+  var simulation = opts.simulation
+  var serviceModel = opts.serviceModel
+  var attribute = opts.attribute
+  var childEntities = getChildrenForServiceModel(
+    {
+      'simulation':simulation,
+      'serviceModel':serviceModel}
+    )
+  var filteredEntities = filterEntitiesByAttribute({'entities':childEntities,'attribute':attribute})
+  return filteredEntities
+}
+
 export function filterEntitiesByAttribute (opts) {  // used in 2-a-iii
   var attribute = opts.attribute
   var entities = opts.entities
