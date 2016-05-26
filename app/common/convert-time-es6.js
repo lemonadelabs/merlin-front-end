@@ -18,13 +18,13 @@ export function toQuater (time) {
 
   var quarter
   if (month <= 3) {
-    quarter = 1
-  } else if (month <= 6) {
-    quarter = 2
-  } else if (month <= 9) {
     quarter = 3
-  } else {
+  } else if (month <= 6) {
     quarter = 4
+  } else if (month <= 9) {
+    quarter = 1
+  } else {
+    quarter = 2
   }
 
   return {
@@ -40,13 +40,13 @@ export function quarterToBackend(time) {
   var day = '01'
   var month
   if (quarter === 1) {
-    month = '01'
-  } else if (quarter === 2) {
-    month = '04'
-  } else if (quarter === 3) {
     month = '07'
-  } else if (quarter === 4) {
+  } else if (quarter === 2) {
     month = '10'
+  } else if (quarter === 3) {
+    month = '01'
+  } else if (quarter === 4) {
+    month = '04'
   }
   var formatted = `${year}-${month}-${day}`
   return formatted
@@ -74,6 +74,7 @@ function ensureQuarters(opts) {
 }
 
 export function clicksBetween(opts) {
+
   ensureQuarters(opts)
   var inverse = isBEarlier(opts)
   if ( inverse ) {
