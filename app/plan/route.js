@@ -4,13 +4,20 @@ import mockData from './mock-data'
 
 export default Ember.Route.extend({
 
+  // get projects
+  // find scenarioIds for each project
+
+
+
   model: function (params) {
     return Ember.RSVP.hash({
-      simulation: Ember.$.getJSON(`api/simulations/${params.simulation_id}`),
+      simulation: Ember.$.getJSON(`api/simulations/${params.simulation_id}/`),
       plan: mockData(),
-      projects: Ember.$.getJSON('api/projects')
+      projects: Ember.$.getJSON('api/projects/')
     });
   },
+
+
 
   setupController: function (controller, models) {
     this.convertTimeInModels(models)
