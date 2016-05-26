@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="17px" height="15px" viewBox="0 0 17 15" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 3.7.2 (28276) - http://www.bohemiancoding.com/sketch -->
+    <title>dropdownArrow</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Dropdown" transform="translate(-166.000000, -20.000000)">
+            <g id="dropdownArrow" transform="translate(165.000000, 20.000000)">
+                <path d="M1.5,0.5 L1.5,14.5" id="Line" stroke="#591496" stroke-linecap="square"></path>
+                <polyline id="Path-49" stroke="#591496" stroke-width="2" points="9 5.00917319 12.9935662 9 17 5"></polyline>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -1,13 +1,16 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
-  classNames : ['lemonade-chart-container'],
+  classNames : ['lemonade-chart'],
   chart : undefined,
+  currentChartId : undefined,
   attributeBindings: ['style'],
   didInsertElement(){
     Ember.run.next(this,function(){
-      this.setUpDefaultValues();
-      this.buildChart();
+      if(this.get('data') && this.get('options')){
+          this.setUpDefaultValues();
+          this.buildChart();
+        }
     })
   },
   setUpDefaultValues(){
@@ -25,26 +28,56 @@ export default Ember.Component.extend({
     //Tooltip settings
     //globalChartOptions.tooltips
     globalChartOptions.maintainAspectRatio = false;
+    globalChartOptions.responsive = true
   },
   buildChart(){
+    if(!this.get('data') && !this.get('options')){
+      console.warn('no options or data on start up');
+      return;
+    }
     var ctx = this.element.getElementsByTagName("canvas")[0];
     var type = this.get('type');
     var data = this.get('data');
-
     var options = this.get('options');
-    var chart = new Chart(ctx, {type, data, options});
-    this.set('chart', chart)
+    var oldChart = this.get('chart')
+
+    if(oldChart){
+      oldChart.destroy()
+      let chart = new Chart(ctx, {type, data, options});
+      this.set('chart', chart)
+      this.get('chart').render(300, true);
+    }else{
+      let chart = new Chart(ctx, {type, data, options});
+      this.set('chart', chart)
+    }
   },
   observeDataChange: function(){
     var datasets = this.get('data.datasets');
+    if(datasets === undefined){
+      console.warn('datasets undefined')
+      return;
+    }
+
     var datasetsLastIndex = datasets.length - 1;
     var chart = this.get('chart');
-    chart.update()
     if (this.get('data.labels') && this.get(`data.datasets.${datasetsLastIndex}.data`)) {
-      if(!chart){
+      let datasets = this.get('data.datasets');
+      let currentDataSetLabels = []
+      _.forEach(datasets,function(v){
+        currentDataSetLabels.push(v.label);
+      })
+      let previousDataSetLabels = this.get('previousDataSetLabels') || currentDataSetLabels
+      let sameDatasetCollection = _.isEqual(currentDataSetLabels, previousDataSetLabels)
+      if(!sameDatasetCollection){
         this.buildChart()
       }
-      else{
+      this.set('previousDataSetLabels',currentDataSetLabels)
+
+      if(!chart){
+        this.setUpDefaultValues();
+        this.buildChart()
+      }
+      else if (sameDatasetCollection){
         chart.update()
       }
     }

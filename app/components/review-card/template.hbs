@@ -1,0 +1,5 @@
+<div class="review-card">
+  <h1>{{cardData.name}}</h1>
+  {{review-card-filter categories=cardData.filterCategories selectedCatagory=this.selectedCatagory changeCategory=(action 'changeCategory')}}
+  {{lemonade-chart type='line' data=selectedGraph.data options=selectedGraph.options legend=true}}
+</div>

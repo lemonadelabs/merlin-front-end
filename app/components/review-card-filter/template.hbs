@@ -1,0 +1,3 @@
+{{#each this.categories as |category|}}
+  <p class="{{if category.selected 'selected'}}"{{action 'selectCatagory' category.label}}>{{category.label}}</p>
+{{/each}}
