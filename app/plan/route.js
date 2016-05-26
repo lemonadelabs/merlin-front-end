@@ -3,15 +3,10 @@ import * as convertTime from '../common/convert-time-es6'
 import * as projectsTraversal from '../common/projects-traversal'
 import * as merlinUtils from '../common/merlin-utils'
 
-import mockData from './mock-data'
-
 export default Ember.Route.extend({
   simulation: undefined,
   projects: undefined,
   simulationRun: undefined,
-
-  plan: undefined, // delete later!!!
-
 
   model: function (params) {
     var simulationId = params.simulation_id
@@ -19,8 +14,7 @@ export default Ember.Route.extend({
     return Ember.RSVP.hash({
       simulation: Ember.$.getJSON(`api/simulations/${simulationId}/`),
       projects: Ember.$.getJSON('api/projects/'),
-      simulationId: simulationId,
-      plan: mockData(),// delete later!!!
+      simulationId: simulationId
     });
   },
 

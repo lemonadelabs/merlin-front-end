@@ -42,7 +42,8 @@ export default Ember.Component.extend({
   buildChart: function () {
     let opexColor = 'rgb(245, 166, 35)';
     let capexColor = 'rgb(60, 255, 122)';
-    let totalInvestmentColor = 'rgb(129, 65, 255)';
+    let totalInvestmentColor = 'rgb(255, 255, 255)';
+    let remainingFundsColor = 'rgb(129, 65, 255)';
     let axisColor = 'rgb(255, 255, 255)';
     let graphData = this.processAndSortData();
     console.log(graphData)
@@ -52,7 +53,7 @@ export default Ember.Component.extend({
     let capex = new DataSet('total investment', graphData.capex, capexColor);
     let opex = new DataSet('opex', graphData.opex, opexColor);
     let totalInvestment = new DataSet('ongoing cost', graphData.totalInvestment, totalInvestmentColor);
-    let remainingFunds = new DataSet('remaining funds', graphData.remainingFunds, totalInvestmentColor);
+    let remainingFunds = new DataSet('remaining funds', graphData.remainingFunds, remainingFundsColor);
 
     opex.setDashType('longDash')
     totalInvestment.setDashType('dotted')

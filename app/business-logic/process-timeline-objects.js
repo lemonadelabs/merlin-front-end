@@ -59,7 +59,7 @@ function populateSkeletons(opts) {
       })
 
       var capexInstallment = capex / installments
-      var opexInstallment = capex / installments
+      var opexInstallment = opex / installments
 
       distributeCost({
         skeleton : capexSkeleton,
