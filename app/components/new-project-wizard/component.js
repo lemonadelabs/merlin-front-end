@@ -37,12 +37,14 @@ export default Ember.Component.extend({
     var simulation = this.get('simulation')
     var newProjectData = this.get('newProjectData')
 
+    console.log('phase', phase)
+
     var scenarioPostData = {
       "name": `${newProjectData.name}, ${phase.name}`,
       "sim": "http://127.0.0.1:8000/api/simulations/" + simulation.id + '/',
       "start_offset": convertTime.clicksBetween({
         a : simulation.start_date,
-        b : phase.start
+        b : phase.start_date
       })
     }
     return postJSON({
@@ -106,8 +108,8 @@ export default Ember.Component.extend({
 
     // create endEvent
     var clicksBetween = convertTime.clicksBetween({
-      a : phase.start,
-      b : phase.end
+      a : phase.start_date,
+      b : phase.end_date
     })
 
     var endEvent = merlinUtils.newEventObject({
@@ -143,9 +145,9 @@ export default Ember.Component.extend({
     }
   },
 
-  hideNewProjectButton: function () {
-    if ( this.get('hideNewProject') ) {
-      this.sendAction('hideNewProject')
+  sendFinishedAction: function () {
+    if ( this.get('onFormSubmit') ) {
+      this.sendAction('onFormSubmit')
     }
   },
 
@@ -196,8 +198,8 @@ export default Ember.Component.extend({
             "scenario": scenario.id,
             "investment_cost": Number(phase.investment_cost),
             "service_cost": Number(phase.service_cost),
-            "start_date": convertTime.quarterToBackend(phase.start),
-            "end_date": convertTime.quarterToBackend(phase.end),
+            "start_date": convertTime.quarterToBackend(phase.start_date),
+            "end_date": convertTime.quarterToBackend(phase.end_date),
             "is_active": false
           }
 
@@ -207,12 +209,12 @@ export default Ember.Component.extend({
           })
 
           var endEventRequest = postJSON({
-            data : events.end,
+            data : events.start,
             url : `api/events/`
           })
           endEventRequest.then(function () {
             var startEventRequest = postJSON({
-              data : events.start,
+              data : events.end,
               url : `api/events/`
             })
 
@@ -221,18 +223,15 @@ export default Ember.Component.extend({
               // add the phase to the new project data
               newProjectJSON.phases.push(newPhaseJSON)
               if (phases.length === newProjectJSON.phases.length ) {
-                self.postProject(newProjectJSON)
-                self.hideNewProjectButton()
+                var projectsPost = self.postProject(newProjectJSON)
+                projectsPost.then(function () {
+                  self.sendFinishedAction()
+                })
               }
-
             })
-
           })
-
         })
-        // also need to crate a project in here!!!!!
       })
-
     },
 
     next () {
