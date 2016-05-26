@@ -1,0 +1,11 @@
+<div><p>
+  {{#each budget.processes as |budgetProcess|}}
+    {{budgetProcess.name}}
+    {{#each budgetProcess.properties as |prop|}}
+      {{log budget}}
+      Original: ${{prop.property_value}} Revised: ${{this.revisedBudget}}
+    {{/each}}
+  {{/each}}
+  {{budget.properties.0.property_value}}</p>
+  {{range-slider min=0 max=100 value=this.percentageToSlash}}
+</div>

@@ -1,1 +1,7 @@
-{{log simulation}}
+{{#each this.servicesPool as |serviceContainer|}}
+  <h2>{{serviceContainer.service.name}}</h2>
+  <div style="max-width:300px">{{range-slider min=0 max=100 value=10}}</div>
+  {{#each serviceContainer.budgets as |budget|}}
+    {{budget-slasher budget=budget }}
+  {{/each}}
+{{/each}}

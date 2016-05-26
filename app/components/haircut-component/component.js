@@ -2,8 +2,10 @@ import Ember from 'ember';
 import * as simTraverse from '../../common/simulation-traversal';
 
 export default Ember.Component.extend({
+  classNames:['haircut-component'],
   servicesPool:[],
-  didInsertElement(){
+  init(){
+    this._super()
     Ember.run.next(this,this.setup)
   },
   setup(){
@@ -15,18 +17,14 @@ export default Ember.Component.extend({
       this.set('servicesPool', [])
     }
 
-    console.log(serviceModels);
-
     _.forEach(serviceModels,function(serviceModel){
-      console.log(serviceModel);
       let budgetsForService = simTraverse.getChildEntitiesByAttribute({'simulation':simulation,'serviceModel':serviceModel,'attribute':'budget'}),
           servicesPoolObject = {};
 
       servicesPoolObject['service'] = serviceModel;
-      servicesPoolObject['budget'] = budgetsForService;
+      servicesPoolObject['budgets'] = budgetsForService;
       servicesPool.push(servicesPoolObject)
-      console.log(budgetsForService);
     })
-  console.log(servicesPool);
+    this.servicesPool.arrayContentDidChange(0, servicesPool.length, 0)
   }
 });
