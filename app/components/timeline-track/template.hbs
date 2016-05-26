@@ -1,10 +1,13 @@
-<p class='track-name'>{{this.model.name}}</p>
-{{#each this.timelineObjects as |timelineObject|}}
-  {{timeline-object
-    name=timelineObject.name
-    cost=timelineObject.cost
-    start=timelineObject.start
-    end=timelineObject.end
+<p class='track-name'>{{this.project.name}}</p>
+{{#each this.project.phases as |phase|}}
+  {{
+    timeline-object
+    name=phase.name
+    id=phase.id
+    scenarioId=phase.scenario
+    cost=phase.cost
+    start=phase.start_date
+    end=phase.end_date
     timelineGridObjects=this.timelineGridObjects
     onInteractionEnd=this.onInteractionEnd
   }}

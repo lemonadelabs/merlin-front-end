@@ -97,14 +97,14 @@ export default Ember.Component.extend({
       }
 
       if (lastPhase) {
-        newPhase.start = incrementTimeBy1({ time : lastPhase.end })
-        newPhase.end = incrementTimeBy3({ time : newPhase.start })
+        newPhase.start_date = incrementTimeBy1({ time : lastPhase.end_date })
+        newPhase.end_date = incrementTimeBy3({ time : newPhase.start_date })
       } else {
-        newPhase.start = {
+        newPhase.start_date = {
           year : 2016,
           value : 1
         },
-        newPhase.end = {
+        newPhase.end_date = {
           year : 2016,
           value : 4
         }

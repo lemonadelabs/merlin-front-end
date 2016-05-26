@@ -156,7 +156,6 @@ function drainFuelTank (opts) {
   _.forEach(fuelTankSkeleton, function (data, year) {
     _.forEach(data, function (expenditure, month) {
       if (month == 1) {
-        console.log('topping up')
         availableFunds += yearlyFunds
       }
 
