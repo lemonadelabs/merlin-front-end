@@ -20,7 +20,7 @@ export default Ember.Component.extend({
   },
   input() {
     this.updateValue();
-    this.calculateBubblePosition();
+
   },
   updateValue(){
     let rangeElement = this.get('rangeElement')
@@ -55,5 +55,8 @@ export default Ember.Component.extend({
     let rangeWidth = rangeElement.getBoundingClientRect().width,
         bubbleWidth = bubbleElement.getBoundingClientRect().width
     return {rangeWidth, bubbleWidth}
-  }
+  },
+  observesValue: function(){
+    this.calculateBubblePosition();
+  }.observes('value')
 });
