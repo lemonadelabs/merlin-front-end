@@ -2,7 +2,20 @@
 ////////////////////////////////// API //////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
 
-export function getServiceModelsFromSimulation (opts) { // 2-a-i
+export function findSimoutputFromSimoutputconnectorId (opts) {
+  var simoutputconnectorId = opts.simoutputconnectorId
+  var simOutputs = opts.simOutputs
+
+  var matchedSimoutput
+  _.forEach(simOutputs, function (simOutput) {
+    _.forEach(simOutput.inputs, function (input) {
+      if ( input.id === simoutputconnectorId ) { matchedSimoutput = simOutput }
+    })
+  })
+  return matchedSimoutput
+}
+
+export function getServiceModelsFromSimulation (opts) { // used in 2-a-i
   var simulation = opts.simulation
   var parentEntity = getParentEntity({ simulation : simulation})
   var serviceModels = getServiceModels({
