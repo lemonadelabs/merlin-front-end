@@ -1,3 +1,16 @@
+export function simulationRunUrl(opts) {
+  var scenarioIds = opts.scenarioIds
+  var simulationId = opts.simulationId
+  var timeframe = opts.timeframe
+  var url = `api/simulation-run/${simulationId}/?steps=${timeframe}`
+  _.forEach(scenarioIds, function (scenarioId, itterate) {
+    url += `&s${itterate}=${scenarioId}`
+  })
+  url += '/'
+  return url
+  // 'api/simulation-run/' + id + '/?steps=' + timeframe + '&s0=' + baselineId + '/' (example url)
+}
+
 export function createModifyProcessAction(opts) {
   var entityId = opts.entityId
   var props, value, processPropertyId

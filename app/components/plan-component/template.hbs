@@ -1,15 +1,13 @@
-<p {{action "newProject"}}>New Project</p>
+<p {{action "newProject"}} class='new-project-button'>New Project</p>
 {{#if this.showNewProjectWiz}}
   <div class="modal-shade" {{action "hideNewProject"}}></div>
   {{new-project-wizard simulation=this.simulation onFormSubmit="onFormSubmit"}}
 {{/if}}
+
 
 {{
   investment-timeline
   simulation=this.simulation
 
   projects=this.projects
-
-  model=this.plan
-  plan=this.plan
 }}
