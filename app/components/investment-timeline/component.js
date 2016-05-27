@@ -8,7 +8,6 @@ import convertTime from '../../common/convert-time'
 import * as scenarioInteractions from '../../common/scenario-interactions'
 import * as simTraverse from '../../common/simulation-traversal'
 
-
 export default Ember.Component.extend({
   processProjects: processProjects,
   timelineGridObjects:undefined,
@@ -17,6 +16,18 @@ export default Ember.Component.extend({
   axes: {},
   axes1Width:undefined,
   axes2Width:undefined,
+  hardCodedMetadata: {
+    start : {
+      year : 2016,
+      value : 1
+    },
+    end : {
+      year : 2019,
+      value : 4
+    },
+    units : 'quarters',
+    availableFunds: 50000000
+  },
   init: function () {
     this._super();
     this.buildChart()
@@ -28,40 +39,63 @@ export default Ember.Component.extend({
     return Ember.String.htmlSafe(`margin-left:-${axes1Width}px; width:calc(80vw + ${widthOffset}px)`)
   }),
   buildChart: function () {
-    let ongoingCostColour = 'rgb(245, 166, 35)';
-    let capitalisationColor = 'rgb(60, 255, 122)';
-    let totalInvestmentColour = 'rgb(129, 65, 255)';
-    let axisColour = 'rgb(255, 255, 255)';
+    let opexColor = 'rgb(245, 166, 35)';
+    let capexColor = 'rgb(60, 255, 122)';
+    let totalInvestmentColor = 'rgb(255, 255, 255)';
+    let remainingFundsColor = 'rgb(129, 65, 255)';
+    let axisColor = 'rgb(255, 255, 255)';
+    let capitalisationColor = 'rgb(9, 255, 255)'
+    let ongoingCostColor = 'rgb(10, 25, 170)'
     let graphData = this.processAndSortData();
 
 
 
-    let totalInvestment = new DataSet('total investment', graphData.totalInvestment, totalInvestmentColour);
-    let capitalisation = new DataSet('capitalisation', graphData.capitalisation, capitalisationColor);
-    let ongoingCost = new DataSet('ongoing cost', graphData.ongoingCost, ongoingCostColour);
-    let remainingFunds = new DataSet('remaining funds', graphData.remainingFunds, ongoingCostColour);
+    let remainingFunds = new DataSet('remaining funds', graphData.remainingFunds, remainingFundsColor);
+    let capexContribution = new DataSet('capex contribution', graphData.capex, capexColor);
+    let opexContribution = new DataSet('opex contribution', graphData.opex, opexColor);
+    let totalInvestment = new DataSet('total investment', graphData.totalInvestment, totalInvestmentColor);
 
-    capitalisation.setDashType('longDash')
+    let capitalisation = new DataSet('total investment', graphData.capitalisation, capitalisationColor);
+    let ongoingCost = new DataSet('total investment', graphData.ongoingCost, ongoingCostColor);
+
+
+
+    // remainingFunds.setDashType('longDash')
+    capexContribution.setDashType('longDash')
+    opexContribution.setDashType('longDash')
+    totalInvestment.setDashType('longDash')
+
+    capitalisation.setDashType('dotted')
     ongoingCost.setDashType('dotted')
 
-    let xAxes = new Axes('', axisColour);
+    let xAxes = new Axes('', axisColor);
     xAxes.hideGridLines();
     xAxes.hideTicks();
-    let yAxes1 = new Axes('', axisColour);
+    let yAxes1 = new Axes('', axisColor);
     yAxes1.prependToTickLabel('$');
     yAxes1.beginAtZero(false);
     yAxes1.customFormatting(truncateBigNumbers)
-    let yAxes2 = new Axes('', axisColour);
+    let yAxes2 = new Axes('', axisColor);
     yAxes2.prependToTickLabel('$');
     yAxes2.beginAtZero(false);
     yAxes2.setPosition('right');
     yAxes2.hideGridLines();
 
     this.set('axes',{'xAxes': xAxes, 'yAxes1': yAxes1,'yAxes2': yAxes2})
-    // let chartParameters = new ChartParameters( [totalInvestment, ongoingCost, capitalisation], graphData.labels, [xAxes], [yAxes1,yAxes2])
-    let chartParameters = new ChartParameters( [totalInvestment, ongoingCost, remainingFunds], graphData.labels, [xAxes], [yAxes1,yAxes2])
-    // let chartParameters = new ChartParameters( [totalInvestment, ongoingCost], graphData.labels, [xAxes], [yAxes1,yAxes2])
+
+    var dataSets = [
+      remainingFunds,
+      capexContribution,
+      opexContribution,
+      totalInvestment,
+      capitalisation,
+      ongoingCost
+    ]
+    let chartParameters = new ChartParameters(dataSets, graphData.labels, [xAxes], [yAxes1,yAxes2])
+
+
     this.set('investmentGraph', chartParameters)
+
   },
   didInsertElement(){
     Ember.run.next(this,function(){
@@ -72,10 +106,11 @@ export default Ember.Component.extend({
   },
 
   processAndSortData(){
-    var plan = this.get('plan')
+    var projects = this.get('projects')
+
     var processedData = this.processProjects({
-      metadata : plan.metadata,
-      projects : plan.projects
+      metadata : this.get('hardCodedMetadata'),
+      projectsReal : projects
     })
 
     var sortedData = {}
@@ -98,11 +133,12 @@ export default Ember.Component.extend({
       labelsNotMadeYet = false
     })
 
+
     sortedData.totalInvestment = []
 
-    _.forEach(sortedData.research, function (datum, i) { // add up total investment
+    _.forEach(sortedData.capex, function (datum, i) { // add up total investment
       sortedData.totalInvestment.push(datum)
-      sortedData.totalInvestment[i] += sortedData.dev[i]
+      sortedData.totalInvestment[i] += sortedData.opex[i]
     })
 
     _.forEach(sortedData, function (dataset) { // add a value on to the begining of the dataset, for layout reasons
@@ -129,14 +165,16 @@ export default Ember.Component.extend({
   }.observes('parentEntity'),
 
   recalculateInvestments:function(){
-    let processedData = this.processAndSortData(),
-        investmentGraph = this.get('investmentGraph'),
-        dataSetIndex = {
-          'totalInvestment' : 0,
-          'ongoingCost' : 1,
-          // 'capitalisation' : 2
-          'remainingFunds' : 2
-        }
+    let processedData = this.processAndSortData()
+    var investmentGraph = this.get('investmentGraph')
+    var dataSetIndex = {
+      'remainingFunds' : 0,
+      'capex' : 1,
+      'opex' : 2,
+      'totalInvestment' : 3,
+      'capitalisation' : 4,
+      'ongoingCost' : 5
+    }
     _.forEach(processedData, function(value, key){
       let index = dataSetIndex[key];
       if(index !== undefined){

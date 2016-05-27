@@ -37,15 +37,15 @@ export default Ember.Component.extend({
     var simulation = this.get('simulation')
     var newProjectData = this.get('newProjectData')
 
-    console.log('phase', phase)
+    var clicksBetween = convertTime.clicksBetween({
+      a : simulation.start_date,
+      b : phase.start_date
+    })
 
     var scenarioPostData = {
       "name": `${newProjectData.name}, ${phase.name}`,
       "sim": "http://127.0.0.1:8000/api/simulations/" + simulation.id + '/',
-      "start_offset": convertTime.clicksBetween({
-        a : simulation.start_date,
-        b : phase.start_date
-      })
+      "start_offset": clicksBetween
     }
     return postJSON({
       data : scenarioPostData,
@@ -208,18 +208,17 @@ export default Ember.Component.extend({
             phase : phase
           })
 
-          var endEventRequest = postJSON({
+          var startEventRequest = postJSON({
             data : events.start,
             url : `api/events/`
           })
-          endEventRequest.then(function () {
-            var startEventRequest = postJSON({
+          startEventRequest.then(function () {
+            var endEventRequest = postJSON({
               data : events.end,
               url : `api/events/`
             })
 
-            startEventRequest.then( function () {
-              console.log('in startEvent then')
+            endEventRequest.then( function () {
               // add the phase to the new project data
               newProjectJSON.phases.push(newPhaseJSON)
               if (phases.length === newProjectJSON.phases.length ) {
