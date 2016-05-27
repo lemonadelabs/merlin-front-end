@@ -45,9 +45,16 @@ export function updatePhaseTimes(data) {
         }
       })
 
-      var endEvent = oldScenario.events[index]
+      var endEvent = oldScenario.events[index || oldScenario.events.length]
 
       endEvent.time = newPhaseLength
+      console.log(endEvent.time)
+
+
+      putJSON({
+        data : endEvent,
+        url : `api/events/${endEvent.id}/`
+      })
 
 
       putJSON({
