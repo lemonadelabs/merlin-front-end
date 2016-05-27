@@ -38,6 +38,11 @@ export default Ember.Component.extend({
     let widthOffset = axes1Width + axes2Width
     return Ember.String.htmlSafe(`margin-left:-${axes1Width}px; width:calc(80vw + ${widthOffset}px)`)
   }),
+  processTelemetryData: function () {
+    var telemetryData = this.get('simulationRun')
+    console.log(telemetryData)
+  },
+
   buildChart: function () {
     let opexColor = 'rgb(245, 166, 35)';
     let capexColor = 'rgb(60, 255, 122)';
@@ -47,6 +52,7 @@ export default Ember.Component.extend({
     let capitalisationColor = 'rgb(9, 255, 255)'
     let ongoingCostColor = 'rgb(10, 25, 170)'
     let graphData = this.processAndSortData();
+    let outputData = this.processTelemetryData()
 
 
 
@@ -75,7 +81,7 @@ export default Ember.Component.extend({
     yAxes1.prependToTickLabel('$');
     yAxes1.beginAtZero(false);
     yAxes1.customFormatting(truncateBigNumbers)
-    let yAxes2 = new Axes('', axisColor);
+    let yAxes2 = new Axes('', axisColor,'yAxes2');
     yAxes2.prependToTickLabel('$');
     yAxes2.beginAtZero(false);
     yAxes2.setPosition('right');
