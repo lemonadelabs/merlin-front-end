@@ -28,12 +28,12 @@ export default function processProjects (opts) {
   })
 
   return {
-    // ongoingCost : ongoingCostSkeleton,
-    // capitalisation : capitalisationSkeleton,
     remainingFunds : fuelTankSkeleton,
-
     capex : capexSkeleton,
-    opex : opexSkeleton
+    opex : opexSkeleton,
+
+    capitalisation : capitalisationSkeleton,
+    ongoingCost : ongoingCostSkeleton,
 
   }
 
@@ -50,9 +50,15 @@ function populateSkeletons(opts) {
   var maxValue = getMaxValue(units)
 
   _.forEach(projectsReal, function (project) {
+    var projectTotalCost = 0
+    var lastPhaseEnd
     _.forEach(project.phases, function (phase) {
       var opex = phase.service_cost
       var capex = phase.investment_cost
+      var phaseTotalCost = capex + opex
+      projectTotalCost += phaseTotalCost
+      lastPhaseEnd = phase.end_date
+
       var installments = findNoOfInstallments({
         start : phase.start_date,
         end : phase.end_date,
@@ -74,11 +80,48 @@ function populateSkeletons(opts) {
         end : phase.end_date,
         installment : opexInstallment,
       })
-
-
     })
-  })
 
+    //////////////////////////////////////////////////////
+    // CAPITALISATION
+    //////////////////////////////////////////////////////
+
+    var capitalisationAmount = projectTotalCost * 0.4
+
+    // var capitalisationStart = incrementTimeBy1({
+    //   time : lastPhaseEnd
+    // })
+    var capitalisationStart = lastPhaseEnd
+
+    var capitalisationEnd = metadata.end
+
+    distributeCost({
+      skeleton : opts.capitalisationSkeleton,
+      start : capitalisationStart,
+      end : capitalisationEnd,
+      installment : capitalisationAmount
+    })
+
+    ////////////////////////////////////////////////////////
+    // ONGOING COST
+    ////////////////////////////////////////////////////////
+    var ongoingCostYearly = capitalisationAmount * 0.25
+    var ongoingCostInstallment = ongoingCostYearly / maxValue
+    var ongoingCostStart = capitalisationStart
+    var ongoingCostEnd = metadata.end
+
+    distributeCost({
+      skeleton : opts.ongoingCostSkeleton,
+      start : ongoingCostStart,
+      end : ongoingCostEnd,
+      installment : ongoingCostInstallment
+    })
+
+
+    // })
+
+
+  })
 
 
 
@@ -131,28 +174,7 @@ function populateSkeletons(opts) {
 
 
 
-  //   ////////////////////////////////////////////////////////
-  //   // CAPITALISATION
-  //   ////////////////////////////////////////////////////////
 
-  //   var devCost = project.development.cost
-  //   var capitalisationAmount = devCost * 0.75
-
-  //   // var capitalisationStart = incrementTimeBy1({
-  //   //   time : project.development.end,
-  //   //   maxValue : maxValue
-  //   // })
-  //   var capitalisationStart = project.development.end
-
-  //   var capitalisationEnd = metadata.end
-
-  //   distributeCost({
-  //     skeleton : opts.capitalisationSkeleton,
-  //     start : capitalisationStart,
-  //     end : capitalisationEnd,
-  //     installment : capitalisationAmount,
-  //     maxValue : maxValue
-  //   })
 
   //   ////////////////////////////////////////////////////////
   //   // ONGOING COST
@@ -188,7 +210,7 @@ function populateSkeletons(opts) {
 
   drainFuelTank({
     fuelTankSkeleton : fuelTankSkeleton,
-    toSubtract : [opts.opexSkeleton, opts.capexSkeleton],
+    toSubtract : [ opts.capexSkeleton ],
     // start : metadata.start,
     // end : metadata.start,
     maxValue : maxValue,
@@ -225,8 +247,9 @@ function drainFuelTank (opts) {
 }
 
 function incrementTimeBy1(opts) {
+  var maxValue = opts.maxValue || 4
   var time = _.cloneDeep(opts.time)
-  if (time.value === opts.maxValue) {
+  if (time.value === maxValue) {
     time.year +=1
     time.value = 1
   } else {

@@ -39,20 +39,23 @@ export function updatePhaseTimes(data) {
       var index
       var highest = 0
       _.forEach(oldScenario.events, function (event, i) {
-        // console.log(event.time)
         if (event.time > highest) {
           highest = event.time
           index = i
         }
       })
 
-      var endEvent = oldScenario.events[index]
-      console.log(endEvent)
+      var endEvent = oldScenario.events[index || oldScenario.events.length]
 
       endEvent.time = newPhaseLength
+      console.log(endEvent.time)
 
-      console.log('scenario start offset: ', oldScenario.start_offset)
-      console.log('endEvent.time: ', endEvent.time)
+
+      putJSON({
+        data : endEvent,
+        url : `api/events/${endEvent.id}/`
+      })
+
 
       putJSON({
         data : oldScenario,

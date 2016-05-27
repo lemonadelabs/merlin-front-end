@@ -1,7 +1,12 @@
 <p {{action "newProject"}} class='new-project-button'>New Project</p>
 {{#if this.showNewProjectWiz}}
-  <div class="modal-shade" {{action "hideNewProject"}}></div>
-  {{new-project-wizard simulation=this.simulation onFormSubmit="onFormSubmit"}}
+  <div class="modal-shade" {{action "hideNewProjectWizard"}}></div>
+  {{
+    new-project-wizard
+    simulation=this.simulation
+    onFormSubmit="onFormSubmit"
+    hideNewProject='hideNewProjectWizard'
+  }}
 {{/if}}
 
 

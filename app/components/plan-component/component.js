@@ -28,6 +28,11 @@ export default Ember.Component.extend({
     onFormSubmit: function(){
       this.set('showNewProjectWiz', false);
       this.reloadProjects()
+    },
+    hideNewProjectWizard: function () {
+      if (this.get('showNewProjectWiz')) {
+        this.set('showNewProjectWiz', false)
+      }
     }
   }
 });
