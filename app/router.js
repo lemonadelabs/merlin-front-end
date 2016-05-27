@@ -11,6 +11,7 @@ Router.map(function() {
   this.route('plan', { path: '/plan/:simulation_id' });
   this.route('services',{ path: '/services/:service_id' });
   this.route('review',{ path: '/review/:simulation_id' });
+  this.route('haircut',{ path: '/haircut/:simulation_id' });
 });
 
 export default Router;

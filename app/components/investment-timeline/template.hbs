@@ -1,10 +1,10 @@
 <div class='timeline-track-container'>
-  {{#each plan.projects as |project|}}
+  {{#each projects as |project|}}
     {{
       timeline-track
       timelineGridObjects=this.timelineGridObjects
-      model=project
-      onInteractionEnd=(action 'recalculateInvestments')
+      project=project
+      onInteractionEnd=(action 'onTimelineObjectInteractionEnd')
     }}
   {{/each}}
 </div>
@@ -12,7 +12,7 @@
 {{
   timeline-timescale
   timelineGridObjects=this.timelineGridObjects
-  timespan=plan.metadata
+  timespan=this.hardCodedMetadata
 }}
 
 {{

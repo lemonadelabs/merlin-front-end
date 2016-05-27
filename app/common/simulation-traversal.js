@@ -23,6 +23,19 @@ export function getChildAttributesFromServiceModel (opts) { // used in 2-a-ii
   return attributes
 }
 
+export function getChildEntitiesByAttribute(opts){ //used by haircut
+  var simulation = opts.simulation
+  var serviceModel = opts.serviceModel
+  var attribute = opts.attribute
+  var childEntities = getChildrenForServiceModel(
+    {
+      'simulation':simulation,
+      'serviceModel':serviceModel}
+    )
+  var filteredEntities = filterEntitiesByAttribute({'entities':childEntities,'attribute':attribute})
+  return filteredEntities
+}
+
 export function filterEntitiesByAttribute (opts) {  // used in 2-a-iii
   var attribute = opts.attribute
   var entities = opts.entities
@@ -41,6 +54,13 @@ export function getProcessPropertiesFromEntity (opts) {  // used in 2-a-iiii
   processProperties = _.flatten(processProperties)
   return processProperties
 }
+
+export function getIdFromUrl(url) {
+  var slashless = url.slice(0, -1)
+  var id = slashless.substring(slashless.lastIndexOf('/') + 1, slashless.length)
+  return id
+}
+
 
 /////////////////////////////////////////////////////////////////////////
 //////////////////////////////// PRIVATE ////////////////////////////////
@@ -89,11 +109,4 @@ function getServiceModels (opts) {
     serviceModels.push(serviceModel)
   })
   return serviceModels
-}
-
-
-function getIdFromUrl(url) {
-  var slashless = url.slice(0, -1)
-  var id = slashless.substring(slashless.lastIndexOf('/') + 1, slashless.length)
-  return id
 }

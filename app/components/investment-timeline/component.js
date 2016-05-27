@@ -5,6 +5,8 @@ import Axes from '../lemonade-chart/axes';
 import ChartParameters from '../lemonade-chart/chartParameters';
 import truncateBigNumbers from '../../common/truncateBigNumbers';
 import convertTime from '../../common/convert-time'
+import * as scenarioInteractions from '../../common/scenario-interactions'
+import * as simTraverse from '../../common/simulation-traversal'
 
 
 export default Ember.Component.extend({
@@ -15,6 +17,18 @@ export default Ember.Component.extend({
   axes: {},
   axes1Width:undefined,
   axes2Width:undefined,
+  hardCodedMetadata: {
+    start : {
+      year : 2016,
+      value : 1
+    },
+    end : {
+      year : 2019,
+      value : 4
+    },
+    units : 'quarters',
+    availableFunds: 50000000
+  },
   init: function () {
     this._super();
     this.buildChart()
@@ -26,30 +40,32 @@ export default Ember.Component.extend({
     return Ember.String.htmlSafe(`margin-left:-${axes1Width}px; width:calc(80vw + ${widthOffset}px)`)
   }),
   buildChart: function () {
-    let ongoingCostColour = 'rgb(245, 166, 35)';
-    let capitalisationColor = 'rgb(60, 255, 122)';
-    let totalInvestmentColour = 'rgb(129, 65, 255)';
-    let axisColour = 'rgb(255, 255, 255)';
+    let opexColor = 'rgb(245, 166, 35)';
+    let capexColor = 'rgb(60, 255, 122)';
+    let totalInvestmentColor = 'rgb(255, 255, 255)';
+    let remainingFundsColor = 'rgb(129, 65, 255)';
+    let axisColor = 'rgb(255, 255, 255)';
     let graphData = this.processAndSortData();
+    console.log(graphData)
 
 
 
-    let totalInvestment = new DataSet('total investment', graphData.totalInvestment, totalInvestmentColour);
-    let capitalisation = new DataSet('capitalisation', graphData.capitalisation, capitalisationColor);
-    let ongoingCost = new DataSet('ongoing cost', graphData.ongoingCost, ongoingCostColour);
-    let remainingFunds = new DataSet('remaining funds', graphData.remainingFunds, ongoingCostColour);
+    let capex = new DataSet('total investment', graphData.capex, capexColor);
+    let opex = new DataSet('opex', graphData.opex, opexColor);
+    let totalInvestment = new DataSet('ongoing cost', graphData.totalInvestment, totalInvestmentColor);
+    let remainingFunds = new DataSet('remaining funds', graphData.remainingFunds, remainingFundsColor);
 
-    capitalisation.setDashType('longDash')
-    ongoingCost.setDashType('dotted')
+    opex.setDashType('longDash')
+    totalInvestment.setDashType('dotted')
 
-    let xAxes = new Axes('', axisColour);
+    let xAxes = new Axes('', axisColor);
     xAxes.hideGridLines();
     xAxes.hideTicks();
-    let yAxes1 = new Axes('', axisColour);
+    let yAxes1 = new Axes('', axisColor);
     yAxes1.prependToTickLabel('$');
     yAxes1.beginAtZero(false);
     yAxes1.customFormatting(truncateBigNumbers)
-    let yAxes2 = new Axes('', axisColour);
+    let yAxes2 = new Axes('', axisColor);
     yAxes2.prependToTickLabel('$');
     yAxes2.beginAtZero(false);
     yAxes2.setPosition('right');
@@ -57,7 +73,7 @@ export default Ember.Component.extend({
 
     this.set('axes',{'xAxes': xAxes, 'yAxes1': yAxes1,'yAxes2': yAxes2})
     // let chartParameters = new ChartParameters( [totalInvestment, ongoingCost, capitalisation], graphData.labels, [xAxes], [yAxes1,yAxes2])
-    let chartParameters = new ChartParameters( [totalInvestment, ongoingCost, remainingFunds], graphData.labels, [xAxes], [yAxes1,yAxes2])
+    let chartParameters = new ChartParameters( [totalInvestment, capex, opex, remainingFunds], graphData.labels, [xAxes], [yAxes1,yAxes2])
     // let chartParameters = new ChartParameters( [totalInvestment, ongoingCost], graphData.labels, [xAxes], [yAxes1,yAxes2])
     this.set('investmentGraph', chartParameters)
   },
@@ -70,10 +86,11 @@ export default Ember.Component.extend({
   },
 
   processAndSortData(){
-    var plan = this.get('plan')
+    var projects = this.get('projects')
+
     var processedData = this.processProjects({
-      metadata : plan.metadata,
-      projects : plan.projects
+      metadata : this.get('hardCodedMetadata'),
+      projectsReal : projects
     })
 
     var sortedData = {}
@@ -96,12 +113,14 @@ export default Ember.Component.extend({
       labelsNotMadeYet = false
     })
 
+
     sortedData.totalInvestment = []
 
-    _.forEach(sortedData.research, function (datum, i) { // add up total investment
+    _.forEach(sortedData.capex, function (datum, i) { // add up total investment
       sortedData.totalInvestment.push(datum)
-      sortedData.totalInvestment[i] += sortedData.dev[i]
+      sortedData.totalInvestment[i] += sortedData.opex[i]
     })
+    console.log(sortedData)
 
     _.forEach(sortedData, function (dataset) { // add a value on to the begining of the dataset, for layout reasons
       dataset.unshift(0)
@@ -111,92 +130,13 @@ export default Ember.Component.extend({
     return sortedData;
   },
 
-  dothings: function () {
-    var self = this
-    var serviceModels = this.get('serviceModels')
-    console.log('serviceModels', serviceModels)
-    var serviceModel = serviceModels[0]
-    var serviceModelChildren = this.findChildrenForServiceModel({ serviceModel : serviceModel })
-    var attributesForChildren = this.findAttributesFromEntities({ entities : serviceModelChildren })
-
-    var testAttribute = attributesForChildren[0]
-    var childrenWithAttribute = this.filterEntitiesByAttribute({
-      entities : serviceModelChildren,
-      attribute : testAttribute
-    })
-
-    var testEntity = childrenWithAttribute[0]
-    var processProperties = this.processPropertiesFromEntity({ entity : testEntity })
-
-    var quarterFormat = convertTime("2016-01-01").toQuarter()
-    console.log(convertTime(quarterFormat).quarterToBackend())
-
-
-  }.on('init'),
-
-  processPropertiesFromEntity: function (opts) {
-    var entity = opts.entity
-    var processProperties = _.map(entity.processes, function (process) {
-      return process.properties
-    })
-    processProperties = _.flatten(processProperties)
-    return processProperties
-  },
-
-  filterEntitiesByAttribute: function (opts) {
-    var attribute = opts.attribute
-    var entities = opts.entities
-
-    var filteredEntities = _.filter( entities, function (entity) {
-      return _.includes(entity.attributes, attribute)
-    })
-    return filteredEntities
-  },
-
-  findAttributesFromEntities: function (opts) {
-    var entities = opts.entities
-    var attributes = []
-    _.forEach(entities, function (entity) {
-      attributes.push(entity.attributes)
-    })
-    attributes = _.uniq( ( _.flatten( attributes ) ) )
-    return attributes
-  },
-
-
-  findChildrenForServiceModel: function (opts) {
-    var serviceModel = opts.serviceModel
-    var childrenUrls = serviceModel.children
-    var ids = _.map(childrenUrls, this.getIdFromUrl)
-    var simulation = this.get('simulation')
-    var childEntities = _.filter(simulation.entities, function (entity) {
-      return _.includes(ids, String(entity.id))
-    })
-    return childEntities
-  },
-
-  getIdFromUrl: function (url) {
-    var slashless = url.slice(0, -1)
-    var id = slashless.substring(slashless.lastIndexOf('/') + 1, slashless.length)
-    return id
-  },
-
-  setParentEntity: function () {
-    var simulation = this.get('simulation')
-    var parentEntity = _.find(simulation.entities, function (entity) {
-      return entity.parent === null
-    })
-    this.set('parentEntity', parentEntity)
-  }.on('init'),
-
-
   setServiceModels: function () {
     var self = this
     var serviceModels = []
     var simulation = this.get('simulation')
     var parentEntity = this.get('parentEntity')
     _.forEach(parentEntity.children, function (childUrl) {
-      var childId = self.getIdFromUrl(childUrl)
+      var childId = simTraverse.getIdFromUrl(childUrl)
       var serviceModel = _.find(simulation.entities, function (entity) {
         return entity.id == childId
       })
@@ -205,26 +145,38 @@ export default Ember.Component.extend({
     this.set('serviceModels', serviceModels)
   }.observes('parentEntity'),
 
+  recalculateInvestments:function(){
+    let processedData = this.processAndSortData(),
+        investmentGraph = this.get('investmentGraph'),
+        dataSetIndex = {
+          'totalInvestment' : 0,
+          'ongoingCost' : 1,
+          // 'capitalisation' : 2
+          'remainingFunds' : 2
+        }
+    _.forEach(processedData, function(value, key){
+      let index = dataSetIndex[key];
+      if(index !== undefined){
+        Ember.set(investmentGraph.data.datasets, `${index}.data`, value);
+      }
+    });
+  },
+
+  persistDatesToBackend: function (opts) {
+    scenarioInteractions.updatePhaseTimes(opts)
+  },
 
 
 
   actions:{
-    recalculateInvestments:function(){
-      let processedData = this.processAndSortData(),
-          investmentGraph = this.get('investmentGraph'),
-          dataSetIndex = {
-            'totalInvestment' : 0,
-            'ongoingCost' : 1,
-            // 'capitalisation' : 2
-            'remainingFunds' : 2
-          }
-      _.forEach(processedData, function(value, key){
-        let index = dataSetIndex[key];
-        if(index !== undefined){
-          Ember.set(investmentGraph.data.datasets, `${index}.data`, value);
-        }
-      });
-
-    }
+    onTimelineObjectInteractionEnd: function (context) {
+      this.recalculateInvestments()
+      this.persistDatesToBackend({
+        "id": context.get('id'),
+        "start_date": context.get('start'),
+        "end_date": context.get('end'),
+        scenarioId: context.get('scenarioId')
+      })
+    },
   }
 });
