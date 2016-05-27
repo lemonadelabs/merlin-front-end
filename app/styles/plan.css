@@ -5,7 +5,9 @@
   left: 10%;
   height: 230px;
 }
-
+.plan-footer-graph .chart-container{
+  height: 230px;
+}
 
 .new-project-button {
   color: white;
