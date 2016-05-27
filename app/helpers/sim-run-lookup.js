@@ -13,9 +13,11 @@ export function simRunLookup(params/*, hash*/) {
       month = params[2],
       objectData
   if (object) {
+    if (!object[id]) {
+      console.warn('there is no telemetry data for this query')
+      return undefined
+    }
     objectData = (object[id].data.value) ? object[id].data.value[month - 1] : object[id].data.result[month - 1]
-    // console.log(object[id])
-    // return object[id].data.result[month]
   }
 
   if(objectData){
