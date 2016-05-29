@@ -3,6 +3,8 @@ import DataSet from '../lemonade-chart/dataSet';
 import Axes from '../lemonade-chart/axes';
 import ChartParameters from '../lemonade-chart/chartParameters';
 import * as simTraverse from '../../common/simulation-traversal';
+import postJSON from '../../common/post-json'
+
 
 export default Ember.Component.extend({
   classNames : ['review-component'],
