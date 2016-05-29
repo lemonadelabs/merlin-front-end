@@ -37,8 +37,10 @@ export default Ember.Component.extend({
     }
     var ctx = this.element.getElementsByTagName("canvas")[0];
     var type = this.get('type');
-    var data = this.get('data');
-    var options = this.get('options');
+    var data = _.cloneDeep(this.get('data'));
+    this.set('localData', data)
+    var options = _.cloneDeep(this.get('options'));
+    this.set('localOptions', options)
     var oldChart = this.get('chart')
 
     if(oldChart){
@@ -53,35 +55,45 @@ export default Ember.Component.extend({
   },
   observeDataChange: function(){
     var datasets = this.get('data.datasets');
+
     if(datasets === undefined){
       console.warn('datasets undefined')
       return;
     }
-
+    this.handleDataChange(datasets)
+  }.observes('data.labels','data.datasets','data.datasets.@each.data'),
+  handleDataChange(datasets){
     var datasetsLastIndex = datasets.length - 1;
-    var chart = this.get('chart');
     if (this.get('data.labels') && this.get(`data.datasets.${datasetsLastIndex}.data`)) {
-      let datasets = this.get('data.datasets');
       let currentDataSetLabels = []
       _.forEach(datasets,function(v){
         currentDataSetLabels.push(v.label);
       })
       let previousDataSetLabels = this.get('previousDataSetLabels') || currentDataSetLabels
       let sameDatasetCollection = _.isEqual(currentDataSetLabels, previousDataSetLabels)
-      if(!sameDatasetCollection){
-        this.buildChart()
-      }
       this.set('previousDataSetLabels',currentDataSetLabels)
 
+      if(!sameDatasetCollection){
+        this.buildChart()
+        return;
+      }
+
+      var chart = this.get('chart');
       if(!chart){
         this.setUpDefaultValues();
         this.buildChart()
       }
       else if (sameDatasetCollection){
+        var self = this
+        var localDatasets = self.get('localData.datasets');
+
+        _.forEach(localDatasets,function(v,i){
+          v.data = datasets[i].data
+        })
         chart.update()
       }
     }
-  }.observes('data.labels','data.datasets','data.datasets.@each.data'),
+  },
   actions:{
     toggleDataSet: function(dataset){
       var hide = Ember.get(dataset, 'hidden') ? false : true
