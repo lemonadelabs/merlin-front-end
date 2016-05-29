@@ -6,9 +6,8 @@ export function simulationRunUrl(opts) {
   _.forEach(scenarioIds, function (scenarioId, itterate) {
     url += `&s${itterate}=${scenarioId}`
   })
-  url += '/'
   return url
-  // 'api/simulation-run/' + id + '/?steps=' + timeframe + '&s0=' + baselineId + '/' (example url)
+  // 'api/simulation-run/' + id + '/?steps=' + timeframe + '&s0=' + baselineId (example url)
 }
 
 export function createModifyProcessAction(opts) {
