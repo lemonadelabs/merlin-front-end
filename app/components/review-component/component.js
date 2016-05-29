@@ -93,7 +93,7 @@ export default Ember.Component.extend({
     var self = this
     let senarioData = this.get(`senarios.${senario}`)
     let simulation_id = this.get(`model.simulation.id`)
-    return Ember.$.getJSON(`api/simulation-run/${simulation_id}/?steps=120&s0=${senarioData.id}/`).then(
+    return Ember.$.getJSON(`api/simulation-run/${simulation_id}/?steps=120&s0=${senarioData.id}`).then(
       function(simData){
         self.set(`simulationData.${senario}`,simData)
       }
