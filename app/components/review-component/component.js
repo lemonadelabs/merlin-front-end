@@ -54,7 +54,7 @@ export default Ember.Component.extend({
         postJSON({
           data : postData,
           url : "api/scenarios/"
-        }).then(function (baseline) {
+        }).then(function (senario) {
           self.set(`senarios.${senarioName}`, senario)
         })
       }
