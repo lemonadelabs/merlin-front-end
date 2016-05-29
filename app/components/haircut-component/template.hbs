@@ -1,1 +1,3 @@
-{{log simulation}}
+{{#each this.servicesPool as |service|}}
+  {{service-budget-slasher service=service}}
+{{/each}}

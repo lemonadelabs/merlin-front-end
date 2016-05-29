@@ -3,7 +3,7 @@
 </div>
 {{#if this.legend}}
   <footer>
-      {{#each this.data.datasets as |dataset|}}
+      {{#each this.localData.datasets as |dataset|}}
         <p class="lemonade-chart-legend {{if dataset.hidden 'toggled'}}" {{action "toggleDataSet" dataset}}>
           <svg class="key" version="1.1" xmlns="http://www.w3.org/2000/svg">
             <circle cx="1em" cy="1em" r="0.8em"
