@@ -137,22 +137,30 @@ export default Ember.Component.extend({
 
   sortErrors: function (opts) {
     var self = this
-    var errors = {}
+    var errors = {
+      outputs: {},
+      entities: {}
+    }
+
+
+
 
     _.forEach(opts.messages, function (message) {
       var processId = message.sender.id
+      var type = (message.sender.type === "Output") ? 'outputs' : 'entities'
       var entities = self.get('model').entities
 
       _.forEach(entities, function (entity) {
         _.forEach(entity.processes, function (process) {
           if (process.id === processId) {
-            if ( !errors[message.time] ) { errors[message.time] = {} }
-            if ( !errors[message.time][entity.id] ) { errors[message.time][entity.id] = {} }
-            errors[message.time][entity.id][message.message_id] = message
+            if ( !errors[type][message.time] ) { errors[type][message.time] = {} }
+            if ( !errors[type][message.time][entity.id] ) { errors[type][message.time][entity.id] = {} }
+            errors[type][message.time][entity.id][message.message_id] = message
           }
         })
       })
     })
+    console.log(errors)
     self.set('errors', errors)
   },
 
@@ -229,7 +237,7 @@ export default Ember.Component.extend({
         outputComponents : this.outputComponents
       })
       this.nodesGroup.initCables()
-      // this.nodesGroup.terminalListners()
+      this.nodesGroup.terminalListners()
     } else {
       console.warn('the entity components haven\'t been built yet')
     }

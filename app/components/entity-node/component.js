@@ -43,7 +43,6 @@ export default Ember.Component.extend({
     var id = this.get('id')
     var month = this.get('month')
     if (this.errors[month] && this.errors[month][id]){
-      // console.log(this.errors[month][id])
       this.set('errorsForNode',this.errors[month][id])
     } else {
       this.set('errorsForNode',undefined)
