@@ -55,8 +55,8 @@ export default Ember.Component.extend({
     let opexContribution = new DataSet('opex contribution', graphData.opex, opexColor);
     let totalInvestment = new DataSet('total investment', graphData.totalInvestment, totalInvestmentColor);
 
-    let capitalisation = new DataSet('total investment', graphData.capitalisation, capitalisationColor);
-    let ongoingCost = new DataSet('total investment', graphData.ongoingCost, ongoingCostColor);
+    let capitalisation = new DataSet('capitalisation', graphData.capitalisation, capitalisationColor);
+    let ongoingCost = new DataSet('ongoingCost', graphData.ongoingCost, ongoingCostColor);
 
 
 
@@ -88,8 +88,8 @@ export default Ember.Component.extend({
       capexContribution,
       opexContribution,
       totalInvestment,
-      capitalisation,
-      ongoingCost
+      ongoingCost,
+      // capitalisation,
     ]
     let chartParameters = new ChartParameters(dataSets, graphData.labels, [xAxes], [yAxes1,yAxes2])
 
@@ -172,8 +172,8 @@ export default Ember.Component.extend({
       'capex' : 1,
       'opex' : 2,
       'totalInvestment' : 3,
-      'capitalisation' : 4,
-      'ongoingCost' : 5
+      'ongoingCost' : 4,
+      // 'capitalisation' : 5,
     }
     _.forEach(processedData, function(value, key){
       let index = dataSetIndex[key];
