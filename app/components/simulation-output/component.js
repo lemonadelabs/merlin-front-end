@@ -13,6 +13,7 @@ export default Ember.Component.extend({
   }),
   initDraggable: initDraggable,
   persistPosition: persistPosition,
+  errorsForSimOut:undefined,
   id: undefined,
   "node-type": "output-node",
   didInsertElement: function () {
@@ -32,4 +33,15 @@ export default Ember.Component.extend({
     delete outputNodes[id]
     this.set('outputNodes', outputNodes)
   },
+
+  checkForErrors: function() {
+    var id = this.get('id')
+    var month = this.get('month')
+    if (this.errors[month] && this.errors[month][id]){
+      this.set('errorsForSimOut',this.errors[month][id])
+    } else {
+      this.set('errorsForSimOut',undefined)
+    }
+  }.observes('errors','month'),
+
 });
