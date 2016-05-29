@@ -7,6 +7,8 @@ import * as simTraverse from '../../common/simulation-traversal';
 export default Ember.Component.extend({
   classNames : ['review-component'],
   services : undefined,
+  senarios: {},
+  simulationData: {},
   graphData : {},
   graphs : [],
   cards : [],
@@ -15,11 +17,58 @@ export default Ember.Component.extend({
     this.initCharts();
   },
   initCharts(){
-    this.generateGraphData();
-    this.createCards();
+    var self = this
+    var baselineSimRun
+    var baselineSenarioLoad = this.loadSenario('baseline')
+   baselineSenarioLoad.then(function(){
+        baselineSimRun = self.runSimulationWithSenario('baseline')
+        baselineSimRun.done(
+          function(){
+            console.log(self.get('simulationData.baseline'));
+            self.generateGraphData()
+            self.createCards()
+          })
+    })
   },
   didInsertElement(){
     Ember.run.next(this,this.setupServicesFilter);
+  },
+  loadSenario: function (senarioName) {
+    var self = this
+    var id = this.model.simulation.id
+    var simSubstring = `api/simulations/${id}/`
+    return Ember.$.getJSON("api/scenarios/").then(function (scenarios) {
+
+      var senario = _.find(scenarios, function (scenario) {
+        return  ( _.includes(scenario.sim, simSubstring) && scenario.name === senarioName)
+      })
+
+      if (senario) {
+        self.set(`senarios.${senarioName}`, senario)
+      } else {
+        var postData = {
+          "name": senarioName,
+          "sim": "http://127.0.0.1:8000/api/simulations/" + id + '/',
+          "start_offset": 0
+        }
+        postJSON({
+          data : postData,
+          url : "api/scenarios/"
+        }).then(function (baseline) {
+          self.set(`senarios.${senarioName}`, senario)
+        })
+      }
+    })
+  },
+  runSimulationWithSenario(senario){
+    var self = this
+    let senarioData = this.get(`senarios.${senario}`)
+    let simulation_id = this.get(`model.simulation.id`)
+    return Ember.$.getJSON(`api/simulation-run/${simulation_id}/?steps=120&s0=${senarioData.id}/`).then(
+      function(simData){
+        self.set(`simulationData.${senario}`,simData)
+      }
+    )
   },
   setupServicesFilter(){
     var simulation = this.get('model.simulation')
@@ -331,7 +380,7 @@ export default Ember.Component.extend({
     this.get('cards').push(outputCard)
   },
   generateGraphData(){
-    let baseline = this.get('model.baseline');
+    let baseline = this.get('simulationData.baseline');
     console.log(baseline);
     this.generateOutputData(baseline)
     this.generateStaffData(baseline)
