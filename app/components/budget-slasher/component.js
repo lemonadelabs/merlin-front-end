@@ -7,7 +7,7 @@ export default Ember.Component.extend({
   revisedBudget:undefined,
   budgetAmmount:undefined,
   selected:undefined,
-  init(){
+  didInsertElement(){
     this._super()
     let budgetAmmount = this.get('budget.processes.0.properties.0.property_value')
     let servicePercentageToSlash = this.get('servicePercentageToSlash')
@@ -78,7 +78,7 @@ export default Ember.Component.extend({
   observeServicePercentage:function(){
     this.addRound10Polyfill()
     let servicePercentageToSlash = this.get('servicePercentageToSlash')
-    
+
     if(!this.get('updateSubBudgets')){
       this.set('oldServicePercentageToSlash', servicePercentageToSlash)
       return;

@@ -7,7 +7,7 @@ export default Ember.Component.extend({
   revisedSubBudgets:{},
   revisedSubBudgetTotal:undefined,
   updateSubBudgets:true,
-  init(){
+  didInsertElement(){
     this._super()
     let totalServiceBudget = this.findTotalServiceBudget()
     this.slashByPercentage(this.servicePercentageToSlash, totalServiceBudget)
