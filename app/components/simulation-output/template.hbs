@@ -5,11 +5,16 @@
   {{else}}
     Unamed
   {{/if}}
-
 </p></header>
 
-
-{{!-- {{lookup this.outputData 1}} --}}
+{{#if this.errorsForSimOut}}
+  <p class='errors-subheading node-subheading'>Error</p>
+  <div class='errors-container'>
+    {{#each-in this.errorsForSimOut as |id content|}}
+      <p class='error-message'>{{content.message}}</p>
+    {{/each-in}}
+  </div>
+{{/if}}
 
 <p class='node-subheading'>input</p>
 <div class='node-input-container'>
@@ -18,15 +23,3 @@
       <p class='node-input-output'>{{sim-run-lookup this.outputData this.simulationOutput.id this.month}} <span class='node-label'>{{this.simulationOutput.unit_type}}</span></p>
     </div>
 </div>
-
-{{!-- {{#if this.simulationOutput.processes}} --}}
-  {{!-- <p class='entity-subheading'>options</p> --}}
-  {{!-- {{#each this.simulationOutput.processes as | process | }} --}}
-    {{!-- {{#each process.properties as | property | }} --}}
-
-      {{!-- <span class='entity-label'>{{property.name}}</span> --}}
-      {{!-- {{input value=property.property_value}} --}}
-    {{!-- {{/each}} --}}
-  {{!-- {{/each}} --}}
-{{!-- {{/if}} --}}
-
