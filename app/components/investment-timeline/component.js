@@ -8,7 +8,6 @@ import convertTime from '../../common/convert-time'
 import * as scenarioInteractions from '../../common/scenario-interactions'
 import * as simTraverse from '../../common/simulation-traversal'
 
-
 export default Ember.Component.extend({
   processProjects: processProjects,
   timelineGridObjects:undefined,
@@ -45,18 +44,29 @@ export default Ember.Component.extend({
     let totalInvestmentColor = 'rgb(255, 255, 255)';
     let remainingFundsColor = 'rgb(129, 65, 255)';
     let axisColor = 'rgb(255, 255, 255)';
+    let capitalisationColor = 'rgb(9, 255, 255)'
+    let ongoingCostColor = 'rgb(10, 25, 170)'
     let graphData = this.processAndSortData();
-    console.log(graphData)
 
 
 
-    let capex = new DataSet('total investment', graphData.capex, capexColor);
-    let opex = new DataSet('opex', graphData.opex, opexColor);
-    let totalInvestment = new DataSet('ongoing cost', graphData.totalInvestment, totalInvestmentColor);
     let remainingFunds = new DataSet('remaining funds', graphData.remainingFunds, remainingFundsColor);
+    let capexContribution = new DataSet('capex contribution', graphData.capex, capexColor);
+    let opexContribution = new DataSet('opex contribution', graphData.opex, opexColor);
+    let totalInvestment = new DataSet('total investment', graphData.totalInvestment, totalInvestmentColor);
 
-    opex.setDashType('longDash')
-    totalInvestment.setDashType('dotted')
+    let capitalisation = new DataSet('capitalisation', graphData.capitalisation, capitalisationColor);
+    let ongoingCost = new DataSet('ongoingCost', graphData.ongoingCost, ongoingCostColor);
+
+
+
+    // remainingFunds.setDashType('longDash')
+    capexContribution.setDashType('longDash')
+    opexContribution.setDashType('longDash')
+    totalInvestment.setDashType('longDash')
+
+    capitalisation.setDashType('dotted')
+    ongoingCost.setDashType('dotted')
 
     let xAxes = new Axes('', axisColor);
     xAxes.hideGridLines();
@@ -72,10 +82,20 @@ export default Ember.Component.extend({
     yAxes2.hideGridLines();
 
     this.set('axes',{'xAxes': xAxes, 'yAxes1': yAxes1,'yAxes2': yAxes2})
-    // let chartParameters = new ChartParameters( [totalInvestment, ongoingCost, capitalisation], graphData.labels, [xAxes], [yAxes1,yAxes2])
-    let chartParameters = new ChartParameters( [totalInvestment, capex, opex, remainingFunds], graphData.labels, [xAxes], [yAxes1,yAxes2])
-    // let chartParameters = new ChartParameters( [totalInvestment, ongoingCost], graphData.labels, [xAxes], [yAxes1,yAxes2])
+
+    var dataSets = [
+      remainingFunds,
+      capexContribution,
+      opexContribution,
+      totalInvestment,
+      ongoingCost,
+      // capitalisation,
+    ]
+    let chartParameters = new ChartParameters(dataSets, graphData.labels, [xAxes], [yAxes1,yAxes2])
+
+
     this.set('investmentGraph', chartParameters)
+
   },
   didInsertElement(){
     Ember.run.next(this,function(){
@@ -120,7 +140,6 @@ export default Ember.Component.extend({
       sortedData.totalInvestment.push(datum)
       sortedData.totalInvestment[i] += sortedData.opex[i]
     })
-    console.log(sortedData)
 
     _.forEach(sortedData, function (dataset) { // add a value on to the begining of the dataset, for layout reasons
       dataset.unshift(0)
@@ -146,14 +165,16 @@ export default Ember.Component.extend({
   }.observes('parentEntity'),
 
   recalculateInvestments:function(){
-    let processedData = this.processAndSortData(),
-        investmentGraph = this.get('investmentGraph'),
-        dataSetIndex = {
-          'totalInvestment' : 0,
-          'ongoingCost' : 1,
-          // 'capitalisation' : 2
-          'remainingFunds' : 2
-        }
+    let processedData = this.processAndSortData()
+    var investmentGraph = this.get('investmentGraph')
+    var dataSetIndex = {
+      'remainingFunds' : 0,
+      'capex' : 1,
+      'opex' : 2,
+      'totalInvestment' : 3,
+      'ongoingCost' : 4,
+      // 'capitalisation' : 5,
+    }
     _.forEach(processedData, function(value, key){
       let index = dataSetIndex[key];
       if(index !== undefined){

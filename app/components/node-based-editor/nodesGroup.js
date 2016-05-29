@@ -1,7 +1,9 @@
 import Cable from './cable'
 import Node from './node'
+import * as simTraverse from '../../common/simulation-traversal'
 
 export default function NodesGroup (opts) {
+  this.simulation = opts.simulation
   this.draw = opts.draw
   this.entityModel = opts.entityModel
   this.outputModel = opts.outputModel
@@ -202,8 +204,14 @@ NodesGroup.prototype.initCables = function() {
 
         if (endpoint.sim_output) {
 
-          var simulationOutputId = endpoint.sim_output
-          inputTerminal = self.outputNodes[simulationOutputId].inputTerminals[simulationOutputId]
+          var simoutputconnectorId = endpoint.sim_output
+
+          var simOutput = simTraverse.findSimoutputFromSimoutputconnectorId({
+            simoutputconnectorId : simoutputconnectorId,
+            simOutputs : self.outputModel
+          })
+
+          inputTerminal = self.outputNodes[simOutput.id].inputTerminals[simOutput.id]
           inputTerminal.$domElement.css('background-color', cableColor)
 
           cable = new Cable({
