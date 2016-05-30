@@ -45,10 +45,13 @@ export function updatePhaseTimes(data) {
         }
       })
 
-      var endEvent = oldScenario.events[index || oldScenario.events.length]
+      if (highest === 1) {
+        index = oldScenario.events.length - 1
+        console.warn('both events are happening at the same time. we dont now which event is the end event.')
+      }
+      var endEvent = oldScenario.events[index]
 
       endEvent.time = newPhaseLength
-      console.log(endEvent.time)
 
 
       putJSON({
