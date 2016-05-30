@@ -7,11 +7,14 @@ import truncateBigNumbers from '../../common/truncateBigNumbers';
 import convertTime from '../../common/convert-time'
 import * as scenarioInteractions from '../../common/scenario-interactions'
 import * as simTraverse from '../../common/simulation-traversal'
+import * as projectsTraversal from '../../common/projects-traversal'
+import * as merlinUtils from '../../common/merlin-utils'
 
 export default Ember.Component.extend({
   processProjects: processProjects,
   timelineGridObjects:undefined,
   graphData:undefined,
+  outputData:undefined,
   investmentGraph:undefined,
   axes: {},
   axes1Width:undefined,
@@ -30,6 +33,7 @@ export default Ember.Component.extend({
   },
   init: function () {
     this._super();
+    this.processTelemetryData()
     this.buildChart()
   },
   chartInlineStyle:Ember.computed('axes1Width','axes2Width', function () {
@@ -39,8 +43,78 @@ export default Ember.Component.extend({
     return Ember.String.htmlSafe(`margin-left:-${axes1Width}px; width:calc(80vw + ${widthOffset}px)`)
   }),
   processTelemetryData: function () {
-    var telemetryData = this.get('simulationRun')
-    console.log(telemetryData)
+    var self = this
+    var simulation = this.get('simulation')
+    var simRunReq = this.runSimulation()
+
+    simRunReq.then(function (simultionRun) {
+      self.set('simultionRun', simultionRun)
+      var outputsTelemetry = _.filter(simultionRun, function (telemetry) {
+        return (telemetry.type === "Output" && telemetry.name != 'Service Revenue'  && telemetry.name != 'Budgetary Surplus'  && telemetry.name != 'Operational Surplus')
+      })
+
+      _.forEach(outputsTelemetry, function (outputTelemetry) {
+        var simulationOutput = _.find(simulation.outputs, function (output) {
+          return output.id === outputTelemetry.id
+        })
+        var minimum = simulationOutput.minimum
+        outputTelemetry.minimum = minimum
+      })
+
+      var indexed = self.indexOutputData({
+        telemetry: outputsTelemetry
+      })
+
+      self.set('outputData', indexed)
+
+      self.recalculateOutputs(indexed)
+
+
+
+    })
+
+  },
+
+
+  recalculateOutputs: function (data) {
+    var investmentGraph = this.get('investmentGraph')
+    let index = 5
+    if(index !== undefined){
+      Ember.set(investmentGraph.data.datasets, `${index}.data`, data);
+    }
+  },
+
+
+  indexOutputData: function (opts) {
+    var returnData = []
+    var telemetry = opts.telemetry
+    var amountDatasets = telemetry.length
+    _.forEach(telemetry, function (set) {
+      var data = set.data.value
+      var minimum = set.minimum
+      _.forEach(data, function (datum, i) {
+        if (!returnData[i]) { returnData[i] = 0 }
+        returnData[i] += ( datum / minimum ) * 100
+      })
+    })
+
+    returnData = _.map(returnData, function (datum, i) {
+      return datum / amountDatasets
+    })
+    return returnData
+  },
+
+  runSimulation: function(models) {
+    var self = this
+    var simulationId = this.get('simulation.id')
+    var projects = this.get('projects')
+    var scenarioIds = projectsTraversal.getScenarioIds(projects)
+    var url = merlinUtils.simulationRunUrl({
+      scenarioIds : scenarioIds,
+      simulationId : simulationId,
+      timeframe : 48
+    })
+    return Ember.$.getJSON(url)
   },
 
   buildChart: function () {
@@ -51,8 +125,8 @@ export default Ember.Component.extend({
     let axisColor = 'rgb(255, 255, 255)';
     let capitalisationColor = 'rgb(9, 255, 255)'
     let ongoingCostColor = 'rgb(10, 25, 170)'
+    let outputsColor = 'rgb(245, 166, 35)'
     let graphData = this.processAndSortData();
-    let outputData = this.processTelemetryData()
 
 
 
@@ -64,6 +138,10 @@ export default Ember.Component.extend({
     let capitalisation = new DataSet('capitalisation', graphData.capitalisation, capitalisationColor);
     let ongoingCost = new DataSet('ongoingCost', graphData.ongoingCost, ongoingCostColor);
 
+    let outputData = new Array(48)
+    this.set('outputData', outputData)
+    let outputs = new DataSet('outputs', outputData, outputsColor);
+    outputs.setAxisId('yAxes2')
 
 
     // remainingFunds.setDashType('longDash')
@@ -82,7 +160,7 @@ export default Ember.Component.extend({
     yAxes1.beginAtZero(false);
     yAxes1.customFormatting(truncateBigNumbers)
     let yAxes2 = new Axes('', axisColor,'yAxes2');
-    yAxes2.prependToTickLabel('$');
+    yAxes2.appendToTickLabel('%');
     yAxes2.beginAtZero(false);
     yAxes2.setPosition('right');
     yAxes2.hideGridLines();
@@ -95,6 +173,7 @@ export default Ember.Component.extend({
       opexContribution,
       totalInvestment,
       ongoingCost,
+      outputs,
       // capitalisation,
     ]
     let chartParameters = new ChartParameters(dataSets, graphData.labels, [xAxes], [yAxes1,yAxes2])
@@ -171,7 +250,9 @@ export default Ember.Component.extend({
   }.observes('parentEntity'),
 
   recalculateInvestments:function(){
+    this.processTelemetryData()
     let processedData = this.processAndSortData()
+    // run simulation
     var investmentGraph = this.get('investmentGraph')
     var dataSetIndex = {
       'remainingFunds' : 0,
@@ -179,6 +260,7 @@ export default Ember.Component.extend({
       'opex' : 2,
       'totalInvestment' : 3,
       'ongoingCost' : 4,
+      // 'outputs' : 5,
       // 'capitalisation' : 5,
     }
     _.forEach(processedData, function(value, key){
@@ -198,6 +280,7 @@ export default Ember.Component.extend({
   actions:{
     onTimelineObjectInteractionEnd: function (context) {
       this.recalculateInvestments()
+      this.recalculateOutputs()
       this.persistDatesToBackend({
         "id": context.get('id'),
         "start_date": context.get('start'),
