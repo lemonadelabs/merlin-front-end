@@ -196,8 +196,8 @@ export default Ember.Component.extend({
             "name": phase.name,
             "description": phase.description,
             "scenario": scenario.id,
-            "investment_cost": Number(phase.investment_cost),
-            "service_cost": Number(phase.service_cost),
+            "investment_cost": Number(phase.investment_cost) || 0,
+            "service_cost": Number(phase.service_cost) || 0,
             "start_date": convertTime.quarterToBackend(phase.start_date),
             "end_date": convertTime.quarterToBackend(phase.end_date),
             "is_active": false
