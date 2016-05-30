@@ -143,3 +143,7 @@ html {
   background: url(../images/selectArrowFilter.svg) no-repeat calc(100% - 8px) rgba(0, 0, 0, 0.15);
 
 }
+
+.haircut-component{
+  color: white;
+}
