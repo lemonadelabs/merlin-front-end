@@ -19,7 +19,7 @@ export default Ember.Component.extend({
         serviceModels = simTraverse.getServiceModelsFromSimulation({simulation : simulation}),
         servicesPool = this.get('servicesPool')
     if(servicesPool.length > 0){
-      this.set('servicesPool', [])
+      servicesPool = []
     }
 
     _.forEach(serviceModels,function(serviceModel){
