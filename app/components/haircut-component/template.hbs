@@ -1,3 +1,3 @@
 {{#each this.servicesPool as |service|}}
-  {{service-budget-slasher service=service}}
+  {{service-budget-slasher updateScenario=(action "updateScenario") service=service}}
 {{/each}}
