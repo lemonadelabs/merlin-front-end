@@ -45,21 +45,18 @@ export default Ember.Component.extend({
     }
   },
   mouseDown(){
-    console.log('m down', this.get('budgetName'));
     this.set('selected',true)
-    console.log(this.get('selected'));
   },
   mouseUp(){
-    console.log('m up', this.get('budgetName'));
     this.set('selected',false)
-    console.log(this.get('selected'));
-
   },
   slashByPercentage(percentage, budget){
     let ratio = percentage / 100,
         amountToCut = budget*ratio,
         slashedBudget = budget - amountToCut,
-        budgetName = this.get('budgetName')
+        budgetName = this.get('budgetName'),
+        budgetEntity = this.get('budget')
+
     this.set('revisedBudget',slashedBudget);
     if(this.get('selected')){
       var subBudgetModified = true;
@@ -67,7 +64,7 @@ export default Ember.Component.extend({
     else {
       var subBudgetModified = false;
     }
-    this.sendAction("updateServiceBudgetAndPercentage",{'revisedBudget':slashedBudget,'budgetName':budgetName,'subBudgetModified':subBudgetModified})
+    this.sendAction("updateServiceBudgetAndPercentage",{'revisedBudget':slashedBudget,'budgetName':budgetName,'budgetEntity':budgetEntity,'subBudgetModified':subBudgetModified})
 
   },
   observePercentage:function(){
@@ -90,6 +87,5 @@ export default Ember.Component.extend({
       this.set('percentageToSlash', newPercentage);
     }
     this.set('oldServicePercentageToSlash', servicePercentageToSlash)
-    console.log(this.get('updateSubBudgets'));
   }.observes('servicePercentageToSlash')
 });

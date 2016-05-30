@@ -33,7 +33,7 @@ export default Ember.Component.extend({
     let revisedSubBudgets = this.get('revisedSubBudgets');
     let revisedSubBudgetTotal = 0;
     _.forEach(revisedSubBudgets,function(budget){
-      revisedSubBudgetTotal += budget;
+      revisedSubBudgetTotal += budget.value;
     })
     return revisedSubBudgetTotal
   },
@@ -83,11 +83,12 @@ export default Ember.Component.extend({
   }.observes('servicePercentageToSlash'),
   actions:{
     updateServiceBudgetAndPercentage:function(params){
-      this.set(`revisedSubBudgets.${params.budgetName}`, params.revisedBudget)
+      this.set(`revisedSubBudgets.${params.budgetName}`, {'value':params.revisedBudget,'entity':params.budgetEntity})
+      let revisedSubBudgets = this.get('revisedSubBudgets')
+      this.sendAction("updateScenario", revisedSubBudgets)
       let newRevisedTotalBudget = this.calculateRevisedTotalBudget(),
           totalBudget = this.get('totalServiceBudget'),
           newPercentage = this.calculateNewPercentage(newRevisedTotalBudget,totalBudget)
-      console.log(newPercentage);
       this.set('revisedBudget',newRevisedTotalBudget);
       if(params.subBudgetModified){
         this.set('updateSubBudgets',false)
