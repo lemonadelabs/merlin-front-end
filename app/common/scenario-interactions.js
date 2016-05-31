@@ -1,8 +1,9 @@
 import * as convertTime from './convert-time-es6'
 import putJSON from './put-json'
 
-export function updatePhaseTimes(data) {
+export function updatePhaseTimes(data, callback) {
   // get old start_date
+  var requests = []
   var phaseRequst = Ember.$.getJSON(`api/projectphases/${data.id}`)
   phaseRequst.then(function (oldPhase) {
     var scenarioRequest = Ember.$.getJSON(`api/scenarios/${oldPhase.scenario}`)
@@ -29,10 +30,11 @@ export function updatePhaseTimes(data) {
         end_date : convertTime.quarterToBackend(data.end_date),
       }
       // update the phase with new time data
-      putJSON({
+      var phaseReq = putJSON({
         data : phaseTimes,
         url : `api/projectphases/${data.id}/`
       })
+      requests.push(phaseReq)
 
       oldScenario.start_offset +=  beginningPhaseMoved
 
@@ -54,16 +56,29 @@ export function updatePhaseTimes(data) {
       endEvent.time = newPhaseLength
 
 
-      putJSON({
+      var endEventReq = putJSON({
         data : endEvent,
         url : `api/events/${endEvent.id}/`
       })
+      requests.push(endEventReq)
 
 
-      putJSON({
+      var scenarioReq = putJSON({
         data : oldScenario,
         url : `api/scenarios/${oldScenario.id}/`
       })
+      requests.push(scenarioReq)
+
+      var promisesReturned = 0
+      _.forEach( requests, function (request) {
+        request.then(function (response) {
+          promisesReturned ++
+          if (promisesReturned === requests.length) { callback() }
+        })
+      })
+
+
+
     })
   })
 }
