@@ -9,6 +9,7 @@ export default Ember.Component.extend({
   servicesPool:[],
   scenarios:{},
   simulationData:{},
+  scenarioOffset:0,
   didInsertElement(){
     this._super()
     Ember.run.next(this,this.setup)
@@ -18,6 +19,7 @@ export default Ember.Component.extend({
         simulation = this.get('model.simulation'),
         serviceModels = simTraverse.getServiceModelsFromSimulation({simulation : simulation}),
         servicesPool = this.get('servicesPool')
+
     if(servicesPool.length > 0){
       servicesPool = []
     }
@@ -72,6 +74,7 @@ export default Ember.Component.extend({
     return Ember.$.getJSON(`api/simulation-run/${simulation_id}/?steps=120&s0=${scenarioData.id}`).then(
       function(simData){
         self.set(`simulationData.${scenario}`,simData)
+        self.set(`error`,simData[simData.length-1])
       }
     )
   },
@@ -111,9 +114,31 @@ export default Ember.Component.extend({
 
 
   },
+  updateScenarioOffset:function(offset,scenario){
+    console.log('offset',offset,'scenario',scenario);
+    let updateScenarioObject = {
+      "name": scenario.name,
+      "sim": scenario.sim,
+      "start_offset": offset
+    },
+    self = this
+
+    putJSON({url:`api/scenarios/${scenario.id}/`,data: updateScenarioObject})
+    .then(function(data){
+      self.runSimulationWithSenario(scenario.name)
+    })
+
+  },
   actions:{
     updateScenario:function(newBudgets){
       Ember.run.debounce(this,this.persistChanges,newBudgets,200)
+    },
+    updateScenarioOffset:function(){
+      let year = this.get('yearOffset')
+      let month = this.get('monthOffset')
+      let scenario = this.get('scenarios.haircut')
+      this.updateScenarioOffset(year+month, scenario)
+      console.log(year+month);
     }
   }
 });
