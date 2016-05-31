@@ -72,9 +72,7 @@ export default Ember.Component.extend({
 
 
     })
-
   },
-
 
   recalculateOutputs: function (data) {
     var investmentGraph = this.get('investmentGraph')
@@ -250,7 +248,6 @@ export default Ember.Component.extend({
   }.observes('parentEntity'),
 
   recalculateInvestments:function(){
-    this.processTelemetryData()
     let processedData = this.processAndSortData()
     // run simulation
     var investmentGraph = this.get('investmentGraph')
@@ -272,16 +269,20 @@ export default Ember.Component.extend({
   },
 
   persistDatesToBackend: function (opts) {
-    scenarioInteractions.updatePhaseTimes(opts)
+    var callback = function () {
+      this.processTelemetryData()
+    }
+    scenarioInteractions.updatePhaseTimes( opts, callback.bind(this) )
+    this.recalculateInvestments()
+
   },
 
 
 
   actions:{
     onTimelineObjectInteractionEnd: function (context) {
-      this.recalculateInvestments()
-      this.recalculateOutputs()
-      this.persistDatesToBackend({
+      var self = this
+      var requests = this.persistDatesToBackend({
         "id": context.get('id'),
         "start_date": context.get('start'),
         "end_date": context.get('end'),
