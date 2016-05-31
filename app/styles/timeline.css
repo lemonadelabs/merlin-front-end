@@ -69,12 +69,12 @@
 .timeline-track {
     width: 100%;
     position: relative;
-    height: 75px;
+    height: 55px;
 }
 
 .timeline-track .track-name {
     color: white;
-    margin-top: 10px;
+    margin-top: 5px;
     margin-left: 10vw;
     width: 80vw;
     font-size: 10pt;
@@ -89,7 +89,7 @@
 
 .timeline-track-container{
   position: absolute;
-  top: 129px;
+  top: 136px;
   z-index: 10;
 }
 
@@ -99,11 +99,11 @@
   color: white;
   cursor: move;
   cursor: -webkit-grab;
-  min-height: 50px;
+  min-height: 25px;
   position: absolute;
   top: 30px;
   user-select: none;
-  padding-left: 5px;
+  padding-left: 6px;
 }
 
 .timeline-object.active {
@@ -131,9 +131,9 @@
 }
 
 .object-name {
-  font-size: 10.5pt;
-  font-weight: 800;
-  margin-top: 0px;
+  font-size: 10pt;
+  font-weight: 600;
+  margin-top: 0.1em;
   margin-bottom: 0px;
   text-transform: capitalize;
 }
@@ -141,5 +141,5 @@
 .object-info {
   font-size: 9.5pt;
   margin-top: 0;
-  margin-bottom: 0px;
+  margin-bottom: 0;
 }
