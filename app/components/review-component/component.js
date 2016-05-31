@@ -424,6 +424,7 @@ export default Ember.Component.extend({
       let rando = Math.random()*100;
       this.get('graphData.outputsPlanned').push(rando);
     }
+    console.log(baseline);
     this.set('graphData.outputsSlaPlanned',[])
     for (let i = 0; i < 10; i++) {
       let rando = Math.random()*100;
@@ -493,13 +494,13 @@ export default Ember.Component.extend({
     }
 
     //Haircut (from the 'haircut' senarios)
-    let lineStaffHaircut = this.findDataSetForGraphData(baseline,'line staff #','ProcessProperty')
+    let lineStaffHaircut = this.findDataSetForGraphData(haircut,'line staff #','ProcessProperty')
     _.forEach(lineStaffHaircut,function(v,i){
       lineStaffHaircut[i] = v / 12;
     })
     this.set('graphData.lineStaffHaircut',lineStaffHaircut)
 
-    let OhStaffHaircut = this.findDataSetForGraphData(baseline,'overhead staff #','ProcessProperty')
+    let OhStaffHaircut = this.findDataSetForGraphData(haircut,'overhead staff #','ProcessProperty')
     _.forEach(OhStaffHaircut,function(v,i){
       OhStaffHaircut[i] = v / 12;
     })
@@ -552,8 +553,6 @@ export default Ember.Component.extend({
     })
     this.set('graphData.expencesBudgeted',expencesBudgetedData)
 
-
-
     //Haircut (from the 'haircut' senarios)
     let revenueHaircutData = this.findDataSetForGraphData(haircut, 'Service Revenue','Output')
     this.set('graphData.revenueHaircut',revenueHaircutData)
@@ -585,7 +584,7 @@ export default Ember.Component.extend({
     })
     return dataSet
   },
-  generateYearLabels:function(baseline){
+  generateYearLabels:function(){
     let resultLabels = [];
     const startYear = 2016;
     for (let i = 0; i < 10; i++) {
