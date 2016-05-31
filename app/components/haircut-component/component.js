@@ -74,15 +74,41 @@ export default Ember.Component.extend({
     return Ember.$.getJSON(`api/simulation-run/${simulation_id}/?steps=120&s0=${scenarioData.id}`).then(
       function(simData){
         self.set(`simulationData.${scenario}`,simData)
-        self.set(`error`,simData[simData.length-1])
+        self.checkForAndProcessErrors(simData);
       }
     )
+  },
+  checkForAndProcessErrors(simData){
+    const START_YEAR = 2016
+    let errors = simData[simData.length-1].messages
+    let errorsByYear = {}
+    let errorsByYearArray = []
+    _.forEach(errors,function(error){
+      let year = Math.floor(error.time/12) - 1
+       if(!errorsByYear[year]){
+         errorsByYear[year] = {}
+       }
+      errorsByYear[year][error.message_id] = error
+    })
+
+    _.forEach(errorsByYear,function(errorForYear,key){
+      let errorYearObject = {}
+      errorYearObject.year = START_YEAR + Number(key);
+      errorYearObject.errors = []
+      _.forEach(errorForYear,function(error){
+        errorYearObject.errors.push(error)
+      })
+      errorsByYearArray.push(errorYearObject)
+    })
+    this.set(`errors`,errorsByYearArray)
+    console.log(errorsByYearArray);
   },
   createCuttingEvent(scenario){
     return merlinUtils.newEventObject({"scenarioId":scenario.id, "time":1})
   },
   persistChanges(newBudgets){
     let scenario = this.get('scenarios.haircut')
+    var self = this
     if(!scenario){
       return
     }
@@ -102,11 +128,17 @@ export default Ember.Component.extend({
       event.actions = actions
       // event put request
       putJSON({url:`api/events/${event.id}/`,data:event})
+      .then(function(){
+        self.runSimulationWithSenario(scenario.name)
+      })
     } else {
       event = this.createCuttingEvent(scenario)
       event.actions = actions
       // event post request
       postJSON({url:'api/events/',data:event})
+      .then(function(){
+        self.runSimulationWithSenario(scenario.name)
+      })
     }
   },
   updateScenarioOffset:function(offset,scenario){

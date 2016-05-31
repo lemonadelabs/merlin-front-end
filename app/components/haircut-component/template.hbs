@@ -25,6 +25,9 @@
 {{/x-select}}
 
 
-{{#each errors as |error|}}
-  {{errors}}
+{{#each this.errors as |error|}}
+  <p>{{error.year}}</p>
+  {{#each error.errors as |errorsMessage|}}
+    <p>{{errorsMessage.message}}</p>
+  {{/each}}
 {{/each}}
