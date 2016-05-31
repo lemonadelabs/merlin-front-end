@@ -1,3 +1,30 @@
 {{#each this.servicesPool as |service|}}
-  {{service-budget-slasher service=service}}
+  {{service-budget-slasher updateScenario=(action "updateScenario") service=service}}
+{{/each}}
+
+{{#x-select value=this.yearOffset action="updateScenarioOffset"}}
+  {{#x-option value=0}}2016/17{{/x-option}}
+  {{#x-option value=12}}2017/18{{/x-option}}
+  {{#x-option value=24}}2018/19{{/x-option}}
+  {{#x-option value=36}}2019/20{{/x-option}}
+{{/x-select}}
+
+{{#x-select value=this.monthOffset action="updateScenarioOffset"}}
+  {{#x-option value=0}}July{{/x-option}}
+  {{#x-option value=1}}August{{/x-option}}
+  {{#x-option value=2}}September{{/x-option}}
+  {{#x-option value=3}}October{{/x-option}}
+  {{#x-option value=4}}November{{/x-option}}
+  {{#x-option value=5}}December{{/x-option}}
+  {{#x-option value=6}}January{{/x-option}}
+  {{#x-option value=7}}Febuary{{/x-option}}
+  {{#x-option value=8}}March{{/x-option}}
+  {{#x-option value=9}}April{{/x-option}}
+  {{#x-option value=10}}May{{/x-option}}
+  {{#x-option value=11}}June{{/x-option}}
+{{/x-select}}
+
+
+{{#each errors as |error|}}
+  {{errors}}
 {{/each}}
