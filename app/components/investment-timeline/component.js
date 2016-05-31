@@ -42,6 +42,13 @@ export default Ember.Component.extend({
     let widthOffset = axes1Width + axes2Width
     return Ember.String.htmlSafe(`margin-left:-${axes1Width}px; width:calc(80vw + ${widthOffset}px)`)
   }),
+  logErrors: function (messages) {
+    _.forEach( messages, function (message) {
+      console.log(message.time, message.message)
+    })
+
+  },
+
   processTelemetryData: function () {
     var self = this
     var simulation = this.get('simulation')
@@ -49,6 +56,9 @@ export default Ember.Component.extend({
 
     simRunReq.then(function (simultionRun) {
       self.set('simultionRun', simultionRun)
+
+      if ( simultionRun[simultionRun.length - 1].messages) { self.logErrors(simultionRun.pop().messages) }
+
       var outputsTelemetry = _.filter(simultionRun, function (telemetry) {
         return (telemetry.type === "Output" && telemetry.name != 'Service Revenue'  && telemetry.name != 'Budgetary Surplus'  && telemetry.name != 'Operational Surplus')
       })
