@@ -124,6 +124,21 @@ export default Ember.Component.extend({
     })
 
   },
+  updateScenarioOffset:function(offset,scenario){
+    console.log('offset',offset,'scenario',scenario);
+    let updateScenarioObject = {
+      "name": scenario.name,
+      "sim": scenario.sim,
+      "start_offset": offset
+    },
+    self = this
+
+    putJSON({url:`api/scenarios/${scenario.id}/`,data: updateScenarioObject})
+    .then(function(data){
+      self.runSimulationWithSenario(scenario.name)
+    })
+
+  },
   actions:{
     updateScenario:function(newBudgets){
       Ember.run.debounce(this,this.persistChanges,newBudgets,200)
