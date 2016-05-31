@@ -3,6 +3,7 @@ import NodesGroup from './nodesGroup'
 import initDraggable from '../../common/draggable'
 import postJSON from '../../common/post-json'
 import putJSON from '../../common/put-json'
+import deleteResource from '../../common/delete-resource'
 
 export default Ember.Component.extend({
   draw: undefined,
@@ -42,7 +43,7 @@ export default Ember.Component.extend({
     this.nodesGroup.groupOffsetY = this.get('transformY')
   }.observes('transformY'),
 
-    updateBaseline: function (opts) {
+  updateBaseline: function (opts) {
     var self = this
 
     var propertyId = opts.propertyId
@@ -253,6 +254,27 @@ export default Ember.Component.extend({
 
   updateCables: function (opts) {
     this.nodesGroup.updateCablesForNode(opts)
+  },
+
+  resetBaseline: function () {
+    var self = this
+    var baseline = this.get('baseline')
+    var events = baseline.events
+    var amountEvents = baseline.events.length
+    var deleted = 0
+    _.forEach(events, function (event) {
+      var req = deleteResource(`api/events/${event.id}`)
+      req.then(function (response) {
+        deleted ++
+        if (deleted === amountEvents) { self.loadBaseline() }
+      })
+    })
+  },
+
+  actions: {
+    resetDefaults: function () {
+      this.resetBaseline()
+    }
   },
 
 });
