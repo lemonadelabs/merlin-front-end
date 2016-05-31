@@ -3,6 +3,8 @@ import DataSet from '../lemonade-chart/dataSet';
 import Axes from '../lemonade-chart/axes';
 import ChartParameters from '../lemonade-chart/chartParameters';
 import * as simTraverse from '../../common/simulation-traversal';
+import * as projectsTraversal from '../../common/projects-traversal'
+import * as merlinUtils from '../../common/merlin-utils'
 import postJSON from '../../common/post-json'
 
 
@@ -21,9 +23,39 @@ export default Ember.Component.extend({
   findSecenariosAndRunSims(){
     var self = this
 
-    var baselineSenarioLoad = this.loadSenario('baseline')
-    var haircutSenarioLoad = this.loadSenario('haircut')
+    this.findAndRunBaseline()
+    this.findAndRunHaircut()
+    this.findAndRunBaselineWithProjects()
 
+  },
+
+  findAndRunBaselineWithProjects: function () {
+    var self = this
+    var baseline = this.loadScenarioFromModel('baseline')
+    var projects = this.get('model.projects')
+    var simulationId = this.get('model.simulation.id')
+
+    var scenarioIds = projectsTraversal.getScenarioIds(projects)
+    scenarioIds = _.concat([baseline.id], scenarioIds)
+    var url = merlinUtils.simulationRunUrl({
+      scenarioIds : scenarioIds,
+      simulationId : simulationId,
+      timeframe : 120
+    })
+    console.log(url)
+    var simulationRun = Ember.$.getJSON(url)
+    simulationRun.then(function (telemetry) {
+      self.set('simulationData.planned', telemetry)
+      let canSetupChart = self.checkSenarioLoadStatus()
+      if(canSetupChart){
+        self.initCharts()
+      }
+    })
+  },
+
+  findAndRunBaseline: function () {
+    var self = this
+    var baselineSenarioLoad = this.loadSenario('baseline')
     baselineSenarioLoad.then(function(){
       self.runSimulationWithSenario('baseline')
       .then(function(){
@@ -33,7 +65,11 @@ export default Ember.Component.extend({
         }
       })
     })
+  },
 
+  findAndRunHaircut: function () {
+    var self = this
+    var haircutSenarioLoad = this.loadSenario('haircut')
     haircutSenarioLoad.then(function() {
       self.runSimulationWithSenario('haircut')
       .then(function(){
@@ -44,12 +80,13 @@ export default Ember.Component.extend({
       })
     })
   },
+
   initCharts(){
     this.generateGraphData()
     this.createCards()
   },
   checkSenarioLoadStatus(){
-    let requiredKeys = {"baseline":false, "haircut":false}
+    let requiredKeys = {"baseline":false, "haircut":false, "planned":false}
     let simulationData = this.get('simulationData')
     _.forEach(simulationData, function(v,k){
       if(!requiredKeys[k]){
@@ -62,9 +99,20 @@ export default Ember.Component.extend({
   didInsertElement(){
     Ember.run.next(this,this.setupServicesFilter);
   },
+
+  loadScenarioFromModel: function (scenarioName) {
+    var id = this.get('model.simulation.id')
+    var scenarios = this.get('model.scenarios')
+    var simSubstring = `api/simulations/${id}/`
+    var scenario = _.find(scenarios, function (scenario) {
+      return  ( _.includes(scenario.sim, simSubstring) && scenario.name === scenarioName)
+    })
+    return scenario
+  },
+
   loadSenario: function (senarioName) {
     var self = this
-    var id = this.model.simulation.id
+    var id = this.get('model.simulation.id')
     var simSubstring = `api/simulations/${id}/`
     return Ember.$.getJSON("api/scenarios/").then(function (scenarios) {
 
