@@ -459,13 +459,14 @@ export default Ember.Component.extend({
   generateGraphData(){
     let baseline = this.get('simulationData.baseline');
     let haircut = this.get('simulationData.haircut');
+    let planned = this.get('simulationData.planned');
 
-    this.generateOutputData(baseline, haircut)
-    this.generateStaffData(baseline, haircut)
-    this.generateFinancialData(baseline, haircut);
+    this.generateOutputData(baseline, haircut, planned)
+    this.generateStaffData(baseline, haircut, planned)
+    this.generateFinancialData(baseline, haircut, planned);
 
   },
-  generateOutputData(baseline, haircut){
+  generateOutputData(baseline, haircut, planned){
     //Planned (from the projects senarios)
     this.set('graphData.outputsPlanned',[])
     for (let i = 0; i < 10; i++) {
@@ -502,18 +503,19 @@ export default Ember.Component.extend({
       this.get('graphData.outputsSlaHaircut').push(rando);
     }
   },
-  generateStaffData(baseline, haircut){
+  generateStaffData(baseline, haircut, planned){
     //Planned (from the projects senarios)
-    this.set('graphData.lineStaffPlanned',[])
-    for (let i = 0; i < 10; i++) {
-      let rando = Math.random()*10;
-      this.get('graphData.lineStaffPlanned').push(rando);
-    }
-    this.set('graphData.OhStaffPlanned',[])
-    for (let i = 0; i < 10; i++) {
-      let rando = Math.random()*5;
-      this.get('graphData.OhStaffPlanned').push(rando);
-    }
+     let lineStaffPlanned = this.findDataSetForGraphData(planned,'line staff #','ProcessProperty')
+    _.forEach(lineStaffPlanned,function(v,i){
+      lineStaffPlanned[i] = v / 12;
+    })
+    this.set('graphData.lineStaffPlanned',lineStaffPlanned)
+
+   let ohStaffPlanned = this.findDataSetForGraphData(planned,'overhead staff #','ProcessProperty')
+    _.forEach(ohStaffPlanned,function(v,i){
+      ohStaffPlanned[i] = v / 12;
+    })
+    this.set('graphData.OhStaffPlanned',ohStaffPlanned)
 
     this.set('graphData.staffUtilisationPlanned',[])
     for (let i = 0; i < 10; i++) {
@@ -559,31 +561,23 @@ export default Ember.Component.extend({
       this.get('graphData.staffUtilisationHaircut').push(rando);
     }
   },
-  generateFinancialData(baseline, haircut){
+  generateFinancialData(baseline, haircut, planned){
     //Planned (from the projects senarios)
-    this.set('graphData.revenuePlanned',[])
-    for (let i = 0; i < 10; i++) {
-      let rando = Math.random()*100;
-      this.get('graphData.revenuePlanned').push(rando);
-    }
+    let plannedRevenuePlannedData = this.findDataSetForGraphData(planned,'Service Revenue','Output')
+    this.set('graphData.revenuePlanned',plannedRevenuePlannedData)
 
-    this.set('graphData.expencesPlanned',[])
-    for (let i = 0; i < 10; i++) {
-      let rando = Math.random()*100;
-      this.get('graphData.expencesPlanned').push(rando);
-    }
+    let plannedOperationalSurplusData = this.findDataSetForGraphData(planned,'Operational Surplus','Output')
+    this.set('graphData.surplusOpertationalPlanned',plannedOperationalSurplusData)
 
-    this.set('graphData.surplusOpertationalPlanned',[])
-    for (let i = 0; i < 10; i++) {
-      let rando = Math.random()*100;
-      this.get('graphData.surplusOpertationalPlanned').push(rando);
-    }
+    let plannedBudgetarySurplusData = this.findDataSetForGraphData(planned,'Budgetary Surplus','Output')
+    this.set('graphData.surplusBudgetaryPlanned',plannedBudgetarySurplusData)
 
-    this.set('graphData.surplusBudgetaryPlanned',[])
-    for (let i = 0; i < 10; i++) {
-      let rando = Math.random()*100;
-      this.get('graphData.surplusBudgetaryPlanned').push(rando);
-    }
+    let expencesPlannedData = []
+    _.forEach(plannedRevenuePlannedData,function(revData,i){
+      expencesPlannedData[i] = revData - plannedOperationalSurplusData[i]
+    })
+    this.set('graphData.expencesPlanned',expencesPlannedData)
+
     //Budgeted (from the 'baseline' senarios)
     let baselineRevenueBudgetedData = this.findDataSetForGraphData(baseline,'Service Revenue','Output')
     this.set('graphData.revenueBudgeted',baselineRevenueBudgetedData)
