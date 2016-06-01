@@ -9,6 +9,7 @@ export default Ember.Component.extend({
   classNames: ['modal'],
   steps: ['new-project-1', 'new-project-2', 'new-project-3'],
   currentStep: undefined,
+  newProjectData: undefined,
   validation: {
     newProject1: {
       validated: false,
@@ -17,19 +18,23 @@ export default Ember.Component.extend({
       disableButton: true,
     }
   },
-  newProjectData: {
-    is_ringfenced: false,
-    achievability: 5,
-    attractiveness: 5,
-    phases: [],
-    priority: 1,
-    alignment: 5
-  },
   modalTitle : undefined,
 
   init: function () {
     this._super()
+    this.resetNewProjectData() // if we want the form to remember data when it has been closed and reopened again, move this function into the .then of the last post reqest, and set newProjectData to the object on line 12
     this.set('currentStep', this.get('steps')[0])
+  },
+  resetNewProjectData: function () {
+    var newProjectData = {
+      is_ringfenced: false,
+      achievability: 5,
+      attractiveness: 5,
+      phases: [],
+      priority: 1,
+      alignment: 5
+    }
+    this.set('newProjectData', newProjectData)
   },
 
   persistScenarioForPhase: function (opts) {

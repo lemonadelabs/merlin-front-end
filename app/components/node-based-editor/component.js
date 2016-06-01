@@ -161,7 +161,6 @@ export default Ember.Component.extend({
         })
       })
     })
-    console.log(errors)
     self.set('errors', errors)
   },
 
@@ -196,6 +195,9 @@ export default Ember.Component.extend({
       self.set('processPropertyData', sortedData['ProcessProperty'])
       self.set('outputData', sortedData['Output'])
       self.set('inputConnectorData', sortedData['InputConnector'])
+
+      self.updateCablesForAllNodes()
+
     })
   }.observes('baseline'),
 
@@ -250,6 +252,21 @@ export default Ember.Component.extend({
       // e.preventDefault()
     })
 
+  },
+
+  updateCablesForAllNodes: function () {
+    var self = this
+    var entities = this.get('entityComponents')
+    _.forEach(entities, function (entity) {
+      Ember.run.next(self, function () {
+        self.updateCables({
+          type : entity.get('node-type'),
+          id : entity.get('id'),
+          groupOffsetX : entity.groupOffsetX,
+          groupOffsetY : entity.groupOffsetY
+        })
+      })
+    })
   },
 
   updateCables: function (opts) {
