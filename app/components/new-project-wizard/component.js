@@ -172,7 +172,7 @@ export default Ember.Component.extend({
 
       var newProjectJSON = {
         name: newProjectData.name,
-        description: newProjectData.description,
+        description: newProjectData.description || 'description',
         priority: newProjectData.priority,
         type: newProjectData.type, // may not be empty
         is_ringfenced: newProjectData.is_ringfenced,
@@ -191,10 +191,9 @@ export default Ember.Component.extend({
         var scenarioPostRequest = self.persistScenarioForPhase({ phase : phase })
         scenarioPostRequest.then( function (scenario) {
 
-          console.log(phase)
           var newPhaseJSON = {
             "name": phase.name,
-            "description": phase.description,
+            "description": phase.description || 'description',
             "scenario": scenario.id,
             "investment_cost": Number(phase.investment_cost) || 0,
             "service_cost": Number(phase.service_cost) || 0,

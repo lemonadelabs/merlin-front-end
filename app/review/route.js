@@ -4,7 +4,8 @@ export default Ember.Route.extend({
   model: function (params) {
     return Ember.RSVP.hash({
       simulation: Ember.$.getJSON(`api/simulations/${params.simulation_id}/`),
-      scenarios: Ember.$.getJSON('api/scenarios/')
+      scenarios: Ember.$.getJSON('api/scenarios/'),
+      projects: Ember.$.getJSON('api/projects/')
     });
   },
   afterModel: function(model) {

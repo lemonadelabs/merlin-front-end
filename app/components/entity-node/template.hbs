@@ -23,7 +23,7 @@
     {{#each this.entity.inputs as | input | }}
       <div>
         <div class='terminal input-terminal' id='{{input.id}}'></div>
-        <p class='node-input-output'>{{sim-run-lookup this.inputConnectorData input.id this.month}} <span class='node-label'>{{remove-keyword input.name "_input"}}</span></p>
+        <p class='node-input-output'>{{sim-run-lookup this.inputConnectorData input.id this.month}} <span class='node-label'>{{input.description}}</span></p>
       </div>
     {{/each}}
   </div>
@@ -56,7 +56,7 @@
   <div class='node-output-container'>
     {{#each this.entity.outputs as | output | }}
       <div>
-        <p class='node-input-output node-output'><span class='node-label'>{{remove-keyword output.name "_output"}}</span> {{sim-run-lookup this.outputConnectorData output.id this.month}} <span class='fte'>{{output.unit}}</span></p>
+        <p class='node-input-output node-output'><span class='node-label'>{{output.description}}</span> {{sim-run-lookup this.outputConnectorData output.id this.month}} <span class='fte'>{{output.unit}}</span></p>
         <div class='terminal output-terminal' id='{{output.id}}'></div>
       </div>
     {{/each}}
