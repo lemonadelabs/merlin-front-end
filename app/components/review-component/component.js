@@ -466,18 +466,76 @@ export default Ember.Component.extend({
     this.generateFinancialData(baseline, haircut, planned);
 
   },
+  findOutputsFromTelemetry(simultionRun) {
+    var simulation = this.get('model.simulation')
+    var outputsTelemetry = _.filter(simultionRun, function (telemetry) {
+      return (telemetry.type === "Output" && telemetry.name != 'Service Revenue'  && telemetry.name != 'Budgetary Surplus'  && telemetry.name != 'Operational Surplus')
+    })
+
+    _.forEach(outputsTelemetry, function (outputTelemetry) {
+      var simulationOutput = _.find(simulation.outputs, function (output) {
+        return output.id === outputTelemetry.id
+      })
+      var minimum = simulationOutput.minimum
+      outputTelemetry.minimum = minimum
+    })
+    return outputsTelemetry
+  },
+
+  indexOutputData: function (opts) {
+    var returnData = []
+    var telemetry = opts.telemetry
+    var amountDatasets = telemetry.length
+    _.forEach(telemetry, function (set) {
+      var data = set.data.value
+      var minimum = set.minimum
+      _.forEach(data, function (datum, i) {
+        if (!returnData[i]) { returnData[i] = 0 }
+        returnData[i] += ( datum / minimum ) * 100
+      })
+    })
+
+    returnData = _.map(returnData, function (datum, i) {
+      return datum / amountDatasets
+    })
+    return returnData
+  },
+
+  anualiseIndexed: function (indexed) {
+    var anualisedData = []
+    _.forEach(indexed, function (datum, i) {
+      var year = Math.floor(i / 12)
+      if (!anualisedData[year]) { anualisedData[year] = 0}
+      anualisedData[year] += datum
+    })
+    return anualisedData
+  },
+
+  makeDataYearlyAverage: function (data) {
+    return _.map(data, function (datum) {
+      return datum / 12
+    })
+  },
+
   generateOutputData(baseline, haircut, planned){
+
+    var baselineOutputTelemetry = this.findOutputsFromTelemetry(baseline)
+    var plannedOutputTelemetry = this.findOutputsFromTelemetry(planned)
+    var haircutOutputTelemetry = this.findOutputsFromTelemetry(haircut)
+
+
     //Planned (from the projects senarios)
     this.set('graphData.outputsPlanned',[])
     for (let i = 0; i < 10; i++) {
       let rando = Math.random()*100;
       this.get('graphData.outputsPlanned').push(rando);
     }
-    this.set('graphData.outputsSlaPlanned',[])
-    for (let i = 0; i < 10; i++) {
-      let rando = Math.random()*100;
-      this.get('graphData.outputsSlaPlanned').push(rando);
-    }
+
+    var indexedSlaPlanned = this.indexOutputData({ telemetry : plannedOutputTelemetry })
+    var anualisedSlaPlanned = this.anualiseIndexed(indexedSlaPlanned)
+    var averagedSlaPlanned = this.makeDataYearlyAverage(anualisedSlaPlanned)
+
+    this.set('graphData.outputsSlaPlanned',averagedSlaPlanned)
 
     //Budgeted (from the 'baseline' senarios)
     this.set('graphData.outputsBudgeted',[])
@@ -485,23 +543,26 @@ export default Ember.Component.extend({
       let rando = Math.random()*100;
       this.get('graphData.outputsBudgeted').push(rando);
     }
-    this.set('graphData.outputsSlaBudgeted',[])
-    for (let i = 0; i < 10; i++) {
-      let rando = Math.random()*100;
-      this.get('graphData.outputsSlaBudgeted').push(rando);
-    }
+
+    var indexedSlaBudgeted = this.indexOutputData({ telemetry : baselineOutputTelemetry })
+    var anualisedSlaBudgeted = this.anualiseIndexed(indexedSlaBudgeted)
+    var averagedSlaBudgeted = this.makeDataYearlyAverage(anualisedSlaBudgeted)
+    this.set('graphData.outputsSlaBudgeted',averagedSlaBudgeted)
+
 
     //Haircut (from the 'haircut' senarios)
+
     this.set('graphData.outputsHaircut',[])
     for (let i = 0; i < 10; i++) {
       let rando = Math.random()*100;
       this.get('graphData.outputsHaircut').push(rando);
     }
-    this.set('graphData.outputsSlaHaircut',[])
-    for (let i = 0; i < 10; i++) {
-      let rando = Math.random()*100;
-      this.get('graphData.outputsSlaHaircut').push(rando);
-    }
+
+    var indexedSlaHaircut = this.indexOutputData({ telemetry : haircutOutputTelemetry })
+    var anualisedSlaHaircut = this.anualiseIndexed(indexedSlaHaircut)
+    var averagedSlaHaircut = this.makeDataYearlyAverage(anualisedSlaHaircut)
+    this.set('graphData.outputsSlaHaircut',averagedSlaHaircut)
+
   },
   generateStaffData(baseline, haircut, planned){
     //Planned (from the projects senarios)
@@ -612,11 +673,11 @@ export default Ember.Component.extend({
     })
     this.set('graphData.expencesHaircut',expencesHaircutData)
   },
-  findDataSetForGraphData(Senario,DataSetName,DataSetType){
-    let telemetartyForSenario = _.filter(Senario, { 'name': DataSetName, 'type': DataSetType });
+  findDataSetForGraphData(simulationRun,DataSetName,DataSetType){
+    let telemetartyForSimulationRun = _.filter(simulationRun, { 'name': DataSetName, 'type': DataSetType });
     let dataSet = []
-    _.forEach(telemetartyForSenario,function(surplus,k){
-      _.forEach(surplus.data.value,function(data,i){
+    _.forEach(telemetartyForSimulationRun,function(telemetry,k){
+      _.forEach(telemetry.data.value,function(data,i){
         let month = i
         let year = Math.floor(month/12)
         if(dataSet[year] === undefined ){
