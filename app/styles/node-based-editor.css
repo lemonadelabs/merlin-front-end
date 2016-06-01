@@ -22,9 +22,22 @@
 }
 
 #reset-defaults-button {
-  color: white;
   position: fixed;
-  bottom: 5px;
-  left: 15px;
-  z-index: 1;
+  top: 41px;
+  right: 15px;
+  z-index: 100;
+  background-color: color(var(--app-background-color) alpha(-30%));
+  border: solid 2px rgb(117, 22, 22);
+  border-radius: 20px;
+  font-size: 8.5pt;
+  color: rgb(210, 16, 35);
+  padding: 4px 12px 5px;
+  font-weight: 600;
+  user-select:none;
+}
+
+#reset-defaults-button:hover {
+  border: solid 2px rgb(157, 22, 22);
+  background-color: rgba(117, 22, 22,0.3);
+  color: rgb(250, 16, 35);
 }
