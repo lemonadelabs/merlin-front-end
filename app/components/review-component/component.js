@@ -151,10 +151,12 @@ export default Ember.Component.extend({
     var serviceModels = simTraverse.getServiceModelsFromSimulation({simulation : simulation})
     this.set('services', serviceModels)
   },
-  newGraph(graphColours, GraphData, lineTypes, yAxesName){
+  newGraph(graphColours, GraphData, lineTypes, Datatype){
     let axisColour = 'rgb(255, 255, 255)',
         labels = this.generateYearLabels(GraphData[0].length),
-        dataSets = []
+        dataSets = [],
+        xAxes = new Axes('Years', axisColour),
+        yAxes = new Axes(undefined, axisColour);
 
     _.forEach(GraphData, function(value, i) {
       let data = value.data;
@@ -164,8 +166,14 @@ export default Ember.Component.extend({
       }
       dataSets.push(dataSet);
     })
-    let xAxes = new Axes('Years', axisColour);
-    let yAxes = new Axes(yAxesName, axisColour);
+
+    if(Datatype === "Money"){
+      console.log('cash money money');
+      yAxes.prependToTickLabel("$")
+    }
+    if(Datatype === "Percentage"){
+      yAxes.appendToTickLabel("%")
+    }
     let chartParameters = new ChartParameters( dataSets, labels, [xAxes], [yAxes])
     // chartParameters.name = value.name
 
@@ -222,9 +230,11 @@ export default Ember.Component.extend({
         'solid',
         'dotted',
         'longDash',
-      ]);
+      ],
+      "Money"
+    );
 
-    financeCard.graphs["expenses"] = this.newGraph(
+    financeCard.graphs["Expenses"] = this.newGraph(
       [
         'rgb(126, 211, 33)',
         'rgb(126, 211, 33)',
@@ -232,15 +242,15 @@ export default Ember.Component.extend({
       ],
       [
         {
-          name: 'expenses Budgeted',
+          name: 'Expenses Budgeted',
           data: expensesBudgeted
         },
         {
-          name: 'expenses Planned',
+          name: 'Expenses Planned',
           data: expensesPlanned
         },
         {
-          name: 'expenses Haircut',
+          name: 'Expenses Haircut',
           data: expensesHaircut
         }
       ],
@@ -307,7 +317,7 @@ export default Ember.Component.extend({
         selected:true
       },
       {
-        label:'expenses',
+        label:'Expenses',
         selected:false
       },
       {
@@ -384,7 +394,7 @@ export default Ember.Component.extend({
         'solid',
         'dotted',
         'longDash',
-      ]
+      ], "Staff Numbers"
     );
 
     staffCard.filterCategories = [
