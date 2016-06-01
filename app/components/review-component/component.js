@@ -434,8 +434,8 @@ export default Ember.Component.extend({
         'rgb(245, 166, 35)'
       ],
       [
-        {name: 'Service Level Planned', data:outputsSlaPlanned},
         {name: 'Service Level Budgeted', data:outputsSlaBudgeted},
+        {name: 'Service Level Planned', data:outputsSlaPlanned},
         {name: 'Service Level Haircut', data:outputsSlaHaircut}
       ],
       [
