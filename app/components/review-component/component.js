@@ -182,9 +182,9 @@ export default Ember.Component.extend({
     let revenuePlanned = this.get('graphData.revenuePlanned');
     let revenueHaircut = this.get('graphData.revenueHaircut');
 
-    let expencesBudgeted = this.get('graphData.expencesBudgeted');
-    let expencesPlanned = this.get('graphData.expencesPlanned');
-    let expencesHaircut = this.get('graphData.expencesHaircut');
+    let expensesBudgeted = this.get('graphData.expensesBudgeted');
+    let expensesPlanned = this.get('graphData.expensesPlanned');
+    let expensesHaircut = this.get('graphData.expensesHaircut');
 
     let surplusOpertationalBudgeted = this.get('graphData.surplusOpertationalBudgeted');
     let surplusOpertationalPlanned = this.get('graphData.surplusOpertationalPlanned');
@@ -224,7 +224,7 @@ export default Ember.Component.extend({
         'longDash',
       ]);
 
-    financeCard.graphs["Expences"] = this.newGraph(
+    financeCard.graphs["expenses"] = this.newGraph(
       [
         'rgb(126, 211, 33)',
         'rgb(126, 211, 33)',
@@ -232,16 +232,16 @@ export default Ember.Component.extend({
       ],
       [
         {
-          name: 'Expences Budgeted',
-          data: expencesBudgeted
+          name: 'expenses Budgeted',
+          data: expensesBudgeted
         },
         {
-          name: 'Expences Planned',
-          data: expencesPlanned
+          name: 'expenses Planned',
+          data: expensesPlanned
         },
         {
-          name: 'Expences Haircut',
-          data: expencesHaircut
+          name: 'expenses Haircut',
+          data: expensesHaircut
         }
       ],
       [
@@ -307,7 +307,7 @@ export default Ember.Component.extend({
         selected:true
       },
       {
-        label:'Expences',
+        label:'expenses',
         selected:false
       },
       {
@@ -655,11 +655,11 @@ export default Ember.Component.extend({
     let plannedBudgetarySurplusData = this.findDataSetForGraphData(planned,'Budgetary Surplus','Output')
     this.set('graphData.surplusBudgetaryPlanned',plannedBudgetarySurplusData)
 
-    let expencesPlannedData = []
+    let expensesPlannedData = []
     _.forEach(plannedRevenuePlannedData,function(revData,i){
-      expencesPlannedData[i] = revData - plannedOperationalSurplusData[i]
+      expensesPlannedData[i] = revData - plannedOperationalSurplusData[i]
     })
-    this.set('graphData.expencesPlanned',expencesPlannedData)
+    this.set('graphData.expensesPlanned',expensesPlannedData)
 
     //Budgeted (from the 'baseline' senarios)
     let baselineRevenueBudgetedData = this.findDataSetForGraphData(baseline,'Service Revenue','Output')
@@ -671,11 +671,11 @@ export default Ember.Component.extend({
     let baselineBudgetarySurplusData = this.findDataSetForGraphData(baseline,'Budgetary Surplus','Output')
     this.set('graphData.surplusBudgetaryBudgeted',baselineBudgetarySurplusData)
 
-    let expencesBudgetedData = []
+    let expensesBudgetedData = []
     _.forEach(baselineRevenueBudgetedData,function(revData,i){
-      expencesBudgetedData[i] = revData - baselineOperationalSurplusData[i]
+      expensesBudgetedData[i] = revData - baselineOperationalSurplusData[i]
     })
-    this.set('graphData.expencesBudgeted',expencesBudgetedData)
+    this.set('graphData.expensesBudgeted',expensesBudgetedData)
 
 
 
@@ -689,11 +689,11 @@ export default Ember.Component.extend({
     let haircutBudgetarySurplusData = this.findDataSetForGraphData(haircut,'Budgetary Surplus','Output')
     this.set('graphData.surplusBudgetaryHaircut',haircutBudgetarySurplusData)
 
-    let expencesHaircutData = []
+    let expensesHaircutData = []
     _.forEach(baselineRevenueBudgetedData,function(revData,i){
-      expencesHaircutData[i] = revData - haircutOperationalSurplusData[i]
+      expensesHaircutData[i] = revData - haircutOperationalSurplusData[i]
     })
-    this.set('graphData.expencesHaircut',expencesHaircutData)
+    this.set('graphData.expensesHaircut',expensesHaircutData)
   },
   findDataSetForGraphData(simulationRun,DataSetName,DataSetType){
     let telemetartyForSimulationRun = _.filter(simulationRun, { 'name': DataSetName, 'type': DataSetType });
