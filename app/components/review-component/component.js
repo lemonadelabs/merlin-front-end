@@ -42,7 +42,6 @@ export default Ember.Component.extend({
       simulationId : simulationId,
       timeframe : 120
     })
-    console.log(url)
     var simulationRun = Ember.$.getJSON(url)
     simulationRun.then(function (telemetry) {
       self.set('simulationData.planned', telemetry)
@@ -501,6 +500,7 @@ export default Ember.Component.extend({
     return returnData
   },
 
+
   anualiseIndexed: function (indexed) {
     var anualisedData = []
     _.forEach(indexed, function (datum, i) {
@@ -517,19 +517,40 @@ export default Ember.Component.extend({
     })
   },
 
+  indexOutputDataWithBaseline: function (opts) {
+    var returnData = []
+    var telemetry = opts.telemetry
+    var baselineTelemetry = opts.baselineTelemetry
+    var amountDatasets = telemetry.length
+    _.forEach(telemetry, function (set, itterate) {
+      var data = set.data.value
+      _.forEach(data, function (datum, i) {
+        if (!returnData[i]) { returnData[i] = 0 }
+        returnData[i] += ( datum / baselineTelemetry[itterate].data.value[i] ) * 100
+      })
+    })
+
+    returnData = _.map(returnData, function (datum, i) {
+      return datum / amountDatasets
+    })
+    return returnData
+  },
   generateOutputData(baseline, haircut, planned){
+
 
     var baselineOutputTelemetry = this.findOutputsFromTelemetry(baseline)
     var plannedOutputTelemetry = this.findOutputsFromTelemetry(planned)
     var haircutOutputTelemetry = this.findOutputsFromTelemetry(haircut)
 
-
     //Planned (from the projects senarios)
-    this.set('graphData.outputsPlanned',[])
-    for (let i = 0; i < 10; i++) {
-      let rando = Math.random()*100;
-      this.get('graphData.outputsPlanned').push(rando);
-    }
+    var plannedIndexBaseline = this.indexOutputDataWithBaseline({
+      telemetry : plannedOutputTelemetry,
+      baselineTelemetry : baselineOutputTelemetry
+    })
+    var anualisedPlannedIndexBaseline = this.anualiseIndexed(plannedIndexBaseline)
+    var averagedPlannedIndexBaseline = this.makeDataYearlyAverage(anualisedPlannedIndexBaseline)
+    this.set('graphData.outputsPlanned',averagedPlannedIndexBaseline)
+
 
     var indexedSlaPlanned = this.indexOutputData({ telemetry : plannedOutputTelemetry })
     var anualisedSlaPlanned = this.anualiseIndexed(indexedSlaPlanned)
@@ -551,12 +572,13 @@ export default Ember.Component.extend({
 
 
     //Haircut (from the 'haircut' senarios)
-
-    this.set('graphData.outputsHaircut',[])
-    for (let i = 0; i < 10; i++) {
-      let rando = Math.random()*100;
-      this.get('graphData.outputsHaircut').push(rando);
-    }
+    var haircutIndexBaseline = this.indexOutputDataWithBaseline({
+      telemetry : haircutOutputTelemetry,
+      baselineTelemetry : baselineOutputTelemetry
+    })
+    var anualisedHaircutIndexBaseline = this.anualiseIndexed(haircutIndexBaseline)
+    var averagedHaircutIndexBaseline = this.makeDataYearlyAverage(anualisedHaircutIndexBaseline)
+    this.set('graphData.outputsHaircut',averagedHaircutIndexBaseline)
 
     var indexedSlaHaircut = this.indexOutputData({ telemetry : haircutOutputTelemetry })
     var anualisedSlaHaircut = this.anualiseIndexed(indexedSlaHaircut)
