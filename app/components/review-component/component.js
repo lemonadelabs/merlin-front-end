@@ -3,6 +3,8 @@ import DataSet from '../lemonade-chart/dataSet';
 import Axes from '../lemonade-chart/axes';
 import ChartParameters from '../lemonade-chart/chartParameters';
 import * as simTraverse from '../../common/simulation-traversal';
+import * as projectsTraversal from '../../common/projects-traversal'
+import * as merlinUtils from '../../common/merlin-utils'
 import postJSON from '../../common/post-json'
 
 
@@ -21,9 +23,38 @@ export default Ember.Component.extend({
   findSecenariosAndRunSims(){
     var self = this
 
-    var baselineSenarioLoad = this.loadSenario('baseline')
-    var haircutSenarioLoad = this.loadSenario('haircut')
+    this.findAndRunBaseline()
+    this.findAndRunHaircut()
+    this.findAndRunBaselineWithProjects()
 
+  },
+
+  findAndRunBaselineWithProjects: function () {
+    var self = this
+    var baseline = this.loadScenarioFromModel('baseline')
+    var projects = this.get('model.projects')
+    var simulationId = this.get('model.simulation.id')
+
+    var scenarioIds = projectsTraversal.getScenarioIds(projects)
+    scenarioIds = _.concat([baseline.id], scenarioIds)
+    var url = merlinUtils.simulationRunUrl({
+      scenarioIds : scenarioIds,
+      simulationId : simulationId,
+      timeframe : 120
+    })
+    var simulationRun = Ember.$.getJSON(url)
+    simulationRun.then(function (telemetry) {
+      self.set('simulationData.planned', telemetry)
+      let canSetupChart = self.checkSenarioLoadStatus()
+      if(canSetupChart){
+        self.initCharts()
+      }
+    })
+  },
+
+  findAndRunBaseline: function () {
+    var self = this
+    var baselineSenarioLoad = this.loadSenario('baseline')
     baselineSenarioLoad.then(function(){
       self.runSimulationWithSenario('baseline')
       .then(function(){
@@ -33,7 +64,11 @@ export default Ember.Component.extend({
         }
       })
     })
+  },
 
+  findAndRunHaircut: function () {
+    var self = this
+    var haircutSenarioLoad = this.loadSenario('haircut')
     haircutSenarioLoad.then(function() {
       self.runSimulationWithSenario('haircut')
       .then(function(){
@@ -44,12 +79,13 @@ export default Ember.Component.extend({
       })
     })
   },
+
   initCharts(){
     this.generateGraphData()
     this.createCards()
   },
   checkSenarioLoadStatus(){
-    let requiredKeys = {"baseline":false, "haircut":false}
+    let requiredKeys = {"baseline":false, "haircut":false, "planned":false}
     let simulationData = this.get('simulationData')
     _.forEach(simulationData, function(v,k){
       if(!requiredKeys[k]){
@@ -62,9 +98,20 @@ export default Ember.Component.extend({
   didInsertElement(){
     Ember.run.next(this,this.setupServicesFilter);
   },
+
+  loadScenarioFromModel: function (scenarioName) {
+    var id = this.get('model.simulation.id')
+    var scenarios = this.get('model.scenarios')
+    var simSubstring = `api/simulations/${id}/`
+    var scenario = _.find(scenarios, function (scenario) {
+      return  ( _.includes(scenario.sim, simSubstring) && scenario.name === scenarioName)
+    })
+    return scenario
+  },
+
   loadSenario: function (senarioName) {
     var self = this
-    var id = this.model.simulation.id
+    var id = this.get('model.simulation.id')
     var simSubstring = `api/simulations/${id}/`
     return Ember.$.getJSON("api/scenarios/").then(function (scenarios) {
 
@@ -104,10 +151,12 @@ export default Ember.Component.extend({
     var serviceModels = simTraverse.getServiceModelsFromSimulation({simulation : simulation})
     this.set('services', serviceModels)
   },
-  newGraph(graphColours, GraphData, lineTypes, yAxesName){
+  newGraph(graphColours, GraphData, lineTypes, Datatype){
     let axisColour = 'rgb(255, 255, 255)',
         labels = this.generateYearLabels(GraphData[0].length),
-        dataSets = []
+        dataSets = [],
+        xAxes = new Axes('Years', axisColour),
+        yAxes = new Axes(undefined, axisColour);
 
     _.forEach(GraphData, function(value, i) {
       let data = value.data;
@@ -117,8 +166,14 @@ export default Ember.Component.extend({
       }
       dataSets.push(dataSet);
     })
-    let xAxes = new Axes('Years', axisColour);
-    let yAxes = new Axes(yAxesName, axisColour);
+
+    if(Datatype === "Money"){
+      console.log('cash money money');
+      yAxes.prependToTickLabel("$")
+    }
+    if(Datatype === "Percentage"){
+      yAxes.appendToTickLabel("%")
+    }
     let chartParameters = new ChartParameters( dataSets, labels, [xAxes], [yAxes])
     // chartParameters.name = value.name
 
@@ -135,9 +190,9 @@ export default Ember.Component.extend({
     let revenuePlanned = this.get('graphData.revenuePlanned');
     let revenueHaircut = this.get('graphData.revenueHaircut');
 
-    let expencesBudgeted = this.get('graphData.expencesBudgeted');
-    let expencesPlanned = this.get('graphData.expencesPlanned');
-    let expencesHaircut = this.get('graphData.expencesHaircut');
+    let expensesBudgeted = this.get('graphData.expensesBudgeted');
+    let expensesPlanned = this.get('graphData.expensesPlanned');
+    let expensesHaircut = this.get('graphData.expensesHaircut');
 
     let surplusOpertationalBudgeted = this.get('graphData.surplusOpertationalBudgeted');
     let surplusOpertationalPlanned = this.get('graphData.surplusOpertationalPlanned');
@@ -175,9 +230,11 @@ export default Ember.Component.extend({
         'solid',
         'dotted',
         'longDash',
-      ]);
+      ],
+      "Money"
+    );
 
-    financeCard.graphs["Expences"] = this.newGraph(
+    financeCard.graphs["Expenses"] = this.newGraph(
       [
         'rgb(126, 211, 33)',
         'rgb(126, 211, 33)',
@@ -185,16 +242,16 @@ export default Ember.Component.extend({
       ],
       [
         {
-          name: 'Expences Budgeted',
-          data: expencesBudgeted
+          name: 'Expenses Budgeted',
+          data: expensesBudgeted
         },
         {
-          name: 'Expences Planned',
-          data: expencesPlanned
+          name: 'Expenses Planned',
+          data: expensesPlanned
         },
         {
-          name: 'Expences Haircut',
-          data: expencesHaircut
+          name: 'Expenses Haircut',
+          data: expensesHaircut
         }
       ],
       [
@@ -260,7 +317,7 @@ export default Ember.Component.extend({
         selected:true
       },
       {
-        label:'Expences',
+        label:'Expenses',
         selected:false
       },
       {
@@ -337,7 +394,7 @@ export default Ember.Component.extend({
         'solid',
         'dotted',
         'longDash',
-      ]
+      ], "Staff Numbers"
     );
 
     staffCard.filterCategories = [
@@ -386,8 +443,8 @@ export default Ember.Component.extend({
         'rgb(245, 166, 35)'
       ],
       [
-        {name: 'Service Level Planned', data:outputsSlaPlanned},
         {name: 'Service Level Budgeted', data:outputsSlaBudgeted},
+        {name: 'Service Level Planned', data:outputsSlaPlanned},
         {name: 'Service Level Haircut', data:outputsSlaHaircut}
       ],
       [
@@ -411,25 +468,105 @@ export default Ember.Component.extend({
   generateGraphData(){
     let baseline = this.get('simulationData.baseline');
     let haircut = this.get('simulationData.haircut');
+    let planned = this.get('simulationData.planned');
 
-    this.generateOutputData(baseline, haircut)
-    this.generateStaffData(baseline, haircut)
-    this.generateFinancialData(baseline, haircut);
+    this.generateOutputData(baseline, haircut, planned)
+    this.generateStaffData(baseline, haircut, planned)
+    this.generateFinancialData(baseline, haircut, planned);
 
   },
-  generateOutputData(baseline, haircut){
+  findOutputsFromTelemetry(simultionRun) {
+    var simulation = this.get('model.simulation')
+    var outputsTelemetry = _.filter(simultionRun, function (telemetry) {
+      return (telemetry.type === "Output" && telemetry.name != 'Service Revenue'  && telemetry.name != 'Budgetary Surplus'  && telemetry.name != 'Operational Surplus')
+    })
+
+    _.forEach(outputsTelemetry, function (outputTelemetry) {
+      var simulationOutput = _.find(simulation.outputs, function (output) {
+        return output.id === outputTelemetry.id
+      })
+      var minimum = simulationOutput.minimum
+      outputTelemetry.minimum = minimum
+    })
+    return outputsTelemetry
+  },
+
+  indexOutputData: function (opts) {
+    var returnData = []
+    var telemetry = opts.telemetry
+    var amountDatasets = telemetry.length
+    _.forEach(telemetry, function (set) {
+      var data = set.data.value
+      var minimum = set.minimum
+      _.forEach(data, function (datum, i) {
+        if (!returnData[i]) { returnData[i] = 0 }
+        returnData[i] += ( datum / minimum ) * 100
+      })
+    })
+
+    returnData = _.map(returnData, function (datum, i) {
+      return datum / amountDatasets
+    })
+    return returnData
+  },
+
+
+  anualiseIndexed: function (indexed) {
+    var anualisedData = []
+    _.forEach(indexed, function (datum, i) {
+      var year = Math.floor(i / 12)
+      if (!anualisedData[year]) { anualisedData[year] = 0}
+      anualisedData[year] += datum
+    })
+    return anualisedData
+  },
+
+  makeDataYearlyAverage: function (data) {
+    return _.map(data, function (datum) {
+      return datum / 12
+    })
+  },
+
+  indexOutputDataWithBaseline: function (opts) {
+    var returnData = []
+    var telemetry = opts.telemetry
+    var baselineTelemetry = opts.baselineTelemetry
+    var amountDatasets = telemetry.length
+    _.forEach(telemetry, function (set, itterate) {
+      var data = set.data.value
+      _.forEach(data, function (datum, i) {
+        if (!returnData[i]) { returnData[i] = 0 }
+        returnData[i] += ( datum / baselineTelemetry[itterate].data.value[i] ) * 100
+      })
+    })
+
+    returnData = _.map(returnData, function (datum, i) {
+      return datum / amountDatasets
+    })
+    return returnData
+  },
+  generateOutputData(baseline, haircut, planned){
+
+
+    var baselineOutputTelemetry = this.findOutputsFromTelemetry(baseline)
+    var plannedOutputTelemetry = this.findOutputsFromTelemetry(planned)
+    var haircutOutputTelemetry = this.findOutputsFromTelemetry(haircut)
+
     //Planned (from the projects senarios)
-    this.set('graphData.outputsPlanned',[])
-    for (let i = 0; i < 10; i++) {
-      let rando = Math.random()*100;
-      this.get('graphData.outputsPlanned').push(rando);
-    }
-    console.log(baseline);
-    this.set('graphData.outputsSlaPlanned',[])
-    for (let i = 0; i < 10; i++) {
-      let rando = Math.random()*100;
-      this.get('graphData.outputsSlaPlanned').push(rando);
-    }
+    var plannedIndexBaseline = this.indexOutputDataWithBaseline({
+      telemetry : plannedOutputTelemetry,
+      baselineTelemetry : baselineOutputTelemetry
+    })
+    var anualisedPlannedIndexBaseline = this.anualiseIndexed(plannedIndexBaseline)
+    var averagedPlannedIndexBaseline = this.makeDataYearlyAverage(anualisedPlannedIndexBaseline)
+    this.set('graphData.outputsPlanned',averagedPlannedIndexBaseline)
+
+
+    var indexedSlaPlanned = this.indexOutputData({ telemetry : plannedOutputTelemetry })
+    var anualisedSlaPlanned = this.anualiseIndexed(indexedSlaPlanned)
+    var averagedSlaPlanned = this.makeDataYearlyAverage(anualisedSlaPlanned)
+
+    this.set('graphData.outputsSlaPlanned',averagedSlaPlanned)
 
     //Budgeted (from the 'baseline' senarios)
     this.set('graphData.outputsBudgeted',[])
@@ -437,36 +574,41 @@ export default Ember.Component.extend({
       let rando = Math.random()*100;
       this.get('graphData.outputsBudgeted').push(rando);
     }
-    this.set('graphData.outputsSlaBudgeted',[])
-    for (let i = 0; i < 10; i++) {
-      let rando = Math.random()*100;
-      this.get('graphData.outputsSlaBudgeted').push(rando);
-    }
+
+    var indexedSlaBudgeted = this.indexOutputData({ telemetry : baselineOutputTelemetry })
+    var anualisedSlaBudgeted = this.anualiseIndexed(indexedSlaBudgeted)
+    var averagedSlaBudgeted = this.makeDataYearlyAverage(anualisedSlaBudgeted)
+    this.set('graphData.outputsSlaBudgeted',averagedSlaBudgeted)
+
 
     //Haircut (from the 'haircut' senarios)
-    this.set('graphData.outputsHaircut',[])
-    for (let i = 0; i < 10; i++) {
-      let rando = Math.random()*100;
-      this.get('graphData.outputsHaircut').push(rando);
-    }
-    this.set('graphData.outputsSlaHaircut',[])
-    for (let i = 0; i < 10; i++) {
-      let rando = Math.random()*100;
-      this.get('graphData.outputsSlaHaircut').push(rando);
-    }
+    var haircutIndexBaseline = this.indexOutputDataWithBaseline({
+      telemetry : haircutOutputTelemetry,
+      baselineTelemetry : baselineOutputTelemetry
+    })
+    var anualisedHaircutIndexBaseline = this.anualiseIndexed(haircutIndexBaseline)
+    var averagedHaircutIndexBaseline = this.makeDataYearlyAverage(anualisedHaircutIndexBaseline)
+    this.set('graphData.outputsHaircut',averagedHaircutIndexBaseline)
+
+    var indexedSlaHaircut = this.indexOutputData({ telemetry : haircutOutputTelemetry })
+    var anualisedSlaHaircut = this.anualiseIndexed(indexedSlaHaircut)
+    var averagedSlaHaircut = this.makeDataYearlyAverage(anualisedSlaHaircut)
+    this.set('graphData.outputsSlaHaircut',averagedSlaHaircut)
+
   },
-  generateStaffData(baseline, haircut){
+  generateStaffData(baseline, haircut, planned){
     //Planned (from the projects senarios)
-    this.set('graphData.lineStaffPlanned',[])
-    for (let i = 0; i < 10; i++) {
-      let rando = Math.random()*10;
-      this.get('graphData.lineStaffPlanned').push(rando);
-    }
-    this.set('graphData.OhStaffPlanned',[])
-    for (let i = 0; i < 10; i++) {
-      let rando = Math.random()*5;
-      this.get('graphData.OhStaffPlanned').push(rando);
-    }
+     let lineStaffPlanned = this.findDataSetForGraphData(planned,'line staff #','ProcessProperty')
+    _.forEach(lineStaffPlanned,function(v,i){
+      lineStaffPlanned[i] = v / 12;
+    })
+    this.set('graphData.lineStaffPlanned',lineStaffPlanned)
+
+   let ohStaffPlanned = this.findDataSetForGraphData(planned,'overhead staff #','ProcessProperty')
+    _.forEach(ohStaffPlanned,function(v,i){
+      ohStaffPlanned[i] = v / 12;
+    })
+    this.set('graphData.OhStaffPlanned',ohStaffPlanned)
 
     this.set('graphData.staffUtilisationPlanned',[])
     for (let i = 0; i < 10; i++) {
@@ -494,13 +636,13 @@ export default Ember.Component.extend({
     }
 
     //Haircut (from the 'haircut' senarios)
-    let lineStaffHaircut = this.findDataSetForGraphData(haircut,'line staff #','ProcessProperty')
+    let lineStaffHaircut = this.findDataSetForGraphData(baseline,'line staff #','ProcessProperty')
     _.forEach(lineStaffHaircut,function(v,i){
       lineStaffHaircut[i] = v / 12;
     })
     this.set('graphData.lineStaffHaircut',lineStaffHaircut)
 
-    let OhStaffHaircut = this.findDataSetForGraphData(haircut,'overhead staff #','ProcessProperty')
+    let OhStaffHaircut = this.findDataSetForGraphData(baseline,'overhead staff #','ProcessProperty')
     _.forEach(OhStaffHaircut,function(v,i){
       OhStaffHaircut[i] = v / 12;
     })
@@ -512,31 +654,23 @@ export default Ember.Component.extend({
       this.get('graphData.staffUtilisationHaircut').push(rando);
     }
   },
-  generateFinancialData(baseline, haircut){
+  generateFinancialData(baseline, haircut, planned){
     //Planned (from the projects senarios)
-    this.set('graphData.revenuePlanned',[])
-    for (let i = 0; i < 10; i++) {
-      let rando = Math.random()*100;
-      this.get('graphData.revenuePlanned').push(rando);
-    }
+    let plannedRevenuePlannedData = this.findDataSetForGraphData(planned,'Service Revenue','Output')
+    this.set('graphData.revenuePlanned',plannedRevenuePlannedData)
 
-    this.set('graphData.expencesPlanned',[])
-    for (let i = 0; i < 10; i++) {
-      let rando = Math.random()*100;
-      this.get('graphData.expencesPlanned').push(rando);
-    }
+    let plannedOperationalSurplusData = this.findDataSetForGraphData(planned,'Operational Surplus','Output')
+    this.set('graphData.surplusOpertationalPlanned',plannedOperationalSurplusData)
 
-    this.set('graphData.surplusOpertationalPlanned',[])
-    for (let i = 0; i < 10; i++) {
-      let rando = Math.random()*100;
-      this.get('graphData.surplusOpertationalPlanned').push(rando);
-    }
+    let plannedBudgetarySurplusData = this.findDataSetForGraphData(planned,'Budgetary Surplus','Output')
+    this.set('graphData.surplusBudgetaryPlanned',plannedBudgetarySurplusData)
 
-    this.set('graphData.surplusBudgetaryPlanned',[])
-    for (let i = 0; i < 10; i++) {
-      let rando = Math.random()*100;
-      this.get('graphData.surplusBudgetaryPlanned').push(rando);
-    }
+    let expensesPlannedData = []
+    _.forEach(plannedRevenuePlannedData,function(revData,i){
+      expensesPlannedData[i] = revData - plannedOperationalSurplusData[i]
+    })
+    this.set('graphData.expensesPlanned',expensesPlannedData)
+
     //Budgeted (from the 'baseline' senarios)
     let baselineRevenueBudgetedData = this.findDataSetForGraphData(baseline,'Service Revenue','Output')
     this.set('graphData.revenueBudgeted',baselineRevenueBudgetedData)
@@ -547,11 +681,13 @@ export default Ember.Component.extend({
     let baselineBudgetarySurplusData = this.findDataSetForGraphData(baseline,'Budgetary Surplus','Output')
     this.set('graphData.surplusBudgetaryBudgeted',baselineBudgetarySurplusData)
 
-    let expencesBudgetedData = []
+    let expensesBudgetedData = []
     _.forEach(baselineRevenueBudgetedData,function(revData,i){
-      expencesBudgetedData[i] = revData - baselineOperationalSurplusData[i]
+      expensesBudgetedData[i] = revData - baselineOperationalSurplusData[i]
     })
-    this.set('graphData.expencesBudgeted',expencesBudgetedData)
+    this.set('graphData.expensesBudgeted',expensesBudgetedData)
+
+
 
     //Haircut (from the 'haircut' senarios)
     let revenueHaircutData = this.findDataSetForGraphData(haircut, 'Service Revenue','Output')
@@ -563,17 +699,17 @@ export default Ember.Component.extend({
     let haircutBudgetarySurplusData = this.findDataSetForGraphData(haircut,'Budgetary Surplus','Output')
     this.set('graphData.surplusBudgetaryHaircut',haircutBudgetarySurplusData)
 
-    let expencesHaircutData = []
+    let expensesHaircutData = []
     _.forEach(baselineRevenueBudgetedData,function(revData,i){
-      expencesHaircutData[i] = revData - haircutOperationalSurplusData[i]
+      expensesHaircutData[i] = revData - haircutOperationalSurplusData[i]
     })
-    this.set('graphData.expencesHaircut',expencesHaircutData)
+    this.set('graphData.expensesHaircut',expensesHaircutData)
   },
-  findDataSetForGraphData(Senario,DataSetName,DataSetType){
-    let telemetartyForSenario = _.filter(Senario, { 'name': DataSetName, 'type': DataSetType });
+  findDataSetForGraphData(simulationRun,DataSetName,DataSetType){
+    let telemetartyForSimulationRun = _.filter(simulationRun, { 'name': DataSetName, 'type': DataSetType });
     let dataSet = []
-    _.forEach(telemetartyForSenario,function(surplus,k){
-      _.forEach(surplus.data.value,function(data,i){
+    _.forEach(telemetartyForSimulationRun,function(telemetry,k){
+      _.forEach(telemetry.data.value,function(data,i){
         let month = i
         let year = Math.floor(month/12)
         if(dataSet[year] === undefined ){
@@ -584,7 +720,7 @@ export default Ember.Component.extend({
     })
     return dataSet
   },
-  generateYearLabels:function(){
+  generateYearLabels:function(baseline){
     let resultLabels = [];
     const startYear = 2016;
     for (let i = 0; i < 10; i++) {

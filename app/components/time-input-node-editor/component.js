@@ -8,7 +8,7 @@ export default Ember.Component.extend({
     {label:"2016 / 17", offset:0},
     {label:"2017 / 18", offset:12},
     {label:"2018 / 19", offset:24},
-    {label:"2020 / 21", offset:36}
+    {label:"2019 / 20", offset:36}
   ],
   months: [
     {

@@ -131,6 +131,7 @@
 .modal .timeline-object{
   background-color: var(--resource-color);
   top: 10px;
+  min-height: 50px;
 }
 
 .modal .timeline-year-container {

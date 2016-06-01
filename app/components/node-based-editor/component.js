@@ -3,6 +3,7 @@ import NodesGroup from './nodesGroup'
 import initDraggable from '../../common/draggable'
 import postJSON from '../../common/post-json'
 import putJSON from '../../common/put-json'
+import deleteResource from '../../common/delete-resource'
 
 export default Ember.Component.extend({
   draw: undefined,
@@ -42,7 +43,7 @@ export default Ember.Component.extend({
     this.nodesGroup.groupOffsetY = this.get('transformY')
   }.observes('transformY'),
 
-    updateBaseline: function (opts) {
+  updateBaseline: function (opts) {
     var self = this
 
     var propertyId = opts.propertyId
@@ -160,7 +161,6 @@ export default Ember.Component.extend({
         })
       })
     })
-    console.log(errors)
     self.set('errors', errors)
   },
 
@@ -195,6 +195,9 @@ export default Ember.Component.extend({
       self.set('processPropertyData', sortedData['ProcessProperty'])
       self.set('outputData', sortedData['Output'])
       self.set('inputConnectorData', sortedData['InputConnector'])
+
+      self.updateCablesForAllNodes()
+
     })
   }.observes('baseline'),
 
@@ -251,8 +254,44 @@ export default Ember.Component.extend({
 
   },
 
+  updateCablesForAllNodes: function () {
+    var self = this
+    var entities = this.get('entityComponents')
+    _.forEach(entities, function (entity) {
+      Ember.run.next(self, function () {
+        self.updateCables({
+          type : entity.get('node-type'),
+          id : entity.get('id'),
+          groupOffsetX : entity.groupOffsetX,
+          groupOffsetY : entity.groupOffsetY
+        })
+      })
+    })
+  },
+
   updateCables: function (opts) {
     this.nodesGroup.updateCablesForNode(opts)
+  },
+
+  resetBaseline: function () {
+    var self = this
+    var baseline = this.get('baseline')
+    var events = baseline.events
+    var amountEvents = baseline.events.length
+    var deleted = 0
+    _.forEach(events, function (event) {
+      var req = deleteResource(`api/events/${event.id}`)
+      req.then(function (response) {
+        deleted ++
+        if (deleted === amountEvents) { self.loadBaseline() }
+      })
+    })
+  },
+
+  actions: {
+    resetDefaults: function () {
+      this.resetBaseline()
+    }
   },
 
 });

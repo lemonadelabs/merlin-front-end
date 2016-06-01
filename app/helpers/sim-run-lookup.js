@@ -12,7 +12,6 @@ export function simRunLookup(params/*, hash*/) {
       id = params[1],
       month = params[2],
       objectData
-  console.log(month)
   if (object) {
     if (!object[id]) {
       console.warn('there is no telemetry data for this query')
