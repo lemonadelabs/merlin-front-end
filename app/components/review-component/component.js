@@ -19,13 +19,19 @@ export default Ember.Component.extend({
   init(){
     this._super();
     this.findSecenariosAndRunSims();
+    let simData = this.get('simulationData');
+    if (!_.isEmpty(simData)){
+      this.set('simulationData',{});
+    }
+  },
+  didReceiveAttrs(){
+    Ember.run.next(this,this.setupServicesFilter)
   },
   findSecenariosAndRunSims(){
     this.findAndRunBaseline()
     this.findAndRunHaircut()
     this.findAndRunBaselineWithProjects()
   },
-
   findAndRunBaselineWithProjects: function () {
     var self = this
     var baseline = this.loadScenarioFromModel('baseline')
@@ -48,7 +54,6 @@ export default Ember.Component.extend({
       }
     })
   },
-
   findAndRunBaseline: function () {
     var self = this
     var baselineSenarioLoad = this.loadSenario('baseline')
@@ -62,7 +67,6 @@ export default Ember.Component.extend({
       })
     })
   },
-
   findAndRunHaircut: function () {
     var self = this
     var haircutSenarioLoad = this.loadSenario('haircut')
@@ -76,7 +80,6 @@ export default Ember.Component.extend({
       })
     })
   },
-
   initCharts(){
     this.generateGraphData()
     this.createCards()
@@ -92,9 +95,7 @@ export default Ember.Component.extend({
     let allSimsLoaded = !_.includes(requiredKeys, false)
     return allSimsLoaded
   },
-  willInsertElement(){
-    this.setupServicesFilter();
-  },
+
   loadScenarioFromModel: function (scenarioName) {
     var id = this.get('model.simulation.id')
     var scenarios = this.get('model.scenarios')
