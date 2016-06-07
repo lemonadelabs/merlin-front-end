@@ -3,7 +3,7 @@ import Ember from 'ember';
 export default Ember.Component.extend({
   selectedCategory:undefined,
   selectGraph:undefined,
-  didInsertElement(){
+  willInsertElement(){
     let firstCategory = this.get('cardData.filterCategories.0.label');
     this.set('selectedCategory',firstCategory)
     let selectedGraph = this.get(`cardData.graphs.${firstCategory}`);

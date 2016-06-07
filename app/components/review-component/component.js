@@ -92,10 +92,9 @@ export default Ember.Component.extend({
     let allSimsLoaded = !_.includes(requiredKeys, false)
     return allSimsLoaded
   },
-  didInsertElement(){
-    Ember.run.next(this,this.setupServicesFilter);
+  willInsertElement(){
+    this.setupServicesFilter();
   },
-
   loadScenarioFromModel: function (scenarioName) {
     var id = this.get('model.simulation.id')
     var scenarios = this.get('model.scenarios')
