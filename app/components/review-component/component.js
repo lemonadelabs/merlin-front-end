@@ -21,8 +21,6 @@ export default Ember.Component.extend({
     this.findSecenariosAndRunSims();
   },
   findSecenariosAndRunSims(){
-    var self = this
-
     this.findAndRunBaseline()
     this.findAndRunHaircut()
     this.findAndRunBaselineWithProjects()
@@ -478,7 +476,7 @@ export default Ember.Component.extend({
   findOutputsFromTelemetry(simultionRun) {
     var simulation = this.get('model.simulation')
     var outputsTelemetry = _.filter(simultionRun, function (telemetry) {
-      return (telemetry.type === "Output" && telemetry.name != 'Service Revenue'  && telemetry.name != 'Budgetary Surplus'  && telemetry.name != 'Operational Surplus')
+      return (telemetry.type === "Output" && telemetry.name !== 'Service Revenue'  && telemetry.name !== 'Budgetary Surplus'  && telemetry.name !== 'Operational Surplus')
     })
 
     _.forEach(outputsTelemetry, function (outputTelemetry) {
@@ -504,7 +502,7 @@ export default Ember.Component.extend({
       })
     })
 
-    returnData = _.map(returnData, function (datum, i) {
+    returnData = _.map(returnData, function (datum) {
       return datum / amountDatasets
     })
     return returnData
@@ -540,7 +538,7 @@ export default Ember.Component.extend({
       })
     })
 
-    returnData = _.map(returnData, function (datum, i) {
+    returnData = _.map(returnData, function (datum) {
       return datum / amountDatasets
     })
     return returnData
@@ -708,7 +706,7 @@ export default Ember.Component.extend({
   findDataSetForGraphData(simulationRun,DataSetName,DataSetType){
     let telemetartyForSimulationRun = _.filter(simulationRun, { 'name': DataSetName, 'type': DataSetType });
     let dataSet = []
-    _.forEach(telemetartyForSimulationRun,function(telemetry,k){
+    _.forEach(telemetartyForSimulationRun,function(telemetry){
       _.forEach(telemetry.data.value,function(data,i){
         let month = i
         let year = Math.floor(month/12)
@@ -720,7 +718,7 @@ export default Ember.Component.extend({
     })
     return dataSet
   },
-  generateYearLabels:function(baseline){
+  generateYearLabels:function(){
     let resultLabels = [];
     const startYear = 2016;
     for (let i = 0; i < 10; i++) {
