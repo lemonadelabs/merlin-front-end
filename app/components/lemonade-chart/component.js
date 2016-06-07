@@ -5,13 +5,11 @@ export default Ember.Component.extend({
   chart : undefined,
   currentChartId : undefined,
   attributeBindings: ['style'],
-  didInsertElement(){
-    Ember.run.next(this,function(){
-      if(this.get('data') && this.get('options')){
-          this.setUpDefaultValues();
-          this.buildChart();
-        }
-    })
+  willInsertElement(){
+    if(this.get('data') && this.get('options')){
+        this.setUpDefaultValues();
+        this.buildChart();
+      }
   },
   setUpDefaultValues(){
     //Get the font properties of body so that we can apply it to our chart
