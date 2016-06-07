@@ -3,10 +3,12 @@ import Ember from 'ember';
 export default Ember.Component.extend({
 
   valueIsLoaded: false,
+  oldValue: undefined,
 
   initValue: function () {
     var value = this.get('processPropertyData')[this.id].data.value[ this.get('month') - 1 ]
     this.set('value', value)
+    this.set('oldValue', value)
     this.set('valueIsLoaded', true)
   }.observes('processPropertyData'),
 
@@ -18,6 +20,7 @@ export default Ember.Component.extend({
   }.observes('month'),
 
   persistProperty: function () {
+    var self = this
     if (this.valueIsLoaded) {
       var value = this.get('value')
       var valueFromData = this.get('processPropertyData')[this.id].data.value[ this.get('month') - 1 ]
@@ -28,29 +31,29 @@ export default Ember.Component.extend({
         var month = this.get('month')
 
 
-        this.updateBaselineDebounced({
+        this.updateBaseline({
           propertyId : id,
           entityId : entityId,
           value : value,
           month : month
+        }).then(function () {
+          self.set('oldValue', value)
         })
       }
     }
-  }.observes('value'),
+  },
 
-  updateBaselineDebounced: function (opts) {
-    var self = this
-    var interval = 500
-    var timeout = this.get('timeout')
+  resetValue: function () {
+    this.set('value', this.get('oldValue'))
+  },
 
-    if (timeout) {
-      clearTimeout(timeout)
-    }
-
-    timeout = setTimeout(function () {
-      self.updateBaseline(opts)
-    }, interval)
-    this.set('timeout', timeout)
+  actions: {
+    onEnter: function () {
+      this.persistProperty()
+    },
+    onFocusOut: function () {
+      this.resetValue()
+    },
   }
 
 });
