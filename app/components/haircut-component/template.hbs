@@ -1,7 +1,10 @@
+<div class='service-cutter'>
 {{#each this.servicesPool as |service|}}
   {{service-budget-slasher updateScenario=(action "updateScenario") service=service}}
 {{/each}}
-
+</div>
+<label>Haircut Introduction</label>
+<div class='side-by-side'>
 {{#x-select value=this.yearOffset action="updateScenarioOffset"}}
   {{#x-option value=0}}2016/17{{/x-option}}
   {{#x-option value=12}}2017/18{{/x-option}}
@@ -23,8 +26,11 @@
   {{#x-option value=10}}May{{/x-option}}
   {{#x-option value=11}}June{{/x-option}}
 {{/x-select}}
+</div>
 
-
-{{#each errors as |error|}}
-  {{errors}}
+{{#each this.errors as |error|}}
+  <p>{{error.year}}</p>
+  {{#each error.errors as |errorsMessage|}}
+    <p>{{errorsMessage.message}}</p>
+  {{/each}}
 {{/each}}
