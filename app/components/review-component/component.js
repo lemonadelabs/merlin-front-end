@@ -484,7 +484,7 @@ export default Ember.Component.extend({
     let baseline = this.get('simulationData.baseline');
     let haircut = this.get('simulationData.haircut');
     let planned = this.get('simulationData.planned');
-
+    this.set('graphData',{})
     this.findAndSetOutputData(baseline, haircut, planned)
     this.findAndSetStaffData(baseline, haircut, planned)
     this.findAndSetFinancialData(baseline, haircut, planned);
