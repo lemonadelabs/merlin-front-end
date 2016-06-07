@@ -157,7 +157,6 @@ export default Ember.Component.extend({
 
     if(!this.get('chartLabels')){
       this.set('chartLabels',labels)
-      console.log('set chart labels');
     }
     _.forEach(GraphData, function(value, i) {
       let data = value.data;
