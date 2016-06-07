@@ -1,5 +1,4 @@
 import Ember from 'ember';
-import * as scenarioInteractions from '../../common/scenario-interactions'
 
 export default Ember.Component.extend({
   active:false,
@@ -47,8 +46,10 @@ export default Ember.Component.extend({
     this.set('trackOffset',trackOffset);
   },
   willDestroy(){
-    document.onmousemove = null;
-    document.removeEventListener('resize', this.boundResizeFunc)
+    // document.onmousemove = null;
+    window.removeEventListener('resize', this.boundResizeFunc)
+    document.removeEventListener("touchmove", this.updateInputPosition);
+    document.removeEventListener("touchend", this.envokeCancelEvent.bind(this));
   },
   handleResize: function () {
     Ember.run.debounce(this, this.setPositionFromGrid, 100);
@@ -210,15 +211,6 @@ export default Ember.Component.extend({
     document.dispatchEvent(ev);
 
   },
-  // persistDatesToBackend: function() {
-  //   //////////////////////////
-  //   scenarioInteractions.updatePhaseTimes({
-  //     "id": this.get('id'),
-  //     "start_date": this.get('start'),
-  //     "end_date": this.get('end'),
-  //     scenarioId: this.get('scenarioId')
-  //   })
-  // },
   searchForPositionFromTime:function(time){
     var grid = this.get('timelineGridObjects');
     var offsetLeft;
