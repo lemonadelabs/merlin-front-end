@@ -3,12 +3,11 @@ import Ember from 'ember';
 export default Ember.Component.extend({
 
   valueIsLoaded: false,
-  oldValue: undefined,
+  numberValue: undefined,
 
   initValue: function () {
     var value = this.get('processPropertyData')[this.id].data.value[ this.get('month') - 1 ]
     this.set('value', value)
-    this.set('oldValue', value)
     this.set('valueIsLoaded', true)
   }.observes('processPropertyData'),
 
@@ -19,32 +18,39 @@ export default Ember.Component.extend({
     }
   }.observes('month'),
 
-  persistProperty: function () {
-    var self = this
-    if (this.valueIsLoaded) {
-      var value = this.get('value')
-      var valueFromData = this.get('processPropertyData')[this.id].data.value[ this.get('month') - 1 ]
-      if ( value != "" && value != valueFromData ) {
-
-        var entityId = this.get('entityId')
-        var id = this.get('id')
-        var month = this.get('month')
-
-
-        this.updateBaseline({
-          propertyId : id,
-          entityId : entityId,
-          value : value,
-          month : month
-        }).then(function () {
-          self.set('oldValue', value)
-        })
-      }
+  addComma: function () {
+    var numberValue = Number( this.get( 'value' ).toString().replace( /,/g, '' ) );
+    if( !isNaN( numberValue ) ){
+        this.set( 'value', numberValue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
+        this.set( 'numberValue', numberValue );
     }
+    else{
+      console.warn('in the else!!!! Number is NaN')
+      this.initValue()
+    }
+  }.observes('value'),
+
+  valueHasChanged: function () {
+    var numberValue = this.get('numberValue')
+    var valueFromData = this.get('processPropertyData')[this.id].data.value[ this.get('month') - 1 ]
+    return numberValue != valueFromData
   },
 
-  resetValue: function () {
-    this.set('value', this.get('oldValue'))
+  persistProperty: function () {
+    var self = this
+    if (this.valueIsLoaded && this.valueHasChanged()) {
+      var numberValue = this.get('numberValue')
+      var entityId = this.get('entityId')
+      var id = this.get('id')
+      var month = this.get('month')
+
+      this.updateBaseline({
+        propertyId : id,
+        entityId : entityId,
+        value : numberValue,
+        month : month
+      })
+    }
   },
 
   actions: {
@@ -52,7 +58,7 @@ export default Ember.Component.extend({
       this.persistProperty()
     },
     onFocusOut: function () {
-      this.resetValue()
+      this.initValue()
     },
   }
 
