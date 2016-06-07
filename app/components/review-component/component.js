@@ -166,8 +166,8 @@ export default Ember.Component.extend({
     })
 
     if(Datatype === "Money"){
-      console.log('cash money money');
       yAxes.prependToTickLabel("$")
+      yAxes.customFormatting(this.formatBigNumbers)
     }
     if(Datatype === "Percentage"){
       yAxes.appendToTickLabel("%")
@@ -176,6 +176,19 @@ export default Ember.Component.extend({
     // chartParameters.name = value.name
 
     return chartParameters;
+  },
+  formatBigNumbers(tick){
+    console.log(tick);
+    if(tick / 1000000000 > 0.99){
+      return (tick/1000000000 + " B");
+    }
+    if(tick / 1000000 > 0.99){
+      return (tick/1000000 + " M");
+    }
+    if(tick / 1000 > 0.99){
+      return (tick/1000 + " T");
+    }
+    return tick
   },
   createCards(){
     this.set('cards', []);
@@ -256,7 +269,8 @@ export default Ember.Component.extend({
         'solid',
         'dotted',
         'longDash',
-      ]);
+      ],
+      "Money");
 
     financeCard.graphs["Operational Surplus"] = this.newGraph(
       [
@@ -282,7 +296,8 @@ export default Ember.Component.extend({
         'solid',
         'dotted',
         'longDash',
-      ]);
+      ],
+      "Money");
 
     financeCard.graphs["Budgetary Surplus"] = this.newGraph(
       [
@@ -308,7 +323,8 @@ export default Ember.Component.extend({
         'solid',
         'dotted',
         'longDash',
-      ]);
+      ],
+      "Money");
     financeCard.filterCategories = [
       {
         label:'Revenue',
