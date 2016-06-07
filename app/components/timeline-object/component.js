@@ -24,6 +24,11 @@ export default Ember.Component.extend({
     this.set('boundResizeFunc',this.handleResize.bind(this));
     document.onmousemove = document.onmousemove || this.updateInputPosition;
     document.onmouseup = document.onmouseup || this.envokeCancelEvent.bind(this);
+    if(!document.timelineObjectCount){
+      document.timelineObjectCount = 0
+    }
+
+    document.timelineObjectCount++
 
     if(!document.touchMoveListener){
       document.addEventListener("touchmove", this.updateInputPosition);
@@ -46,7 +51,10 @@ export default Ember.Component.extend({
     this.set('trackOffset',trackOffset);
   },
   willDestroy(){
-    // document.onmousemove = null;
+    document.timelineObjectCount--
+    if(document.timelineObjectCount === 0){
+      document.onmousemove = null;
+    }
     window.removeEventListener('resize', this.boundResizeFunc)
     document.removeEventListener("touchmove", this.updateInputPosition);
     document.removeEventListener("touchend", this.envokeCancelEvent.bind(this));
