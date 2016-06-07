@@ -178,7 +178,6 @@ export default Ember.Component.extend({
     return chartParameters;
   },
   formatBigNumbers(tick){
-    console.log(tick);
     if(tick / 1000000000 > 0.99){
       return (tick/1000000000 + " B");
     }
@@ -208,7 +207,6 @@ export default Ember.Component.extend({
     let surplusOpertationalBudgeted = this.get('graphData.surplusOpertationalBudgeted');
     let surplusOpertationalPlanned = this.get('graphData.surplusOpertationalPlanned');
     let surplusOpertationalHaircut = this.get('graphData.surplusOpertationalHaircut');
-
 
     let surplusBudgetaryBudgeted = this.get('graphData.surplusBudgetaryBudgeted');
     let surplusBudgetaryPlanned = this.get('graphData.surplusBudgetaryPlanned');
@@ -448,7 +446,8 @@ export default Ember.Component.extend({
       [
         'dotted',
         'longDash'
-      ]
+      ],
+      "Percentage"
     );
     outputCard.graphs["Service Level"] = this.newGraph(
       [
@@ -465,7 +464,8 @@ export default Ember.Component.extend({
         'solid',
         'dotted',
         'longDash'
-      ]
+      ],
+      "Percentage"
     );
     outputCard.filterCategories = [
       {
@@ -484,9 +484,9 @@ export default Ember.Component.extend({
     let haircut = this.get('simulationData.haircut');
     let planned = this.get('simulationData.planned');
 
-    this.generateOutputData(baseline, haircut, planned)
-    this.generateStaffData(baseline, haircut, planned)
-    this.generateFinancialData(baseline, haircut, planned);
+    this.findAndSetOutputData(baseline, haircut, planned)
+    this.findAndSetStaffData(baseline, haircut, planned)
+    this.findAndSetFinancialData(baseline, haircut, planned);
 
   },
   findOutputsFromTelemetry(simultionRun) {
@@ -559,9 +559,7 @@ export default Ember.Component.extend({
     })
     return returnData
   },
-  generateOutputData(baseline, haircut, planned){
-
-
+  findAndSetOutputData(baseline, haircut, planned){
     var baselineOutputTelemetry = this.findOutputsFromTelemetry(baseline)
     var plannedOutputTelemetry = this.findOutputsFromTelemetry(planned)
     var haircutOutputTelemetry = this.findOutputsFromTelemetry(haircut)
@@ -610,7 +608,7 @@ export default Ember.Component.extend({
     this.set('graphData.outputsSlaHaircut',averagedSlaHaircut)
 
   },
-  generateStaffData(baseline, haircut, planned){
+  findAndSetStaffData(baseline, haircut, planned){
     //Planned (from the projects senarios)
      let lineStaffPlanned = this.findDataSetForGraphData(planned,'line staff #','ProcessProperty')
     _.forEach(lineStaffPlanned,function(v,i){
@@ -668,7 +666,7 @@ export default Ember.Component.extend({
       this.get('graphData.staffUtilisationHaircut').push(rando);
     }
   },
-  generateFinancialData(baseline, haircut, planned){
+  findAndSetFinancialData(baseline, haircut, planned){
     //Planned (from the projects senarios)
     let plannedRevenuePlannedData = this.findDataSetForGraphData(planned,'Service Revenue','Output')
     this.set('graphData.revenuePlanned',plannedRevenuePlannedData)
@@ -700,8 +698,6 @@ export default Ember.Component.extend({
       expensesBudgetedData[i] = revData - baselineOperationalSurplusData[i]
     })
     this.set('graphData.expensesBudgeted',expensesBudgetedData)
-
-
 
     //Haircut (from the 'haircut' senarios)
     let revenueHaircutData = this.findDataSetForGraphData(haircut, 'Service Revenue','Output')
