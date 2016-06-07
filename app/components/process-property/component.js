@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import Ember from 'ember'
 
 export default Ember.Component.extend({
 
@@ -19,10 +19,10 @@ export default Ember.Component.extend({
   }.observes('month'),
 
   addComma: function () {
-    var numberValue = Number( this.get( 'value' ).toString().replace( /,/g, '' ) );
+    var numberValue = Number( this.get( 'value' ).toString().replace( /,/g, '' ) )
     if( !isNaN( numberValue ) ){
-        this.set( 'value', numberValue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
-        this.set( 'numberValue', numberValue );
+        this.set( 'value', numberValue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") )
+        this.set( 'numberValue', numberValue )
     }
     else{
       console.warn('in the else!!!! Number is NaN')
@@ -62,4 +62,4 @@ export default Ember.Component.extend({
     },
   }
 
-});
+})
