@@ -104,6 +104,7 @@ export default Ember.Component.extend({
       })
     }
     request.then(function () { self.loadBaseline() })
+    return request
   },
 
   warn: function (amount, subject) { console.warn( `there are ${amount} ${subject}s returned in this case. There should only be 1.` ) },
