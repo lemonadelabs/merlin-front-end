@@ -7,8 +7,5 @@ export default Ember.Route.extend({
       scenarios: Ember.$.getJSON('api/scenarios/'),
       projects: Ember.$.getJSON('api/projects/')
     });
-  },
-  afterModel: function(model) {
-    console.log(model);
   }
 });
