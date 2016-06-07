@@ -146,4 +146,26 @@ html {
 
 .haircut-component{
   color: white;
+  width:80vw;
+  margin: auto;
+}
+
+.new-project-button {
+  position: absolute;
+  right: 9vw;
+  font-size: 10.5pt;
+  font-weight: 600;
+  margin-top: 5px;
+}
+
+.new-project-button img{
+  width: 24px;
+  height: auto;
+  margin-right: 0.5em;
+  position: relative;
+  top: 7px;
+}
+
+.investment-timeline{
+  padding-top: 40px;
 }

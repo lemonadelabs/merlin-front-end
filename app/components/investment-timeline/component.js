@@ -11,6 +11,7 @@ import * as projectsTraversal from '../../common/projects-traversal'
 import * as merlinUtils from '../../common/merlin-utils'
 
 export default Ember.Component.extend({
+  classNames: ['investment-timeline'],
   processProjects: processProjects,
   timelineGridObjects:undefined,
   graphData:undefined,
