@@ -7,6 +7,7 @@ export default Ember.Component.extend({
   attributeBindings: ['style'],
   willInsertElement(){
     this.setUpDefaultValues();
+
   },
   didInsertElement(){
     if(this.get('data') && this.get('options')){
@@ -73,17 +74,18 @@ export default Ember.Component.extend({
       let sameDatasetCollection = _.isEqual(currentDataSetLabels, previousDataSetLabels)
       this.set('previousDataSetLabels',currentDataSetLabels)
 
-      if(!sameDatasetCollection){
-        this.buildChart()
-        return;
-      }
-
       var chart = this.get('chart');
       if(!chart){
         this.setUpDefaultValues();
         this.buildChart()
+        return
       }
-      else if (sameDatasetCollection){
+
+      if(!sameDatasetCollection){
+        this.buildChart()
+        return;
+      }
+      else{
         var self = this
         var localDatasets = self.get('localData.datasets');
 
