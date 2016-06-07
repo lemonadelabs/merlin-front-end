@@ -24,7 +24,6 @@ export default Ember.Component.extend({
     this.findAndRunBaseline()
     this.findAndRunHaircut()
     this.findAndRunBaselineWithProjects()
-
   },
 
   findAndRunBaselineWithProjects: function () {
@@ -151,11 +150,15 @@ export default Ember.Component.extend({
   },
   newGraph(graphColours, GraphData, lineTypes, Datatype){
     let axisColour = 'rgb(255, 255, 255)',
-        labels = this.generateYearLabels(GraphData[0].length),
+        labels = this.get('chartLabels') || this.generateYearLabels(GraphData[0].length),
         dataSets = [],
         xAxes = new Axes('Years', axisColour),
         yAxes = new Axes(undefined, axisColour);
 
+    if(!this.get('chartLabels')){
+      this.set('chartLabels',labels)
+      console.log('set chart labels');
+    }
     _.forEach(GraphData, function(value, i) {
       let data = value.data;
       let dataSet = new DataSet(value.name, data, graphColours[i]);
