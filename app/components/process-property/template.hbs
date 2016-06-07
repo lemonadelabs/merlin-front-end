@@ -1,2 +1,7 @@
 <span class='node-label'>{{this.name}}</span>
-{{input value=this.value}}
+{{
+  input
+  value=this.value
+  enter='onEnter'
+  focus-out="onFocusOut"
+}}

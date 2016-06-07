@@ -3,6 +3,7 @@ import Ember from 'ember';
 export default Ember.Component.extend({
 
   valueIsLoaded: false,
+  numberValue: undefined,
 
   initValue: function () {
     var value = this.get('processPropertyData')[this.id].data.value[ this.get('month') - 1 ]
@@ -17,40 +18,48 @@ export default Ember.Component.extend({
     }
   }.observes('month'),
 
-  persistProperty: function () {
-    if (this.valueIsLoaded) {
-      var value = this.get('value')
-      var valueFromData = this.get('processPropertyData')[this.id].data.value[ this.get('month') - 1 ]
-      if ( value != "" && value != valueFromData ) {
-
-        var entityId = this.get('entityId')
-        var id = this.get('id')
-        var month = this.get('month')
-
-
-        this.updateBaselineDebounced({
-          propertyId : id,
-          entityId : entityId,
-          value : value,
-          month : month
-        })
-      }
+  addComma: function () {
+    var numberValue = Number( this.get( 'value' ).toString().replace( /,/g, '' ) );
+    if( !isNaN( numberValue ) ){
+        this.set( 'value', numberValue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") );
+        this.set( 'numberValue', numberValue );
+    }
+    else{
+      console.warn('in the else!!!! Number is NaN')
+      this.initValue()
     }
   }.observes('value'),
 
-  updateBaselineDebounced: function (opts) {
+  valueHasChanged: function () {
+    var numberValue = this.get('numberValue')
+    var valueFromData = this.get('processPropertyData')[this.id].data.value[ this.get('month') - 1 ]
+    return numberValue != valueFromData
+  },
+
+  persistProperty: function () {
     var self = this
-    var interval = 500
-    var timeout = this.get('timeout')
+    if (this.valueIsLoaded && this.valueHasChanged()) {
+      var numberValue = this.get('numberValue')
+      var entityId = this.get('entityId')
+      var id = this.get('id')
+      var month = this.get('month')
 
-    if (timeout) {
-      clearTimeout(timeout)
+      this.updateBaseline({
+        propertyId : id,
+        entityId : entityId,
+        value : numberValue,
+        month : month
+      })
     }
+  },
 
-    timeout = setTimeout(function () {
-      self.updateBaseline(opts)
-    }, interval)
-    this.set('timeout', timeout)
+  actions: {
+    onEnter: function () {
+      this.persistProperty()
+    },
+    onFocusOut: function () {
+      this.initValue()
+    },
   }
 
 });
