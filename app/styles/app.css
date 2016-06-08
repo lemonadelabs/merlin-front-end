@@ -169,3 +169,8 @@ html {
 .investment-timeline{
   padding-top: 40px;
 }
+
+.service-budget-slasher{
+  display: flex;
+  justify-content: space-between;
+}

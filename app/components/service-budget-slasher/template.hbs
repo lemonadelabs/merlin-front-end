@@ -1,6 +1,21 @@
 <h2>{{service.service.name}} </h2>
-<p>Total Service Budget: ${{this.totalServiceBudget}} Revised Total Service Budget: ${{this.revisedBudget}}</p>
-<div style="max-width:200px">{{range-slider min=0.0 max=20.0 step=0.1 value=servicePercentageToSlash}}</div>
+<div class="service-budget-slasher">
+  <div>
+    <label>Percentage to cut</label>
+    {{range-slider min=0.0 max=20.0 step=0.1 value=servicePercentageToSlash}}
+  </div>
+
+  <div>
+    <label>Revised Total Budget:</label>
+    <h2>${{comma-seperate-number number=this.revisedBudget}}</h2>
+  </div>
+
+  <div>
+    <label>Original Total Budget:</label>
+    <h2>${{comma-seperate-number number=this.totalServiceBudget}}</h2>
+  </div>
+</div>
+
 {{#each service.budgets as |budget|}}
   {{budget-slasher updateSubBudgets=this.updateSubBudgets budget=budget servicePercentageToSlash=servicePercentageToSlash updateServiceBudgetAndPercentage=(action 'updateServiceBudgetAndPercentage')}}
 {{/each}}
