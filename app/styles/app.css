@@ -148,6 +148,7 @@ html {
   color: white;
   width:80vw;
   margin: auto;
+  margin-top: 60px;
 }
 
 .haircut-card {
@@ -184,6 +185,19 @@ html {
   justify-content: space-between;
 }
 
+.service-budget-slasher-title{
+  font-size: 12pt;
+  margin-top: 0;
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+.service-budget-slasher-budget-title{
+  font-size: 11pt;
+  margin-bottom: 0.5em;
+  text-transform: capitalize;
+}
 .service-budget-slasher div{
   min-width: 250px;
 }
