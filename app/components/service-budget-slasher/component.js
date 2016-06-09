@@ -74,6 +74,11 @@ export default Ember.Component.extend({
        this.set('updateSubBudgets',true)
     }
   },
+  touchStart(){
+    if(!this.get('updateSubBudgets')){
+       this.set('updateSubBudgets',true)
+    }
+  },
   observePercentage:function(){
     let percentage = this.get('servicePercentageToSlash'),
         totalServiceBudget = this.get('totalServiceBudget')

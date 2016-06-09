@@ -16,6 +16,8 @@ export default Ember.Component.extend({
     this.set('selected',false)
     var boundDeselectFunc = this.get('boundDeselect')
     document.removeEventListener('mouseup',boundDeselectFunc)
+    document.removeEventListener('touchend',boundDeselectFunc)
+    document.removeEventListener('touchcancel',boundDeselectFunc)
   },
   didReceiveAttrs(){
     let budgetAmmount = this.get('budget.processes.0.properties.0.property_value')
@@ -82,11 +84,15 @@ export default Ember.Component.extend({
     }
   },
   mouseDown(){
-    console.log(this.get('selected'));
-
     this.set('selected',true)
     var boundDeselectFunc = this.get('boundDeselect')
     document.addEventListener('mouseup',boundDeselectFunc)
+  },
+  touchStart(){
+    this.set('selected',true)
+    var boundDeselectFunc = this.get('boundDeselect')
+    document.addEventListener('touchend',boundDeselectFunc)
+    document.addEventListener('touchcancel',boundDeselectFunc)
   },
   slashByPercentage(percentage, budget){
     let ratio = percentage / 100,
