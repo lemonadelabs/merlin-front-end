@@ -101,7 +101,7 @@ export default Ember.Component.extend({
       errorsByYearArray.push(errorYearObject)
     })
     this.set(`errors`,errorsByYearArray)
-    console.log(errorsByYearArray);
+    // console.log(errorsByYearArray);
   },
   createCuttingEvent(scenario){
     return merlinUtils.newEventObject({"scenarioId":scenario.id, "time":1})
