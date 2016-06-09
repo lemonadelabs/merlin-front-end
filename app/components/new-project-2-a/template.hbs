@@ -1,5 +1,5 @@
 <div class="modal-extra-slider">
-  <h1 class="modal-extra-slider-header">New Phase</h1>
+  <h1 class="modal-extra-slider-header">{{#if this.editPhase}}Edit{{else}}New{{/if}} Phase</h1>
   <div class="modal-extra-slider-content new-phase-options">
     <div class="phase-basic-info">
       <div>
@@ -61,7 +61,7 @@
   </div>
   <footer>
     <button {{action "removeThisLayer"}}>cancel</button>
-    <button {{action "addNewPhase"}}>Add Phase</button>
+    <button {{action "addNewPhase"}}>{{#if this.editPhase}}Update{{else}}Add{{/if}} Phase</button>
   </footer>
 </div>
 {{#if this.showResourcesLayer}}

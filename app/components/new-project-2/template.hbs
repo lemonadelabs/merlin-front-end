@@ -11,6 +11,8 @@
   project=this.newProjectData
 
   onInteractionEnd=(action 'updatePhase')
+  onNoDragClick='onNoDragClick'
+
 }}
 <div class="new-phase-trigger" {{action 'toggleChildLayer'}}>
   <img src="images/icons/new-phase-icon.svg" alt="" />
@@ -23,6 +25,7 @@
 
     simulation=this.simulation
     phases=this.newProjectData.phases
+    editPhase=this.editPhase
 
     toggleChildLayer='toggleChildLayer'
   }}

@@ -5,10 +5,15 @@
     name=phase.name
     id=phase.id
     scenarioId=phase.scenario
+    capex=phase.investment_cost
+    opex=phase.service_cost
     cost=phase.cost
     start=phase.start_date
     end=phase.end_date
     timelineGridObjects=this.timelineGridObjects
     onInteractionEnd=this.onInteractionEnd
+
+    onContextMenu=(action 'onContextMenu')
+    onNoDragClick=(action 'onNoDragClick')
   }}
 {{/each}}

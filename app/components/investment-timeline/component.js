@@ -290,7 +290,13 @@ export default Ember.Component.extend({
 
 
 
+
   actions:{
+    onContextMenu: function () {
+      console.log('onContextMenu action')
+    },
+
+
     onTimelineObjectInteractionEnd: function (context) {
       var self = this
       var requests = this.persistDatesToBackend({
@@ -300,5 +306,6 @@ export default Ember.Component.extend({
         scenarioId: context.get('scenarioId')
       })
     },
+
   }
 });
