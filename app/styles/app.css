@@ -157,7 +157,6 @@ html {
   border-radius: 2px;
   padding: 1em;
   margin-top: 1em;
-  min-height: 350px;
 }
 
 .new-project-button {
@@ -200,4 +199,11 @@ html {
 }
 .service-budget-slasher div{
   min-width: 250px;
+}
+.service-budget-slasher-sub-budgets{
+  overflow: hidden;
+  padding-left: 50px;
+}
+.service-budget-slasher-sub-budgets.collapsed{
+  height: 0px;
 }
