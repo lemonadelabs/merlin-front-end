@@ -12,7 +12,7 @@
       {{#each this.processPropertiesNew as | processProperty |}}
         <div class='process-property-input'>
           <label>{{processProperty.name}}</label>
-          {{input value=processProperty.property_value}}
+          {{formatted-number-input value=processProperty.property_value}}
         </div>
       {{/each}}
     </section>

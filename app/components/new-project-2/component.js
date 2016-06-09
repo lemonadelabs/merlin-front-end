@@ -2,16 +2,18 @@ import Ember from 'ember';
 // import * as simTraverse from '../../common/simulation-traversal'
 
 export default Ember.Component.extend({
-  phaseName: undefined,
-  capital: undefined,
-  operational: undefined,
-  description: undefined,
+  // phaseName: undefined,
+  // capital: undefined,
+  // operational: undefined,
+  // description: undefined,
   timelineGridObjects: undefined,
   selectedServiceModel: undefined,
   showChildLayer: false,
+  editPhase: undefined,
 
   // newPhases: [] // new phaes is passed to the clild layer
   // should
+
 
 
   checkForErrors: function () {
@@ -60,7 +62,39 @@ export default Ember.Component.extend({
     let toggleBool = this.get(variablepath) ? false : true;
     this.set(variablepath, toggleBool);
   },
+
+
   actions: {
+
+    onNoDragClick: function (timelineObject) {
+      if ( this.get('editPhase') === undefined && this.get('showChildLayer') === true) { return }
+
+      if (this.get('editPhase') === undefined) {
+        var phases = this.get('newProjectData.phases')
+
+        var phaseIndex
+        _.forEach(phases, function (p, i) {
+          if ( p.name === timelineObject.name &&
+          _.isEqual(p.start_date, timelineObject.start) &&
+          _.isEqual(p.end_date, timelineObject.end) &&
+          p.investment_cost === timelineObject.capex &&
+          p.service_cost === timelineObject.opex ) { phaseIndex = i }
+          // 'descriptiodn', p.description, timelineObject.description
+        })
+        this.set('editPhase', { index : phaseIndex } )
+        this.set('showChildLayer', true)
+      } else {
+        this.set('editPhase', undefined)
+        this.set('showChildLayer', false)
+      }
+
+
+    },
+
+
+    // editPhase () {
+    //   console.log('editPhase')
+    // },
     toggleChildLayer () {
       this.toggleBool('showChildLayer');
     },
