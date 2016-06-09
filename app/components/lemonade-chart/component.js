@@ -5,13 +5,14 @@ export default Ember.Component.extend({
   chart : undefined,
   currentChartId : undefined,
   attributeBindings: ['style'],
+  willInsertElement(){
+    this.setUpDefaultValues();
+
+  },
   didInsertElement(){
-    Ember.run.next(this,function(){
-      if(this.get('data') && this.get('options')){
-          this.setUpDefaultValues();
-          this.buildChart();
-        }
-    })
+    if(this.get('data') && this.get('options')){
+        this.buildChart();
+      }
   },
   setUpDefaultValues(){
     //Get the font properties of body so that we can apply it to our chart
@@ -73,17 +74,18 @@ export default Ember.Component.extend({
       let sameDatasetCollection = _.isEqual(currentDataSetLabels, previousDataSetLabels)
       this.set('previousDataSetLabels',currentDataSetLabels)
 
-      if(!sameDatasetCollection){
-        this.buildChart()
-        return;
-      }
-
       var chart = this.get('chart');
       if(!chart){
         this.setUpDefaultValues();
         this.buildChart()
+        return
       }
-      else if (sameDatasetCollection){
+
+      if(!sameDatasetCollection){
+        this.buildChart()
+        return;
+      }
+      else{
         var self = this
         var localDatasets = self.get('localData.datasets');
 
