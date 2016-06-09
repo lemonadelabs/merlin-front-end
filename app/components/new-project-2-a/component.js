@@ -26,6 +26,19 @@ export default Ember.Component.extend({
     this._super()
     this.set('currentStepResources', this.get('steps')[0])
     this.set('currentStepImpacts', this.get('steps')[0])
+    if ( this.get('editPhase') ) { this.populateFormWithPhase() }
+  },
+
+  populateFormWithPhase: function () {
+    var phaseToEdit = this.get('phases')[this.get('editPhase.index')]
+
+    this.set('phaseName', phaseToEdit.name)
+    this.set('description', phaseToEdit.description)
+    this.set('capital', phaseToEdit.investment_cost)
+    this.set('operational', phaseToEdit.service_cost)
+    this.set('resourcesHoldingPenResources', phaseToEdit.resources)
+    this.set('resourcesHoldingPenImpacts', phaseToEdit.impacts)
+
   },
 
   resetNewPhaseForm: function () {
@@ -68,6 +81,7 @@ export default Ember.Component.extend({
   actions: {
 
     removeThisLayer: function () {
+      this.set('editPhase', undefined)
       this.sendAction('toggleChildLayer')
     },
     addNewPhase: function () {
@@ -84,9 +98,6 @@ export default Ember.Component.extend({
       this.resourcesHoldingPenResources.arrayContentDidChange(0, resources.length, 0)
       this.resourcesHoldingPenImpacts.arrayContentDidChange(0, impacts.length, 0)
 
-      var phases = this.get('phases')
-      var lastPhase = phases[ phases.length - 1 ]
-
       var newPhase = {
         "name": this.get('phaseName'),
         "description": this.get('description'),
@@ -96,23 +107,40 @@ export default Ember.Component.extend({
         'impacts' : impacts,
       }
 
-      if (lastPhase) {
-        newPhase.start_date = incrementTimeBy1({ time : lastPhase.end_date })
-        newPhase.end_date = incrementTimeBy3({ time : newPhase.start_date })
+      var phases = this.get('phases')
+
+      if ( this.get('editPhase') ) {
+        var editPhaseIdx = this.get('editPhase.index')
+        var oldPhase = phases[ editPhaseIdx ]
+        newPhase.start_date = oldPhase.start_date
+        newPhase.end_date = oldPhase.end_date
+        phases[ editPhaseIdx ] = newPhase
+        this.set('phases', phases)
+        console.log(phases)
+        this.phases.arrayContentDidChange(editPhaseIdx, 1, 1)
+        this.set('editPhase', undefined)
       } else {
-        newPhase.start_date = {
-          year : 2016,
-          value : 1
-        },
-        newPhase.end_date = {
-          year : 2016,
-          value : 4
+        var lastPhase = phases[ phases.length - 1 ]
+        if (lastPhase) {
+          newPhase.start_date = incrementTimeBy1({ time : lastPhase.end_date })
+          newPhase.end_date = incrementTimeBy3({ time : newPhase.start_date })
+        } else {
+          newPhase.start_date = {
+            year : 2016,
+            value : 1
+          },
+          newPhase.end_date = {
+            year : 2016,
+            value : 4
+          }
         }
+
+        phases.push(newPhase)
+        this.set('phases', phases)
+        this.phases.arrayContentDidChange(this.phases.length, 0, 1)
       }
 
-      phases.push(newPhase)
-      this.set('phases', phases)
-      this.phases.arrayContentDidChange(this.phases.length, 0, 1)
+
 
 
       this.resetNewPhaseForm()

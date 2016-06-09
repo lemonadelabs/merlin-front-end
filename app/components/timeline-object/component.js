@@ -106,11 +106,31 @@ export default Ember.Component.extend({
     var interActEndFunc = this.get('onInteractionEnd') || this.warnMissingAction;
     this.snapToGrid();
     var timeFromPosition = this.searchForTimeFromPosition(this.get('x'),this.get('width'));
+
+    var oldStart = this.get('start')
+    var oldEnd = this.get('end')
+
+    if (_.isEqual(oldStart, timeFromPosition.startTime) && _.isEqual(oldEnd , timeFromPosition.endTime) ) {
+      this.triggureOnNoDragClick()
+    }
     this.set('start',timeFromPosition.startTime);
     this.set('end',timeFromPosition.endTime);
-    interActEndFunc(this);
+    if(interActEndFunc){
+      interActEndFunc(this);
+    }
     this.removeCancelEventListener();
 
+  },
+  triggureOnNoDragClick: function () {
+    this.sendAction('onNoDragClick', this)
+  },
+  contextMenu(e) {
+    e.preventDefault()
+    console.log('..............')
+    console.log('this', this)
+    console.log('e', e)
+
+    this.sendAction('onContextMenu', this)
   },
   snapToGrid: function(){
     var grid = this.get('timelineGridObjects');
