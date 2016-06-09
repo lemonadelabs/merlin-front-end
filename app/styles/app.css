@@ -174,3 +174,7 @@ html {
   display: flex;
   justify-content: space-between;
 }
+
+.service-budget-slasher div{
+  min-width: 250px;
+}

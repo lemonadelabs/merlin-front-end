@@ -1,9 +1,9 @@
 <div>
-  <p>
+  <h4>
     {{#each budget.processes as |budgetProcess|}}
       {{budgetProcess.name}}
     {{/each}}
-  </p>
+  </h4>
   <div class="service-budget-slasher">
     <div>
       <label>Percentage to cut</label>
@@ -11,12 +11,12 @@
     </div>
 
     <div>
-      <label>Revised Total Budget:</label>
+      <label>Revised Budget:</label>
       <h2>${{comma-seperate-number number=this.revisedBudget}}</h2>
     </div>
 
     <div>
-      <label>Original Total Budget:</label>
+      <label>Original Budget:</label>
       <h2>${{comma-seperate-number number=budgetAmmount}}</h2>
     </div>
   </div>

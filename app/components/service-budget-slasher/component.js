@@ -7,19 +7,16 @@ export default Ember.Component.extend({
   revisedSubBudgets:{},
   revisedSubBudgetTotal:undefined,
   updateSubBudgets:true,
-  didInsertElement(){
-    this._super()
+  willInsertElement(){
     let totalServiceBudget = this.findTotalServiceBudget()
     this.slashByPercentage(this.servicePercentageToSlash, totalServiceBudget)
     this.set('totalServiceBudget',totalServiceBudget);
-
   },
   findTotalServiceBudget(){
     let budgets = this.get('service.budgets'),
         totalServiceBudget = 0
     _.forEach(budgets,function(budget){
       totalServiceBudget += budget.processes[0].properties[0].property_value;
-
     })
     return(totalServiceBudget);
   },
@@ -79,7 +76,8 @@ export default Ember.Component.extend({
   observePercentage:function(){
     let percentage = this.get('servicePercentageToSlash'),
         totalServiceBudget = this.get('totalServiceBudget')
-    this.slashByPercentage(percentage, totalServiceBudget)
+    // this.slashByPercentage(percentage, totalServiceBudget)
+    this.slashByPercentage(percentage, totalServiceBudget);
   }.observes('servicePercentageToSlash'),
   actions:{
     updateServiceBudgetAndPercentage:function(params){
