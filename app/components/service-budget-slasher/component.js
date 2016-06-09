@@ -1,25 +1,23 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
+  classNames:['haircut-card'],
   servicePercentageToSlash:10.0,
   revisedBudget:undefined,
   totalServiceBudget:undefined,
   revisedSubBudgets:{},
   revisedSubBudgetTotal:undefined,
   updateSubBudgets:true,
-  didInsertElement(){
-    this._super()
+  willInsertElement(){
     let totalServiceBudget = this.findTotalServiceBudget()
     this.slashByPercentage(this.servicePercentageToSlash, totalServiceBudget)
     this.set('totalServiceBudget',totalServiceBudget);
-
   },
   findTotalServiceBudget(){
     let budgets = this.get('service.budgets'),
         totalServiceBudget = 0
     _.forEach(budgets,function(budget){
       totalServiceBudget += budget.processes[0].properties[0].property_value;
-
     })
     return(totalServiceBudget);
   },
@@ -71,7 +69,12 @@ export default Ember.Component.extend({
     let newPercentageRounded = Math.round10(newPercentageAbs,-1)
     return newPercentageRounded
   },
-  click(){
+  mouseDown(){
+    if(!this.get('updateSubBudgets')){
+       this.set('updateSubBudgets',true)
+    }
+  },
+  touchStart(){
     if(!this.get('updateSubBudgets')){
        this.set('updateSubBudgets',true)
     }
@@ -79,7 +82,8 @@ export default Ember.Component.extend({
   observePercentage:function(){
     let percentage = this.get('servicePercentageToSlash'),
         totalServiceBudget = this.get('totalServiceBudget')
-    this.slashByPercentage(percentage, totalServiceBudget)
+    // this.slashByPercentage(percentage, totalServiceBudget)
+    this.slashByPercentage(percentage, totalServiceBudget);
   }.observes('servicePercentageToSlash'),
   actions:{
     updateServiceBudgetAndPercentage:function(params){

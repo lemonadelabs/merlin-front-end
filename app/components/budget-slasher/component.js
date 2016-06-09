@@ -7,8 +7,19 @@ export default Ember.Component.extend({
   revisedBudget:undefined,
   budgetAmmount:undefined,
   selected:undefined,
-  didInsertElement(){
+  init(){
     this._super()
+    var boundDeselectFunc = this.deselect.bind(this);
+    this.set('boundDeselect', boundDeselectFunc)
+  },
+  deselect(){
+    this.set('selected',false)
+    var boundDeselectFunc = this.get('boundDeselect')
+    document.removeEventListener('mouseup',boundDeselectFunc)
+    document.removeEventListener('touchend',boundDeselectFunc)
+    document.removeEventListener('touchcancel',boundDeselectFunc)
+  },
+  didReceiveAttrs(){
     let budgetAmmount = this.get('budget.processes.0.properties.0.property_value')
     let servicePercentageToSlash = this.get('servicePercentageToSlash')
     let process = this.get('budget.processes.0')
@@ -17,6 +28,34 @@ export default Ember.Component.extend({
     this.set('budgetAmmount',budgetAmmount)
     this.set('oldServicePercentageToSlash',servicePercentageToSlash)
     this.slashByPercentage(this.percentageToSlash,budgetAmmount)
+  },
+  didUpdateAttrs(){
+    this.updateBudgetBasedOnServicePercentage()
+  },
+  updateBudgetBasedOnServicePercentage(){
+    this.addRound10Polyfill()
+    let servicePercentageToSlash = this.get('servicePercentageToSlash')
+
+    if(!this.get('updateSubBudgets')){
+      this.set('oldServicePercentageToSlash', servicePercentageToSlash)
+      return;
+    }
+    let servicePercentageDifference = servicePercentageToSlash - this.get('oldServicePercentageToSlash')
+    let budgetPercentage = this.get('percentageToSlash')
+    let newPercentage = budgetPercentage+servicePercentageDifference
+
+    if(newPercentage <= 0 ){
+      this.set('percentageToSlash', 0);
+    }
+    else if(newPercentage >= 20.0){
+
+      this.set('percentageToSlash', 20.0);
+    }
+    else{
+      let newPercentageRounded = Math.round10(newPercentage,-1)
+      this.set('percentageToSlash', newPercentageRounded);
+    }
+    this.set('oldServicePercentageToSlash', servicePercentageToSlash)
   },
   addRound10Polyfill(){
     //this should be added as a proper polyfill later
@@ -46,23 +85,29 @@ export default Ember.Component.extend({
   },
   mouseDown(){
     this.set('selected',true)
+    var boundDeselectFunc = this.get('boundDeselect')
+    document.addEventListener('mouseup',boundDeselectFunc)
   },
-  mouseUp(){
-    this.set('selected',false)
+  touchStart(){
+    this.set('selected',true)
+    var boundDeselectFunc = this.get('boundDeselect')
+    document.addEventListener('touchend',boundDeselectFunc)
+    document.addEventListener('touchcancel',boundDeselectFunc)
   },
   slashByPercentage(percentage, budget){
     let ratio = percentage / 100,
         amountToCut = budget*ratio,
         slashedBudget = budget - amountToCut,
         budgetName = this.get('budgetName'),
-        budgetEntity = this.get('budget')
+        budgetEntity = this.get('budget'),
+        subBudgetModified
 
     this.set('revisedBudget',slashedBudget);
     if(this.get('selected')){
-      var subBudgetModified = true;
+      subBudgetModified = true;
     }
     else {
-      var subBudgetModified = false;
+      subBudgetModified = false;
     }
     this.sendAction("updateServiceBudgetAndPercentage",{'revisedBudget':slashedBudget,'budgetName':budgetName,'budgetEntity':budgetEntity,'subBudgetModified':subBudgetModified})
 
@@ -70,22 +115,7 @@ export default Ember.Component.extend({
   observePercentage:function(){
     let percentage = this.get('percentageToSlash'),
         budgetAmmount = this.get('budgetAmmount')
-    this.slashByPercentage(percentage, budgetAmmount)
-  }.observes('percentageToSlash'),
-  observeServicePercentage:function(){
-    this.addRound10Polyfill()
-    let servicePercentageToSlash = this.get('servicePercentageToSlash')
 
-    if(!this.get('updateSubBudgets')){
-      this.set('oldServicePercentageToSlash', servicePercentageToSlash)
-      return;
-    }
-    let servicePercentageDifference = servicePercentageToSlash - this.get('oldServicePercentageToSlash')
-    let budgetPercentage = this.get('percentageToSlash')
-    if(budgetPercentage+servicePercentageDifference >= 0 && budgetPercentage+servicePercentageDifference <= 20.0){
-      let newPercentage = Math.round10(budgetPercentage+servicePercentageDifference,-1)
-      this.set('percentageToSlash', newPercentage);
-    }
-    this.set('oldServicePercentageToSlash', servicePercentageToSlash)
-  }.observes('servicePercentageToSlash')
+    this.slashByPercentage(percentage, budgetAmmount);
+  }.observes('percentageToSlash')
 });
