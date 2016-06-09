@@ -25,35 +25,41 @@
       <p class="ruled-sub-header">
         Resources
       </p>
-      {{#each this.resourcesHoldingPenResources as | resource |}}
-        {{#each resource.processProperties as | processProperty |}}
-
-          {{#if processProperty.change}}
-            <p class='impact-resource'>{{processProperty.sign}}{{processProperty.change}} {{processProperty.name}} at {{resource.selectedEntity.name}} from {{resource.selectedServiceModel.name}}.</p>
-          {{/if}}
-
-        {{/each}}
-      {{/each}}
       <p class="new-impact-resource" {{action 'toggleResourcesLayer'}}>
         <img src="images/icons/new-impact-resource-icon.svg" alt="" />
         Add Resources
       </p>
-      <p class="ruled-sub-header">
-        Impacts
-      </p>
-      {{#each this.resourcesHoldingPenImpacts as | impact |}}
-        {{#each impact.processProperties as | processProperty |}}
+      {{#each this.resourcesHoldingPenResources as | resource |}}
+        {{#each resource.processProperties as | processProperty i |}}
 
           {{#if processProperty.change}}
-            <p class='impact-resource'>{{processProperty.change}} {{processProperty.name}} at {{impact.selectedEntity.name}} from {{impact.selectedServiceModel.name}}.</p>
+            <div class='impact-resource-container'>
+              <p class='impact-resource'>{{processProperty.sign}}{{processProperty.change}} {{processProperty.name}} at {{resource.selectedEntity.name}} from {{resource.selectedServiceModel.name}}.</p>
+              <img class="impact-resource-remove" src="images/icons/close-icon.svg" alt="close form" {{action 'removeImpactResource' resource.processProperties i}}/>
+            </div>
           {{/if}}
 
         {{/each}}
       {{/each}}
+      <p class="ruled-sub-header">
+        Impacts
+      </p>
       <p class="new-impact-resource" {{action 'toggleImpactsLayer'}}>
         <img src="images/icons/new-impact-resource-icon.svg" alt="" />
         Add Impacts
       </p>
+      {{#each this.resourcesHoldingPenImpacts as | impact |}}
+        {{#each impact.processProperties as | processProperty i |}}
+
+          {{#if processProperty.change}}
+            <div class='impact-resource-container'>
+              <p class='impact-resource'>{{processProperty.change}} {{processProperty.name}} at {{impact.selectedEntity.name}} from {{impact.selectedServiceModel.name}}.</p>
+              <img class="impact-resource-remove" src="images/icons/close-icon.svg" alt="close form" {{action 'removeImpactResource' impact.processProperties i}}/>
+            </div>
+          {{/if}}
+
+        {{/each}}
+      {{/each}}
       {{!-- <p class="ruled-sub-header">
         Outcomes
       </p> --}}

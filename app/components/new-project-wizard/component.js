@@ -23,7 +23,7 @@ export default Ember.Component.extend({
   init: function () {
     this._super()
     this.resetNewProjectData() // if we want the form to remember data when it has been closed and reopened again, move this function into the .then of the last post reqest, and set newProjectData to the object on line 12
-    this.set('currentStep', this.get('steps')[0])
+    this.set('currentStep', this.get('steps')[1])
   },
   resetNewProjectData: function () {
     var newProjectData = {
