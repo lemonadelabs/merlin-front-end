@@ -2,7 +2,7 @@ import Ember from 'ember';
 
 export default Ember.Component.extend({
   oldServicePercentageToSlash:undefined,
-  percentageToSlash:10.0,
+  percentageToSlash:0.0,
   budgetName:undefined,
   revisedBudget:undefined,
   budgetAmmount:undefined,

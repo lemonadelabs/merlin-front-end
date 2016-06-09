@@ -2,7 +2,7 @@ import Ember from 'ember';
 
 export default Ember.Component.extend({
   classNames:['haircut-card'],
-  servicePercentageToSlash:10.0,
+  servicePercentageToSlash:0.0,
   revisedBudget:undefined,
   totalServiceBudget:undefined,
   revisedSubBudgets:{},
