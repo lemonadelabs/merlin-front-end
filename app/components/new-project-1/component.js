@@ -17,7 +17,6 @@ export default Ember.Component.extend({
     } else {
       this.set('errors.name', '')
     }
-    console.log('validateName')
   }.observes('newProjectData.name'),
 
   validatePriority: function () {
