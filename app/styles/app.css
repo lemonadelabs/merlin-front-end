@@ -150,6 +150,15 @@ html {
   margin: auto;
 }
 
+.haircut-card {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: solid 1px rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  padding: 1em;
+  margin-top: 1em;
+  min-height: 350px;
+}
+
 .new-project-button {
   position: absolute;
   right: 9vw;

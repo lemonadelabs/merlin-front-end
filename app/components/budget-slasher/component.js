@@ -7,6 +7,16 @@ export default Ember.Component.extend({
   revisedBudget:undefined,
   budgetAmmount:undefined,
   selected:undefined,
+  init(){
+    this._super()
+    var boundDeselectFunc = this.deselect.bind(this);
+    this.set('boundDeselect', boundDeselectFunc)
+  },
+  deselect(){
+    this.set('selected',false)
+    var boundDeselectFunc = this.get('boundDeselect')
+    document.removeEventListener('mouseup',boundDeselectFunc)
+  },
   didReceiveAttrs(){
     let budgetAmmount = this.get('budget.processes.0.properties.0.property_value')
     let servicePercentageToSlash = this.get('servicePercentageToSlash')
@@ -36,6 +46,7 @@ export default Ember.Component.extend({
       this.set('percentageToSlash', 0);
     }
     else if(newPercentage >= 20.0){
+
       this.set('percentageToSlash', 20.0);
     }
     else{
@@ -71,10 +82,11 @@ export default Ember.Component.extend({
     }
   },
   mouseDown(){
+    console.log(this.get('selected'));
+
     this.set('selected',true)
-  },
-  mouseUp(){
-    this.set('selected',false)
+    var boundDeselectFunc = this.get('boundDeselect')
+    document.addEventListener('mouseup',boundDeselectFunc)
   },
   slashByPercentage(percentage, budget){
     let ratio = percentage / 100,

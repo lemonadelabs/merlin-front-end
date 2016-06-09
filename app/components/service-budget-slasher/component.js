@@ -1,6 +1,7 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
+  classNames:['haircut-card'],
   servicePercentageToSlash:10.0,
   revisedBudget:undefined,
   totalServiceBudget:undefined,
@@ -68,7 +69,7 @@ export default Ember.Component.extend({
     let newPercentageRounded = Math.round10(newPercentageAbs,-1)
     return newPercentageRounded
   },
-  click(){
+  mouseDown(){
     if(!this.get('updateSubBudgets')){
        this.set('updateSubBudgets',true)
     }
