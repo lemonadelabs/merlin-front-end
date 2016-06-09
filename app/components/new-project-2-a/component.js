@@ -36,8 +36,8 @@ export default Ember.Component.extend({
     this.set('description', phaseToEdit.description)
     this.set('capital', phaseToEdit.investment_cost)
     this.set('operational', phaseToEdit.service_cost)
-    this.set('resourcesHoldingPenResources', phaseToEdit.resources)
-    this.set('resourcesHoldingPenImpacts', phaseToEdit.impacts)
+    this.set('resourcesHoldingPenResources', _.cloneDeep( phaseToEdit.resources ) )
+    this.set('resourcesHoldingPenImpacts', _.cloneDeep(phaseToEdit.impacts) )
 
   },
 
@@ -116,7 +116,6 @@ export default Ember.Component.extend({
         newPhase.end_date = oldPhase.end_date
         phases[ editPhaseIdx ] = newPhase
         this.set('phases', phases)
-        console.log(phases)
         this.phases.arrayContentDidChange(editPhaseIdx, 1, 1)
         this.set('editPhase', undefined)
       } else {
@@ -139,9 +138,6 @@ export default Ember.Component.extend({
         this.set('phases', phases)
         this.phases.arrayContentDidChange(this.phases.length, 0, 1)
       }
-
-
-
 
       this.resetNewPhaseForm()
       this.sendAction('toggleChildLayer')
@@ -177,9 +173,11 @@ export default Ember.Component.extend({
 
     },
 
-    // updatePhase: function () {
-    //   //this is needed for the timeline-track component, we might want to do something here anyway
-    // },
+    removeImpactResource: function (properties, i) {
+      delete properties[i].change
+      delete properties[i].sign
+      properties.arrayContentDidChange(i,1,1)
+    },
 
     toggleChildLayer: function (layerType) {
       this.toggleBool(`show${layerType}Layer`);
