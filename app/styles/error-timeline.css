@@ -1,0 +1,20 @@
+.error-timeline-container{
+  display: flex;
+  justify-content: space-between;
+  font-size: 10pt;
+}
+
+.error-dot{
+  transition: transform 200ms,background-color 200ms;
+  display: block;
+  width: 0.5em;
+  height: 0.5em;
+  border-radius: 50%;
+  background-color: white;
+  margin: auto;
+}
+
+.error-dot.contains-errors{
+  background-color: red;
+  transform: scale(2)
+}
