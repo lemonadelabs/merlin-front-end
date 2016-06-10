@@ -65,6 +65,7 @@ export default Ember.Component.extend({
       })
 
       _.forEach(outputsTelemetry, function (outputTelemetry) {
+        console.log(outputTelemetry)
         var simulationOutput = _.find(simulation.outputs, function (output) {
           return output.id === outputTelemetry.id
         })
@@ -76,9 +77,13 @@ export default Ember.Component.extend({
         telemetry: outputsTelemetry
       })
 
-      self.set('outputData', indexed)
+      var quartered = merlinUtils.convertDatasetToQuarters({ dataset : indexed })
 
-      self.recalculateOutputs(indexed)
+
+
+      self.set('outputData', quartered)
+
+      self.recalculateOutputs( quartered )
 
 
 
@@ -117,7 +122,17 @@ export default Ember.Component.extend({
     var self = this
     var simulationId = this.get('simulation.id')
     var projects = this.get('projects')
-    var scenarioIds = projectsTraversal.getScenarioIds(projects)
+
+    var scenarios = this.get('scenarios')
+    var baseline = scenarioInteractions.findBaseline({
+      scenarios : scenarios,
+      simulationId : simulationId
+    })
+
+    var projectScenarioIds = projectsTraversal.getScenarioIds(projects)
+
+    var scenarioIds = _.concat([ baseline.id ], projectScenarioIds)
+
     var url = merlinUtils.simulationRunUrl({
       scenarioIds : scenarioIds,
       simulationId : simulationId,
