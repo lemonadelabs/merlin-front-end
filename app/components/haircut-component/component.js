@@ -84,7 +84,7 @@ export default Ember.Component.extend({
     let errorsByYear = {}
     let errorsByYearArray = []
     _.forEach(errors,function(error){
-      let year = Math.floor(error.time/12) - 1
+      let year = Math.floor(error.time/12)
        if(!errorsByYear[year]){
          errorsByYear[year] = {}
        }
