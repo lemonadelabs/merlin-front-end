@@ -1,3 +1,19 @@
+export function convertDatasetToQuarters(opts) {
+  var dataset = opts.dataset
+  var returnData = []
+  var remainder = dataset.length % 3
+
+  for (var i = 0; i < dataset.length; i++) {
+    var index = Math.floor(i/3)
+    if (!returnData[index]) { returnData[index] = 0 }
+    var denominator = (i < dataset.length - remainder) ? 3 : remainder ;
+    returnData[index] += dataset[i] / denominator
+  };
+
+  return returnData
+
+}
+
 export function simulationRunUrl(opts) {
   var scenarioIds = opts.scenarioIds
   var simulationId = opts.simulationId

@@ -1,6 +1,16 @@
 import * as convertTime from './convert-time-es6'
 import putJSON from './put-json'
 
+export function findBaseline(opts) {
+  var scenarios = opts.scenarios
+  var simulationId = opts.simulationId
+  var simSubstring = `api/simulations/${simulationId}/`
+
+  return _.find(scenarios, function (scenario) {
+    return  ( _.includes(scenario.sim, simSubstring) && scenario.name === 'baseline')
+  })
+}
+
 export function updatePhaseTimes(data, callback) {
   // get old start_date
   var requests = []

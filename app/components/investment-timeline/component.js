@@ -47,7 +47,6 @@ export default Ember.Component.extend({
     _.forEach( messages, function (message) {
       console.log(message.time, message.message)
     })
-
   },
 
   processTelemetryData: function () {
@@ -76,12 +75,11 @@ export default Ember.Component.extend({
         telemetry: outputsTelemetry
       })
 
-      self.set('outputData', indexed)
+      var quartered = merlinUtils.convertDatasetToQuarters({ dataset : indexed })
 
-      self.recalculateOutputs(indexed)
+      self.set('outputData', quartered)
 
-
-
+      self.recalculateOutputs( quartered )
     })
   },
 
@@ -117,7 +115,17 @@ export default Ember.Component.extend({
     var self = this
     var simulationId = this.get('simulation.id')
     var projects = this.get('projects')
-    var scenarioIds = projectsTraversal.getScenarioIds(projects)
+
+    var scenarios = this.get('scenarios')
+    var baseline = scenarioInteractions.findBaseline({
+      scenarios : scenarios,
+      simulationId : simulationId
+    })
+
+    var projectScenarioIds = projectsTraversal.getScenarioIds(projects)
+
+    var scenarioIds = _.concat([ baseline.id ], projectScenarioIds)
+
     var url = merlinUtils.simulationRunUrl({
       scenarioIds : scenarioIds,
       simulationId : simulationId,
@@ -211,7 +219,6 @@ export default Ember.Component.extend({
     sortedData.labels = []
     var labelsNotMadeYet = true
 
-
     _.forEach(processedData, function (dataset, name) {
       sortedData[name] = []
       _.forEach(dataset, function (data, year) {
@@ -226,7 +233,6 @@ export default Ember.Component.extend({
       })
       labelsNotMadeYet = false
     })
-
 
     sortedData.totalInvestment = []
 
