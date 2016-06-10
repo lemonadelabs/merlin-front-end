@@ -28,9 +28,4 @@
 {{/x-select}}
 </div>
 
-{{#each this.errors as |error|}}
-  <p>{{error.year}}</p>
-  {{#each error.errors as |errorsMessage|}}
-    <p>{{errorsMessage.message}}</p>
-  {{/each}}
-{{/each}}
+{{error-timeline errors=this.errors}}
