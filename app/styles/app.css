@@ -224,3 +224,20 @@ html {
 .show-hide-chevron.expanded{
   transform: rotate(90deg);
 }
+
+.error-timeline-container{
+  display: flex;
+  justify-content: space-between;
+}
+
+.error-dot{
+  display: block;
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  background-color: white;
+  margin: auto;
+}
+.error-dot.contains-errors{
+  background-color: red;
+}
