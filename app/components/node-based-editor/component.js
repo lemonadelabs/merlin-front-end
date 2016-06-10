@@ -4,6 +4,7 @@ import initDraggable from '../../common/draggable'
 import postJSON from '../../common/post-json'
 import putJSON from '../../common/put-json'
 import deleteResource from '../../common/delete-resource'
+import * as scenarioInteractions from '../../common/scenario-interactions'
 
 export default Ember.Component.extend({
   draw: undefined,
@@ -115,8 +116,9 @@ export default Ember.Component.extend({
     var simSubstring = `api/simulations/${id}/`
     Ember.$.getJSON("api/scenarios/").then(function (scenarios) {
 
-      var baseline = _.find(scenarios, function (scenario) {
-        return  ( _.includes(scenario.sim, simSubstring) && scenario.name === 'baseline')
+      var baseline = scenarioInteractions.findBaseline({
+        scenarios : scenarios,
+        simulationId : id
       })
 
       if (baseline) {
