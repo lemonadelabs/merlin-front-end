@@ -47,7 +47,6 @@ export default Ember.Component.extend({
     _.forEach( messages, function (message) {
       console.log(message.time, message.message)
     })
-
   },
 
   processTelemetryData: function () {
@@ -65,7 +64,6 @@ export default Ember.Component.extend({
       })
 
       _.forEach(outputsTelemetry, function (outputTelemetry) {
-        console.log(outputTelemetry)
         var simulationOutput = _.find(simulation.outputs, function (output) {
           return output.id === outputTelemetry.id
         })
@@ -79,14 +77,9 @@ export default Ember.Component.extend({
 
       var quartered = merlinUtils.convertDatasetToQuarters({ dataset : indexed })
 
-
-
       self.set('outputData', quartered)
 
       self.recalculateOutputs( quartered )
-
-
-
     })
   },
 
@@ -226,7 +219,6 @@ export default Ember.Component.extend({
     sortedData.labels = []
     var labelsNotMadeYet = true
 
-
     _.forEach(processedData, function (dataset, name) {
       sortedData[name] = []
       _.forEach(dataset, function (data, year) {
@@ -241,7 +233,6 @@ export default Ember.Component.extend({
       })
       labelsNotMadeYet = false
     })
-
 
     sortedData.totalInvestment = []
 
