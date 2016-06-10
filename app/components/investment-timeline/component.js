@@ -76,6 +76,7 @@ export default Ember.Component.extend({
       })
 
       var quartered = merlinUtils.convertDatasetToQuarters({ dataset : indexed })
+      quartered.unshift(quartered[0])
 
       self.set('outputData', quartered)
 
