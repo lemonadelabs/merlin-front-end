@@ -203,7 +203,7 @@ html {
 }
 .service-budget-slasher-sub-budgets{
   overflow: hidden;
-  padding-left: 50px;
+  padding-left: 20px;
 }
 .service-budget-slasher-sub-budgets.collapsed{
   height: 0px;
