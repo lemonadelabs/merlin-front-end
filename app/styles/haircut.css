@@ -1,0 +1,51 @@
+.haircut-component{
+  color: white;
+  width:80vw;
+  margin: auto;
+  margin-top: 60px;
+}
+
+.haircut-card {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: solid 1px rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  padding: 1em;
+  margin-top: 1em;
+}
+
+.service-budget-slasher {
+  display: flex;
+  justify-content: space-between;
+}
+
+.service-budget-slasher div {
+  min-width: 250px;
+}
+
+.service-budget-slasher-title {
+  font-size: 12pt;
+  margin-top: 0;
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.service-budget-slasher-budget-title {
+  font-size: 11pt;
+  margin-bottom: 0.3em;
+  margin-top: 0.5em;
+  text-transform: capitalize;
+}
+
+.service-budget-slasher-sub-budgets {
+  overflow: hidden;
+  padding-left: 20px;
+}
+.service-budget-slasher-sub-budgets.collapsed {
+  height: 0px;
+}
+
+.haircut-settings-intro {
+  max-width: 50%;
+}

@@ -51,6 +51,7 @@ module.exports = function(defaults) {
   app.import('bower_components/lodash/lodash.js')
   app.import('bower_components/chartjs/dist/Chart.js')
   app.import('bower_components/chroma-js/chroma.min.js')
+  app.import('bower_components/popper.js/build/popper.js')
 
   return app.toTree();
 };

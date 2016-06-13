@@ -86,7 +86,7 @@ export default Ember.Component.extend({
 
   recalculateOutputs: function (data) {
     var investmentGraph = this.get('investmentGraph')
-    let index = 5
+    let index = 3
     if(index !== undefined){
       Ember.set(investmentGraph.data.datasets, `${index}.data`, data);
     }
@@ -149,8 +149,8 @@ export default Ember.Component.extend({
 
 
     let remainingFunds = new DataSet('remaining funds', graphData.remainingFunds, remainingFundsColor);
-    let capexContribution = new DataSet('capex contribution', graphData.capex, capexColor);
-    let opexContribution = new DataSet('opex contribution', graphData.opex, opexColor);
+    // let capexContribution = new DataSet('capex contribution', graphData.capex, capexColor);
+    // let opexContribution = new DataSet('opex contribution', graphData.opex, opexColor);
     let totalInvestment = new DataSet('total investment', graphData.totalInvestment, totalInvestmentColor);
 
     let capitalisation = new DataSet('capitalisation', graphData.capitalisation, capitalisationColor);
@@ -163,8 +163,8 @@ export default Ember.Component.extend({
 
 
     // remainingFunds.setDashType('longDash')
-    capexContribution.setDashType('longDash')
-    opexContribution.setDashType('longDash')
+    // capexContribution.setDashType('longDash')
+    // opexContribution.setDashType('longDash')
     totalInvestment.setDashType('longDash')
 
     capitalisation.setDashType('dotted')
@@ -187,8 +187,8 @@ export default Ember.Component.extend({
 
     var dataSets = [
       remainingFunds,
-      capexContribution,
-      opexContribution,
+      // capexContribution,
+      // opexContribution,
       totalInvestment,
       ongoingCost,
       outputs,
@@ -213,7 +213,7 @@ export default Ember.Component.extend({
 
     var processedData = this.processProjects({
       metadata : this.get('hardCodedMetadata'),
-      projectsReal : projects
+      projects : projects
     })
 
     var sortedData = {}
@@ -271,10 +271,10 @@ export default Ember.Component.extend({
     var investmentGraph = this.get('investmentGraph')
     var dataSetIndex = {
       'remainingFunds' : 0,
-      'capex' : 1,
-      'opex' : 2,
-      'totalInvestment' : 3,
-      'ongoingCost' : 4,
+      // 'capex' : 1,
+      // 'opex' : 2,
+      'totalInvestment' : 1,
+      'ongoingCost' : 2,
       // 'outputs' : 5,
       // 'capitalisation' : 5,
     }
