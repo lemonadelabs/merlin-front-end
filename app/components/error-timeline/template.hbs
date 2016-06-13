@@ -1,19 +1,8 @@
+<p>Errors</p>
+<hr/ class='error-timeline-hr'>
+
 <div class='error-timeline-container'>
   {{#each this.timeline as |year|}}
-    <div>
-      <span class="error-dot {{if year.containsErrors 'contains-errors'}}"></span>
-      {{year.label}}
-    </div>
-    {{!-- {{#if year.containsErrors}}
-      {{#each year.errorsMessages as |error|}}
-        {{error.message}}
-      {{/each}}
-    {{/if}} --}}
+    {{error-timeline-year year=year}}
   {{/each}}
 </div>
-{{!-- {{#each this.errors as |error|}}
-  <p>{{error.year}}</p>
-  {{#each error.errors as |errorsMessage|}}
-    <p>{{errorsMessage.message}}</p>
-  {{/each}}
-{{/each}} --}}

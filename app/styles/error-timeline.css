@@ -2,19 +2,31 @@
   display: flex;
   justify-content: space-between;
   font-size: 10pt;
+  height: 60px;
 }
-
+.error-timeline-year{
+  height: 100%;
+  padding-top: 10px;
+}
 .error-dot{
   transition: transform 200ms,background-color 200ms;
   display: block;
-  width: 0.5em;
-  height: 0.5em;
-  border-radius: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 100%;
   background-color: white;
   margin: auto;
 }
 
 .error-dot.contains-errors{
-  background-color: red;
+  background-color: rgb(245, 64, 35);
   transform: scale(2)
+}
+
+.error-timeline-hr{
+  border: none;
+  height: 1px;
+  background-color:rgba(255,255,255,0.4);
+  position: relative;
+  top: 22px;
 }
