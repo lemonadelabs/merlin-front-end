@@ -29,7 +29,7 @@ export default Ember.Component.extend({
     var secondSplit = firstSplit[1].split("}}")
     var keyword = secondSplit[0]
     var replacedWord = lookup[keyword];
-    return(firstSplit[0]+replacedWord+secondSplit[1])
+    return(firstSplit[0]+(replacedWord||keyword)+secondSplit[1])
   },
   findAndFormatNumbers(message){
     var removedSpaces = message.split(" ")
