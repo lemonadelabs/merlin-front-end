@@ -4,7 +4,10 @@
 </div>
 
 <div class='nodes-container' style={{this.style}}>
-  {{#each this.model.entities as | entity index | }}
+
+
+
+  {{#each this.selectedEntities as | entity index | }}
     {{
       entity-node
       entity=entity
@@ -25,7 +28,7 @@
     }}
   {{/each}}
 
-  {{#each this.model.outputs as | simulationOutput index | }}
+  {{#each this.selectedOutputs as | simulationOutput index | }}
     {{
       simulation-output
       simulationOutput=simulationOutput

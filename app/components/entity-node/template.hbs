@@ -50,6 +50,12 @@
 
 
 
+{{#if this.entity.service}}
+  <p {{action "viewService" this.entity}} class='view-service-button'>View Service</p>
+{{/if}}
+
+
+
 {{#if this.entity.outputs}}
 <p class='node-subheading'>outputs</p>
 

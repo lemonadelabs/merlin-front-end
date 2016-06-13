@@ -17,6 +17,8 @@ export default Ember.Component.extend({
   transformY: 0,
   entityComponents: {},
   outputComponents: {},
+  selectedEntities: [],
+  selectedOutputs: [],
   updateCablesBound: Ember.computed( function() {
     return Ember.run.bind(this, this.updateCables)
   }),
@@ -29,12 +31,68 @@ export default Ember.Component.extend({
     return Ember.String.htmlSafe(`transform:translate(${x}px,${y}px);`);
   }),
   initDraggable: initDraggable,
+  init: function () {
+    this._super()
+  },
   didInsertElement() {
     document.onmousemove = document.onmousemove || this.updateInputPosition;
     this.initSVGDocument()
-    // this.initZooming()
     this.initPaning()
+    this.sortEntities()
+    this.viewLevel('services')
+    // this.initZooming()
   },
+
+  sortEntities: function () {
+    var entities = _.cloneDeep( this.get('simulation.entities') )
+    var branches = _.remove(entities, function (entity) {
+      if ( entity.attributes[0] === 'branch' ) {
+        entity.branch = true
+        return true
+      }
+    })
+    var services = _.remove(entities, function (entity) {
+      if (entity.attributes[0] === 'service') {
+        entity.service = true
+        return true
+      }
+    })
+    this.set('otherEntities',entities)
+    this.set('branches',branches)
+    this.set('services',services)
+    this.set('outputs',this.get('simulation.outputs'))
+  },
+
+  viewLevel: function (level) {
+    this.set('selectedEntities', this.get(level))
+    console.log(this.get(level))
+    Ember.run.next(this, this.buildSVGNodes)
+  },
+
+
+  buildSVGNodes: function () {
+
+    var self = this
+
+    console.log(Object.keys( this.entityComponents ).length, Object.keys( this.outputComponents ).length, this.selectedEntities.length, this.selectedOutputs.length )
+    if (Object.keys( this.entityComponents ).length + Object.keys( this.outputComponents ).length === this.selectedEntities.length + this.selectedOutputs.length ) {
+      this.nodesGroup = new NodesGroup({
+        draw : this.draw,
+        entityModel : self.get('selectedEntities'),
+        outputModel : self.get('selectedOutputs'),
+        persistPosition : self.persistPosition
+      })
+      this.nodesGroup.buildNodes({
+        entityComponents : this.entityComponents,
+        outputComponents : this.outputComponents
+      })
+      this.nodesGroup.initCables()
+      // this.nodesGroup.terminalListners()
+    } else {
+      console.warn('the entity components haven\'t been built yet')
+    }
+  },
+
 
   updateNodesGroupOffsetX: function () {
     this.nodesGroup.groupOffsetX = this.get('transformX')
@@ -112,7 +170,7 @@ export default Ember.Component.extend({
 
   loadBaseline: function () {
     var self = this
-    var id = this.model.id
+    var id = this.simulation.id
     var simSubstring = `api/simulations/${id}/`
     Ember.$.getJSON("api/scenarios/").then(function (scenarios) {
 
@@ -146,13 +204,10 @@ export default Ember.Component.extend({
       entities: {}
     }
 
-
-
-
     _.forEach(opts.messages, function (message) {
       var processId = message.sender.id
       var type = (message.sender.type === "Output") ? 'outputs' : 'entities'
-      var entities = self.get('model').entities
+      var entities = self.get('simulation.entities')
 
       _.forEach(entities, function (entity) {
         _.forEach(entity.processes, function (process) {
@@ -178,7 +233,7 @@ export default Ember.Component.extend({
     }
 
     var timeframe = 48
-    var id = this.get('model').id
+    var id = this.get('simulation').id
 
     Ember.$.getJSON(`api/simulation-run/${id}/?steps=${timeframe}&s0=${baselineId}`).then(function (result) {
 
@@ -226,28 +281,6 @@ export default Ember.Component.extend({
     var draw = SVG('svg-container').size(window.innerWidth * 10, window.innerHeight * 10)
     this.set('draw', draw)
   },
-
-  buldSVGNodes: function () {
-
-    var self = this
-
-    if (Object.keys( this.entityComponents ).length + Object.keys( this.outputComponents ).length === this.model.entities.length + this.model.outputs.length ) {
-      this.nodesGroup = new NodesGroup({
-        draw : this.draw,
-        entityModel : self.get('model').entities,
-        outputModel : self.get('model').outputs,
-        persistPosition : self.persistPosition
-      })
-      this.nodesGroup.buildNodes({
-        entityComponents : this.entityComponents,
-        outputComponents : this.outputComponents
-      })
-      this.nodesGroup.initCables()
-      this.nodesGroup.terminalListners()
-    } else {
-      console.warn('the entity components haven\'t been built yet')
-    }
-  }.observes('draw'),
 
   initZooming: function() {
     //Lets not override scrolling till we have zoom working

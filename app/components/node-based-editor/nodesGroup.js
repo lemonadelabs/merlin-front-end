@@ -124,8 +124,9 @@ NodesGroup.prototype.terminalListners = function() {
 
 NodesGroup.prototype.buildNodes = function(opts) {
   var self = this
-
   var entityComponents = opts.entityComponents
+  var outputComponents = opts.outputComponents
+
 
   var counter = 0
   _.forEach(entityComponents, function (component, id) {
@@ -133,7 +134,6 @@ NodesGroup.prototype.buildNodes = function(opts) {
     counter ++
   })
 
-  var outputComponents = opts.outputComponents
   _.forEach(outputComponents, function (component, id) {
     buildNode(component, counter)
     counter ++

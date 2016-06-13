@@ -8,11 +8,17 @@ export default Ember.Component.extend({
   errorsForNode:undefined,
   classNameBindings:['id',"node-type"],
   attributeBindings:['style'],
-  style:Ember.computed('transformX', 'transformY' , function () {
+  style:Ember.computed('transformX', 'transformY', 'hidden', function () {
     var x = this.get('transformX')
     var y = this.get('transformY')
-    return Ember.String.htmlSafe(`transform:translate(${x}px,${y}px);`);
+    var style = Ember.String.htmlSafe(`transform:translate(${x}px,${y}px);`);
+
+    if (this.get('hidden')) {
+      style += Ember.String.htmlSafe('display: none;')
+    }
+    return style
   }),
+  hidden: false,
   id: undefined,
   initialPosition: undefined,
   "node-type":undefined,
