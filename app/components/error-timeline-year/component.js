@@ -11,7 +11,11 @@ export default Ember.Component.extend({
     let combinedMessage = ""
     var self = this
     _.forEach(errorMessages,function(error){
-      let messageFindReplace = self.findAndReplaceTemplate(error.message,{'staff$':'"Staff Budget"','LS_work_hr':'"Line Staff Work Hours"'})
+      let messageFindReplace = self.findAndReplaceTemplate(error.message,{
+                            'staff$':'"Staff Budget"',
+                            'desktop#':'"Desktop Computers"',
+                            'LS_work_hr':'"Line Staff Work Hours"'
+                          })
       let messagWithformatedNumbers = self.findAndFormatNumbers(messageFindReplace)
       combinedMessage += messagWithformatedNumbers+"\n"
     })
