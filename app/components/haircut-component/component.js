@@ -41,8 +41,17 @@ export default Ember.Component.extend({
       function(){
         let usePlannedScenarios = self.get('usePlannedScenarios')
         self.runSimulationWithSenario('haircut', usePlannedScenarios)
+        self.setStartTime();
       }
     )
+  },
+  setStartTime(){
+    let scenario = this.get('scenarios.haircut')
+    let year = Math.floor(scenario.start_offset/12)*12
+    let month = scenario.start_offset - year
+
+    this.set('yearOffset',year)
+    this.set('monthOffset',month)
   },
   loadSenario: function (scenarioName) {
     var self = this
