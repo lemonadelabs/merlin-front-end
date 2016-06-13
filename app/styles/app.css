@@ -75,3 +75,85 @@ html {
 .no-animate{
   animation: none;
 }
+
+.popper {
+    position: absolute;
+    background: var(--resource-color);
+    color: white;
+    min-width: 150px;
+    max-width: 300px;
+    border-radius: 3px;
+    padding: 10px;
+    text-align: left;
+    font-size: 10pt;
+}
+/*
+.popper::after {
+    content: "▾";
+    font-size: 20px;
+    color: rgb(74, 144, 226);
+    position: absolute;
+    bottom: -13px;
+    width: 13px;
+    left: calc(50% - 6.5px);
+}*/
+
+.popper p:first-of-type {
+  margin-top: 0;
+}
+.popper p:last-of-type {
+  margin-bottom: 0;
+}
+
+.popper .popper__arrow {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    position: absolute;
+    margin: 5px;
+}
+
+.popper[x-placement^="top"] {
+    margin-bottom: 5px;
+}
+.popper[x-placement^="top"] .popper__arrow {
+    border-width: 5px 5px 0 5px;
+    border-color: var(--resource-color) transparent transparent transparent;
+    bottom: -5px;
+    left: calc(50% - 5px);
+    margin-top: 0;
+    margin-bottom: 0;
+}
+.popper[x-placement^="bottom"] {
+    margin-top: 5px;
+}
+.popper[x-placement^="bottom"] .popper__arrow {
+    border-width: 0 5px 5px 5px;
+    border-color: transparent transparent var(--resource-color) transparent;
+    top: -5px;
+    left: calc(50% - 5px);
+    margin-top: 0;
+    margin-bottom: 0;
+}
+.popper[x-placement^="right"] {
+    margin-left: 5px;
+}
+.popper[x-placement^="right"] .popper__arrow {
+    border-width: 5px 5px 5px 0;
+    border-color: transparent var(--resource-color) transparent transparent;
+    left: -5px;
+    top: calc(50% - 5px);
+    margin-left: 0;
+    margin-right: 0;
+}
+.popper[x-placement^="left"] {
+    margin-right: 5px;
+}
+.popper[x-placement^="left"] .popper__arrow {
+    border-width: 5px 0 5px 5px;
+    border-color: transparent transparent transparent var(--resource-color);
+    right: -5px;
+    top: calc(50% - 5px);
+    margin-left: 0;
+    margin-right: 0;
+}

@@ -2,8 +2,12 @@
   display: flex;
   justify-content: space-between;
   font-size: 10pt;
+  height: 60px;
 }
-
+.error-timeline-year{
+  height: 100%;
+  padding-top: 10px;
+}
 .error-dot{
   transition: transform 200ms,background-color 200ms;
   display: block;

@@ -4,6 +4,7 @@
   bottom: 0;
   left: 10%;
   height: 230px;
+  z-index: 300
 }
 .plan-footer-graph .chart-container{
   height: 230px;
