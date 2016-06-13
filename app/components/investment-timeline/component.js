@@ -213,7 +213,7 @@ export default Ember.Component.extend({
 
     var processedData = this.processProjects({
       metadata : this.get('hardCodedMetadata'),
-      projectsReal : projects
+      projects : projects
     })
 
     var sortedData = {}

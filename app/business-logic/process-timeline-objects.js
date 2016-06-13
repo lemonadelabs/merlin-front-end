@@ -1,6 +1,6 @@
 export default function processProjects (opts) {
   var metadata = opts.metadata
-  var projectsReal = opts.projectsReal
+  var projects = opts.projects
 
   // needs : start, end, units,
   var researchSkeleton = makeSkeleton( { metadata : opts.metadata } )
@@ -23,7 +23,7 @@ export default function processProjects (opts) {
     capexSkeleton : capexSkeleton,
     opexSkeleton : opexSkeleton,
 
-    projectsReal : projectsReal,
+    projects : projects,
     metadata : metadata
   })
 
@@ -44,12 +44,12 @@ function populateSkeletons(opts) {
   var capexSkeleton = opts.capexSkeleton
   var opexSkeleton = opts.opexSkeleton
 
-  var projectsReal = opts.projectsReal
+  var projects = opts.projects
   var metadata = opts.metadata
   var units = metadata.units
   var maxValue = getMaxValue(units)
 
-  _.forEach(projectsReal, function (project) {
+  _.forEach(projects, function (project) {
     var projectTotalCost = 0
     var lastPhaseEnd
     _.forEach(project.phases, function (phase) {
@@ -116,103 +116,13 @@ function populateSkeletons(opts) {
       end : ongoingCostEnd,
       installment : ongoingCostInstallment
     })
-
-
-    // })
-
-
   })
 
-
-
-
-
-  // _.forEach(projects, function (project) {
-
-  //   ////////////////////////////////////////////////////////
-  //   // // RESEARCH COST
-  //   // ////////////////////////////////////////////////////////
-
-  //   // var researchCost = project.research.cost
-  //   // var researchStart = project.research.start
-  //   // var researchEnd = project.research.end
-  //   // var researchNoOfInstallments = findNoOfInstallments({
-  //   //   start : researchStart,
-  //   //   end : researchEnd,
-  //   //   maxValue : maxValue
-  //   // })
-  //   // var researchinstallment = researchCost / researchNoOfInstallments
-
-  //   // distributeCost({
-  //   //   skeleton : opts.researchSkeleton,
-  //   //   start : researchStart,
-  //   //   end : researchEnd,
-  //   //   installment : researchinstallment,
-  //   //   maxValue : maxValue
-  //   // })
-
-  //   // ////////////////////////////////////////////////////////
-  //   // // DEV COST
-  //   // ////////////////////////////////////////////////////////
-
-  //   // var devCost = project.development.cost
-  //   // var devStart = project.development.start
-  //   // var devEnd = project.development.end
-  //   // var devNoOfInstallments = findNoOfInstallments({
-  //   //   start : devStart,
-  //   //   end : devEnd,
-  //   //   maxValue : maxValue
-  //   // })
-  //   // var devinstallment = devCost / devNoOfInstallments
-
-  //   // distributeCost({
-  //   //   skeleton : opts.devSkeleton,
-  //   //   start : devStart,
-  //   //   end : devEnd,
-  //   //   installment : devinstallment
-  //   // })
-
-
-
-
-
-  //   ////////////////////////////////////////////////////////
-  //   // ONGOING COST
-  //   ////////////////////////////////////////////////////////
-
-  //   var ongoingCostYearly = capitalisationAmount * 0.25
-  //   var ongoingCostInstallment = ongoingCostYearly / maxValue
-  //   var ongoingCostStart = capitalisationStart
-  //   var ongoingCostEnd = metadata.end
-
-  //   distributeCost({
-  //     skeleton : opts.ongoingCostSkeleton,
-  //     start : ongoingCostStart,
-  //     end : ongoingCostEnd,
-  //     installment : ongoingCostInstallment,
-  //     maxValue : maxValue
-  //   })
-  // })
-  ////////////////////////////////////////////////////////
-  // FUEL TANK
-  ////////////////////////////////////////////////////////
-
   var availableFunds = metadata.availableFunds
-
-  // distributeCost({
-  //   skeleton : opts.fuelTankSkeleton,
-  //   start : metadata.start,
-  //   end : metadata.start,
-  //   installment : availableFunds,
-  //   maxValue : maxValue
-  // })
-
 
   drainFuelTank({
     fuelTankSkeleton : fuelTankSkeleton,
     toSubtract : [ opts.capexSkeleton ],
-    // start : metadata.start,
-    // end : metadata.start,
     maxValue : maxValue,
     availableFunds : availableFunds
   })
