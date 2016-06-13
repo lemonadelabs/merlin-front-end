@@ -87,7 +87,6 @@ export default Ember.Component.extend({
       simulationId : simulation_id,
       timeframe : 120
     })
-    console.log(url);
     return Ember.$.getJSON(url).then(
       function(simData){
         self.set(`simulationData.${scenario}`,simData)
@@ -161,7 +160,6 @@ export default Ember.Component.extend({
     }
   },
   updateScenarioOffset:function(offset,scenario){
-    console.log('offset',offset,'scenario',scenario);
     let updateScenarioObject = {
       "name": scenario.name,
       "sim": scenario.sim,
@@ -185,7 +183,6 @@ export default Ember.Component.extend({
       let month = this.get('monthOffset')
       let scenario = this.get('scenarios.haircut')
       this.updateScenarioOffset(year+month, scenario)
-      console.log(year+month);
     }
   },
   obvserveusePlannedScenarios: function(){
