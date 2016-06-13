@@ -1,6 +1,8 @@
 import Ember from 'ember';
 import * as simTraverse from '../../common/simulation-traversal';
 import * as merlinUtils from '../../common/merlin-utils';
+import * as scenarioInteractions from '../../common/scenario-interactions'
+import * as projectsTraversal from '../../common/projects-traversal'
 import postJSON from '../../common/post-json'
 import putJSON from '../../common/put-json'
 
@@ -9,6 +11,7 @@ export default Ember.Component.extend({
   servicesPool:[],
   scenarios:{},
   simulationData:{},
+  usePlannedScenarios:true,
   scenarioOffset:0,
   didInsertElement(){
     this._super()
@@ -36,7 +39,8 @@ export default Ember.Component.extend({
     this.loadSenario('haircut')
     .then(
       function(){
-        self.runSimulationWithSenario('haircut')
+        let usePlannedScenarios = self.get('usePlannedScenarios')
+        self.runSimulationWithSenario('haircut', usePlannedScenarios)
       }
     )
   },
@@ -67,11 +71,24 @@ export default Ember.Component.extend({
       }
     })
   },
-  runSimulationWithSenario(scenario){
+  runSimulationWithSenario(scenario, includeProjects){
     var self = this
     let scenarioData = this.get(`scenarios.${scenario}`)
+    var projectScenarioIds = []
+    if(includeProjects){
+      let projects = this.get('model.projects')
+      projectScenarioIds = projectsTraversal.getScenarioIds(projects)
+    }
+    let scenarioIds = _.concat([ scenarioData.id ], projectScenarioIds)
     let simulation_id = this.get(`model.simulation.id`)
-    return Ember.$.getJSON(`api/simulation-run/${simulation_id}/?steps=120&s0=${scenarioData.id}`).then(
+
+    var url = merlinUtils.simulationRunUrl({
+      scenarioIds : scenarioIds,
+      simulationId : simulation_id,
+      timeframe : 120
+    })
+    console.log(url);
+    return Ember.$.getJSON(url).then(
       function(simData){
         self.set(`simulationData.${scenario}`,simData)
         self.checkForAndProcessErrors(simData);
@@ -129,7 +146,8 @@ export default Ember.Component.extend({
       // event put request
       putJSON({url:`api/events/${event.id}/`,data:event})
       .then(function(){
-        self.runSimulationWithSenario(scenario.name)
+        let usePlannedScenarios = self.get('usePlannedScenarios')
+        self.runSimulationWithSenario(scenario.name, usePlannedScenarios)
       })
     } else {
       event = this.createCuttingEvent(scenario)
@@ -137,7 +155,8 @@ export default Ember.Component.extend({
       // event post request
       postJSON({url:'api/events/',data:event})
       .then(function(){
-        self.runSimulationWithSenario(scenario.name)
+        let usePlannedScenarios = self.get('usePlannedScenarios')
+        self.runSimulationWithSenario(scenario.name, usePlannedScenarios)
       })
     }
   },
@@ -152,22 +171,8 @@ export default Ember.Component.extend({
 
     putJSON({url:`api/scenarios/${scenario.id}/`,data: updateScenarioObject})
     .then(function(data){
-      self.runSimulationWithSenario(scenario.name)
-    })
-
-  },
-  updateScenarioOffset:function(offset,scenario){
-    console.log('offset',offset,'scenario',scenario);
-    let updateScenarioObject = {
-      "name": scenario.name,
-      "sim": scenario.sim,
-      "start_offset": offset
-    },
-    self = this
-
-    putJSON({url:`api/scenarios/${scenario.id}/`,data: updateScenarioObject})
-    .then(function(data){
-      self.runSimulationWithSenario(scenario.name)
+      let usePlannedScenarios = self.get('usePlannedScenarios')
+      self.runSimulationWithSenario(scenario.name, usePlannedScenarios)
     })
 
   },
@@ -182,5 +187,9 @@ export default Ember.Component.extend({
       this.updateScenarioOffset(year+month, scenario)
       console.log(year+month);
     }
-  }
+  },
+  obvserveusePlannedScenarios: function(){
+    let usePlannedScenarios = this.get('usePlannedScenarios')
+    this.runSimulationWithSenario('haircut', usePlannedScenarios)
+  }.observes('usePlannedScenarios')
 });
