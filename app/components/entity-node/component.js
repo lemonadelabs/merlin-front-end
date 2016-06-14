@@ -53,5 +53,11 @@ export default Ember.Component.extend({
     } else {
       this.set('errorsForNode',undefined)
     }
-  }.observes('errors','month')
+  }.observes('errors','month'),
+
+  actions: {
+    viewService: function (entity) {
+      this.sendAction('viewService', entity)
+    }
+  }
 });

@@ -122,6 +122,16 @@ NodesGroup.prototype.terminalListners = function() {
 
 };
 
+NodesGroup.prototype.clearNodesAndBuildNewNodes = function(opts) {
+  this.entityNodes = {}
+  this.outputNodes = {}
+  this.outputTerminals = {}
+  this.inputTerminals = {}
+
+  this.buildNodes(opts)
+
+};
+
 NodesGroup.prototype.buildNodes = function(opts) {
   var self = this
   var entityComponents = opts.entityComponents
@@ -145,7 +155,13 @@ NodesGroup.prototype.buildNodes = function(opts) {
     var positionX = component.get('positionX')
     var positionY = component.get('positionY')
 
+
     var nodeModel = (nodeType === 'output-node') ? _.find(self.outputModel, ['id', id]) : _.find(self.entityModel, ['id', id])
+
+    // the parent entity seems to be getting into here somehow!!
+
+    console.log('component',component)
+    console.log('nodeModel',nodeModel)
 
     var node = new Node({
       id : id,

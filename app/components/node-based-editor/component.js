@@ -5,6 +5,7 @@ import postJSON from '../../common/post-json'
 import putJSON from '../../common/put-json'
 import deleteResource from '../../common/delete-resource'
 import * as scenarioInteractions from '../../common/scenario-interactions'
+import * as simTraversal from '../../common/simulation-traversal'
 
 export default Ember.Component.extend({
   draw: undefined,
@@ -86,7 +87,7 @@ export default Ember.Component.extend({
         entityComponents : this.entityComponents,
         outputComponents : this.outputComponents
       })
-      this.nodesGroup.initCables()
+      // this.nodesGroup.initCables()
       // this.nodesGroup.terminalListners()
     } else {
       console.warn('the entity components haven\'t been built yet')
@@ -324,7 +325,34 @@ export default Ember.Component.extend({
     })
   },
 
+  updateSelectedEntitiesAndOutputs: function (opts) {
+    var removed = this.selectedEntities.length
+    this.selectedEntities.length = 0
+    this.selectedEntities.push(...opts.entities)
+    this.selectedEntities.arrayContentDidChange(0,this.selectedEntities.length, removed)
+
+    removed = this.selectedOutputs.length
+    this.selectedOutputs.length = 0
+    this.selectedOutputs.push(...this.get('outputs'))
+    this.selectedOutputs.arrayContentDidChange(0,this.selectedOutputs.length, removed)
+
+    this.nodesGroup.clearNodesAndBuildNewNodes({
+      entityComponents : this.entityComponents,
+      outputComponents : this.outputComponents
+    })
+  },
+
   actions: {
+    viewService: function (entity) {
+      console.log(entity)
+      var childEntities = simTraversal.getChildrenOfEntity({
+        entity : entity,
+        simulation : this.get('simulation')
+      })
+      this.updateSelectedEntitiesAndOutputs({
+        entities : childEntities
+      })
+    },
     resetDefaults: function () {
       this.resetBaseline()
     }
