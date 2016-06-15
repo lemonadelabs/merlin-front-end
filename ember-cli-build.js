@@ -10,6 +10,10 @@ var quantityQueries = require('postcss-quantity-queries')
 
 module.exports = function(defaults) {
   var app = new EmberApp(defaults, {
+    "ember-cli-qunit": {
+      useLintTree: false
+    },
+
     // minifyJS: { // all of these settings are copied from pulse
     //   enabled: false
     // },

@@ -196,6 +196,9 @@ export default Ember.Component.extend({
         var scenarioPostRequest = self.persistScenarioForPhase({ phase : phase })
         scenarioPostRequest.then( function (scenario) {
 
+          console.log('phase.start_date',phase.start_date,'convertTime.quarterToBackend(phase.start_date)',convertTime.quarterToBackend(phase.start_date))
+          console.log('phase.end_date',phase.end_date,'convertTime.quarterToBackend(phase.end_date)',convertTime.quarterToBackend(phase.end_date))
+
           var newPhaseJSON = {
             "name": phase.name,
             "description": phase.description || 'description',

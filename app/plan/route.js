@@ -21,6 +21,13 @@ export default Ember.Route.extend({
   },
 
   setupController: function (controller, models) {
+    let time = {
+      year : 2017,
+      value : 1,
+    }
+    var test = convertTime.quarterToBackend({time : time})
+    console.log('test',test)
+
     this.convertTimeInProjects(models.projects)
     // this.runSimulation(models)
     controller.setProperties(models);

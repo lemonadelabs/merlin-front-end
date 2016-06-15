@@ -1,3 +1,11 @@
+export function passTest(arg) {
+  return arg
+}
+
+export function failTest(arg) {
+  return 'asdf'
+}
+
 export function convertTimesInObject (object) {
   _.forEach(object, function (value, key) {
     object[key] = (key.indexOf('date') > -1) ? switchTimeFormat(value) : value
@@ -33,25 +41,43 @@ export function toQuater (time) {
   }
 }
 
-export function quarterToBackend(time) {
+export function quarterToBackend(opts) {
+  var time = opts.time
   if (typeof time === 'string') { return time }
-  var year = String(time.year)
+  var isEndDate = opts.isEndDate
+
   var quarter = time.value
-  var day = '01'
+  // var year = String(time.year)
+  var year = String ( (quarter < 3) ?  time.year - 1 : time.year )
+
   var month
   if (quarter === 1) {
-    month = '07'
+    month = 7
   } else if (quarter === 2) {
-    month = '10'
+    month = 10
   } else if (quarter === 3) {
-    month = '01'
+    month = 1
   } else if (quarter === 4) {
-    month = '04'
+    month = 4
   }
-  var formatted = `${year}-${month}-${day}`
+  month += (isEndDate) ? 2 : 0
+
+  var day = (isEndDate) ? daysInMonth(month, year) : 1
+  var formatted = formatTimeForBackend(day, month, year)
   return formatted
 }
 
+function formatTimeForBackend(day, month, year) {
+  return `${ year }-${ formatDayOrMonth(month) }-${ formatDayOrMonth(day) }`
+}
+
+function formatDayOrMonth(t) {
+  return String(t).length === 1 ? `0${t}` : String(t)
+}
+
+function daysInMonth(month,year) {
+   return new Date(year, month, 0).getDate();
+}
 
 function additiveInverse(number) {
   return number * -1
