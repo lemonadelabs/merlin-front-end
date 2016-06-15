@@ -1,29 +1,25 @@
-export function passTest(arg) {
-  return arg
-}
-
-export function failTest(arg) {
-  return 'asdf'
-}
-
 export function convertTimesInObject (object) {
   _.forEach(object, function (value, key) {
-    object[key] = (key.indexOf('date') > -1) ? switchTimeFormat(value) : value
+    if (key.indexOf('date') > -1) {
+      var isEndDate = (key.indexOf('end') > -1) ? true : false;
+      object[key] = switchTimeFormat({
+        time : value,
+        isEndDate : isEndDate
+      })
+    }
   })
 }
 
-function switchTimeFormat (time) {
+function switchTimeFormat (opts) {
   if (typeof time === 'object') {
-    return quarterToBackend(time)
+    return quarterToBackend(opts)
   } else {
-    return toQuater(time)
+    return toQuater(opts.time)
   }
 }
 
 export function toQuater (time) {
-  var year = Number( time.substring(0,4) )
   var month = Number( time.substring(5,7) )
-
   var quarter
   if (month <= 3) {
     quarter = 3
@@ -34,6 +30,8 @@ export function toQuater (time) {
   } else {
     quarter = 2
   }
+  var year = Number( time.substring(0,4) )
+  year += (quarter < 3) ? 1 : 0 ;
 
   return {
     year : year,
@@ -47,7 +45,6 @@ export function quarterToBackend(opts) {
   var isEndDate = opts.isEndDate
 
   var quarter = time.value
-  // var year = String(time.year)
   var year = String ( (quarter < 3) ?  time.year - 1 : time.year )
 
   var month
@@ -95,7 +92,7 @@ function isBEarlier(opts) {
 
 function ensureQuarters(opts) {
   _.forEach(opts, function (value, key) {
-    opts[key] = ( typeof value === 'string' ) ? switchTimeFormat(value) : value
+    opts[key] = ( typeof value === 'string' ) ? toQuater(value) : value
   })
 }
 
