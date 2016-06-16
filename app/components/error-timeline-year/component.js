@@ -49,7 +49,6 @@ export default Ember.Component.extend({
       let messagWithformatedNumbers = self.findAndFormatNumbers(messageFindReplace)
       combinedMessage += "<p>"+messagWithformatedNumbers+"</p>"
     })
-    console.log(combinedMessage);
     return combinedMessage
   },
   findAndReplaceTemplate(message,lookup){
