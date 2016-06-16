@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import postJSON from '../../common/post-json'
 import putJSON from '../../common/put-json'
-import * as convertTime from '../../common/convert-time-es6'
+import * as convertTime from '../../common/convert-time'
 import * as simTraverse from '../../common/simulation-traversal'
 import * as merlinUtils from '../../common/merlin-utils'
 

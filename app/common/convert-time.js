@@ -90,15 +90,43 @@ function isBEarlier(opts) {
   }
 }
 
-function ensureQuarters(opts) {
+function ensureQuartersInObject(opts) {
   _.forEach(opts, function (value, key) {
-    opts[key] = ( typeof value === 'string' ) ? toQuater(value) : value
+    opts[key] = ensureQuarterFormat(value)
   })
 }
 
+function ensureQuarterFormat(time) {
+  return ( typeof time === 'string' ) ? toQuater(time) : time
+}
+
+export function incrementTimeBy1 (opts) {
+  var maxValue = opts.maxValue || 4
+  var time = ensureQuarterFormat( _.cloneDeep(opts.time) )
+  if (time.value === maxValue) {
+    time.year +=1
+    time.value = 1
+  } else {
+    time.value += 1
+  }
+  return time
+}
+
+
+
+export function incrementTimeBy3(opts) {
+  var time = opts.time
+
+  var one = incrementTimeBy1({ time : time })
+  var two = incrementTimeBy1({ time : one })
+  var three = incrementTimeBy1({ time : two })
+  return three
+}
+
+
 export function clicksBetween(opts) {
 
-  ensureQuarters(opts)
+  ensureQuartersInObject(opts)
   var inverse = isBEarlier(opts)
   if ( inverse ) {
     var start = opts.b
@@ -109,14 +137,8 @@ export function clicksBetween(opts) {
   }
 
 
-  if (typeof start === 'string') {
-    start = toQuater(start)
-  }
-  if (typeof end === 'string') {
-    end = toQuater(end)
-  }
-
-
+  start = ensureQuarterFormat(start)
+  end = ensureQuarterFormat(end)
 
   var quarters = 0
   var maxValue = opts.maxValue || 4

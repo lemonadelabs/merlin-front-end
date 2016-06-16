@@ -1,4 +1,4 @@
-import * as convertTime from './convert-time-es6'
+import * as convertTime from './convert-time'
 import putJSON from './put-json'
 
 export function findBaseline(opts) {
@@ -38,7 +38,7 @@ export function updatePhaseTimes(data, callback) {
       var phaseTimes = {
         start_date : convertTime.quarterToBackend({time : data.start_date}),
         end_date : convertTime.quarterToBackend({
-          time : data.end_date.
+          time : data.end_date,
           isEndDate : true
         }),
       }

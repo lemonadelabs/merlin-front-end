@@ -93,7 +93,6 @@ export default Ember.Component.extend({
 
 
     // editPhase () {
-    //   console.log('editPhase')
     // },
     toggleChildLayer () {
       this.toggleBool('showChildLayer');
