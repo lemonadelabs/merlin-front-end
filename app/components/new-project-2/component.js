@@ -47,10 +47,10 @@ export default Ember.Component.extend({
 
   timespan:{
     start:{
-      year:2016
+      year:2017
     },
     end:{
-      year:2019
+      year:2020
     },
     units:'quarters'
   },
