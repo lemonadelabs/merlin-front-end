@@ -134,6 +134,11 @@ export default Ember.Component.extend({
     return Ember.$.getJSON(url)
   },
 
+  projectHasBeenAdded: function () {
+    this.processTelemetryData()
+    this.recalculateInvestments()
+  }.observes('projects'),
+
   buildChart: function () {
     let opexColor = 'rgb(245, 166, 35)';
     let capexColor = 'rgb(60, 255, 122)';
@@ -264,7 +269,7 @@ export default Ember.Component.extend({
     this.set('serviceModels', serviceModels)
   }.observes('parentEntity'),
 
-  recalculateInvestments:function(){
+  recalculateInvestments: function(){
     let processedData = this.processAndSortData()
     // run simulation
     var investmentGraph = this.get('investmentGraph')
@@ -290,7 +295,6 @@ export default Ember.Component.extend({
       this.processTelemetryData()
     }
     scenarioInteractions.updatePhaseTimes( opts, callback.bind(this) )
-    this.recalculateInvestments()
 
   },
 
@@ -311,7 +315,9 @@ export default Ember.Component.extend({
         "end_date": context.get('end'),
         scenarioId: context.get('scenarioId')
       })
+      this.recalculateInvestments()
     },
 
   }
 });
+
