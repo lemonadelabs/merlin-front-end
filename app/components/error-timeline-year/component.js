@@ -7,7 +7,10 @@ export default Ember.Component.extend({
   popper:undefined,
   mouseEnter(){
     let errorMessages = this.get('year.errorsMessages')
-    var formattedMessage = this.constructErrorMessage(errorMessages)
+    let errorMessagesSorted = _.sortBy(errorMessages,'time').reverse();//potentially expensive but we've not got a lot of errors
+    console.log(errorMessagesSorted);
+
+    var formattedMessage = this.constructErrorMessage(errorMessagesSorted)
     this.addPopper(formattedMessage)
 
   },
@@ -40,6 +43,8 @@ export default Ember.Component.extend({
   constructErrorMessage(errorMessages){
     let combinedMessage = ""
     var self = this
+    var previousTick
+
     _.forEach(errorMessages,function(error){
       let messageFindReplace = self.findAndReplaceTemplate(error.message,{
                             'staff$':'"Staff Budget"',
@@ -47,9 +52,23 @@ export default Ember.Component.extend({
                             'LS_work_hr':'"Line Staff Work Hours"'
                           })
       let messagWithformatedNumbers = self.findAndFormatNumbers(messageFindReplace)
-      combinedMessage += "<p>"+messagWithformatedNumbers+"</p>"
+      if(previousTick !== error.time){
+        let errorTime = self.ticksToMonth(error.time)
+        combinedMessage += `<h4>${errorTime}:</h4>`
+        previousTick = error.time;
+      }
+
+      combinedMessage += `<p>${messagWithformatedNumbers}</p>`
     })
     return combinedMessage
+  },
+  ticksToMonth(tick){
+    let year = Math.floor(tick/12)*12,
+        monthIndex = tick - year,
+        months = ['July','August','September','October','November','December','January','Febuary','March','April','May','June'];
+
+    console.log(monthIndex);
+    return months[monthIndex]
   },
   findAndReplaceTemplate(message,lookup){
     var firstSplit = message.split("{{")
@@ -59,7 +78,7 @@ export default Ember.Component.extend({
     var secondSplit = firstSplit[1].split("}}")
     var keyword = secondSplit[0]
     var replacedWord = lookup[keyword];
-    return(firstSplit[0]+(replacedWord||keyword)+secondSplit[1])
+    return(firstSplit[0]+'<b>'+(replacedWord||keyword)+'</b>'+secondSplit[1])
   },
   findAndFormatNumbers(message){
     var removedSpaces = message.split(" ")
@@ -68,7 +87,7 @@ export default Ember.Component.extend({
       var potentialNumber = parseFloat(word)
       if(!isNaN(potentialNumber)){
         let NumberTwoDP = toTwoDP(potentialNumber)
-        word = commaSeperate(NumberTwoDP);
+        word = '<b>'+commaSeperate(NumberTwoDP)+'</b>';
       }
       returnString += word+" "
     })
