@@ -1,4 +1,4 @@
-import * as convertTime from './convert-time-es6'
+import * as convertTime from './convert-time'
 import putJSON from './put-json'
 import postJSON from './post-json'
 
@@ -61,8 +61,11 @@ export function updatePhaseTimes(data, callback) {
       })
 
       var phaseTimes = {
-        start_date : convertTime.quarterToBackend(data.start_date),
-        end_date : convertTime.quarterToBackend(data.end_date),
+        start_date : convertTime.quarterToBackend({time : data.start_date}),
+        end_date : convertTime.quarterToBackend({
+          time : data.end_date,
+          isEndDate : true
+        }),
       }
       // update the phase with new time data
       var phaseReq = putJSON({

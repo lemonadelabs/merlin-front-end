@@ -42,7 +42,7 @@ export default Ember.Component.extend({
         for (var quarter = 1; quarter <= 4; quarter++) {
           timeUnits.push({'title':'Q' + quarter,
                           'value': quarter,
-                          'year': timespan.start.year+year
+                          'year': timespan.start.year+year + 1 //For financial year alignment
                          });
         }
       }

@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import * as simTraverse from '../../common/simulation-traversal'
+import * as convertTime from '../../common/convert-time'
 
 export default Ember.Component.extend({
 
@@ -121,17 +122,11 @@ export default Ember.Component.extend({
       } else {
         var lastPhase = phases[ phases.length - 1 ]
         if (lastPhase) {
-          newPhase.start_date = incrementTimeBy1({ time : lastPhase.end_date })
-          newPhase.end_date = incrementTimeBy3({ time : newPhase.start_date })
+          newPhase.start_date = convertTime.incrementTimeBy1({ time : lastPhase.end_date })
+          newPhase.end_date = convertTime.incrementTimeBy3({ time : newPhase.start_date })
         } else {
-          newPhase.start_date = {
-            year : 2016,
-            value : 1
-          },
-          newPhase.end_date = {
-            year : 2016,
-            value : 4
-          }
+          newPhase.start_date = convertTime.toQuater(this.get('simulation').start_date)
+          newPhase.end_date = convertTime.incrementTimeBy3({ time : newPhase.start_date })
         }
 
         phases.push(newPhase)
@@ -206,22 +201,3 @@ export default Ember.Component.extend({
   }
 });
 
-function incrementTimeBy1 (opts) { // move this into convert time lib
-  var maxValue = opts.maxValue || 4
-  var time = _.cloneDeep(opts.time)
-  if (time.value === maxValue) {
-    time.year +=1
-    time.value = 1
-  } else {
-    time.value += 1
-  }
-  return time
-}
-
-function incrementTimeBy3(opts) {  // move this into convert time lib
-  var time = opts.time
-  var one = incrementTimeBy1({ time : time })
-  var two = incrementTimeBy1({ time : one })
-  var three = incrementTimeBy1({ time : two })
-  return three
-}

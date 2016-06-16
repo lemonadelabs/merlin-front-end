@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import * as convertTime from '../../common/convert-time-es6'
+import * as convertTime from '../../common/convert-time'
 
 export default Ember.Component.extend({
   showNewProjectWiz: false,

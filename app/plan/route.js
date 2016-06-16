@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import * as convertTime from '../common/convert-time-es6'
+import * as convertTime from '../common/convert-time'
 import * as projectsTraversal from '../common/projects-traversal'
 import * as merlinUtils from '../common/merlin-utils'
 import * as scenarioInteractions from '../common/scenario-interactions'

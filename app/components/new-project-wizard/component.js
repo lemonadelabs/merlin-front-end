@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import postJSON from '../../common/post-json'
 import putJSON from '../../common/put-json'
-import * as convertTime from '../../common/convert-time-es6'
+import * as convertTime from '../../common/convert-time'
 import * as simTraverse from '../../common/simulation-traversal'
 import * as merlinUtils from '../../common/merlin-utils'
 
@@ -23,7 +23,7 @@ export default Ember.Component.extend({
   init: function () {
     this._super()
     this.resetNewProjectData() // if we want the form to remember data when it has been closed and reopened again, move this function into the .then of the last post reqest, and set newProjectData to the object on line 12
-    this.set('currentStep', this.get('steps')[1])
+    this.set('currentStep', this.get('steps')[0])
   },
   resetNewProjectData: function () {
     var newProjectData = {
@@ -202,9 +202,12 @@ export default Ember.Component.extend({
             "scenario": scenario.id,
             "investment_cost": Number(phase.investment_cost) || 0,
             "service_cost": Number(phase.service_cost) || 0,
-            "start_date": convertTime.quarterToBackend(phase.start_date),
-            "end_date": convertTime.quarterToBackend(phase.end_date),
-            "is_active": false
+            "start_date": convertTime.quarterToBackend({ time : phase.start_date }),
+            "end_date": convertTime.quarterToBackend({
+              time : phase.end_date,
+              isEndDate : true
+            }),
+            "is_active": true
           }
 
           var events = self.createEvents({
