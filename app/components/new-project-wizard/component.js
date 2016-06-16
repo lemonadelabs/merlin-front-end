@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import postJSON from '../../common/post-json'
 import putJSON from '../../common/put-json'
-import * as convertTime from '../../common/convert-time-es6'
+import * as convertTime from '../../common/convert-time'
 import * as simTraverse from '../../common/simulation-traversal'
 import * as merlinUtils from '../../common/merlin-utils'
 
@@ -202,8 +202,11 @@ export default Ember.Component.extend({
             "scenario": scenario.id,
             "investment_cost": Number(phase.investment_cost) || 0,
             "service_cost": Number(phase.service_cost) || 0,
-            "start_date": convertTime.quarterToBackend(phase.start_date),
-            "end_date": convertTime.quarterToBackend(phase.end_date),
+            "start_date": convertTime.quarterToBackend({ time : phase.start_date }),
+            "end_date": convertTime.quarterToBackend({
+              time : phase.end_date,
+              isEndDate : true
+            }),
             "is_active": false
           }
 

@@ -4,7 +4,6 @@ import DataSet from '../lemonade-chart/dataSet';
 import Axes from '../lemonade-chart/axes';
 import ChartParameters from '../lemonade-chart/chartParameters';
 import truncateBigNumbers from '../../common/truncateBigNumbers';
-import convertTime from '../../common/convert-time'
 import * as scenarioInteractions from '../../common/scenario-interactions'
 import * as simTraverse from '../../common/simulation-traversal'
 import * as projectsTraversal from '../../common/projects-traversal'
