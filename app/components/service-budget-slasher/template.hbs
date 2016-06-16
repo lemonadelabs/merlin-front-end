@@ -19,6 +19,6 @@
 {{show-more-less expanded=this.showBudgets extraString="Sub Budgets"}}
 <div class='service-budget-slasher-sub-budgets {{if this.showBudgets "expanded" "collapsed"}}'>
   {{#each service.budgets as |budget|}}
-    {{budget-slasher updateSubBudgets=this.updateSubBudgets budget=budget servicePercentageToSlash=servicePercentageToSlash updateServiceBudgetAndPercentage=(action 'updateServiceBudgetAndPercentage')}}
+    {{budget-slasher scenarios=this.scenarios simulationData=this.simulationData updateSubBudgets=this.updateSubBudgets budget=budget servicePercentageToSlash=servicePercentageToSlash updateServiceBudgetAndPercentage=(action 'updateServiceBudgetAndPercentage')}}
   {{/each}}
 </div>
