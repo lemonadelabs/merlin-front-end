@@ -102,7 +102,7 @@ export default Ember.Component.extend({
   actions:{
     updateServiceBudgetAndPercentage:function(params){
       this.set(`revisedSubBudgets.${params.budgetName}`, {'value':params.revisedBudget,'entity':params.budgetEntity})
-      Ember.run.debounce(this,this.updateBudgetBasedOnServicePercentage,params,1)
+      Ember.run.debounce(this,this.updateBudgetBasedOnServicePercentage,params,10)
     }
   }
 });
