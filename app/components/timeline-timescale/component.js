@@ -22,9 +22,11 @@ export default Ember.Component.extend({
     var numYears = timespan.end.year - timespan.start.year + 1;
 
     for(var i = 0; i < numYears; i++){
-      var year = timespan.start.year+i
-      var financialYear = (timespan.start.year+i+1) - 2000;
-      years.push(`${year}/${financialYear}`);
+      var startYear = timespan.start.year+i-1
+
+      var endYear = timespan.start.year+i
+      var endYearFormatted = endYear - 2000
+      years.push(`${startYear}/${endYearFormatted}`);
 
       if(i === 1){
         this.set('useMonths',false);
@@ -42,7 +44,7 @@ export default Ember.Component.extend({
         for (var quarter = 1; quarter <= 4; quarter++) {
           timeUnits.push({'title':'Q' + quarter,
                           'value': quarter,
-                          'year': timespan.start.year+year + 1 //For financial year alignment
+                          'year': timespan.start.year+year //For financial year alignment
                          });
         }
       }

@@ -117,9 +117,11 @@ export default Ember.Component.extend({
       b : phase.end_date
     })
 
+    var releaseTime = clicksBetween + 4 // to release at the end of the phase
+
     var endEvent = merlinUtils.newEventObject({
       scenarioId: scenario.id,
-      time: clicksBetween
+      time: releaseTime
     })
 
     _.forEach(phase.resources, function (resource) {

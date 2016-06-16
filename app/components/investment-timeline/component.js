@@ -21,11 +21,11 @@ export default Ember.Component.extend({
   axes2Width:undefined,
   hardCodedMetadata: {
     start : {
-      year : 2016,
+      year : 2017,
       value : 1
     },
     end : {
-      year : 2019,
+      year : 2020,
       value : 4
     },
     units : 'quarters',

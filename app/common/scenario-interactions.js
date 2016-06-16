@@ -87,11 +87,13 @@ export function updatePhaseTimes(data, callback) {
 
       if (highest === 1) {
         index = oldScenario.events.length - 1
-        console.warn('both events are happening at the same time. we dont now which event is the end event.')
+        console.warn('both events are happening at the same time. we dont now which event is the end event. Address this problem!')
       }
+
+
       var endEvent = oldScenario.events[index]
 
-      endEvent.time = newPhaseLength
+      endEvent.time = newPhaseLength + 4 // to release resources on first tick after phase end
 
 
       var endEventReq = putJSON({
