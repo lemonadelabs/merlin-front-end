@@ -207,7 +207,7 @@ export default Ember.Component.extend({
               time : phase.end_date,
               isEndDate : true
             }),
-            "is_active": false
+            "is_active": true
           }
 
           var events = self.createEvents({
