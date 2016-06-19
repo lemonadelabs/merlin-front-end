@@ -98,11 +98,16 @@ html {
     left: calc(50% - 6.5px);
 }*/
 
-.popper p:first-of-type {
+.popper p{
   margin-top: 0;
 }
 .popper p:last-of-type {
   margin-bottom: 0;
+}
+
+.popper h4{
+  margin-top: 0;
+  margin-bottom: 0.2em;
 }
 
 .popper .popper__arrow {

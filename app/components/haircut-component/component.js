@@ -13,13 +13,12 @@ export default Ember.Component.extend({
   simulationData:{},
   usePlannedScenarios:true,
   scenarioOffset:0,
-  didInsertElement(){
+  init(){
     this._super()
-    Ember.run.next(this,this.setup)
+    this.setup()
   },
   setup(){
-    let self = this,
-        simulation = this.get('model.simulation'),
+    let simulation = this.get('model.simulation'),
         serviceModels = simTraverse.getServiceModelsFromSimulation({simulation : simulation}),
         servicesPool = this.get('servicesPool')
 
@@ -36,49 +35,39 @@ export default Ember.Component.extend({
       servicesPool.push(servicesPoolObject)
     })
     this.servicesPool.arrayContentDidChange(0, servicesPool.length, 0)
-    this.loadSenario('haircut')
-    .then(
-      function(){
-        let usePlannedScenarios = self.get('usePlannedScenarios')
-        self.runSimulationWithSenario('haircut', usePlannedScenarios)
-        self.setStartTime();
-      }
-    )
+    this.findandRunSimulationWithSenario('haircut')
+    this.setStartTime();
+
   },
   setStartTime(){
-    let scenario = this.get('scenarios.haircut')
-    let year = Math.floor(scenario.start_offset/12)*12
-    let month = scenario.start_offset - year
+    let scenarioStart = this.get('scenarios.haircut.start_offset') || 0,
+        year = Math.floor(scenarioStart/12)*12,
+        month = scenarioStart - year
 
     this.set('yearOffset',year)
     this.set('monthOffset',month)
   },
-  loadSenario: function (scenarioName) {
+  findandRunSimulationWithSenario:function(scenarioName){
     var self = this
-    var id = this.model.simulation.id
-    var simSubstring = `api/simulations/${id}/`
-    return Ember.$.getJSON("api/scenarios/").then(function (scenarios) {
+    var scenario = scenarioInteractions.findScenarioByName({'scenarios' : this.get('model.scenarios'),
+                                            'scenarioName' : scenarioName,
+                                            'simulationId' : this.model.simulation.id,
+                                          })
+    if (scenario) {
+      self.set(`scenarios.${scenarioName}`, scenario)
 
-      var scenario = _.find(scenarios, function (scenario) {
-        return  ( _.includes(scenario.sim, simSubstring) && scenario.name === scenarioName)
-      })
+      let usePlannedScenarios = this.get('usePlannedScenarios')
+      this.runSimulationWithSenario('haircut', usePlannedScenarios)
 
-      if (scenario) {
+    } else {
+      scenarioInteractions.createBlankScenario({'scenarioName':scenarioName ,'simulationId':this.model.simulation.id})
+      .then(function (scenario) {
         self.set(`scenarios.${scenarioName}`, scenario)
-      } else {
-        var postData = {
-          "name": scenarioName,
-          "sim": "http://127.0.0.1:8000/api/simulations/" + id + '/',
-          "start_offset": 0
-        }
-        postJSON({
-          data : postData,
-          url : "api/scenarios/"
-        }).then(function (scenario) {
-          self.set(`scenarios.${scenarioName}`, scenario)
-        })
-      }
-    })
+
+        let usePlannedScenarios = self.get('usePlannedScenarios')
+        self.runSimulationWithSenario('haircut', usePlannedScenarios)
+      })
+    }
   },
   runSimulationWithSenario(scenario, includeProjects){
     var self = this
@@ -99,6 +88,8 @@ export default Ember.Component.extend({
     return Ember.$.getJSON(url).then(
       function(simData){
         self.set(`simulationData.${scenario}`,simData)
+        self.notifyPropertyChange(`simulationData.${scenario}`)
+        self.get(`simulationData.${scenario}`).arrayContentDidChange(0,0,simData.length)
         self.checkForAndProcessErrors(simData);
       }
     )
@@ -149,7 +140,7 @@ export default Ember.Component.extend({
     })
 
     let event = scenario.events[0]
-    if(event){
+    if(Ember.isPresent(event)){
       event.actions = actions
       // event put request
       putJSON({url:`api/events/${event.id}/`,data:event})
@@ -160,9 +151,11 @@ export default Ember.Component.extend({
     } else {
       event = this.createCuttingEvent(scenario)
       event.actions = actions
+
       // event post request
       postJSON({url:'api/events/',data:event})
-      .then(function(){
+      .then(function(data){
+        scenario.events.push(data)
         let usePlannedScenarios = self.get('usePlannedScenarios')
         self.runSimulationWithSenario(scenario.name, usePlannedScenarios)
       })
