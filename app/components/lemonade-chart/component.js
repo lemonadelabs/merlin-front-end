@@ -51,7 +51,7 @@ export default Ember.Component.extend({
       console.warn('no options or data on start up');
       return;
     }
-    var ctx = this.element.getElementsByTagName("canvas")[0],
+    var canvasElement = this.element.getElementsByTagName("canvas")[0],
         type = this.get('type'),
         data = _.cloneDeep(this.get('data')),
         options = _.cloneDeep(this.get('options'));
@@ -59,12 +59,13 @@ export default Ember.Component.extend({
 
     this.set('localData', data)
     this.set('localOptions', options)
+    this.set('canvasElement', canvasElement)
 
-    let chart = new Chart(ctx, {type, data, options});
+    let chart = new Chart(canvasElement, {type, data, options});
     this.set('chart', chart)
   },
   rebuildChart(){
-    var ctx = this.element.getElementsByTagName("canvas")[0],
+    var canvasElement = this.get('canvasElement') || this.element.getElementsByTagName("canvas")[0],
         type = this.get('type'),
         data = _.cloneDeep(this.get('data')),
         options = _.cloneDeep(this.get('options')),
@@ -74,7 +75,7 @@ export default Ember.Component.extend({
     this.set('localOptions', options)
 
     oldChart.destroy()
-    let chart = new Chart(ctx, {type, data, options});
+    let chart = new Chart(canvasElement, {type, data, options});
     chart.render(300, true);
     this.set('chart', chart)
   },
@@ -101,10 +102,7 @@ export default Ember.Component.extend({
     _.forEach(datasets,function(v){
       currentDataSetLabels.push(v.label);
     })
-
-    console.log('previousDatasetLabels',previousDatasetLabels);
     let previousDataSetLabels = previousDatasetLabels || []
-
     return {
             'dataSetSame':_.isEqual(currentDataSetLabels, previousDataSetLabels),
             'currentDataSetLabels':currentDataSetLabels
