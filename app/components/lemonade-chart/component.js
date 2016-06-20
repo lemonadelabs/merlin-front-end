@@ -12,7 +12,7 @@ export default Ember.Component.extend({
   didInsertElement(){
     if(this.get('data') && this.get('options')){
         this.buildChart();
-      }
+    }
   },
   setUpDefaultValues(){
     //Get the font properties of body so that we can apply it to our chart
@@ -36,11 +36,6 @@ export default Ember.Component.extend({
       console.warn('no options or data on start up');
       return;
     }
-    var oldChart = this.get('chart');
-    if(oldChart){
-      this.rebuildChart()
-    }
-
     var ctx = this.element.getElementsByTagName("canvas")[0],
         type = this.get('type'),
         data = _.cloneDeep(this.get('data')),
