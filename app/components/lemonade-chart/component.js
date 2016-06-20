@@ -36,23 +36,34 @@ export default Ember.Component.extend({
       console.warn('no options or data on start up');
       return;
     }
-    var ctx = this.element.getElementsByTagName("canvas")[0];
-    var type = this.get('type');
-    var data = _.cloneDeep(this.get('data'));
-    this.set('localData', data)
-    var options = _.cloneDeep(this.get('options'));
-    this.set('localOptions', options)
-    var oldChart = this.get('chart')
-
+    var oldChart = this.get('chart');
     if(oldChart){
-      oldChart.destroy()
-      let chart = new Chart(ctx, {type, data, options});
-      this.set('chart', chart)
-      this.get('chart').render(300, true);
-    }else{
-      let chart = new Chart(ctx, {type, data, options});
-      this.set('chart', chart)
+      this.rebuildChart()
     }
+
+    var ctx = this.element.getElementsByTagName("canvas")[0],
+        type = this.get('type'),
+        data = _.cloneDeep(this.get('data')),
+        options = _.cloneDeep(this.get('options'));
+
+
+    this.set('localData', data)
+    this.set('localOptions', options)
+
+    let chart = new Chart(ctx, {type, data, options});
+    this.set('chart', chart)
+  },
+  rebuildChart(){
+    var ctx = this.element.getElementsByTagName("canvas")[0],
+    type = this.get('type'),
+    data = _.cloneDeep(this.get('data')),
+    options = _.cloneDeep(this.get('options')),
+    oldChart = this.get('chart')
+
+    oldChart.destroy()
+    let chart = new Chart(ctx, {type, data, options});
+    chart.render(300, true);
+    this.set('chart', chart)
   },
   observeDataChange: function(){
     var datasets = this.get('data.datasets');
@@ -61,31 +72,31 @@ export default Ember.Component.extend({
       console.warn('datasets undefined')
       return;
     }
-    this.handleDataChange(datasets)
-  }.observes('data.labels','data.datasets'),
+    this.handleDatasetChange(datasets)
+  }.observes('data.datasets'),
   observeDatumChange: function(){
-    var self = this
-    var datasets = this.get('data.datasets');
-    var localDatasets = self.get('localData.datasets');
-    var chart = this.get('chart');
+    var chart = this.get('chart'),
+        datasets = this.get('data.datasets'),
+        sameDatasetCollection = this.checkForNewDataset(datasets);
+
+    if(sameDatasetCollection && chart && datasets){
+      this.handleDatumUpdate(chart, datasets)
+    }
+  }.observes('data.datasets.@each.data'),
+  handleDatumUpdate(chart, datasets){
+    var localDatasets = this.get('localData.datasets');
 
     _.forEach(localDatasets,function(v,i){
       v.data = datasets[i].data
     })
     chart.update()
-  }.observes('data.datasets.@each.data'),
-  handleDataChange(datasets){
+  },
+  handleDatasetChange(datasets){
     var datasetsLastIndex = datasets.length - 1;
     if (this.get('data.labels') && this.get(`data.datasets.${datasetsLastIndex}.data`)) {
-      let currentDataSetLabels = []
-      _.forEach(datasets,function(v){
-        currentDataSetLabels.push(v.label);
-      })
-      let previousDataSetLabels = this.get('previousDataSetLabels') || currentDataSetLabels
-      let sameDatasetCollection = _.isEqual(currentDataSetLabels, previousDataSetLabels)
-      this.set('previousDataSetLabels',currentDataSetLabels)
+      let sameDatasetCollection = this.checkForNewDataset(datasets),
+          chart = this.get('chart');
 
-      var chart = this.get('chart');
       if(!chart){
         this.setUpDefaultValues();
         this.buildChart()
@@ -93,19 +104,23 @@ export default Ember.Component.extend({
       }
 
       if(!sameDatasetCollection){
-        this.buildChart()
-        return;
+        this.rebuildChart()
       }
-      // else{
-      //   var self = this
-      //   var localDatasets = self.get('localData.datasets');
-      //
-      //   _.forEach(localDatasets,function(v,i){
-      //     v.data = datasets[i].data
-      //   })
-      //   chart.update()
-      // }
+      else{
+        this.handleDatumUpdate(chart, datasets)
+      }
     }
+  },
+  checkForNewDataset(datasets){
+    let currentDataSetLabels = []
+    _.forEach(datasets,function(v){
+      currentDataSetLabels.push(v.label);
+    })
+
+    let previousDataSetLabels = this.get('previousDataSetLabels') || currentDataSetLabels
+    this.set('previousDataSetLabels',currentDataSetLabels)
+
+    return _.isEqual(currentDataSetLabels, previousDataSetLabels)
   },
   actions:{
     toggleDataSet: function(dataset){
