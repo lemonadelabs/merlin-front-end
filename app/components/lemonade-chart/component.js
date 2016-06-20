@@ -62,7 +62,7 @@ export default Ember.Component.extend({
       return;
     }
     this.handleDataChange(datasets)
-  }.observes('data.labels','data.datasets','data.datasets.@each.data'),
+  }.observes('data.labels','data.datasets'),
   observeDatumChange: function(){
     var self = this
     var datasets = this.get('data.datasets');
