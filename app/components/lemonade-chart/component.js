@@ -14,6 +14,22 @@ export default Ember.Component.extend({
         this.buildChart();
     }
   },
+  didUpdateAttrs(){
+    var chart = this.get('chart'),
+        datasets = this.get('data.datasets'),
+        previousDatasetLabels =this.get('previousDataSetLabels'),
+        datasetStatus = this.checkForNewDataset(datasets, previousDatasetLabels);
+
+    if(!chart){
+      this.buildChart()
+      return
+    }
+
+    if(!datasetStatus.dataSetSame){
+      this.rebuildChart()
+      this.set('previousDataSetLabels', datasetStatus.currentDataSetLabels)
+    }
+  },
   setUpDefaultValues(){
     //Get the font properties of body so that we can apply it to our chart
     var body = document.body;
@@ -26,8 +42,7 @@ export default Ember.Component.extend({
     globalChartOptions.legend.display = false
     //disable line tension because it causes issues with readability
     globalChartOptions.elements.line.tension = 0.01
-    //Tooltip settings
-    //globalChartOptions.tooltips
+    //Resize settings
     globalChartOptions.maintainAspectRatio = false;
     globalChartOptions.responsive = true
   },
@@ -55,25 +70,18 @@ export default Ember.Component.extend({
         options = _.cloneDeep(this.get('options')),
         oldChart = this.get('chart')
 
+    this.set('localData', data)
+    this.set('localOptions', options)
+
     oldChart.destroy()
     let chart = new Chart(ctx, {type, data, options});
     chart.render(300, true);
     this.set('chart', chart)
   },
-  observeDatasetChange: function(){
-    var datasets = this.get('data.datasets');
-    if(datasets === undefined){
-      console.warn('datasets undefined')
-      return;
-    }
-    this.handleDatasetChange(datasets)
-  }.observes('data.datasets'),
   observeDataChange: function(){
     var chart = this.get('chart'),
-        datasets = this.get('data.datasets'),
-        sameDatasetCollection = this.checkForNewDataset(datasets);
-
-    if(sameDatasetCollection && chart && datasets){
+        datasets = this.get('data.datasets');
+    if(chart){
       this.handleDataUpdate(chart, datasets)
     }
   }.observes('data.datasets.@each.data'),
@@ -85,36 +93,19 @@ export default Ember.Component.extend({
     })
     chart.update()
   },
-  handleDatasetChange(datasets){
-    var datasetsLastIndex = datasets.length - 1;
-    if (this.get('data.labels') && this.get(`data.datasets.${datasetsLastIndex}.data`)) {
-      let sameDatasetCollection = this.checkForNewDataset(datasets),
-          chart = this.get('chart');
-
-      if(!chart){
-        this.setUpDefaultValues();
-        this.buildChart()
-        return
-      }
-
-      if(!sameDatasetCollection){
-        this.rebuildChart()
-      }
-      else{
-        this.handleDataUpdate(chart, datasets)
-      }
-    }
-  },
-  checkForNewDataset(datasets){
+  checkForNewDataset(datasets, previousDatasetLabels){
     let currentDataSetLabels = []
     _.forEach(datasets,function(v){
       currentDataSetLabels.push(v.label);
     })
 
-    let previousDataSetLabels = this.get('previousDataSetLabels') || currentDataSetLabels
-    this.set('previousDataSetLabels',currentDataSetLabels)
+    console.log('previousDatasetLabels',previousDatasetLabels);
+    let previousDataSetLabels = previousDatasetLabels || []
 
-    return _.isEqual(currentDataSetLabels, previousDataSetLabels)
+    return {
+            'dataSetSame':_.isEqual(currentDataSetLabels, previousDataSetLabels),
+            'currentDataSetLabels':currentDataSetLabels
+    }
   },
   actions:{
     toggleDataSet: function(dataset){
