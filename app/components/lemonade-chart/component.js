@@ -60,7 +60,7 @@ export default Ember.Component.extend({
     chart.render(300, true);
     this.set('chart', chart)
   },
-  observeDataChange: function(){
+  observeDatasetChange: function(){
     var datasets = this.get('data.datasets');
 
     if(datasets === undefined){
@@ -69,16 +69,16 @@ export default Ember.Component.extend({
     }
     this.handleDatasetChange(datasets)
   }.observes('data.datasets'),
-  observeDatumChange: function(){
+  observeDataChange: function(){
     var chart = this.get('chart'),
         datasets = this.get('data.datasets'),
         sameDatasetCollection = this.checkForNewDataset(datasets);
 
     if(sameDatasetCollection && chart && datasets){
-      this.handleDatumUpdate(chart, datasets)
+      this.handleDataUpdate(chart, datasets)
     }
   }.observes('data.datasets.@each.data'),
-  handleDatumUpdate(chart, datasets){
+  handleDataUpdate(chart, datasets){
     var localDatasets = this.get('localData.datasets');
 
     _.forEach(localDatasets,function(v,i){
@@ -102,7 +102,7 @@ export default Ember.Component.extend({
         this.rebuildChart()
       }
       else{
-        this.handleDatumUpdate(chart, datasets)
+        this.handleDataUpdate(chart, datasets)
       }
     }
   },
