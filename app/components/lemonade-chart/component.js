@@ -50,10 +50,10 @@ export default Ember.Component.extend({
   },
   rebuildChart(){
     var ctx = this.element.getElementsByTagName("canvas")[0],
-    type = this.get('type'),
-    data = _.cloneDeep(this.get('data')),
-    options = _.cloneDeep(this.get('options')),
-    oldChart = this.get('chart')
+        type = this.get('type'),
+        data = _.cloneDeep(this.get('data')),
+        options = _.cloneDeep(this.get('options')),
+        oldChart = this.get('chart')
 
     oldChart.destroy()
     let chart = new Chart(ctx, {type, data, options});
@@ -62,7 +62,6 @@ export default Ember.Component.extend({
   },
   observeDatasetChange: function(){
     var datasets = this.get('data.datasets');
-
     if(datasets === undefined){
       console.warn('datasets undefined')
       return;
