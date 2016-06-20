@@ -63,6 +63,17 @@ export default Ember.Component.extend({
     }
     this.handleDataChange(datasets)
   }.observes('data.labels','data.datasets','data.datasets.@each.data'),
+  observeDatumChange: function(){
+    var self = this
+    var datasets = this.get('data.datasets');
+    var localDatasets = self.get('localData.datasets');
+    var chart = this.get('chart');
+
+    _.forEach(localDatasets,function(v,i){
+      v.data = datasets[i].data
+    })
+    chart.update()
+  }.observes('data.datasets.@each.data'),
   handleDataChange(datasets){
     var datasetsLastIndex = datasets.length - 1;
     if (this.get('data.labels') && this.get(`data.datasets.${datasetsLastIndex}.data`)) {
@@ -85,15 +96,15 @@ export default Ember.Component.extend({
         this.buildChart()
         return;
       }
-      else{
-        var self = this
-        var localDatasets = self.get('localData.datasets');
-
-        _.forEach(localDatasets,function(v,i){
-          v.data = datasets[i].data
-        })
-        chart.update()
-      }
+      // else{
+      //   var self = this
+      //   var localDatasets = self.get('localData.datasets');
+      //
+      //   _.forEach(localDatasets,function(v,i){
+      //     v.data = datasets[i].data
+      //   })
+      //   chart.update()
+      // }
     }
   },
   actions:{
