@@ -80,8 +80,11 @@ export default Ember.Component.extend({
   },
   observeDataChange: function(){
     var chart = this.get('chart'),
-        datasets = this.get('data.datasets');
-    if(chart){
+        datasets = this.get('data.datasets'),
+        previousDatasetLabels =this.get('previousDataSetLabels'),
+        datasetStatus = this.checkForNewDataset(datasets, previousDatasetLabels);
+
+    if(chart && datasetStatus.dataSetSame){
       this.handleDataUpdate(chart, datasets)
     }
   }.observes('data.datasets.@each.data'),
