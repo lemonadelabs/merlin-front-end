@@ -5,9 +5,9 @@ export default Ember.Component.extend({
   chart : undefined,
   currentChartId : undefined,
   attributeBindings: ['style'],
-  willInsertElement(){
+  init(){
+    this._super()
     this.setUpDefaultValues();
-
   },
   didInsertElement(){
     if(this.get('data') && this.get('options')){
