@@ -130,36 +130,33 @@ export function clicksBetween(opts) {
   var start, end
   var inverse = isBEarlier(opts)
   if ( inverse ) {
-    start = opts.b
-    end = opts.a
+    start = ensureQuarterFormat( opts.b )
+    end = ensureQuarterFormat( opts.a )
   } else {
-    start = opts.a
-    end = opts.b
+    start = ensureQuarterFormat( opts.a )
+    end = ensureQuarterFormat( opts.b )
   }
-
-
-  start = ensureQuarterFormat(start)
-  end = ensureQuarterFormat(end)
 
   var quarters = 0
   var maxValue = opts.maxValue || 4
 
+  var i, j
   if (start.year === end.year) { // for periods withtin 1 year
-    for (var j = start.value; j < end.value; j++) {
+    for (j = start.value; j < end.value; j++) {
       quarters += 1
     }
   } else {
-    for (var i = start.year; i <= end.year; i++) {
+    for (i = start.year; i <= end.year; i++) {
       if (i === start.year) { // for the first year, it continues to the end
-        for (var j = start.value; j <= maxValue; j++) {
+        for (j = start.value; j <= maxValue; j++) {
           quarters += 1
         }
       } else if (i === end.year) { // for the last year
-        for (var j = 1; j < end.value; j++) {
+        for (j = 1; j < end.value; j++) {
           quarters += 1
         }
       } else { // for every other year
-        for (var j = 1; j <= maxValue; j++) {
+        for (j = 1; j <= maxValue; j++) {
           quarters += 1
         }
       }
