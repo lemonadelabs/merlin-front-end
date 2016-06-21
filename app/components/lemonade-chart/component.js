@@ -5,14 +5,30 @@ export default Ember.Component.extend({
   chart : undefined,
   currentChartId : undefined,
   attributeBindings: ['style'],
-  willInsertElement(){
+  init(){
+    this._super()
     this.setUpDefaultValues();
-
   },
   didInsertElement(){
     if(this.get('data') && this.get('options')){
         this.buildChart();
-      }
+    }
+  },
+  didUpdateAttrs(){
+    var chart = this.get('chart'),
+        datasets = this.get('data.datasets'),
+        previousDatasetLabels =this.get('previousDataSetLabels'),
+        datasetStatus = this.checkForNewDataset(datasets, previousDatasetLabels);
+
+    if(!chart){
+      this.buildChart()
+      return
+    }
+
+    if(!datasetStatus.dataSetSame){
+      this.rebuildChart()
+      this.set('previousDataSetLabels', datasetStatus.currentDataSetLabels)
+    }
   },
   setUpDefaultValues(){
     //Get the font properties of body so that we can apply it to our chart
@@ -26,8 +42,7 @@ export default Ember.Component.extend({
     globalChartOptions.legend.display = false
     //disable line tension because it causes issues with readability
     globalChartOptions.elements.line.tension = 0.01
-    //Tooltip settings
-    //globalChartOptions.tooltips
+    //Resize settings
     globalChartOptions.maintainAspectRatio = false;
     globalChartOptions.responsive = true
   },
@@ -36,64 +51,60 @@ export default Ember.Component.extend({
       console.warn('no options or data on start up');
       return;
     }
-    var ctx = this.element.getElementsByTagName("canvas")[0];
-    var type = this.get('type');
-    var data = _.cloneDeep(this.get('data'));
-    this.set('localData', data)
-    var options = _.cloneDeep(this.get('options'));
-    this.set('localOptions', options)
-    var oldChart = this.get('chart')
+    var canvasElement = this.element.getElementsByTagName("canvas")[0],
+        type = this.get('type'),
+        data = _.cloneDeep(this.get('data')),
+        options = _.cloneDeep(this.get('options'));
 
-    if(oldChart){
-      oldChart.destroy()
-      let chart = new Chart(ctx, {type, data, options});
-      this.set('chart', chart)
-      this.get('chart').render(300, true);
-    }else{
-      let chart = new Chart(ctx, {type, data, options});
-      this.set('chart', chart)
-    }
+
+    this.set('localData', data)
+    this.set('localOptions', options)
+    this.set('canvasElement', canvasElement)
+
+    let chart = new Chart(canvasElement, {type, data, options});
+    this.set('chart', chart)
+  },
+  rebuildChart(){
+    var canvasElement = this.get('canvasElement') || this.element.getElementsByTagName("canvas")[0],
+        type = this.get('type'),
+        data = _.cloneDeep(this.get('data')),
+        options = _.cloneDeep(this.get('options')),
+        oldChart = this.get('chart')
+
+    this.set('localData', data)
+    this.set('localOptions', options)
+
+    oldChart.destroy()
+    let chart = new Chart(canvasElement, {type, data, options});
+    this.set('chart', chart)
   },
   observeDataChange: function(){
-    var datasets = this.get('data.datasets');
+    var chart = this.get('chart'),
+        datasets = this.get('data.datasets'),
+        previousDatasetLabels =this.get('previousDataSetLabels'),
+        datasetStatus = this.checkForNewDataset(datasets, previousDatasetLabels);
 
-    if(datasets === undefined){
-      console.warn('datasets undefined')
-      return;
+    if(chart && datasetStatus.dataSetSame){
+      this.handleDataUpdate(chart, datasets)
     }
-    this.handleDataChange(datasets)
-  }.observes('data.labels','data.datasets','data.datasets.@each.data'),
-  handleDataChange(datasets){
-    var datasetsLastIndex = datasets.length - 1;
-    if (this.get('data.labels') && this.get(`data.datasets.${datasetsLastIndex}.data`)) {
-      let currentDataSetLabels = []
-      _.forEach(datasets,function(v){
-        currentDataSetLabels.push(v.label);
-      })
-      let previousDataSetLabels = this.get('previousDataSetLabels') || currentDataSetLabels
-      let sameDatasetCollection = _.isEqual(currentDataSetLabels, previousDataSetLabels)
-      this.set('previousDataSetLabels',currentDataSetLabels)
+  }.observes('data.datasets.@each.data'),
+  handleDataUpdate(chart, datasets){
+    var localDatasets = this.get('localData.datasets');
 
-      var chart = this.get('chart');
-      if(!chart){
-        this.setUpDefaultValues();
-        this.buildChart()
-        return
-      }
-
-      if(!sameDatasetCollection){
-        this.buildChart()
-        return;
-      }
-      else{
-        var self = this
-        var localDatasets = self.get('localData.datasets');
-
-        _.forEach(localDatasets,function(v,i){
-          v.data = datasets[i].data
-        })
-        chart.update()
-      }
+    _.forEach(localDatasets,function(v,i){
+      v.data = datasets[i].data
+    })
+    chart.update()
+  },
+  checkForNewDataset(datasets, previousDatasetLabels){
+    let currentDataSetLabels = []
+    _.forEach(datasets,function(v){
+      currentDataSetLabels.push(v.label);
+    })
+    let previousDataSetLabels = previousDatasetLabels || []
+    return {
+            'dataSetSame':_.isEqual(currentDataSetLabels, previousDataSetLabels),
+            'currentDataSetLabels':currentDataSetLabels
     }
   },
   actions:{
