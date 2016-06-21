@@ -19,7 +19,7 @@ export default Ember.Component.extend({
   initDraggable: initDraggable,
   persistPosition: persistPosition,
 
-  didInsertElement: function () {
+  willInsertElement: function () {
     var id = this.entity.id
     this.set('id', id);
     this.nodes[id] = this

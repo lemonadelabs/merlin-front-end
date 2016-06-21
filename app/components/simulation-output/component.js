@@ -16,7 +16,7 @@ export default Ember.Component.extend({
   errorsForSimOut:undefined,
   id: undefined,
   "node-type": "output-node",
-  didInsertElement: function () {
+  willInsertElement: function () {
     var id = this.simulationOutput.id
     this.set('id', id);
     this.outputNodes[id] = this
