@@ -127,13 +127,14 @@ export function incrementTimeBy3(opts) {
 export function clicksBetween(opts) {
 
   ensureQuartersInObject(opts)
+  var start, end
   var inverse = isBEarlier(opts)
   if ( inverse ) {
-    var start = opts.b
-    var end = opts.a
+    start = opts.b
+    end = opts.a
   } else {
-    var start = opts.a
-    var end = opts.b
+    start = opts.a
+    end = opts.b
   }
 
 
