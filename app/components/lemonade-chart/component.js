@@ -29,7 +29,6 @@ export default Ember.Component.extend({
       this.rebuildChart()
       this.set('previousDataSetLabels', datasetStatus.currentDataSetLabels)
     }
->>>>>>> master
   },
   setUpDefaultValues(){
     //Get the font properties of body so that we can apply it to our chart
