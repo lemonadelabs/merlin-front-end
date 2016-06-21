@@ -1,7 +1,7 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
-  didInsertElement(){
+  willInsertElement(){
     this.sendAction('setTitle', 'Add Investment Project - Dependancies')
   },
   actions: {

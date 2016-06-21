@@ -7,7 +7,7 @@ export default Ember.Component.extend({
   // requiredFileds: false,
   // canContinue: false,
 
-  didInsertElement(){
+  willInsertElement(){
     this.sendAction('setTitle', 'Add Investment Project - Project Info')
   },
 
