@@ -200,8 +200,13 @@ export default Ember.Component.extend({
     ]
     let chartParameters = new ChartParameters(dataSets, graphData.labels, [xAxes], [yAxes1,yAxes2])
     this.set('investmentGraph', chartParameters)
-
   },
+  observeChart:function(){
+    let chart = this.get('chart')
+    if(chart){
+      chart.resize();
+    }
+  }.observes('chart'),
   didInsertElement(){
     Ember.run.next(this,function(){
       let axes = this.get('axes');
