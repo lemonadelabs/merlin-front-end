@@ -30,10 +30,12 @@ export default Ember.Component.extend({
   }),
   initDraggable: initDraggable,
   didInsertElement() {
-    document.onmousemove = document.onmousemove || this.updateInputPosition;
-    this.initSVGDocument()
-    // this.initZooming()
-    this.initPaning()
+    Ember.run.next(this,function(){
+      document.onmousemove = document.onmousemove || this.updateInputPosition;
+      this.initSVGDocument()
+      // this.initZooming()
+      this.initPaning()
+    })
   },
 
   updateNodesGroupOffsetX: function () {
