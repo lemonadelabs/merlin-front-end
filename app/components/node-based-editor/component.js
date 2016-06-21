@@ -70,6 +70,7 @@ export default Ember.Component.extend({
     // first, look in the baseline for an event that matches the month.
     var events = baseline.events
     // var events = _.cloneDeep(baseline.events)
+    /*jshint eqeqeq: true */
     var foundEvents = _.filter(events, function (e) { return e.time == month } )
 
     if (foundEvents.length > 1) { this.warn(foundEvents.length, 'event') }
@@ -80,7 +81,7 @@ export default Ember.Component.extend({
     if (foundEvent) {
       event = foundEvent
       _.remove(event.actions, function (action) { // filter out any supurfelous actions
-
+        /*jshint eqeqeq: true */
         return (action.operand_1.params[0] == newAction.operand_1.params[0] && action.operand_2.params[0] == newAction.operand_2.params[0])
       })
 
@@ -113,7 +114,6 @@ export default Ember.Component.extend({
   loadBaseline: function () {
     var self = this
     var id = this.model.id
-    var simSubstring = `api/simulations/${id}/`
     Ember.$.getJSON("api/scenarios/").then(function (scenarios) {
 
       var baseline = scenarioInteractions.findBaseline({
@@ -251,9 +251,9 @@ export default Ember.Component.extend({
 
   initZooming: function() {
     //Lets not override scrolling till we have zoom working
-    this.element.addEventListener('wheel', function (e) {
-      // e.preventDefault()
-    })
+    // this.element.addEventListener('wheel', function (e) {
+    //   e.preventDefault()
+    // })
 
   },
 
@@ -284,7 +284,7 @@ export default Ember.Component.extend({
     var deleted = 0
     _.forEach(events, function (event) {
       var req = deleteResource(`api/events/${event.id}`)
-      req.then(function (response) {
+      req.then(function () {
         deleted ++
         if (deleted === amountEvents) { self.loadBaseline() }
       })
