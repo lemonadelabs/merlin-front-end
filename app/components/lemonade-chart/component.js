@@ -11,7 +11,7 @@ export default Ember.Component.extend({
   },
   didInsertElement(){
     if(this.get('data') && this.get('options')){
-        this.buildChart();
+        Ember.run.next(this, this.buildChart)
       }
   },
   setUpDefaultValues(){
