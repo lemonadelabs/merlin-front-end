@@ -55,7 +55,7 @@ export default Ember.Component.extend({
     units:'quarters'
   },
   showNewModelModification:false,
-  didInsertElement(){
+  willInsertElement(){
     this.sendAction('setTitle', 'Add Investment Project - Add Phases')
   },
   toggleBool(variablepath){

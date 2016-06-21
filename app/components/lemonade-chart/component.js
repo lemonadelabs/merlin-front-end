@@ -11,7 +11,7 @@ export default Ember.Component.extend({
   },
   didInsertElement(){
     if(this.get('data') && this.get('options')){
-        this.buildChart();
+        Ember.run.next(this, this.buildChart)
     }
   },
   didUpdateAttrs(){
@@ -29,6 +29,7 @@ export default Ember.Component.extend({
       this.rebuildChart()
       this.set('previousDataSetLabels', datasetStatus.currentDataSetLabels)
     }
+>>>>>>> master
   },
   setUpDefaultValues(){
     //Get the font properties of body so that we can apply it to our chart
