@@ -199,8 +199,6 @@ export default Ember.Component.extend({
       // capitalisation,
     ]
     let chartParameters = new ChartParameters(dataSets, graphData.labels, [xAxes], [yAxes1,yAxes2])
-
-
     this.set('investmentGraph', chartParameters)
 
   },
@@ -320,4 +318,3 @@ export default Ember.Component.extend({
 
   }
 });
-
