@@ -76,7 +76,6 @@ export default Ember.Component.extend({
 
     oldChart.destroy()
     let chart = new Chart(canvasElement, {type, data, options});
-    chart.render(300, true);
     this.set('chart', chart)
   },
   observeDataChange: function(){
