@@ -1,8 +1,6 @@
 import Ember from 'ember';
 import postJSON from '../../common/post-json'
-import putJSON from '../../common/put-json'
 import * as convertTime from '../../common/convert-time'
-import * as simTraverse from '../../common/simulation-traversal'
 import * as merlinUtils from '../../common/merlin-utils'
 
 export default Ember.Component.extend({
@@ -91,7 +89,6 @@ export default Ember.Component.extend({
   },
 
   invertActions : function (opts) {
-    var self = this
     var actions = opts.actions
     var invertedActions = []
     _.forEach(actions, function (action) {
@@ -174,7 +171,6 @@ export default Ember.Component.extend({
     persistProject: function () {
 
       var self = this
-      var simulation = this.get('simulation')
       var newProjectData = this.get('newProjectData')
 
       var newProjectJSON = {
