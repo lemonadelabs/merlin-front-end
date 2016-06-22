@@ -8,7 +8,8 @@
     "$",
     "Chart",
     "chroma",
-    "Ember"
+    "Ember",
+    'htmlSafe'
   ],
   "browser": true,
   "boss": true,

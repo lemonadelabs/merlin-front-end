@@ -8,7 +8,7 @@ export function convertDatasetToQuarters(opts) {
     if (!returnData[index]) { returnData[index] = 0 }
     var denominator = (i < dataset.length - remainder) ? 3 : remainder ;
     returnData[index] += dataset[i] / denominator
-  };
+  }
 
   return returnData
 

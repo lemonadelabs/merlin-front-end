@@ -44,11 +44,6 @@ export function updatePhaseTimes(data, callback) {
     var scenarioRequest = Ember.$.getJSON(`api/scenarios/${oldPhase.scenario}`)
     scenarioRequest.then(function (oldScenario) {
 
-      var oldPhaseLength = convertTime.clicksBetween({
-        a : oldPhase.start_date,
-        b : oldPhase.end_date
-      })
-
       var newPhaseLength = convertTime.clicksBetween({
         a : data.start_date,
         b : data.end_date
@@ -111,7 +106,7 @@ export function updatePhaseTimes(data, callback) {
 
       var promisesReturned = 0
       _.forEach( requests, function (request) {
-        request.then(function (response) {
+        request.then(function () {
           promisesReturned ++
           if (promisesReturned === requests.length) { callback() }
         })

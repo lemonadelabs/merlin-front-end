@@ -1,3 +1,5 @@
+import * as convertTime from '../common/convert-time'
+
 export default function processProjects (opts) {
   var metadata = opts.metadata
   var projects = opts.projects
@@ -88,10 +90,10 @@ function populateSkeletons(opts) {
 
     var capitalisationAmount = projectTotalCost * 0.4
 
-    // var capitalisationStart = incrementTimeBy1({
-    //   time : lastPhaseEnd
-    // })
-    var capitalisationStart = lastPhaseEnd
+    var capitalisationStart = convertTime.incrementTimeBy1({
+      time : lastPhaseEnd
+    })
+    // var capitalisationStart = lastPhaseEnd
 
     var capitalisationEnd = metadata.end
 
@@ -139,7 +141,7 @@ function drainFuelTank (opts) {
 
   _.forEach(fuelTankSkeleton, function (data, year) {
     _.forEach(data, function (expenditure, month) {
-      if (month == 1) {
+      if ( Number( month ) === 1 ) {
         availableFunds += yearlyFunds
       }
 
@@ -147,7 +149,8 @@ function drainFuelTank (opts) {
         availableFunds -= dataset[year][month]
       })
 
-      if (month == maxValue) {
+      /*jshint eqeqeq: true */
+      if (  Number( month ) == maxValue) {
         if (availableFunds > 0) { availableFunds = 0 }
       }
 
@@ -155,20 +158,6 @@ function drainFuelTank (opts) {
     })
   })
 }
-
-function incrementTimeBy1(opts) {
-  var maxValue = opts.maxValue || 4
-  var time = _.cloneDeep(opts.time)
-  if (time.value === maxValue) {
-    time.year +=1
-    time.value = 1
-  } else {
-    time.value += 1
-  }
-  return time
-}
-
-
 
 function distributeCost(opts) {
   var skeleton = opts.skeleton
@@ -179,84 +168,33 @@ function distributeCost(opts) {
 
   var itterate = 0
 
+  var i, j
   if (start.year === end.year) {
-    for (var j = start.value; j <= end.value; j++) {
+    for (j = start.value; j <= end.value; j++) {
       skeleton[start.year][j] += installment
       itterate += 1
     }
     return
   }
 
-  for (var i = start.year; i <= end.year; i++) {
+  for (i = start.year; i <= end.year; i++) {
     if (i === start.year) {
-      for (var j = start.value; j <= maxValue; j++) {
+      for (j = start.value; j <= maxValue; j++) {
         skeleton[i][j] += installment
         itterate += 1
       }
     } else if (i === end.year) {
-      for (var j = 1; j <= end.value; j++) {
+      for (j = 1; j <= end.value; j++) {
         skeleton[i][j] += installment
         itterate += 1
       }
     } else {
-      for (var j = 1; j <= maxValue; j++) {
+      for (j = 1; j <= maxValue; j++) {
         skeleton[i][j] += installment
         itterate += 1
       }
     }
   }
-}
-
-
-
-function fillSkeletonSingleObject(opts) {
-  var installment = opts.installment
-
-  var totalExpenditureSkeleton = opts.totalExpenditureSkeleton
-  var investmentSkeleton = opts.investmentSkeleton
-  var operationalSkeleton = opts.operationalSkeleton
-  var timelineObject = opts.timelineObject
-  var maxValue = opts.maxValue || 4
-  var start = timelineObject.start
-  var end = timelineObject.end
-
-  var itterate = 0
-
-  if (start.year === end.year) {
-    for (var j = start.value; j <= end.value; j++) {
-      totalExpenditureSkeleton[start.year][j] += installment
-      investmentSkeleton[start.year][j] += installment * sigmoid(itterate)
-      operationalSkeleton[start.year][j] += installment - investmentSkeleton[start.year][j]
-      itterate += 1
-    }
-    return
-  }
-
-  for (var i = start.year; i <= end.year; i++) {
-    if (i === start.year) {
-      for (var j = start.value; j <= maxValue; j++) {
-        totalExpenditureSkeleton[i][j] += installment
-        investmentSkeleton[i][j] += installment * sigmoid(itterate)
-        operationalSkeleton[i][j] += installment - investmentSkeleton[i][j]
-        itterate += 1
-      }
-    } else if (i === end.year) {
-      for (var j = 1; j <= end.value; j++) {
-        totalExpenditureSkeleton[i][j] += installment
-        investmentSkeleton[i][j] += installment * sigmoid(itterate)
-        operationalSkeleton[i][j] += installment - investmentSkeleton[i][j]
-        itterate += 1
-      }
-    } else {
-      for (var j = 1; j <= maxValue; j++) {
-        totalExpenditureSkeleton[i][j] += installment
-        investmentSkeleton[i][j] += installment * sigmoid(itterate)
-        operationalSkeleton[i][j] += installment - investmentSkeleton[i][j]
-        itterate += 1
-      }
-    }
-  }
-  return
 }
 
 function makeSkeleton(opts) {
@@ -297,7 +235,6 @@ function getMaxValue (units) {
 function findNoOfInstallments(opts) {
   var start = opts.start
   var end = opts.end
-  var units = opts.units
   var maxValue = opts.maxValue || 4
   var installments = 0
 
