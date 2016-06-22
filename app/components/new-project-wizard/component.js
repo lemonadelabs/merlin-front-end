@@ -200,7 +200,7 @@ export default Ember.Component.extend({
             "scenario": scenario.id,
             "investment_cost": Number(phase.investment_cost) || 0,
             "service_cost": Number(phase.service_cost) || 0,
-            'capitalization' : Number(phase.capitalization) || 0,
+            'capitalization' : Number(phase.capitalization) / 100 || 0,
             "start_date": convertTime.quarterToBackend({ time : phase.start_date }),
             "end_date": convertTime.quarterToBackend({
               time : phase.end_date,
