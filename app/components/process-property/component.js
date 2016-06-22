@@ -33,11 +33,10 @@ export default Ember.Component.extend({
   valueHasChanged: function () {
     var numberValue = this.get('numberValue')
     var valueFromData = this.get('processPropertyData')[this.id].data.value[ this.get('month') - 1 ]
-    return numberValue != valueFromData
+    return numberValue !== valueFromData
   },
 
   persistProperty: function () {
-    var self = this
     if (this.valueIsLoaded && this.valueHasChanged()) {
       var numberValue = this.get('numberValue')
       var entityId = this.get('entityId')
