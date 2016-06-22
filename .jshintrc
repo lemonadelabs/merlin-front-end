@@ -9,7 +9,7 @@
     "Chart",
     "chroma",
     "Ember",
-    'htmlSafe'
+    "htmlSafe"
   ],
   "browser": true,
   "boss": true,
