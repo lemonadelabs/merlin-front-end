@@ -82,42 +82,44 @@ function populateSkeletons(opts) {
         end : phase.end_date,
         installment : opexInstallment,
       })
+
+      //////////////////////////////////////////////////////
+      // CAPITALISATION
+      //////////////////////////////////////////////////////
+
+      var capitalisationAmount = phaseTotalCost * phase.capitalization
+
+      var capitalisationStart = convertTime.incrementTimeBy1({
+        time : phase.end_date
+      })
+
+      var capitalisationEnd = metadata.end
+
+      distributeCost({
+        skeleton : opts.capitalisationSkeleton,
+        start : capitalisationStart,
+        end : capitalisationEnd,
+        installment : capitalisationAmount
+      })
+
+      ////////////////////////////////////////////////////////
+      // ONGOING COST
+      ////////////////////////////////////////////////////////
+
+      var ongoingCostYearly = capitalisationAmount * 0.25
+      var ongoingCostInstallment = ongoingCostYearly / maxValue
+      var ongoingCostStart = capitalisationStart
+      var ongoingCostEnd = metadata.end
+
+      distributeCost({
+        skeleton : opts.ongoingCostSkeleton,
+        start : ongoingCostStart,
+        end : ongoingCostEnd,
+        installment : ongoingCostInstallment
+      })
+
     })
 
-    //////////////////////////////////////////////////////
-    // CAPITALISATION
-    //////////////////////////////////////////////////////
-
-    var capitalisationAmount = projectTotalCost * 0.4
-
-    var capitalisationStart = convertTime.incrementTimeBy1({
-      time : lastPhaseEnd
-    })
-    // var capitalisationStart = lastPhaseEnd
-
-    var capitalisationEnd = metadata.end
-
-    distributeCost({
-      skeleton : opts.capitalisationSkeleton,
-      start : capitalisationStart,
-      end : capitalisationEnd,
-      installment : capitalisationAmount
-    })
-
-    ////////////////////////////////////////////////////////
-    // ONGOING COST
-    ////////////////////////////////////////////////////////
-    var ongoingCostYearly = capitalisationAmount * 0.25
-    var ongoingCostInstallment = ongoingCostYearly / maxValue
-    var ongoingCostStart = capitalisationStart
-    var ongoingCostEnd = metadata.end
-
-    distributeCost({
-      skeleton : opts.ongoingCostSkeleton,
-      start : ongoingCostStart,
-      end : ongoingCostEnd,
-      installment : ongoingCostInstallment
-    })
   })
 
   var availableFunds = metadata.availableFunds
