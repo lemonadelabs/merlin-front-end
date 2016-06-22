@@ -4,6 +4,8 @@ import * as convertTime from '../../common/convert-time'
 
 export default Ember.Component.extend({
 
+  errors: {},
+
   showResourcesLayer: false,
   showImpactsLayer: false,
 
@@ -30,6 +32,15 @@ export default Ember.Component.extend({
     if ( this.get('editPhase') ) { this.populateFormWithPhase() }
   },
 
+  validateCapitalization: function () {
+    if ( Number( this.get('capitalization') ) <= 100 ) {
+      this.set('errors.capitalization', undefined)
+    } else {
+      this.set('errors.capitalization', 'must be between 0 and 100')
+    }
+
+  }.observes('capitalization'),
+
   populateFormWithPhase: function () {
     var phaseToEdit = this.get('phases')[this.get('editPhase.index')]
 
@@ -37,6 +48,7 @@ export default Ember.Component.extend({
     this.set('description', phaseToEdit.description)
     this.set('capital', phaseToEdit.investment_cost)
     this.set('operational', phaseToEdit.service_cost)
+    this.set('capitalization', phaseToEdit.capitalization)
     this.set('resourcesHoldingPenResources', _.cloneDeep( phaseToEdit.resources ) )
     this.set('resourcesHoldingPenImpacts', _.cloneDeep(phaseToEdit.impacts) )
 
@@ -47,6 +59,7 @@ export default Ember.Component.extend({
     this.set('description', undefined)
     this.set('capital', undefined)
     this.set('operational', undefined)
+    this.set('capitalization', undefined)
   },
 
   toggleBool: function (variablepath){
@@ -104,6 +117,7 @@ export default Ember.Component.extend({
         "description": this.get('description'),
         "investment_cost" : this.get('capital'),
         "service_cost" : this.get('operational'),
+        'capitalization' : this.get('capitalization'),
         'resources' : resources,
         'impacts' : impacts,
       }
