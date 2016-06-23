@@ -35,16 +35,16 @@ export default Ember.Component.extend({
   init: function () {
     this._super()
   },
+
   didInsertElement() {
-
-
-<<<<<<< HEAD
-    document.onmousemove = document.onmousemove || this.updateInputPosition;
-    this.initSVGDocument()
-    this.initPaning()
-    this.sortEntities()
-    this.viewLevel('services')
-    // this.initZooming()
+    Ember.run.next(this,function(){
+      document.onmousemove = document.onmousemove || this.updateInputPosition;
+      this.initSVGDocument()
+      // this.initZooming()
+      this.initPaning()
+      this.sortEntities()
+      this.viewLevel('services')
+    })
   },
 
   sortEntities: function () {
@@ -95,16 +95,7 @@ export default Ember.Component.extend({
     } else {
       console.warn('the entity components haven\'t been built yet')
     }
-=======
-    Ember.run.next(this,function(){
-      document.onmousemove = document.onmousemove || this.updateInputPosition;
-      this.initSVGDocument()
-      // this.initZooming()
-      this.initPaning()
-    })
->>>>>>> 5b3f162486f4dc90f154c7f1eda14a639df5aef8
   },
-
 
   updateNodesGroupOffsetX: function () {
     this.nodesGroup.groupOffsetX = this.get('transformX')
@@ -183,7 +174,7 @@ export default Ember.Component.extend({
 
   loadBaseline: function () {
     var self = this
-    var id = this.model.id
+    var id = this.simulation.id
     Ember.$.getJSON("api/scenarios/").then(function (scenarios) {
 
       var baseline = scenarioInteractions.findBaseline({
