@@ -1,5 +1,6 @@
 import Ember from 'ember';
 
+
 export default Ember.Component.extend({
   classNames : ['lemonade-chart'],
   chart : undefined,
@@ -17,10 +18,12 @@ export default Ember.Component.extend({
   didUpdateAttrs(){
     var chart = this.get('chart'),
         datasets = this.get('data.datasets'),
+        tooltipSettings = this.get('tooltip'),
         previousDatasetLabels =this.get('previousDataSetLabels'),
         datasetStatus = this.checkForNewDataset(datasets, previousDatasetLabels);
 
     if(!chart){
+      this.setupTooltip(tooltipSettings)
       this.buildChart()
       return
     }
@@ -45,6 +48,7 @@ export default Ember.Component.extend({
     //Resize settings
     globalChartOptions.maintainAspectRatio = false;
     globalChartOptions.responsive = true
+    //Tooltips
   },
   buildChart(){
     if(!this.get('data') && !this.get('options')){

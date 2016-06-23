@@ -8,7 +8,7 @@ export default Ember.Component.extend({
   revisedSubBudgets:{},
   revisedSubBudgetTotal:undefined,
   updateSubBudgets:true,
-  showBudgets:true,
+  showBudgets:false,
   init(){
     this._super();
     let totalServiceBudget = this.findTotalServiceBudget()
