@@ -1,6 +1,5 @@
 import Ember from 'ember';
-import toTwoDP from '../../common/toTwoDP';
-import commaSeperateNumber from '../../common/commaSeperateNumber';
+
 
 export default Ember.Component.extend({
   classNames : ['lemonade-chart'],
@@ -19,10 +18,12 @@ export default Ember.Component.extend({
   didUpdateAttrs(){
     var chart = this.get('chart'),
         datasets = this.get('data.datasets'),
+        tooltipSettings = this.get('tooltip'),
         previousDatasetLabels =this.get('previousDataSetLabels'),
         datasetStatus = this.checkForNewDataset(datasets, previousDatasetLabels);
 
     if(!chart){
+      this.setupTooltip(tooltipSettings)
       this.buildChart()
       return
     }
@@ -48,13 +49,6 @@ export default Ember.Component.extend({
     globalChartOptions.maintainAspectRatio = false;
     globalChartOptions.responsive = true
     //Tooltips
-    globalChartOptions.tooltips.callbacks.beforeLabel = this.beforeLabel
-  },
-  beforeLabel(tooltipItem, data){
-    console.log('tooltipItem',tooltipItem, 'data',data);
-    let valueTwoDP =  toTwoDP(tooltipItem.yLabel)
-    let valueCommaSeperated = commaSeperateNumber(valueTwoDP)
-    tooltipItem.yLabel = valueCommaSeperated
   },
   buildChart(){
     if(!this.get('data') && !this.get('options')){

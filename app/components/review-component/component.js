@@ -1,12 +1,14 @@
 import Ember from 'ember';
 import DataSet from '../lemonade-chart/dataSet';
 import Axes from '../lemonade-chart/axes';
+import Tooltip from '../lemonade-chart/tooltip';
 import ChartParameters from '../lemonade-chart/chartParameters';
 import * as simTraverse from '../../common/simulation-traversal';
 import * as projectsTraversal from '../../common/projects-traversal'
-import * as merlinUtils from '../../common/merlin-utils'
-import postJSON from '../../common/post-json'
-
+import * as merlinUtils from '../../common/merlin-utils';
+import postJSON from '../../common/post-json';
+import toTwoDP from '../../common/toTwoDP';
+import commaSeperateNumber from '../../common/commaSeperateNumber';
 
 export default Ember.Component.extend({
   classNames : ['review-component'],
@@ -153,7 +155,8 @@ export default Ember.Component.extend({
         labels = this.get('chartLabels') || this.generateYearLabels(GraphData[0].length),
         dataSets = [],
         xAxes = new Axes('Years', axisColour),
-        yAxes = new Axes(undefined, axisColour);
+        yAxes = new Axes(undefined, axisColour),
+        tooltip = new Tooltip()
 
     if(!this.get('chartLabels')){
       this.set('chartLabels',labels)
@@ -170,14 +173,29 @@ export default Ember.Component.extend({
     if(Datatype === "Money"){
       yAxes.prependToTickLabel("$")
       yAxes.customFormatting(this.formatBigNumbers)
+      tooltip.prependToTooltipLabel("$")
+      tooltip.formatTooltipLabelValue(this.formatFinance)
     }
     if(Datatype === "Percentage"){
       yAxes.appendToTickLabel("%")
+      tooltip.appendToTooltipLabel("%")
+      tooltip.formatTooltipLabelValue(this.formatPercentage)
+
     }
-    let chartParameters = new ChartParameters( dataSets, labels, [xAxes], [yAxes])
+    let chartParameters = new ChartParameters( dataSets, labels, [xAxes], [yAxes], tooltip)
     // chartParameters.name = value.name
 
     return chartParameters;
+  },
+  formatPercentage(tooltipItem, data){
+    let valueRounded =  Math.round(tooltipItem.yLabel)
+    tooltipItem.yLabel = valueRounded
+
+  },
+  formatFinance(tooltipItem, data){
+    let valueTwoDP =  toTwoDP(tooltipItem.yLabel)
+    let valueCommaSeperated = commaSeperateNumber(valueTwoDP)
+    tooltipItem.yLabel = valueCommaSeperated
   },
   formatBigNumbers(tick){
     if(tick / 1000000000 > 0.99 || tick / 1000000000 < -0.99){
