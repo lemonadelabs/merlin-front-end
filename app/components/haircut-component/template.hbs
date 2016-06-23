@@ -1,6 +1,6 @@
 <div class='service-cutter'>
 {{#each this.servicesPool as |service|}}
-  {{service-budget-slasher updateScenario=(action "updateScenario") service=service}}
+  {{service-budget-slasher simulationData=this.simulationData scenarios=this.scenarios updateScenario=(action "updateScenario") service=service}}
 {{/each}}
 </div>
 

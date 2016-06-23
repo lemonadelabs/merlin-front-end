@@ -36,6 +36,9 @@ export default Ember.Component.extend({
     this._super()
   },
   didInsertElement() {
+
+
+<<<<<<< HEAD
     document.onmousemove = document.onmousemove || this.updateInputPosition;
     this.initSVGDocument()
     this.initPaning()
@@ -92,6 +95,14 @@ export default Ember.Component.extend({
     } else {
       console.warn('the entity components haven\'t been built yet')
     }
+=======
+    Ember.run.next(this,function(){
+      document.onmousemove = document.onmousemove || this.updateInputPosition;
+      this.initSVGDocument()
+      // this.initZooming()
+      this.initPaning()
+    })
+>>>>>>> 5b3f162486f4dc90f154c7f1eda14a639df5aef8
   },
 
 
@@ -129,6 +140,7 @@ export default Ember.Component.extend({
     // first, look in the baseline for an event that matches the month.
     var events = baseline.events
     // var events = _.cloneDeep(baseline.events)
+    /*jshint eqeqeq: true */
     var foundEvents = _.filter(events, function (e) { return e.time == month } )
 
     if (foundEvents.length > 1) { this.warn(foundEvents.length, 'event') }
@@ -139,7 +151,7 @@ export default Ember.Component.extend({
     if (foundEvent) {
       event = foundEvent
       _.remove(event.actions, function (action) { // filter out any supurfelous actions
-
+        /*jshint eqeqeq: true */
         return (action.operand_1.params[0] == newAction.operand_1.params[0] && action.operand_2.params[0] == newAction.operand_2.params[0])
       })
 
@@ -171,8 +183,7 @@ export default Ember.Component.extend({
 
   loadBaseline: function () {
     var self = this
-    var id = this.simulation.id
-    var simSubstring = `api/simulations/${id}/`
+    var id = this.model.id
     Ember.$.getJSON("api/scenarios/").then(function (scenarios) {
 
       var baseline = scenarioInteractions.findBaseline({
@@ -285,9 +296,9 @@ export default Ember.Component.extend({
 
   initZooming: function() {
     //Lets not override scrolling till we have zoom working
-    this.element.addEventListener('wheel', function (e) {
-      // e.preventDefault()
-    })
+    // this.element.addEventListener('wheel', function (e) {
+    //   e.preventDefault()
+    // })
 
   },
 
@@ -318,7 +329,7 @@ export default Ember.Component.extend({
     var deleted = 0
     _.forEach(events, function (event) {
       var req = deleteResource(`api/events/${event.id}`)
-      req.then(function (response) {
+      req.then(function () {
         deleted ++
         if (deleted === amountEvents) { self.loadBaseline() }
       })

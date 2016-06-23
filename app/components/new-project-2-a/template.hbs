@@ -17,6 +17,13 @@
         </div>
       </div>
       <div>
+        <label>Capitalization Percentage</label>
+        {{#if this.errors.capitalization}}
+          <p>{{this.errors.capitalization}}</p>
+        {{/if}}
+        {{input value=this.capitalization}}
+      </div>
+      <div>
         <label>Phase Description</label>
         {{textarea value=this.description}}
       </div>

@@ -8,10 +8,12 @@ export default Ember.Component.extend({
   revisedSubBudgets:{},
   revisedSubBudgetTotal:undefined,
   updateSubBudgets:true,
-  willInsertElement(){
+  showBudgets:true,
+  init(){
+    this._super();
     let totalServiceBudget = this.findTotalServiceBudget()
-    this.slashByPercentage(this.servicePercentageToSlash, totalServiceBudget)
     this.set('totalServiceBudget',totalServiceBudget);
+    this.set('revisedBudget',totalServiceBudget);
   },
   findTotalServiceBudget(){
     let budgets = this.get('service.budgets'),
@@ -31,7 +33,7 @@ export default Ember.Component.extend({
     let revisedSubBudgets = this.get('revisedSubBudgets');
     let revisedSubBudgetTotal = 0;
     _.forEach(revisedSubBudgets,function(budget){
-      revisedSubBudgetTotal += budget.value;
+      revisedSubBudgetTotal += budget.value||0;
     })
     return revisedSubBudgetTotal
   },
@@ -82,23 +84,25 @@ export default Ember.Component.extend({
   observePercentage:function(){
     let percentage = this.get('servicePercentageToSlash'),
         totalServiceBudget = this.get('totalServiceBudget')
-    // this.slashByPercentage(percentage, totalServiceBudget)
+
     this.slashByPercentage(percentage, totalServiceBudget);
   }.observes('servicePercentageToSlash'),
+  updateBudgetBasedOnServicePercentage(params){
+    let revisedSubBudgets = this.get('revisedSubBudgets')
+    this.sendAction("updateScenario", revisedSubBudgets)
+    let newRevisedTotalBudget = this.calculateRevisedTotalBudget(),
+        totalBudget = this.get('totalServiceBudget'),
+        newPercentage = this.calculateNewPercentage(newRevisedTotalBudget, totalBudget)
+    this.set('revisedBudget', newRevisedTotalBudget);
+    if(params.subBudgetModified){
+      this.set('updateSubBudgets', false)
+      this.set('servicePercentageToSlash', newPercentage)
+    }
+  },
   actions:{
     updateServiceBudgetAndPercentage:function(params){
       this.set(`revisedSubBudgets.${params.budgetName}`, {'value':params.revisedBudget,'entity':params.budgetEntity})
-      let revisedSubBudgets = this.get('revisedSubBudgets')
-      this.sendAction("updateScenario", revisedSubBudgets)
-      let newRevisedTotalBudget = this.calculateRevisedTotalBudget(),
-          totalBudget = this.get('totalServiceBudget'),
-          newPercentage = this.calculateNewPercentage(newRevisedTotalBudget,totalBudget)
-      this.set('revisedBudget',newRevisedTotalBudget);
-      if(params.subBudgetModified){
-        this.set('updateSubBudgets',false)
-        this.set('servicePercentageToSlash',newPercentage)
-
-      }
+      Ember.run.debounce(this,this.updateBudgetBasedOnServicePercentage, params, 10)
     }
   }
 });

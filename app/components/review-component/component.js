@@ -180,13 +180,13 @@ export default Ember.Component.extend({
     return chartParameters;
   },
   formatBigNumbers(tick){
-    if(tick / 1000000000 > 0.99){
+    if(tick / 1000000000 > 0.99 || tick / 1000000000 < -0.99){
       return (tick/1000000000 + " B");
     }
-    if(tick / 1000000 > 0.99){
+    if(tick / 1000000 > 0.99 || tick / 1000000 < -0.99){
       return (tick/1000000 + " M");
     }
-    if(tick / 1000 > 0.99){
+    if(tick / 1000 > 0.99 || tick / 1000 < -0.99){
       return (tick/1000 + " T");
     }
     return tick

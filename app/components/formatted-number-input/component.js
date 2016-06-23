@@ -4,8 +4,10 @@ export default Ember.Component.extend({
   formattedValue: undefined,
   originalValue: undefined,
 
-  didInsertElement: function () {
-    this.initValues()
+  didReceiveAttrs: function () {
+    if(!this.get('formattedValue') && !this.get('originalValue')){
+      this.initValues()
+    }
   },
 
   initValues: function () {

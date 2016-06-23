@@ -1,12 +1,14 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
-  oldServicePercentageToSlash:undefined,
+  oldServicePercentageToSlash:0,
+  oldPercentageToSlash:0,
   percentageToSlash:0.0,
   budgetName:undefined,
   revisedBudget:undefined,
   budgetAmmount:undefined,
   selected:undefined,
+  initialRender:true,
   init(){
     this._super()
     var boundDeselectFunc = this.deselect.bind(this);
@@ -20,27 +22,79 @@ export default Ember.Component.extend({
     document.removeEventListener('touchcancel',boundDeselectFunc)
   },
   didReceiveAttrs(){
-    let budgetAmmount = this.get('budget.processes.0.properties.0.property_value')
-    let servicePercentageToSlash = this.get('servicePercentageToSlash')
-    let process = this.get('budget.processes.0')
-    let budgetName = process.name
-    this.set('budgetName',budgetName)
-    this.set('budgetAmmount',budgetAmmount)
-    this.set('oldServicePercentageToSlash',servicePercentageToSlash)
-    this.slashByPercentage(this.percentageToSlash,budgetAmmount)
+    if(this.get('initialRender')){
+      let budgetEntity = this.get('budget')
+      this.setupComponent(budgetEntity)
+
+      if(this.get('scenarios.haircut')){
+        this.reloadPreviousHaircut(budgetEntity)
+      }
+      else{
+        this.set('revisedBudget', budgetEntity.processes[0].properties[0].property_value)
+      }
+      this.set('initialRender',false)
+    }
   },
   didUpdateAttrs(){
     this.updateBudgetBasedOnServicePercentage()
   },
+  setupComponent(budgetEntity){
+    let budgetAmmount = budgetEntity.processes[0].properties[0].property_value,
+        budgetName = budgetEntity.processes[0].name;
+    this.set('budgetName',budgetName)
+    this.set('budgetAmmount',budgetAmmount)
+  },
+  reloadPreviousHaircut(budgetEntity){
+    let budgetAmmount = budgetEntity.processes[0].properties[0].property_value,
+        budgetName = budgetEntity.processes[0].name,
+        scenario = this.get('scenarios.haircut'),
+        actionsForEntity = this.findActionsForEntity(budgetEntity,scenario),
+        budgetAmountChangedInScenario,
+        percentageToSlash
+
+    if(actionsForEntity.length){
+      budgetAmountChangedInScenario = actionsForEntity[0].operand_2.params[1];
+    }else{
+      budgetAmountChangedInScenario = 0;
+    }
+
+    percentageToSlash = this.calculatePecentageChange(budgetAmmount, budgetAmmount+budgetAmountChangedInScenario)
+    this.slashByPercentage(percentageToSlash, budgetAmmount, true)
+    let revisedBudget = this.get('revisedBudget')
+    this.sendAction("updateServiceBudgetAndPercentage",{'revisedBudget':revisedBudget,'budgetName':budgetName,'budgetEntity':budgetEntity,'subBudgetModified':true})
+  },
+  findActionsForEntity(entity,scenario){
+    var actionArray =[]
+
+    _.forEach(scenario.events,function(event){
+      _.forEach(event.actions, function(action){
+        if(entity.id === action.operand_1.params[0]){
+          actionArray.push(action)
+        }
+      });
+    })
+    return actionArray
+
+  },
+  calculatePecentageChange(oldValue, newValue){
+    this.addRound10Polyfill()
+
+    let decrease = oldValue - newValue,
+        percentage = decrease / oldValue * 100,
+        percentageRounded = Math.round10(percentage,-1);
+
+    return percentageRounded
+  },
   updateBudgetBasedOnServicePercentage(){
     this.addRound10Polyfill()
     let servicePercentageToSlash = this.get('servicePercentageToSlash')
-
+    let oldServicePercentageToSlash = this.get('oldServicePercentageToSlash')
     if(!this.get('updateSubBudgets')){
       this.set('oldServicePercentageToSlash', servicePercentageToSlash)
       return;
     }
-    let servicePercentageDifference = servicePercentageToSlash - this.get('oldServicePercentageToSlash')
+
+    let servicePercentageDifference = servicePercentageToSlash - oldServicePercentageToSlash
     let budgetPercentage = this.get('percentageToSlash')
     let newPercentage = budgetPercentage+servicePercentageDifference
 
@@ -99,23 +153,41 @@ export default Ember.Component.extend({
         amountToCut = budget*ratio,
         slashedBudget = budget - amountToCut,
         budgetName = this.get('budgetName'),
-        budgetEntity = this.get('budget'),
-        subBudgetModified
+        budgetEntity = this.get('budget');
 
-    this.set('revisedBudget',slashedBudget);
-    if(this.get('selected')){
-      subBudgetModified = true;
+    if(isNaN(percentage)){
+      console.warn('percentage is NaN!')
+      return
     }
-    else {
-      subBudgetModified = false;
+    if(this.get('percentageToSlash') !== percentage){
+      this.set('percentageToSlash', percentage)
     }
-    this.sendAction("updateServiceBudgetAndPercentage",{'revisedBudget':slashedBudget,'budgetName':budgetName,'budgetEntity':budgetEntity,'subBudgetModified':subBudgetModified})
+    this.set('revisedBudget', slashedBudget);
 
+    return {'revisedBudget':slashedBudget,'budgetName':budgetName,'budgetEntity':budgetEntity}
   },
-  observePercentage:function(){
+  changePercentage(){
     let percentage = this.get('percentageToSlash'),
+        oldPercentageToSlash = this.get('oldPercentageToSlash'),
         budgetAmmount = this.get('budgetAmmount')
 
-    this.slashByPercentage(percentage, budgetAmmount);
+    if(oldPercentageToSlash !== percentage){
+      this.set('oldPercentageToSlash', oldPercentageToSlash)
+      let slashData = this.slashByPercentage(percentage, budgetAmmount);
+      if(this.get('selected')){
+        slashData.subBudgetModified = true;
+      }
+      else {
+        slashData.subBudgetModified = false;
+      }
+      this.sendAction("updateServiceBudgetAndPercentage", slashData)
+    }
+  },
+  observePercentage:function(){
+    if(isNaN(this.get('percentageToSlash'))){
+      console.warn('percentage is NaN!')
+      return
+    }
+    Ember.run.debounce(this, this.changePercentage,1)
   }.observes('percentageToSlash')
 });

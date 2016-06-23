@@ -1,7 +1,10 @@
 import Ember from 'ember';
 import * as simTraverse from '../../common/simulation-traversal'
+import * as convertTime from '../../common/convert-time'
 
 export default Ember.Component.extend({
+
+  errors: {},
 
   showResourcesLayer: false,
   showImpactsLayer: false,
@@ -29,6 +32,15 @@ export default Ember.Component.extend({
     if ( this.get('editPhase') ) { this.populateFormWithPhase() }
   },
 
+  validateCapitalization: function () {
+    if ( Number( this.get('capitalization') ) <= 100 ) {
+      this.set('errors.capitalization', undefined)
+    } else {
+      this.set('errors.capitalization', 'must be between 0 and 100')
+    }
+
+  }.observes('capitalization'),
+
   populateFormWithPhase: function () {
     var phaseToEdit = this.get('phases')[this.get('editPhase.index')]
 
@@ -36,6 +48,7 @@ export default Ember.Component.extend({
     this.set('description', phaseToEdit.description)
     this.set('capital', phaseToEdit.investment_cost)
     this.set('operational', phaseToEdit.service_cost)
+    this.set('capitalization', phaseToEdit.capitalization)
     this.set('resourcesHoldingPenResources', _.cloneDeep( phaseToEdit.resources ) )
     this.set('resourcesHoldingPenImpacts', _.cloneDeep(phaseToEdit.impacts) )
 
@@ -46,6 +59,7 @@ export default Ember.Component.extend({
     this.set('description', undefined)
     this.set('capital', undefined)
     this.set('operational', undefined)
+    this.set('capitalization', undefined)
   },
 
   toggleBool: function (variablepath){
@@ -103,6 +117,7 @@ export default Ember.Component.extend({
         "description": this.get('description'),
         "investment_cost" : this.get('capital'),
         "service_cost" : this.get('operational'),
+        'capitalization' : this.get('capitalization'),
         'resources' : resources,
         'impacts' : impacts,
       }
@@ -121,17 +136,11 @@ export default Ember.Component.extend({
       } else {
         var lastPhase = phases[ phases.length - 1 ]
         if (lastPhase) {
-          newPhase.start_date = incrementTimeBy1({ time : lastPhase.end_date })
-          newPhase.end_date = incrementTimeBy3({ time : newPhase.start_date })
+          newPhase.start_date = convertTime.incrementTimeBy1({ time : lastPhase.end_date })
+          newPhase.end_date = convertTime.incrementTimeBy3({ time : newPhase.start_date })
         } else {
-          newPhase.start_date = {
-            year : 2016,
-            value : 1
-          },
-          newPhase.end_date = {
-            year : 2016,
-            value : 4
-          }
+          newPhase.start_date = convertTime.toQuater(this.get('simulation').start_date)
+          newPhase.end_date = convertTime.incrementTimeBy3({ time : newPhase.start_date })
         }
 
         phases.push(newPhase)
@@ -206,22 +215,3 @@ export default Ember.Component.extend({
   }
 });
 
-function incrementTimeBy1 (opts) { // move this into convert time lib
-  var maxValue = opts.maxValue || 4
-  var time = _.cloneDeep(opts.time)
-  if (time.value === maxValue) {
-    time.year +=1
-    time.value = 1
-  } else {
-    time.value += 1
-  }
-  return time
-}
-
-function incrementTimeBy3(opts) {  // move this into convert time lib
-  var time = opts.time
-  var one = incrementTimeBy1({ time : time })
-  var two = incrementTimeBy1({ time : one })
-  var three = incrementTimeBy1({ time : two })
-  return three
-}

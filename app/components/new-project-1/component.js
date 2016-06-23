@@ -7,7 +7,7 @@ export default Ember.Component.extend({
   // requiredFileds: false,
   // canContinue: false,
 
-  didInsertElement(){
+  willInsertElement(){
     this.sendAction('setTitle', 'Add Investment Project - Project Info')
   },
 
@@ -23,7 +23,6 @@ export default Ember.Component.extend({
     if ( this.get('newProjectData.priority').length < 1 ) {
       this.set('errors.priority', 'priority must not be blank')
     } else {
-      var errors = this.get('errors')
       this.set('errors.priority', undefined)
     }
   }.observes('newProjectData.priority'),

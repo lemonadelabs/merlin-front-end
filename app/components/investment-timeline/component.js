@@ -4,7 +4,6 @@ import DataSet from '../lemonade-chart/dataSet';
 import Axes from '../lemonade-chart/axes';
 import ChartParameters from '../lemonade-chart/chartParameters';
 import truncateBigNumbers from '../../common/truncateBigNumbers';
-import convertTime from '../../common/convert-time'
 import * as scenarioInteractions from '../../common/scenario-interactions'
 import * as simTraverse from '../../common/simulation-traversal'
 import * as projectsTraversal from '../../common/projects-traversal'
@@ -22,11 +21,11 @@ export default Ember.Component.extend({
   axes2Width:undefined,
   hardCodedMetadata: {
     start : {
-      year : 2016,
+      year : 2017,
       value : 1
     },
     end : {
-      year : 2019,
+      year : 2020,
       value : 4
     },
     units : 'quarters',
@@ -60,7 +59,7 @@ export default Ember.Component.extend({
       if ( simultionRun[simultionRun.length - 1].messages) { self.logErrors(simultionRun.pop().messages) }
 
       var outputsTelemetry = _.filter(simultionRun, function (telemetry) {
-        return (telemetry.type === "Output" && telemetry.name != 'Service Revenue'  && telemetry.name != 'Budgetary Surplus'  && telemetry.name != 'Operational Surplus')
+        return (telemetry.type === "Output" && telemetry.name !== 'Service Revenue'  && telemetry.name !== 'Budgetary Surplus'  && telemetry.name !== 'Operational Surplus')
       })
 
       _.forEach(outputsTelemetry, function (outputTelemetry) {
@@ -106,14 +105,13 @@ export default Ember.Component.extend({
       })
     })
 
-    returnData = _.map(returnData, function (datum, i) {
+    returnData = _.map(returnData, function (datum) {
       return datum / amountDatasets
     })
     return returnData
   },
 
-  runSimulation: function(models) {
-    var self = this
+  runSimulation: function() {
     var simulationId = this.get('simulation.id')
     var projects = this.get('projects')
 
@@ -135,9 +133,14 @@ export default Ember.Component.extend({
     return Ember.$.getJSON(url)
   },
 
+  projectHasBeenAdded: function () {
+    this.processTelemetryData()
+    this.recalculateInvestments()
+  }.observes('projects'),
+
   buildChart: function () {
-    let opexColor = 'rgb(245, 166, 35)';
-    let capexColor = 'rgb(60, 255, 122)';
+    // let opexColor = 'rgb(245, 166, 35)';
+    // let capexColor = 'rgb(60, 255, 122)';
     let totalInvestmentColor = 'rgb(255, 255, 255)';
     let remainingFundsColor = 'rgb(129, 65, 255)';
     let axisColor = 'rgb(255, 255, 255)';
@@ -195,11 +198,14 @@ export default Ember.Component.extend({
       // capitalisation,
     ]
     let chartParameters = new ChartParameters(dataSets, graphData.labels, [xAxes], [yAxes1,yAxes2])
-
-
     this.set('investmentGraph', chartParameters)
-
   },
+  observeChart:function(){
+    let chart = this.get('chart')
+    if(chart){
+      chart.resize();
+    }
+  }.observes('chart'),
   didInsertElement(){
     Ember.run.next(this,function(){
       let axes = this.get('axes');
@@ -251,21 +257,21 @@ export default Ember.Component.extend({
   },
 
   setServiceModels: function () {
-    var self = this
     var serviceModels = []
     var simulation = this.get('simulation')
     var parentEntity = this.get('parentEntity')
     _.forEach(parentEntity.children, function (childUrl) {
       var childId = simTraverse.getIdFromUrl(childUrl)
       var serviceModel = _.find(simulation.entities, function (entity) {
-        return entity.id == childId
+        /*jshint eqeqeq: true */
+        return  entity.id == childId
       })
       serviceModels.push(serviceModel)
     })
     this.set('serviceModels', serviceModels)
   }.observes('parentEntity'),
 
-  recalculateInvestments:function(){
+  recalculateInvestments: function(){
     let processedData = this.processAndSortData()
     // run simulation
     var investmentGraph = this.get('investmentGraph')
@@ -291,7 +297,6 @@ export default Ember.Component.extend({
       this.processTelemetryData()
     }
     scenarioInteractions.updatePhaseTimes( opts, callback.bind(this) )
-    this.recalculateInvestments()
 
   },
 
@@ -305,13 +310,14 @@ export default Ember.Component.extend({
 
 
     onTimelineObjectInteractionEnd: function (context) {
-      var self = this
       var requests = this.persistDatesToBackend({
+        // jshint unused:false
         "id": context.get('id'),
         "start_date": context.get('start'),
         "end_date": context.get('end'),
         scenarioId: context.get('scenarioId')
       })
+      this.recalculateInvestments()
     },
 
   }

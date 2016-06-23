@@ -139,7 +139,7 @@ NodesGroup.prototype.buildNodes = function(opts) {
 
 
   var counter = 0
-  _.forEach(entityComponents, function (component, id) {
+  _.forEach(entityComponents, function (component) {
     buildNode(component, counter)
     counter ++
   })

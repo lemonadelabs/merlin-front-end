@@ -1,5 +1,6 @@
-import * as convertTime from './convert-time-es6'
+import * as convertTime from './convert-time'
 import putJSON from './put-json'
+import postJSON from './post-json'
 
 export function findBaseline(opts) {
   var scenarios = opts.scenarios
@@ -11,6 +12,30 @@ export function findBaseline(opts) {
   })
 }
 
+export function findScenarioByName(opts){
+  var scenarios = opts.scenarios
+  var scenarioName = opts.scenarioName
+  var simulationId = opts.simulationId
+  var simSubstring = `api/simulations/${simulationId}/`
+
+  return _.find(scenarios, function (scenario) {
+    return  ( _.includes(scenario.sim, simSubstring) && scenario.name === scenarioName)
+  })
+}
+
+export function createBlankScenario(opts){
+  var scenarioName = opts.scenarioName
+  var id = opts.simulationId
+  var postData = {
+    "name": scenarioName,
+    "sim": "http://127.0.0.1:8000/api/simulations/" + id + '/',
+    "start_offset": 0
+  }
+  return postJSON({
+    data : postData,
+    url : "api/scenarios/"
+  })
+}
 export function updatePhaseTimes(data, callback) {
   // get old start_date
   var requests = []
@@ -18,11 +43,6 @@ export function updatePhaseTimes(data, callback) {
   phaseRequst.then(function (oldPhase) {
     var scenarioRequest = Ember.$.getJSON(`api/scenarios/${oldPhase.scenario}`)
     scenarioRequest.then(function (oldScenario) {
-
-      var oldPhaseLength = convertTime.clicksBetween({
-        a : oldPhase.start_date,
-        b : oldPhase.end_date
-      })
 
       var newPhaseLength = convertTime.clicksBetween({
         a : data.start_date,
@@ -36,8 +56,11 @@ export function updatePhaseTimes(data, callback) {
       })
 
       var phaseTimes = {
-        start_date : convertTime.quarterToBackend(data.start_date),
-        end_date : convertTime.quarterToBackend(data.end_date),
+        start_date : convertTime.quarterToBackend({time : data.start_date}),
+        end_date : convertTime.quarterToBackend({
+          time : data.end_date,
+          isEndDate : true
+        }),
       }
       // update the phase with new time data
       var phaseReq = putJSON({
@@ -59,11 +82,13 @@ export function updatePhaseTimes(data, callback) {
 
       if (highest === 1) {
         index = oldScenario.events.length - 1
-        console.warn('both events are happening at the same time. we dont now which event is the end event.')
+        console.warn('both events are happening at the same time. we dont now which event is the end event. Address this problem!')
       }
+
+
       var endEvent = oldScenario.events[index]
 
-      endEvent.time = newPhaseLength
+      endEvent.time = newPhaseLength + 4 // to release resources on first tick after phase end
 
 
       var endEventReq = putJSON({
@@ -81,7 +106,7 @@ export function updatePhaseTimes(data, callback) {
 
       var promisesReturned = 0
       _.forEach( requests, function (request) {
-        request.then(function (response) {
+        request.then(function () {
           promisesReturned ++
           if (promisesReturned === requests.length) { callback() }
         })

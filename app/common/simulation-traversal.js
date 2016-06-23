@@ -135,6 +135,7 @@ function getServiceModels (opts) {
   _.forEach(parentEntity.children, function (childUrl) {
     var childId = getIdFromUrl(childUrl)
     var serviceModel = _.find(simulation.entities, function (entity) {
+      /*jshint eqeqeq: true */
       return entity.id == childId
     })
     serviceModels.push(serviceModel)

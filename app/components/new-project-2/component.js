@@ -47,15 +47,15 @@ export default Ember.Component.extend({
 
   timespan:{
     start:{
-      year:2016
+      year:2017
     },
     end:{
-      year:2019
+      year:2020
     },
     units:'quarters'
   },
   showNewModelModification:false,
-  didInsertElement(){
+  willInsertElement(){
     this.sendAction('setTitle', 'Add Investment Project - Add Phases')
   },
   toggleBool(variablepath){
@@ -93,7 +93,6 @@ export default Ember.Component.extend({
 
 
     // editPhase () {
-    //   console.log('editPhase')
     // },
     toggleChildLayer () {
       this.toggleBool('showChildLayer');
