@@ -59,8 +59,16 @@ export default Ember.Component.extend({
   }.observes('errors','month'),
 
   actions: {
-    viewService: function (entity) {
-      this.sendAction('viewService', entity)
-    }
+    updateBranch: function (entity) {
+      this.set('branch', entity.id)
+    },
+
+    updateService: function (entity) {
+      this.set('service', entity.id)
+    },
+
+    // viewService: function (entity) {
+    //   this.sendAction('viewService', entity)
+    // }
   }
 });

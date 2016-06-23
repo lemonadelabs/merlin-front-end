@@ -43,36 +43,79 @@ export default Ember.Component.extend({
       // this.initZooming()
       this.initPaning()
       this.sortEntities()
-      this.viewLevel('services')
+      this.filterEntities()
+      // this.viewLevel('branches')
     })
   },
 
   sortEntities: function () {
-    var entities = _.cloneDeep( this.get('simulation.entities') )
-    var branches = _.remove(entities, function (entity) {
-      if ( entity.attributes[0] === 'branch' ) {
-        entity.branch = true
-        return true
-      }
-    })
-    var services = _.remove(entities, function (entity) {
-      if (entity.attributes[0] === 'service') {
-        entity.service = true
-        return true
-      }
-    })
-    this.set('otherEntities',entities)
-    this.set('branches',branches)
-    this.set('services',services)
+    // var entities = _.cloneDeep( this.get('simulation.entities') )
+    // var branches = _.remove(entities, function (entity) {
+    //   if ( entity.attributes[0] === 'branch' ) {
+    //     entity.branch = true
+    //     return true
+    //   }
+    // })
+    // var services = _.remove(entities, function (entity) {
+    //   if (entity.attributes[0] === 'service') {
+    //     // entity.service = true
+    //     return true
+    //   }
+    // })
+    // this.set('otherEntities',entities)
+    // this.set('branches',branches)
+    // this.set('services',services)
     this.set('outputs',this.get('simulation.outputs'))
   },
 
-  viewLevel: function (level) {
-    this.set('selectedEntities', this.get(level))
-    console.log(this.get(level))
-    Ember.run.next(this, this.buildSVGNodes)
-  },
+  filterEntities: function () {
 
+    var branchId = this.get('branch')
+    var serviceId = this.get('service')
+    var simulation = this.get('simulation')
+
+    if (!branchId && !serviceId) {
+      // show the branches
+      var branches = _.filter(simulation.entities, function (entity) {
+        if ( entity.attributes[0] === 'branch' ) {
+          entity.branch = true
+          return true
+        }
+      })
+      this.replaceArrayContent(this.selectedEntities, branches)
+    } else if (branchId && !serviceId) {
+      // show the services relating to the branch
+      var branch = _.find(simulation.entities, function (entity) {
+        return entity.id == branchId
+      })
+      var services = simTraversal.getChildrenOfEntity({
+        entity : branch,
+        simulation : simulation
+      })
+      _.forEach(services, function (s) { s.service = true })
+      this.replaceArrayContent(this.selectedEntities, services)
+    } else if (branchId && serviceId) {
+
+      var service = _.find(simulation.entities, function (entity) {
+        return entity.id == serviceId
+      })
+      var entities = simTraversal.getChildrenOfEntity({
+        entity : service,
+        simulation : simulation
+      })
+      this.replaceArrayContent(this.selectedEntities, entities)
+    }
+
+
+  }.observes('branch','service'),
+
+  replaceArrayContent: function (array, content) {
+    var removedAmount = array.length
+    var addedAmount = content.length
+    array.length = 0
+    array.push(...content)
+    array.arrayContentDidChange(0, addedAmount, removedAmount)
+  },
 
   buildSVGNodes: function () {
 
@@ -327,34 +370,34 @@ export default Ember.Component.extend({
     })
   },
 
-  updateSelectedEntitiesAndOutputs: function (opts) {
-    var removed = this.selectedEntities.length
-    this.selectedEntities.length = 0
-    this.selectedEntities.push(...opts.entities)
-    this.selectedEntities.arrayContentDidChange(0,this.selectedEntities.length, removed)
+  // updateSelectedEntitiesAndOutputs: function (opts) {
+  //   var removed = this.selectedEntities.length
+  //   this.selectedEntities.length = 0
+  //   this.selectedEntities.push(...opts.entities)
+  //   this.selectedEntities.arrayContentDidChange(0,this.selectedEntities.length, removed)
 
-    removed = this.selectedOutputs.length
-    this.selectedOutputs.length = 0
-    this.selectedOutputs.push(...this.get('outputs'))
-    this.selectedOutputs.arrayContentDidChange(0,this.selectedOutputs.length, removed)
+  //   removed = this.selectedOutputs.length
+  //   this.selectedOutputs.length = 0
+  //   this.selectedOutputs.push(...this.get('outputs'))
+  //   this.selectedOutputs.arrayContentDidChange(0,this.selectedOutputs.length, removed)
 
-    this.nodesGroup.clearNodesAndBuildNewNodes({
-      entityComponents : this.entityComponents,
-      outputComponents : this.outputComponents
-    })
-  },
+  //   this.nodesGroup.clearNodesAndBuildNewNodes({
+  //     entityComponents : this.entityComponents,
+  //     outputComponents : this.outputComponents
+  //   })
+  // },
 
   actions: {
-    viewService: function (entity) {
-      console.log(entity)
-      var childEntities = simTraversal.getChildrenOfEntity({
-        entity : entity,
-        simulation : this.get('simulation')
-      })
-      this.updateSelectedEntitiesAndOutputs({
-        entities : childEntities
-      })
-    },
+    // viewService: function (entity) {
+    //   console.log(entity)
+    //   var childEntities = simTraversal.getChildrenOfEntity({
+    //     entity : entity,
+    //     simulation : this.get('simulation')
+    //   })
+    //   this.updateSelectedEntitiesAndOutputs({
+    //     entities : childEntities
+    //   })
+    // },
     resetDefaults: function () {
       this.resetBaseline()
     }
