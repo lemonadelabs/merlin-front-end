@@ -80,6 +80,8 @@ export default Ember.Component.extend({
       self.set('outputData', quartered)
 
       self.recalculateOutputs( quartered )
+    }).then(function(){
+      this.observeChart()
     })
   },
 
@@ -159,7 +161,8 @@ export default Ember.Component.extend({
     let capitalisation = new DataSet('capitalisation', graphData.capitalisation, capitalisationColor);
     let ongoingCost = new DataSet('ongoingCost', graphData.ongoingCost, ongoingCostColor);
 
-    let outputData = new Array(48)
+    let outputData = new Array(48)//Array.apply(null, Array(48)).map(Number.prototype.valueOf,100);
+    console.log(outputData);
     this.set('outputData', outputData)
     let outputs = new DataSet('outputs', outputData, outputsColor);
     outputs.setAxisId('yAxes2')
