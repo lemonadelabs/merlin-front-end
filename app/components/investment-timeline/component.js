@@ -2,12 +2,15 @@ import Ember from 'ember';
 import processProjects from '../../business-logic/process-timeline-objects'
 import DataSet from '../lemonade-chart/dataSet';
 import Axes from '../lemonade-chart/axes';
+import Tooltip from '../lemonade-chart/tooltip';
 import ChartParameters from '../lemonade-chart/chartParameters';
 import truncateBigNumbers from '../../common/truncateBigNumbers';
 import * as scenarioInteractions from '../../common/scenario-interactions'
 import * as simTraverse from '../../common/simulation-traversal'
 import * as projectsTraversal from '../../common/projects-traversal'
 import * as merlinUtils from '../../common/merlin-utils'
+import toTwoDP from '../../common/toTwoDP';
+import commaSeperateNumber from '../../common/commaSeperateNumber';
 
 export default Ember.Component.extend({
   classNames: ['investment-timeline'],
@@ -149,15 +152,13 @@ export default Ember.Component.extend({
     let outputsColor = 'rgb(245, 166, 35)'
     let graphData = this.processAndSortData();
 
-
-
-    let remainingFunds = new DataSet('remaining funds', graphData.remainingFunds, remainingFundsColor);
+    let remainingFunds = new DataSet('Remaining Funds', graphData.remainingFunds, remainingFundsColor);
     // let capexContribution = new DataSet('capex contribution', graphData.capex, capexColor);
     // let opexContribution = new DataSet('opex contribution', graphData.opex, opexColor);
-    let totalInvestment = new DataSet('total investment', graphData.totalInvestment, totalInvestmentColor);
+    let totalInvestment = new DataSet('Total Investment', graphData.totalInvestment, totalInvestmentColor);
 
-    let capitalisation = new DataSet('capitalisation', graphData.capitalisation, capitalisationColor);
-    let ongoingCost = new DataSet('ongoingCost', graphData.ongoingCost, ongoingCostColor);
+    let capitalisation = new DataSet('Capitalisation', graphData.capitalisation, capitalisationColor);
+    let ongoingCost = new DataSet('Ongoing Cost', graphData.ongoingCost, ongoingCostColor);
 
     let outputData = new Array(48)
     this.set('outputData', outputData)
@@ -197,8 +198,18 @@ export default Ember.Component.extend({
       outputs,
       // capitalisation,
     ]
-    let chartParameters = new ChartParameters(dataSets, graphData.labels, [xAxes], [yAxes1,yAxes2])
+
+    let tooltip = new Tooltip()
+    tooltip.formatTooltipLabelValue(this.formatTooltipValue)
+    
+    let chartParameters = new ChartParameters(dataSets, graphData.labels, [xAxes], [yAxes1,yAxes2], tooltip)
     this.set('investmentGraph', chartParameters)
+  },
+  formatTooltipValue(tooltipItem, data){
+    console.log(data);
+    let valueRounded =  Math.round(tooltipItem.yLabel)
+    tooltipItem.yLabel = valueRounded
+
   },
   observeChart:function(){
     let chart = this.get('chart')
