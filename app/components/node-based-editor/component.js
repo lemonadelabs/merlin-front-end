@@ -42,30 +42,22 @@ export default Ember.Component.extend({
       this.initSVGDocument()
       // this.initZooming()
       this.initPaning()
-      this.sortEntities()
+      this.initNodesGroup()
       this.filterEntities()
-      // this.viewLevel('branches')
     })
   },
 
-  sortEntities: function () {
-    // var entities = _.cloneDeep( this.get('simulation.entities') )
-    // var branches = _.remove(entities, function (entity) {
-    //   if ( entity.attributes[0] === 'branch' ) {
-    //     entity.branch = true
-    //     return true
-    //   }
-    // })
-    // var services = _.remove(entities, function (entity) {
-    //   if (entity.attributes[0] === 'service') {
-    //     // entity.service = true
-    //     return true
-    //   }
-    // })
-    // this.set('otherEntities',entities)
-    // this.set('branches',branches)
-    // this.set('services',services)
-    this.set('outputs',this.get('simulation.outputs'))
+  initNodesGroup: function () {
+    this.nodesGroup = new NodesGroup({
+      draw : this.draw,
+      entityModel : this.get('simulation.entities'),
+      outputModel : this.get('simulation.outputs'),
+
+      entityComponents : this.entityComponents,
+      outputComponents : this.outputComponents,
+
+      persistPosition : this.persistPosition
+    })
   },
 
   filterEntities: function () {
@@ -83,6 +75,7 @@ export default Ember.Component.extend({
         }
       })
       this.replaceArrayContent(this.selectedEntities, branches)
+      this.replaceArrayContent(this.selectedOutputs, [])
     } else if (branchId && !serviceId) {
       // show the services relating to the branch
       var branch = _.find(simulation.entities, function (entity) {
@@ -94,6 +87,7 @@ export default Ember.Component.extend({
       })
       _.forEach(services, function (s) { s.service = true })
       this.replaceArrayContent(this.selectedEntities, services)
+      this.replaceArrayContent(this.selectedOutputs, [])
     } else if (branchId && serviceId) {
 
       var service = _.find(simulation.entities, function (entity) {
@@ -104,18 +98,30 @@ export default Ember.Component.extend({
         simulation : simulation
       })
       this.replaceArrayContent(this.selectedEntities, entities)
+      this.replaceArrayContent(this.selectedOutputs, this.get('simulation.outputs')) // hack. Change when entities become outputs
     }
+
+    Ember.run.next(this, this.resetNodesgroup)
+
+
+
 
 
   }.observes('branch','service'),
 
-  replaceArrayContent: function (array, content) {
-    var removedAmount = array.length
-    var addedAmount = content.length
-    array.length = 0
-    array.push(...content)
-    array.arrayContentDidChange(0, addedAmount, removedAmount)
-  },
+  resetNodesgroup: function () {
+    var counter = 0
+    if (Object.keys( this.entityComponents ).length + Object.keys( this.outputComponents ).length === this.selectedEntities.length + this.selectedOutputs.length ) {
+      this.nodesGroup.clearNodesAndBuildNewNodes({
+        entityComponents : this.get('selectedEntities'),
+        outputComponents : this.get('selectedOutputs')
+      })
+      this.nodesGroup.initCables()
+    } else if ( counter < 100 ) {
+      counter ++
+      Ember.run.next(this, this.resetNodesgroup)
+    }
+  }.observes('entityComponents', 'outputComponents'),
 
   buildSVGNodes: function () {
 
@@ -138,6 +144,14 @@ export default Ember.Component.extend({
     } else {
       console.warn('the entity components haven\'t been built yet')
     }
+  },
+
+  replaceArrayContent: function (array, content) {
+    var removedAmount = array.length
+    var addedAmount = content.length
+    array.length = 0
+    array.push(...content)
+    array.arrayContentDidChange(0, addedAmount, removedAmount)
   },
 
   updateNodesGroupOffsetX: function () {

@@ -11,12 +11,12 @@ export default Ember.Component.extend({
   style:Ember.computed('transformX', 'transformY', 'hidden', function () {
     var x = this.get('transformX')
     var y = this.get('transformY')
-    var style = Ember.String.htmlSafe(`transform:translate(${x}px,${y}px);`);
+    var style = `transform:translate(${x}px,${y}px);`;
 
     if (this.get('hidden')) {
-      style += Ember.String.htmlSafe('display: none;')
+      style += 'opacity: 0.2;'
     }
-    return style
+    return Ember.String.htmlSafe( style ) // refactor out ember safestring
   }),
   hidden: false,
   id: undefined,

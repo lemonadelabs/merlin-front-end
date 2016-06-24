@@ -7,6 +7,10 @@ export default function NodesGroup (opts) {
   this.draw = opts.draw
   this.entityModel = opts.entityModel
   this.outputModel = opts.outputModel
+
+  this.entityComponents = opts.entityComponents
+  this.outputComponents = opts.outputComponents
+
   this.persistPosition = opts.persistPosition
   this.entityNodes = {}
   this.outputNodes = {}
@@ -52,7 +56,6 @@ NodesGroup.prototype.terminalListners = function() {
     })
 
     terminal.$domElement.on('mouseup', function () {
-      console.log('mouseup!!!')
       var cable = self.flyingCable
       self.flyingCable = undefined
       if (!cable.outputTerminal) {
@@ -122,72 +125,20 @@ NodesGroup.prototype.terminalListners = function() {
 
 };
 
-NodesGroup.prototype.clearNodesAndBuildNewNodes = function(opts) {
+NodesGroup.prototype.resetGroup = function() {
   this.entityNodes = {}
   this.outputNodes = {}
   this.outputTerminals = {}
   this.inputTerminals = {}
+  this.cableParent.clear()
+};
 
+NodesGroup.prototype.clearNodesAndBuildNewNodes = function(opts) {
+  this.resetGroup()
   this.buildNodes(opts)
-
 };
 
-NodesGroup.prototype.buildNodes = function(opts) {
-  var self = this
-  var entityComponents = opts.entityComponents
-  var outputComponents = opts.outputComponents
 
-
-  var counter = 0
-  _.forEach(entityComponents, function (component) {
-    buildNode(component, counter)
-    counter ++
-  })
-
-  _.forEach(outputComponents, function (component, id) {
-    buildNode(component, counter)
-    counter ++
-  })
-
-  function buildNode(component, i) {
-    var id = component.get('id')
-    var nodeType = component.get('node-type')
-    var positionX = component.get('positionX')
-    var positionY = component.get('positionY')
-
-
-    var nodeModel = (nodeType === 'output-node') ? _.find(self.outputModel, ['id', id]) : _.find(self.entityModel, ['id', id])
-
-    // the parent entity seems to be getting into here somehow!!
-
-    console.log('component',component)
-    console.log('nodeModel',nodeModel)
-
-    var node = new Node({
-      id : id,
-      draw : self.draw,
-      component : component,
-      nodeModel : nodeModel,
-      nodeType : nodeType,
-      positionX : positionX,
-      positionY : positionY,
-      itterate : i
-    })
-
-    if (_.includes(nodeType, 'entity')) {
-      self.entityNodes[id] = node
-
-      _.forEach(node.outputTerminals, function (output, id) {
-        self.outputTerminals[id] = output
-      })
-      _.forEach(node.inputTerminals, function (input, id) {
-        self.inputTerminals[id] = input
-      })
-    } else if (_.includes(nodeType, 'output')) {
-      self.outputNodes[id] = node
-    }
-  }
-};
 
 NodesGroup.prototype.initCables = function() {
   var self = this
@@ -263,5 +214,67 @@ NodesGroup.prototype.referenceCableInTerminals = function(opts) {
 
 NodesGroup.prototype.updateCablesForNode = function(opts) {
   var node = (opts.type === 'output-node') ? this.outputNodes[opts.id] : this.entityNodes[opts.id]
-  node.updateCables(opts)
+  if ( node ) { node.updateCables(opts) }
+
+};
+
+NodesGroup.prototype.buildNodes = function(opts) {
+  var self = this
+  var entityComponents = this.entityComponents
+  var outputComponents = this.outputComponents
+
+
+
+  var counter = 0
+
+  _.forEach(entityComponents, function (component) {
+    buildNode(component, counter)
+    // component.set('hidden', false)
+    // transform things are becomming undefined !!!!!!
+    counter ++
+  })
+
+  _.forEach(outputComponents, function (component, id) {
+    buildNode(component, counter)
+    // component.set('hidden', false)
+    counter ++
+  })
+
+  function buildNode(component, i) {
+    var id = component.get('id')
+    var nodeType = component.get('node-type')
+    var positionX = component.get('positionX')
+    var positionY = component.get('positionY')
+
+
+    var nodeModel = (nodeType === 'output-node') ? _.find(self.outputModel, ['id', id]) : _.find(self.entityModel, ['id', id])
+
+    // the parent entity seems to be getting into here somehow!!
+
+
+    var node = new Node({
+      id : id,
+      draw : self.draw,
+      component : component,
+      nodeModel : nodeModel,
+      nodeType : nodeType,
+      positionX : positionX,
+      positionY : positionY,
+      itterate : i
+    })
+
+    if (_.includes(nodeType, 'entity')) {
+      self.entityNodes[id] = node
+
+      _.forEach(node.outputTerminals, function (output, id) {
+        self.outputTerminals[id] = output
+      })
+      _.forEach(node.inputTerminals, function (input, id) {
+        self.inputTerminals[id] = input
+      })
+    } else if (_.includes(nodeType, 'output')) {
+      self.outputNodes[id] = node
+    }
+
+  }
 };
