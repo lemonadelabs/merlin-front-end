@@ -18,12 +18,10 @@ export default Ember.Component.extend({
   didUpdateAttrs(){
     var chart = this.get('chart'),
         datasets = this.get('data.datasets'),
-        tooltipSettings = this.get('tooltip'),
         previousDatasetLabels =this.get('previousDataSetLabels'),
         datasetStatus = this.checkForNewDataset(datasets, previousDatasetLabels);
 
     if(!chart){
-      this.setupTooltip(tooltipSettings)
       this.buildChart()
       return
     }
