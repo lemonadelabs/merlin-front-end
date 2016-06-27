@@ -122,6 +122,10 @@
   border: solid 1px color( var(--default-node-color) whiteness(+15%) alpha(-50%) );
   position: absolute;
   user-select: none;
+
+  -webkit-transition: opacity 2s; /* For Safari 3.1 to 6.0 */
+  transition: opacity 2s;
+
 }
 
 .node .node-drag-bar {

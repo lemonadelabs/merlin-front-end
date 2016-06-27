@@ -229,8 +229,7 @@ NodesGroup.prototype.buildNodes = function(opts) {
 
   _.forEach(entityComponents, function (component) {
     buildNode(component, counter)
-    // component.set('hidden', false)
-    // transform things are becomming undefined !!!!!!
+    component.set('hidden', false)
     counter ++
   })
 
@@ -246,11 +245,10 @@ NodesGroup.prototype.buildNodes = function(opts) {
     var positionX = component.get('positionX')
     var positionY = component.get('positionY')
 
+    if ( !component.get('entity.display_pos_x') ) { component.set('transformX', 60 * i + 40) }
+    if ( !component.get('entity.display_pos_y') ) { component.set('transformY', 40 * i + 40) }
 
     var nodeModel = (nodeType === 'output-node') ? _.find(self.outputModel, ['id', id]) : _.find(self.entityModel, ['id', id])
-
-    // the parent entity seems to be getting into here somehow!!
-
 
     var node = new Node({
       id : id,
@@ -258,9 +256,6 @@ NodesGroup.prototype.buildNodes = function(opts) {
       component : component,
       nodeModel : nodeModel,
       nodeType : nodeType,
-      positionX : positionX,
-      positionY : positionY,
-      itterate : i
     })
 
     if (_.includes(nodeType, 'entity')) {

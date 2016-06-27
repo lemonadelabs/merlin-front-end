@@ -9,16 +9,16 @@ export default Ember.Component.extend({
   classNameBindings:['id',"node-type"],
   attributeBindings:['style'],
   style:Ember.computed('transformX', 'transformY', 'hidden', function () {
-    var x = this.get('transformX')
-    var y = this.get('transformY')
-    var style = `transform:translate(${x}px,${y}px);`;
-
+    var style = ''
+    var x = this.get('transformX') || this.get('entity.display_pos_x')
+    var y = this.get('transformY') || this.get('entity.display_pos_y')
+    style += `transform:translate(${x}px,${y}px);`;
     if (this.get('hidden')) {
-      style += 'opacity: 0.2;'
+      style += 'opacity: 0;'
     }
-    return Ember.String.htmlSafe( style ) // refactor out ember safestring
+    return Ember.String.htmlSafe( style )
   }),
-  hidden: false,
+  hidden: true,
   id: undefined,
   initialPosition: undefined,
   "node-type":undefined,
@@ -32,8 +32,6 @@ export default Ember.Component.extend({
     var id = this.get('entity.id')
     this.set('id', id);
     this.nodes[id] = this
-    this.set('positionX', this.entity.display_pos_x)
-    this.set('positionY', this.entity.display_pos_y)
     var entityType = this.entity.attributes[0] || 'unknown'
     if (entityType) {entityType = entityType.replace(' ', '-')}
     this.set('node-type',`entity-${entityType}`);
