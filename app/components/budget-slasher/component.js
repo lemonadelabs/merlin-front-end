@@ -172,7 +172,7 @@ export default Ember.Component.extend({
         budgetAmmount = this.get('budgetAmmount')
 
     if(oldPercentageToSlash !== percentage){
-      this.set('oldPercentageToSlash', oldPercentageToSlash)
+      this.set('oldPercentageToSlash', percentage)
       let slashData = this.slashByPercentage(percentage, budgetAmmount);
       if(this.get('selected')){
         slashData.subBudgetModified = true;
@@ -188,6 +188,6 @@ export default Ember.Component.extend({
       console.warn('percentage is NaN!')
       return
     }
-    Ember.run.debounce(this, this.changePercentage,1)
+    Ember.run.debounce(this, this.changePercentage,10 )
   }.observes('percentageToSlash')
 });

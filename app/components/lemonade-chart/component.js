@@ -1,5 +1,6 @@
 import Ember from 'ember';
 
+
 export default Ember.Component.extend({
   classNames : ['lemonade-chart'],
   chart : undefined,
@@ -45,6 +46,7 @@ export default Ember.Component.extend({
     //Resize settings
     globalChartOptions.maintainAspectRatio = false;
     globalChartOptions.responsive = true
+    //Tooltips
   },
   buildChart(){
     if(!this.get('data') && !this.get('options')){
