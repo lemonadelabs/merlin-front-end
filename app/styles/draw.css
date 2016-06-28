@@ -1,4 +1,8 @@
 #svg-container {
   /*background-color: green;*/
   /*display: flex;*/
+
+  opacity: 0;
+  transition: opacity 1.2s;
+
 }

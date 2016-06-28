@@ -6,11 +6,17 @@ export default Ember.Component.extend({
   classNames:['node'],
   classNameBindings:['id',"node-type"],
   attributeBindings: ['style'],
-  style:Ember.computed('transformX', 'transformY' , function () {
-    var x = this.get('transformX')
-    var y = this.get('transformY')
-    return Ember.String.htmlSafe(`transform:translate(${x}px,${y}px);`);
+  style:Ember.computed('transformX', 'transformY', 'hidden', function () {
+    var style = ''
+    var x = this.get('transformX') || this.get('entity.display_pos_x')
+    var y = this.get('transformY') || this.get('entity.display_pos_y')
+    style += `transform:translate(${x}px,${y}px);`;
+    if (this.get('hidden')) {
+      style += 'opacity: 0;'
+    }
+    return Ember.String.htmlSafe( style )
   }),
+  hidden: true,
   initDraggable: initDraggable,
   persistPosition: persistPosition,
   errorsForSimOut:undefined,
@@ -20,11 +26,11 @@ export default Ember.Component.extend({
     Ember.run.next(this,this.setupNode)
   },
   setupNode: function(){
-    var id = this.simulationOutput.id
+    var id = this.entity.id
     this.set('id', id);
     this.outputNodes[id] = this
-    this.set('positionX', this.simulationOutput.display_pos_x)
-    this.set('positionY', this.simulationOutput.display_pos_y)
+    this.set('positionX', this.entity.display_pos_x)
+    this.set('positionY', this.entity.display_pos_y)
     this.initDraggable({
       context : this,
       persistPosition : this.persistPosition.bind(this)

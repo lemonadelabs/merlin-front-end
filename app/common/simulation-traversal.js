@@ -2,6 +2,24 @@
 ////////////////////////////////// API //////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
 
+export function getChildrenOfEntity (opts) {
+  var entity = opts.entity
+  var simulation = opts.simulation
+  var entities = simulation.entities
+  var childIds = getIdsFromChildUrls(entity.children)
+  return _.filter(entities, function (entity) {
+    return _.includes(childIds, entity.id)
+  })
+
+}
+
+function getIdsFromChildUrls(urls) {
+  return _.map(urls, function (url) {
+    return Number( url.replace(/.*entities\//, '').slice(0, -1) )
+  })
+
+}
+
 export function findSimoutputFromSimoutputconnectorId (opts) {
   var simoutputconnectorId = opts.simoutputconnectorId
   var simOutputs = opts.simOutputs

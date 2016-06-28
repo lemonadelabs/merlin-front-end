@@ -5,6 +5,10 @@ export default Ember.Component.extend({
   valueIsLoaded: false,
   numberValue: undefined,
 
+  didInsertElement: function () {
+    if ( this.get('processPropertyData') ) { this.initValue() }
+  },
+
   initValue: function () {
     var value = this.get('processPropertyData')[this.id].data.value[ this.get('month') - 1 ]
     this.set('value', value)

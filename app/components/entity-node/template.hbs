@@ -50,6 +50,16 @@
 
 
 
+{{#if this.entity.branch}}
+  <p {{action "updateBranch" this.entity}} class='view-service-button'>View Branch</p>
+{{/if}}
+
+{{#if this.entity.service}}
+  <p {{action "updateService" this.entity}} class='view-service-button'>View Service</p>
+{{/if}}
+
+
+
 {{#if this.entity.outputs}}
 <p class='node-subheading'>outputs</p>
 

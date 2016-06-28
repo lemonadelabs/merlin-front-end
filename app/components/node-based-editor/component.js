@@ -5,6 +5,7 @@ import postJSON from '../../common/post-json'
 import putJSON from '../../common/put-json'
 import deleteResource from '../../common/delete-resource'
 import * as scenarioInteractions from '../../common/scenario-interactions'
+import * as simTraversal from '../../common/simulation-traversal'
 
 export default Ember.Component.extend({
   draw: undefined,
@@ -17,25 +18,178 @@ export default Ember.Component.extend({
   transformY: 0,
   entityComponents: {},
   outputComponents: {},
+  selectedEntities: [],
+  selectedOutputs: [],
   updateCablesBound: Ember.computed( function() {
     return Ember.run.bind(this, this.updateCables)
   }),
   updateBaselineBound: Ember.computed( function() {
     return Ember.run.bind(this, this.updateBaseline)
   }),
-  style:Ember.computed('transformX', 'transformY' , function () {
+  style:Ember.computed('transformX', 'transformY', 'svgOpacity', function () {
+    var style = ''
     var x = this.get('transformX')
     var y = this.get('transformY')
-    return Ember.String.htmlSafe(`transform:translate(${x}px,${y}px);`);
+    style += `transform: translate(${x}px,${y}px);`
+    style += `opacity: ${this.get('svgOpacity')}`
+    return Ember.String.htmlSafe(style);
   }),
   initDraggable: initDraggable,
+  init: function () {
+    this._super()
+  },
+
   didInsertElement() {
     Ember.run.next(this,function(){
       document.onmousemove = document.onmousemove || this.updateInputPosition;
       this.initSVGDocument()
       // this.initZooming()
       this.initPaning()
+      this.initNodesGroup()
+      this.filterEntities()
     })
+  },
+
+  initNodesGroup: function () {
+    this.nodesGroup = new NodesGroup({
+      draw : this.draw,
+      entityModel : this.get('simulation.entities'),
+      outputModel : this.get('simulation.outputs'),
+
+      entityComponents : this.entityComponents,
+      outputComponents : this.outputComponents,
+
+      updateSVGOpacity : this.updateSVGOpacity.bind(this),
+    })
+  },
+
+  updateSVGOpacity: function (opacity) {
+    this.set('svgOpacity', opacity)
+  },
+
+  filterEntities: function () {
+
+    var branchId = this.get('branch')
+    var serviceId = this.get('service')
+    var simulation = this.get('simulation')
+
+    var entities
+
+    if (!branchId && !serviceId) {
+      // show the branches
+      var branches = _.filter(simulation.entities, function (entity) {
+        if ( entity.attributes[0] === 'branch' ) {
+          entity.branch = true
+          return true
+        }
+      })
+      entities = branches
+    } else if (branchId && !serviceId) {
+      // show the services relating to the branch
+      var branch = _.find(simulation.entities, function (entity) {
+        return entity.id == branchId
+      })
+      var services = simTraversal.getChildrenOfEntity({
+        entity : branch,
+        simulation : simulation
+      })
+      _.forEach(services, function (s) { s.service = true })
+      entities = services
+    } else if (branchId && serviceId) {
+      var service = _.find(simulation.entities, function (entity) {
+        return entity.id == serviceId
+      })
+      var entities = simTraversal.getChildrenOfEntity({
+        entity : service,
+        simulation : simulation
+      })
+    }
+
+    this.replaceArrayContent(this.selectedEntities, entities)
+
+    var outputs = this.findOutputsFromEntities(entities)
+    this.replaceArrayContent(this.selectedOutputs, outputs) // hack.
+
+    Ember.run.next(this, this.resetNodesgroup)
+
+  }.observes('branch','service'),
+
+  findOutputsFromEntities: function (entities) {
+    var outputs = this.get('simulation.outputs')
+    var requiredOutputEndpoints = []
+    _.forEach(entities, function (entity) {
+      _.forEach(entity.outputs, function (output) {
+        _.forEach(output.endpoints, function (endpoint) {
+          if ( endpoint.sim_output ) {
+            requiredOutputEndpoints.push(endpoint.sim_output)
+          }
+        })
+      })
+    })
+    var selectedOutputs = []
+    _.forEach(outputs, function (output) {
+      _.forEach(output.inputs, function (input) {
+        if ( _.includes(requiredOutputEndpoints, input.id) ) {
+          selectedOutputs.push( output )
+        }
+      })
+    })
+    return _.uniqWith(selectedOutputs, _.isEqual)
+  },
+
+  resetNodesgroup: function () {
+    var counter = 0
+
+    this.reCentreDraggableBackground()
+
+    if (Object.keys( this.entityComponents ).length + Object.keys( this.outputComponents ).length === this.selectedEntities.length + this.selectedOutputs.length ) {
+      this.nodesGroup.clearNodesAndBuildNewNodes({
+        entityComponents : this.get('selectedEntities'),
+        outputComponents : this.get('selectedOutputs')
+      })
+      this.nodesGroup.initCables()
+      this.updateCablesForAllNodes()
+
+    } else if ( counter < 100 ) {
+      counter ++
+      Ember.run.next(this, this.resetNodesgroup)
+    }
+  }.observes('entityComponents', 'outputComponents'),
+
+  reCentreDraggableBackground: function () {
+    this.set('transformX', 0)
+    this.set('transformY', 0)
+  },
+
+  buildSVGNodes: function () {
+
+    var self = this
+
+    console.log(Object.keys( this.entityComponents ).length, Object.keys( this.outputComponents ).length, this.selectedEntities.length, this.selectedOutputs.length )
+    if (Object.keys( this.entityComponents ).length + Object.keys( this.outputComponents ).length === this.selectedEntities.length + this.selectedOutputs.length ) {
+      this.nodesGroup = new NodesGroup({
+        draw : this.draw,
+        entityModel : self.get('selectedEntities'),
+        outputModel : self.get('selectedOutputs'),
+        persistPosition : self.persistPosition
+      })
+      this.nodesGroup.buildNodes({
+        entityComponents : this.entityComponents,
+        outputComponents : this.outputComponents
+      })
+      // this.nodesGroup.initCables()
+      // this.nodesGroup.terminalListners()
+    } else {
+      console.warn('the entity components haven\'t been built yet')
+    }
+  },
+
+  replaceArrayContent: function (array, content) {
+    var removedAmount = array.length
+    var addedAmount = content.length
+    array.length = 0
+    array.push(...content)
+    array.arrayContentDidChange(0, addedAmount, removedAmount)
   },
 
   updateNodesGroupOffsetX: function () {
@@ -115,7 +269,7 @@ export default Ember.Component.extend({
 
   loadBaseline: function () {
     var self = this
-    var id = this.model.id
+    var id = this.simulation.id
     Ember.$.getJSON("api/scenarios/").then(function (scenarios) {
 
       var baseline = scenarioInteractions.findBaseline({
@@ -148,13 +302,10 @@ export default Ember.Component.extend({
       entities: {}
     }
 
-
-
-
     _.forEach(opts.messages, function (message) {
       var processId = message.sender.id
       var type = (message.sender.type === "Output") ? 'outputs' : 'entities'
-      var entities = self.get('model').entities
+      var entities = self.get('simulation.entities')
 
       _.forEach(entities, function (entity) {
         _.forEach(entity.processes, function (process) {
@@ -180,7 +331,7 @@ export default Ember.Component.extend({
     }
 
     var timeframe = 48
-    var id = this.get('model').id
+    var id = this.get('simulation').id
 
     Ember.$.getJSON(`api/simulation-run/${id}/?steps=${timeframe}&s0=${baselineId}`).then(function (result) {
 
@@ -229,28 +380,6 @@ export default Ember.Component.extend({
     this.set('draw', draw)
   },
 
-  buldSVGNodes: function () {
-
-    var self = this
-
-    if (Object.keys( this.entityComponents ).length + Object.keys( this.outputComponents ).length === this.model.entities.length + this.model.outputs.length ) {
-      this.nodesGroup = new NodesGroup({
-        draw : this.draw,
-        entityModel : self.get('model').entities,
-        outputModel : self.get('model').outputs,
-        persistPosition : self.persistPosition
-      })
-      this.nodesGroup.buildNodes({
-        entityComponents : this.entityComponents,
-        outputComponents : this.outputComponents
-      })
-      this.nodesGroup.initCables()
-      this.nodesGroup.terminalListners()
-    } else {
-      console.warn('the entity components haven\'t been built yet')
-    }
-  }.observes('draw'),
-
   initZooming: function() {
     //Lets not override scrolling till we have zoom working
     // this.element.addEventListener('wheel', function (e) {
@@ -293,7 +422,34 @@ export default Ember.Component.extend({
     })
   },
 
+  // updateSelectedEntitiesAndOutputs: function (opts) {
+  //   var removed = this.selectedEntities.length
+  //   this.selectedEntities.length = 0
+  //   this.selectedEntities.push(...opts.entities)
+  //   this.selectedEntities.arrayContentDidChange(0,this.selectedEntities.length, removed)
+
+  //   removed = this.selectedOutputs.length
+  //   this.selectedOutputs.length = 0
+  //   this.selectedOutputs.push(...this.get('outputs'))
+  //   this.selectedOutputs.arrayContentDidChange(0,this.selectedOutputs.length, removed)
+
+  //   this.nodesGroup.clearNodesAndBuildNewNodes({
+  //     entityComponents : this.entityComponents,
+  //     outputComponents : this.outputComponents
+  //   })
+  // },
+
   actions: {
+    // viewService: function (entity) {
+    //   console.log(entity)
+    //   var childEntities = simTraversal.getChildrenOfEntity({
+    //     entity : entity,
+    //     simulation : this.get('simulation')
+    //   })
+    //   this.updateSelectedEntitiesAndOutputs({
+    //     entities : childEntities
+    //   })
+    // },
     resetDefaults: function () {
       this.resetBaseline()
     }

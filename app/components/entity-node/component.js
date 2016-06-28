@@ -8,11 +8,17 @@ export default Ember.Component.extend({
   errorsForNode:undefined,
   classNameBindings:['id',"node-type"],
   attributeBindings:['style'],
-  style:Ember.computed('transformX', 'transformY' , function () {
-    var x = this.get('transformX')
-    var y = this.get('transformY')
-    return Ember.String.htmlSafe(`transform:translate(${x}px,${y}px);`);
+  style:Ember.computed('transformX', 'transformY', 'hidden', function () {
+    var style = ''
+    var x = this.get('transformX') || this.get('entity.display_pos_x')
+    var y = this.get('transformY') || this.get('entity.display_pos_y')
+    style += `transform:translate(${x}px,${y}px);`;
+    if (this.get('hidden')) {
+      style += 'opacity: 0;'
+    }
+    return Ember.String.htmlSafe( style )
   }),
+  hidden: true,
   id: undefined,
   initialPosition: undefined,
   "node-type":undefined,
@@ -26,8 +32,6 @@ export default Ember.Component.extend({
     var id = this.get('entity.id')
     this.set('id', id);
     this.nodes[id] = this
-    this.set('positionX', this.entity.display_pos_x)
-    this.set('positionY', this.entity.display_pos_y)
     var entityType = this.entity.attributes[0] || 'unknown'
     if (entityType) {entityType = entityType.replace(' ', '-')}
     this.set('node-type',`entity-${entityType}`);
@@ -50,5 +54,19 @@ export default Ember.Component.extend({
     } else {
       this.set('errorsForNode',undefined)
     }
-  }.observes('errors','month')
+  }.observes('errors','month'),
+
+  actions: {
+    updateBranch: function (entity) {
+      this.set('branch', entity.id)
+    },
+
+    updateService: function (entity) {
+      this.set('service', entity.id)
+    },
+
+    // viewService: function (entity) {
+    //   this.sendAction('viewService', entity)
+    // }
+  }
 });

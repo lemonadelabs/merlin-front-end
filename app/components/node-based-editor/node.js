@@ -4,12 +4,8 @@ export default function Node (opts) {
   this.group = opts.draw.group()
   this.cables = []
 
+  this.component = opts.component
   this.$component = Ember.$(opts.component.element)
-  this.position({
-    itterate : opts.itterate,
-    positionX : opts.positionX,
-    positionY : opts.positionY
-  })
   this.inputTerminals = this.findInputTerminals(opts)
 
   if (opts.nodeModel.outputs) { this.outputTerminals = this.findOutputTerminals( { outputs : opts.nodeModel.outputs} ) }
@@ -58,25 +54,6 @@ Node.prototype.findOutputTerminals = function(opts) {
   })
   return outputs
 }
-
-
-Node.prototype.position = function(opts) {
-  var top, left
-
-  if  ( opts.positionX ) {
-    left = opts.positionX + 'px'
-    top = opts.positionY + 'px'
-  } else {
-    left = `${ 60 * opts.itterate  + 40}px`
-    top = `${ 40 * opts.itterate  + 40}px`
-  }
-
-  this.$component.css({
-    'left' : left,
-    'top' : top
-  })
-};
-
 
 Node.prototype.updateCables = function(opts) {
   _.forEach(this.cables, function (cable) {
