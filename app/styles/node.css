@@ -123,8 +123,7 @@
   position: absolute;
   user-select: none;
 
-  -webkit-transition: opacity 300ms; /* For Safari 3.1 to 6.0 */
-  transition: opacity 300ms;
+  transition: opacity 800ms;
 
 }
 

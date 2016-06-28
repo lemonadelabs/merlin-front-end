@@ -26,10 +26,13 @@ export default Ember.Component.extend({
   updateBaselineBound: Ember.computed( function() {
     return Ember.run.bind(this, this.updateBaseline)
   }),
-  style:Ember.computed('transformX', 'transformY' , function () {
+  style:Ember.computed('transformX', 'transformY', 'svgOpacity', function () {
+    var style = ''
     var x = this.get('transformX')
     var y = this.get('transformY')
-    return Ember.String.htmlSafe(`transform:translate(${x}px,${y}px);`);
+    style += `transform: translate(${x}px,${y}px);`
+    style += `opacity: ${this.get('svgOpacity')}`
+    return Ember.String.htmlSafe(style);
   }),
   initDraggable: initDraggable,
   init: function () {
@@ -56,8 +59,12 @@ export default Ember.Component.extend({
       entityComponents : this.entityComponents,
       outputComponents : this.outputComponents,
 
-      persistPosition : this.persistPosition
+      updateSVGOpacity : this.updateSVGOpacity.bind(this),
     })
+  },
+
+  updateSVGOpacity: function (opacity) {
+    this.set('svgOpacity', opacity)
   },
 
   filterEntities: function () {
@@ -65,6 +72,8 @@ export default Ember.Component.extend({
     var branchId = this.get('branch')
     var serviceId = this.get('service')
     var simulation = this.get('simulation')
+
+    var entities
 
     if (!branchId && !serviceId) {
       // show the branches
@@ -74,8 +83,7 @@ export default Ember.Component.extend({
           return true
         }
       })
-      this.replaceArrayContent(this.selectedEntities, branches)
-      this.replaceArrayContent(this.selectedOutputs, [])
+      entities = branches
     } else if (branchId && !serviceId) {
       // show the services relating to the branch
       var branch = _.find(simulation.entities, function (entity) {
@@ -86,10 +94,8 @@ export default Ember.Component.extend({
         simulation : simulation
       })
       _.forEach(services, function (s) { s.service = true })
-      this.replaceArrayContent(this.selectedEntities, services)
-      this.replaceArrayContent(this.selectedOutputs, [])
+      entities = services
     } else if (branchId && serviceId) {
-
       var service = _.find(simulation.entities, function (entity) {
         return entity.id == serviceId
       })
@@ -97,31 +103,63 @@ export default Ember.Component.extend({
         entity : service,
         simulation : simulation
       })
-      this.replaceArrayContent(this.selectedEntities, entities)
-      this.replaceArrayContent(this.selectedOutputs, this.get('simulation.outputs')) // hack. Change when entities become outputs
     }
+
+    this.replaceArrayContent(this.selectedEntities, entities)
+
+    var outputs = this.findOutputsFromEntities(entities)
+    this.replaceArrayContent(this.selectedOutputs, outputs) // hack.
 
     Ember.run.next(this, this.resetNodesgroup)
 
-
-
-
-
   }.observes('branch','service'),
+
+  findOutputsFromEntities: function (entities) {
+    var outputs = this.get('simulation.outputs')
+    var requiredOutputEndpoints = []
+    _.forEach(entities, function (entity) {
+      _.forEach(entity.outputs, function (output) {
+        _.forEach(output.endpoints, function (endpoint) {
+          if ( endpoint.sim_output ) {
+            requiredOutputEndpoints.push(endpoint.sim_output)
+          }
+        })
+      })
+    })
+    var selectedOutputs = []
+    _.forEach(outputs, function (output) {
+      _.forEach(output.inputs, function (input) {
+        if ( _.includes(requiredOutputEndpoints, input.id) ) {
+          selectedOutputs.push( output )
+        }
+      })
+    })
+    return _.uniqWith(selectedOutputs, _.isEqual)
+  },
 
   resetNodesgroup: function () {
     var counter = 0
+
+    this.reCentreDraggableBackground()
+
     if (Object.keys( this.entityComponents ).length + Object.keys( this.outputComponents ).length === this.selectedEntities.length + this.selectedOutputs.length ) {
       this.nodesGroup.clearNodesAndBuildNewNodes({
         entityComponents : this.get('selectedEntities'),
         outputComponents : this.get('selectedOutputs')
       })
       this.nodesGroup.initCables()
+      this.updateCablesForAllNodes()
+
     } else if ( counter < 100 ) {
       counter ++
       Ember.run.next(this, this.resetNodesgroup)
     }
   }.observes('entityComponents', 'outputComponents'),
+
+  reCentreDraggableBackground: function () {
+    this.set('transformX', 0)
+    this.set('transformY', 0)
+  },
 
   buildSVGNodes: function () {
 

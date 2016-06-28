@@ -12,7 +12,7 @@ export default function NodesGroup (opts) {
   this.entityComponents = opts.entityComponents
   this.outputComponents = opts.outputComponents
 
-  this.persistPosition = opts.persistPosition
+  this.updateSVGOpacity = opts.updateSVGOpacity
   this.entityNodes = {}
   this.outputNodes = {}
   this.outputTerminals = {}
@@ -138,9 +138,11 @@ NodesGroup.prototype.hideCables = function() {
   var svgContainer = document.getElementById('svg-container')
   var $svgContainer = $(svgContainer)
   $svgContainer.addClass('notransition'); // Disable transitions
-  svgContainer.style.opacity = '0'
-  $svgContainer[0].offsetHeight; // Trigger a reflow, flushing the CSS changes
-  $svgContainer.removeClass('notransition'); // Re-enable transitions
+  this.updateSVGOpacity('0')
+  // $svgContainer[0].offsetHeight; // Trigger a reflow, flushing the CSS changes
+  Ember.run.next(this, function () {
+    $svgContainer.removeClass('notransition'); // Re-enable transitions
+  })
 };
 
 NodesGroup.prototype.clearNodesAndBuildNewNodes = function(opts) {
@@ -246,7 +248,7 @@ NodesGroup.prototype.buildNodes = function(opts) {
     counter ++
   })
 
-  Ember.run.later( this, function () { document.getElementById('svg-container').style.opacity = '1' }, 300 )
+  Ember.run.later( this, function () { this.updateSVGOpacity('1') }, 1 )
 
 };
 
