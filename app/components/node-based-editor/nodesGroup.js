@@ -1,3 +1,4 @@
+import Ember from 'ember';
 import Cable from './cable'
 import Node from './node'
 import * as simTraverse from '../../common/simulation-traversal'
@@ -126,11 +127,21 @@ NodesGroup.prototype.terminalListners = function() {
 };
 
 NodesGroup.prototype.resetGroup = function() {
+  this.hideCables()
   this.entityNodes = {}
   this.outputNodes = {}
   this.outputTerminals = {}
   this.inputTerminals = {}
   this.cableParent.clear()
+};
+
+NodesGroup.prototype.hideCables = function() {
+  var svgContainer = document.getElementById('svg-container')
+  var $svgContainer = $(svgContainer)
+  $svgContainer.addClass('notransition'); // Disable transitions
+  svgContainer.style.opacity = '0'
+  $svgContainer[0].offsetHeight; // Trigger a reflow, flushing the CSS changes
+  $svgContainer.removeClass('notransition'); // Re-enable transitions
 };
 
 NodesGroup.prototype.clearNodesAndBuildNewNodes = function(opts) {
@@ -220,56 +231,92 @@ NodesGroup.prototype.updateCablesForNode = function(opts) {
 
 NodesGroup.prototype.buildNodes = function(opts) {
   var self = this
+
   var entityComponents = this.entityComponents
   var outputComponents = this.outputComponents
-
-
 
   var counter = 0
 
   _.forEach(entityComponents, function (component) {
-    buildNode(component, counter)
+    self.buildNode(component, counter)
     component.set('hidden', false)
     counter ++
   })
 
   _.forEach(outputComponents, function (component, id) {
-    buildNode(component, counter)
-    // component.set('hidden', false)
+    self.buildNode(component, counter)
+    component.set('hidden', false)
     counter ++
   })
 
-  function buildNode(component, i) {
-    var id = component.get('id')
-    var nodeType = component.get('node-type')
-    var positionX = component.get('positionX')
-    var positionY = component.get('positionY')
+  Ember.run.later( this, function () { document.getElementById('svg-container').style.opacity = '1' }, 300 )
 
-    if ( !component.get('entity.display_pos_x') ) { component.set('transformX', 60 * i + 40) }
-    if ( !component.get('entity.display_pos_y') ) { component.set('transformY', 40 * i + 40) }
-
-    var nodeModel = (nodeType === 'output-node') ? _.find(self.outputModel, ['id', id]) : _.find(self.entityModel, ['id', id])
-
-    var node = new Node({
-      id : id,
-      draw : self.draw,
-      component : component,
-      nodeModel : nodeModel,
-      nodeType : nodeType,
-    })
-
-    if (_.includes(nodeType, 'entity')) {
-      self.entityNodes[id] = node
-
-      _.forEach(node.outputTerminals, function (output, id) {
-        self.outputTerminals[id] = output
-      })
-      _.forEach(node.inputTerminals, function (input, id) {
-        self.inputTerminals[id] = input
-      })
-    } else if (_.includes(nodeType, 'output')) {
-      self.outputNodes[id] = node
-    }
-
-  }
 };
+
+NodesGroup.prototype.buildNode = function(component, i) {
+  var self = this
+  var id = component.get('id')
+  var nodeType = component.get('node-type')
+  var positionX = component.get('positionX')
+  var positionY = component.get('positionY')
+
+  if ( !component.get('entity.display_pos_x') ) { component.set('transformX', 60 * i + 40) }
+  if ( !component.get('entity.display_pos_y') ) { component.set('transformY', 40 * i + 40) }
+
+  var nodeModel = (nodeType === 'output-node') ? _.find(this.outputModel, ['id', id]) : _.find(this.entityModel, ['id', id])
+
+  var node = new Node({
+    id : id,
+    draw : this.draw,
+    component : component,
+    nodeModel : nodeModel,
+    nodeType : nodeType,
+  })
+
+  if (_.includes(nodeType, 'entity')) {
+    this.entityNodes[id] = node
+
+    _.forEach(node.outputTerminals, function (output, id) {
+      self.outputTerminals[id] = output
+    })
+    _.forEach(node.inputTerminals, function (input, id) {
+      self.inputTerminals[id] = input
+    })
+  } else if (_.includes(nodeType, 'output')) {
+    this.outputNodes[id] = node
+  }
+
+};
+function buildNode(component, i) {
+  var id = component.get('id')
+  var nodeType = component.get('node-type')
+  var positionX = component.get('positionX')
+  var positionY = component.get('positionY')
+
+  if ( !component.get('entity.display_pos_x') ) { component.set('transformX', 60 * i + 40) }
+  if ( !component.get('entity.display_pos_y') ) { component.set('transformY', 40 * i + 40) }
+
+  var nodeModel = (nodeType === 'output-node') ? _.find(self.outputModel, ['id', id]) : _.find(self.entityModel, ['id', id])
+
+  var node = new Node({
+    id : id,
+    draw : self.draw,
+    component : component,
+    nodeModel : nodeModel,
+    nodeType : nodeType,
+  })
+
+  if (_.includes(nodeType, 'entity')) {
+    self.entityNodes[id] = node
+
+    _.forEach(node.outputTerminals, function (output, id) {
+      self.outputTerminals[id] = output
+    })
+    _.forEach(node.inputTerminals, function (input, id) {
+      self.inputTerminals[id] = input
+    })
+  } else if (_.includes(nodeType, 'output')) {
+    self.outputNodes[id] = node
+  }
+
+}

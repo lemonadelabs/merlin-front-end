@@ -162,3 +162,10 @@ html {
     margin-left: 0;
     margin-right: 0;
 }
+
+.notransition {
+  -webkit-transition: none !important;
+  -moz-transition: none !important;
+  -o-transition: none !important;
+  transition: none !important;
+}
