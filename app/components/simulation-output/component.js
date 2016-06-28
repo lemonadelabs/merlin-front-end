@@ -26,11 +26,11 @@ export default Ember.Component.extend({
     Ember.run.next(this,this.setupNode)
   },
   setupNode: function(){
-    var id = this.simulationOutput.id
+    var id = this.entity.id
     this.set('id', id);
     this.outputNodes[id] = this
-    this.set('positionX', this.simulationOutput.display_pos_x)
-    this.set('positionY', this.simulationOutput.display_pos_y)
+    this.set('positionX', this.entity.display_pos_x)
+    this.set('positionY', this.entity.display_pos_y)
     this.initDraggable({
       context : this,
       persistPosition : this.persistPosition.bind(this)

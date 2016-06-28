@@ -123,7 +123,6 @@ NodesGroup.prototype.terminalListners = function() {
       self.flyingCable = undefined
     }
   })
-
 };
 
 NodesGroup.prototype.resetGroup = function() {
@@ -148,8 +147,6 @@ NodesGroup.prototype.clearNodesAndBuildNewNodes = function(opts) {
   this.resetGroup()
   this.buildNodes(opts)
 };
-
-
 
 NodesGroup.prototype.initCables = function() {
   var self = this

@@ -1,7 +1,7 @@
 
 <header class='node-drag-bar'><p>
-  {{#if this.simulationOutput.name}}
-    {{this.simulationOutput.name}}
+  {{#if this.entity.name}}
+    {{this.entity.name}}
   {{else}}
     Unamed
   {{/if}}
@@ -19,7 +19,7 @@
 <p class='node-subheading'>input</p>
 <div class='node-input-container'>
     <div>
-      <div class='terminal input-terminal sim-output-terminal' id='{{this.simulationOutput.id}}'></div>
-      <p class='node-input-output'>{{sim-run-lookup this.outputData this.simulationOutput.id this.month}} <span class='node-label'>{{this.simulationOutput.unit_type}}</span></p>
+      <div class='terminal input-terminal sim-output-terminal' id='{{this.entity.id}}'></div>
+      <p class='node-input-output'>{{sim-run-lookup this.outputData this.entity.id this.month}} <span class='node-label'>{{this.entity.unit_type}}</span></p>
     </div>
 </div>
