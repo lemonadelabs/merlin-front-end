@@ -243,23 +243,17 @@ export default Ember.Component.extend({
 
   sortErrors: function (opts) {
     var self = this
-    var errors = {
-      outputs: {},
-      entities: {}
-    }
+    var errors = {}
 
     _.forEach(opts.messages, function (message) {
       var processId = message.sender.id
-      var type = (message.sender.type === "Output") ? 'outputs' : 'entities' // maybe can get rid of this
-
       var entities = self.get('simulation.entities')
-
       _.forEach(entities, function (entity) {
         _.forEach(entity.processes, function (process) {
           if (process.id === processId) {
-            if ( !errors[type][message.time] ) { errors[type][message.time] = {} }
-            if ( !errors[type][message.time][entity.id] ) { errors[type][message.time][entity.id] = {} }
-            errors[type][message.time][entity.id][message.message_id] = message
+            if ( !errors[message.time] ) { errors[message.time] = {} }
+            if ( !errors[message.time][entity.id] ) { errors[message.time][entity.id] = {} }
+            errors[message.time][entity.id][message.message_id] = message
           }
         })
       })
@@ -284,9 +278,8 @@ export default Ember.Component.extend({
 
       self.set('timeframe', timeframe)
 
-      var messages
       if (result[result.length - 1].messages) {
-        messages = result.pop().messages
+        var messages = result.pop().messages
       }
       self.sortErrors( { messages : messages } )
 
