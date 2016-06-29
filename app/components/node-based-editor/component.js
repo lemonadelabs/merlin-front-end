@@ -17,9 +17,7 @@ export default Ember.Component.extend({
   transformX: 0,
   transformY: 0,
   entityComponents: {},
-  outputComponents: {},
   selectedEntities: [],
-  selectedOutputs: [],
   updateCablesBound: Ember.computed( function() {
     return Ember.run.bind(this, this.updateCables)
   }),
@@ -54,10 +52,8 @@ export default Ember.Component.extend({
     this.nodesGroup = new NodesGroup({
       draw : this.draw,
       entityModel : this.get('simulation.entities'),
-      outputModel : this.get('simulation.outputs'),
 
       entityComponents : this.entityComponents,
-      outputComponents : this.outputComponents,
 
       updateSVGOpacity : this.updateSVGOpacity.bind(this),
     })
@@ -107,45 +103,18 @@ export default Ember.Component.extend({
 
     this.replaceArrayContent(this.selectedEntities, entities)
 
-    var outputs = this.findOutputsFromEntities(entities)
-    this.replaceArrayContent(this.selectedOutputs, outputs) // hack.
-
     Ember.run.next(this, this.resetNodesgroup)
 
   }.observes('branch','service'),
-
-  findOutputsFromEntities: function (entities) {
-    var outputs = this.get('simulation.outputs')
-    var requiredOutputEndpoints = []
-    _.forEach(entities, function (entity) {
-      _.forEach(entity.outputs, function (output) {
-        _.forEach(output.endpoints, function (endpoint) {
-          if ( endpoint.sim_output ) {
-            requiredOutputEndpoints.push(endpoint.sim_output)
-          }
-        })
-      })
-    })
-    var selectedOutputs = []
-    _.forEach(outputs, function (output) {
-      _.forEach(output.inputs, function (input) {
-        if ( _.includes(requiredOutputEndpoints, input.id) ) {
-          selectedOutputs.push( output )
-        }
-      })
-    })
-    return _.uniqWith(selectedOutputs, _.isEqual)
-  },
 
   resetNodesgroup: function () {
     var counter = 0
 
     this.reCentreDraggableBackground()
 
-    if (Object.keys( this.entityComponents ).length + Object.keys( this.outputComponents ).length === this.selectedEntities.length + this.selectedOutputs.length ) {
+    if (Object.keys( this.entityComponents ).length === this.selectedEntities.length ) {
       this.nodesGroup.clearNodesAndBuildNewNodes({
-        entityComponents : this.get('selectedEntities'),
-        outputComponents : this.get('selectedOutputs')
+        entityComponents : this.get('selectedEntities')
       })
       this.nodesGroup.initCables()
       this.updateCablesForAllNodes()
@@ -154,34 +123,11 @@ export default Ember.Component.extend({
       counter ++
       Ember.run.next(this, this.resetNodesgroup)
     }
-  }.observes('entityComponents', 'outputComponents'),
+  }.observes('entityComponents'),
 
   reCentreDraggableBackground: function () {
     this.set('transformX', 0)
     this.set('transformY', 0)
-  },
-
-  buildSVGNodes: function () {
-
-    var self = this
-
-    console.log(Object.keys( this.entityComponents ).length, Object.keys( this.outputComponents ).length, this.selectedEntities.length, this.selectedOutputs.length )
-    if (Object.keys( this.entityComponents ).length + Object.keys( this.outputComponents ).length === this.selectedEntities.length + this.selectedOutputs.length ) {
-      this.nodesGroup = new NodesGroup({
-        draw : this.draw,
-        entityModel : self.get('selectedEntities'),
-        outputModel : self.get('selectedOutputs'),
-        persistPosition : self.persistPosition
-      })
-      this.nodesGroup.buildNodes({
-        entityComponents : this.entityComponents,
-        outputComponents : this.outputComponents
-      })
-      // this.nodesGroup.initCables()
-      // this.nodesGroup.terminalListners()
-    } else {
-      console.warn('the entity components haven\'t been built yet')
-    }
   },
 
   replaceArrayContent: function (array, content) {
@@ -304,7 +250,8 @@ export default Ember.Component.extend({
 
     _.forEach(opts.messages, function (message) {
       var processId = message.sender.id
-      var type = (message.sender.type === "Output") ? 'outputs' : 'entities'
+      var type = (message.sender.type === "Output") ? 'outputs' : 'entities' // maybe can get rid of this
+
       var entities = self.get('simulation.entities')
 
       _.forEach(entities, function (entity) {
@@ -349,7 +296,7 @@ export default Ember.Component.extend({
 
       self.set('outputConnectorData', sortedData['OutputConnector'])
       self.set('processPropertyData', sortedData['ProcessProperty'])
-      self.set('outputData', sortedData['Output'])
+      self.set('outputData', sortedData['Output']) // maybe can get rid of this
       self.set('inputConnectorData', sortedData['InputConnector'])
 
       self.updateCablesForAllNodes()
@@ -422,34 +369,7 @@ export default Ember.Component.extend({
     })
   },
 
-  // updateSelectedEntitiesAndOutputs: function (opts) {
-  //   var removed = this.selectedEntities.length
-  //   this.selectedEntities.length = 0
-  //   this.selectedEntities.push(...opts.entities)
-  //   this.selectedEntities.arrayContentDidChange(0,this.selectedEntities.length, removed)
-
-  //   removed = this.selectedOutputs.length
-  //   this.selectedOutputs.length = 0
-  //   this.selectedOutputs.push(...this.get('outputs'))
-  //   this.selectedOutputs.arrayContentDidChange(0,this.selectedOutputs.length, removed)
-
-  //   this.nodesGroup.clearNodesAndBuildNewNodes({
-  //     entityComponents : this.entityComponents,
-  //     outputComponents : this.outputComponents
-  //   })
-  // },
-
   actions: {
-    // viewService: function (entity) {
-    //   console.log(entity)
-    //   var childEntities = simTraversal.getChildrenOfEntity({
-    //     entity : entity,
-    //     simulation : this.get('simulation')
-    //   })
-    //   this.updateSelectedEntitiesAndOutputs({
-    //     entities : childEntities
-    //   })
-    // },
     resetDefaults: function () {
       this.resetBaseline()
     }
