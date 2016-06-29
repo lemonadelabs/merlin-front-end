@@ -15,27 +15,15 @@ Node.prototype.findInputTerminals = function(opts) {
   var self = this
   var inputs = {}
   var inputsData = opts.nodeModel.inputs
-  if (opts.nodeType === 'output-node') {
-    var symOutputId = opts.id
-    var $terminal = self.$component.find(`#${symOutputId}.terminal.input-terminal.sim-output-terminal`)
-    inputs[opts.id] = {
+  _.forEach(inputsData, function (input) {
+    var $terminal = self.$component.find(`#${input.id}.terminal.input-terminal`)
+    inputs[input.id] = {
       $domElement : $terminal,
-      entityId : symOutputId,
+      entityId : self.id,
       nodeType : self.nodeType,
       terminalType : 'input'
     }
-  } else if (!_.isEmpty(inputsData)) {
-    _.forEach(inputsData, function (input) {
-
-      var $terminal = self.$component.find(`#${input.id}.terminal.input-terminal`)
-      inputs[input.id] = {
-        $domElement : $terminal,
-        entityId : self.id,
-        nodeType : self.nodeType,
-        terminalType : 'input'
-      }
-    })
-  }
+  })
   return inputs
 }
 

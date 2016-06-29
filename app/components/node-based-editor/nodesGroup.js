@@ -7,14 +7,11 @@ export default function NodesGroup (opts) {
   this.simulation = opts.simulation
   this.draw = opts.draw
   this.entityModel = opts.entityModel
-  this.outputModel = opts.outputModel
 
   this.entityComponents = opts.entityComponents
-  this.outputComponents = opts.outputComponents
 
   this.updateSVGOpacity = opts.updateSVGOpacity
   this.entityNodes = {}
-  this.outputNodes = {}
   this.outputTerminals = {}
   this.inputTerminals = {}
   this.cableParent = this.draw.nested()
@@ -128,7 +125,6 @@ NodesGroup.prototype.terminalListners = function() {
 NodesGroup.prototype.resetGroup = function() {
   this.hideCables()
   this.entityNodes = {}
-  this.outputNodes = {}
   this.outputTerminals = {}
   this.inputTerminals = {}
   this.cableParent.clear()
@@ -207,12 +203,7 @@ NodesGroup.prototype.initCables = function() {
 NodesGroup.prototype.referenceCableInTerminals = function(opts) {
   var cable = opts.cable
   var inputTerminal = cable.inputTerminal
-  var inputNode
-  if (_.includes(inputTerminal.nodeType, 'entity')) {
-    inputNode = this.entityNodes[inputTerminal.entityId]
-  } else if (_.includes(inputTerminal.nodeType, 'output')) {
-    inputNode = this.outputNodes[inputTerminal.entityId]
-  }
+  var inputNode = this.entityNodes[inputTerminal.entityId]
 
   inputNode.cables.push(cable)
 
@@ -223,16 +214,14 @@ NodesGroup.prototype.referenceCableInTerminals = function(opts) {
 
 
 NodesGroup.prototype.updateCablesForNode = function(opts) {
-  var node = (opts.type === 'output-node') ? this.outputNodes[opts.id] : this.entityNodes[opts.id]
-  if ( node ) { node.updateCables(opts) }
-
+  var node = this.entityNodes[ opts.id ]
+  if ( node ) { node.updateCables( opts ) }
 };
 
 NodesGroup.prototype.buildNodes = function(opts) {
   var self = this
 
   var entityComponents = this.entityComponents
-  var outputComponents = this.outputComponents
 
   var counter = 0
 
@@ -242,14 +231,7 @@ NodesGroup.prototype.buildNodes = function(opts) {
     counter ++
   })
 
-  _.forEach(outputComponents, function (component, id) {
-    self.buildNode(component, counter)
-    component.set('hidden', false)
-    counter ++
-  })
-
   Ember.run.later( this, function () { this.updateSVGOpacity('1') }, 1 )
-
 };
 
 NodesGroup.prototype.buildNode = function(component, i) {
@@ -262,7 +244,7 @@ NodesGroup.prototype.buildNode = function(component, i) {
   if ( !component.get('entity.display_pos_x') ) { component.set('transformX', 60 * i + 40) }
   if ( !component.get('entity.display_pos_y') ) { component.set('transformY', 40 * i + 40) }
 
-  var nodeModel = (nodeType === 'output-node') ? _.find(this.outputModel, ['id', id]) : _.find(this.entityModel, ['id', id])
+  var nodeModel = _.find(this.entityModel, ['id', id])
 
   var node = new Node({
     id : id,
@@ -272,18 +254,14 @@ NodesGroup.prototype.buildNode = function(component, i) {
     nodeType : nodeType,
   })
 
-  if (_.includes(nodeType, 'entity')) {
-    this.entityNodes[id] = node
+  this.entityNodes[id] = node
 
-    _.forEach(node.outputTerminals, function (output, id) {
-      self.outputTerminals[id] = output
-    })
-    _.forEach(node.inputTerminals, function (input, id) {
-      self.inputTerminals[id] = input
-    })
-  } else if (_.includes(nodeType, 'output')) {
-    this.outputNodes[id] = node
-  }
+  _.forEach(node.outputTerminals, function (output, id) {
+    self.outputTerminals[id] = output
+  })
+  _.forEach(node.inputTerminals, function (input, id) {
+    self.inputTerminals[id] = input
+  })
 
 };
 function buildNode(component, i) {
@@ -305,17 +283,13 @@ function buildNode(component, i) {
     nodeType : nodeType,
   })
 
-  if (_.includes(nodeType, 'entity')) {
-    self.entityNodes[id] = node
+  self.entityNodes[id] = node
 
-    _.forEach(node.outputTerminals, function (output, id) {
-      self.outputTerminals[id] = output
-    })
-    _.forEach(node.inputTerminals, function (input, id) {
-      self.inputTerminals[id] = input
-    })
-  } else if (_.includes(nodeType, 'output')) {
-    self.outputNodes[id] = node
-  }
+  _.forEach(node.outputTerminals, function (output, id) {
+    self.outputTerminals[id] = output
+  })
+  _.forEach(node.inputTerminals, function (input, id) {
+    self.inputTerminals[id] = input
+  })
 
 }
