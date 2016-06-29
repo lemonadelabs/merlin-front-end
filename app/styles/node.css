@@ -96,17 +96,17 @@
   border: solid 1px var(--fixed_asset-color);
 }
 
-.node.output-node {
+.node.entity-output {
   background-color: color( var(--output-color) alpha(-10%) shade(20%) saturation(+5%) );
   border: solid 1px color( var(--output-color) whiteness(+15%) alpha(-50%) );
 }
-.node.output-node .node-drag-bar {
+.node.entity-output .node-drag-bar {
   background-color: var(--output-color);
 }
-.node.output-node .node-subheading {
+.node.entity-output .node-subheading {
   background-color:  color( var(--output-color) alpha(-50%) );
 }
-.node.output-node input[type='text'] {
+.node.entity-output input[type='text'] {
   border: solid 1px var(--output-color);
 }
 
