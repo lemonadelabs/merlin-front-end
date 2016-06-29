@@ -4,9 +4,6 @@
 </div>
 
 <div class='nodes-container' style={{this.style}}>
-
-
-
   {{#each this.selectedEntities as | entity index | }}
     {{
       entity-node
@@ -28,23 +25,6 @@
 
       branch=this.branch
       service=this.service
-    }}
-  {{/each}}
-
-  {{#each this.selectedOutputs as | simulationOutput index | }}
-    {{
-      simulation-output
-      entity=simulationOutput
-      outputData=this.outputData
-
-      month=this.month
-
-      errors=this.errors.outputs
-
-      outputNodes=outputComponents
-      updateCables=this.updateCablesBound
-      groupOffsetX=this.transformX
-      groupOffsetY=this.transformY
     }}
   {{/each}}
 </div>
