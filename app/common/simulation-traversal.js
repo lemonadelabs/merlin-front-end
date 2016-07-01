@@ -2,6 +2,22 @@
 ////////////////////////////////// API //////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
 
+export function findEntityByOutputConnectorId (opts) { // not being used currently
+  var entities = opts.entities
+  var id = opts.id
+  return _.find(entities, function (entity) {
+    return _.find(entity.outputs, function (output) {
+      return output.id === id
+    })
+  })
+}
+
+export function getOutputEntities (entities) {
+  return _.filter(entities, function (e) {
+    return e.is_output
+  })
+}
+
 export function getChildrenOfEntity (opts) {
   var entity = opts.entity
   var simulation = opts.simulation
@@ -9,13 +25,6 @@ export function getChildrenOfEntity (opts) {
   var childIds = getIdsFromChildUrls(entity.children)
   return _.filter(entities, function (entity) {
     return _.includes(childIds, entity.id)
-  })
-
-}
-
-function getIdsFromChildUrls(urls) {
-  return _.map(urls, function (url) {
-    return Number( url.replace(/.*entities\//, '').slice(0, -1) )
   })
 
 }
@@ -141,4 +150,10 @@ function getServiceModels (opts) {
     serviceModels.push(serviceModel)
   })
   return serviceModels
+}
+
+function getIdsFromChildUrls(urls) {
+  return _.map(urls, function (url) {
+    return Number( url.replace(/.*entities\//, '').slice(0, -1) )
+  })
 }
