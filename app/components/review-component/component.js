@@ -570,7 +570,12 @@ export default Ember.Component.extend({
       var data = set.data.value
       _.forEach(data, function (datum, i) {
         if (!returnData[i]) { returnData[i] = 0 }
-        returnData[i] += ( datum / baselineTelemetry[itterate].data.value[i] ) * 100
+        if(baselineTelemetry[itterate].data.value[i] === 0){
+          returnData[i] += 0
+        }
+        else{
+          returnData[i] += ( datum / baselineTelemetry[itterate].data.value[i] ) * 100
+        }
       })
     })
 
