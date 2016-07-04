@@ -201,14 +201,27 @@ export default Ember.Component.extend({
 
     let tooltip = new Tooltip()
     tooltip.formatTooltipLabelValue(this.formatTooltipValue)
-    
+
     let chartParameters = new ChartParameters(dataSets, graphData.labels, [xAxes], [yAxes1,yAxes2], tooltip)
     this.set('investmentGraph', chartParameters)
   },
   formatTooltipValue(tooltipItem, data){
-    console.log(data);
+    let datasetIndex = tooltipItem.datasetIndex;
+    let datasetLabel = data.datasets[datasetIndex].label;
+
     let valueRounded =  Math.round(tooltipItem.yLabel)
-    tooltipItem.yLabel = valueRounded
+    let valueToReturn;
+    let valueToAppend = "";
+    let valueToPrepend = "";
+    if(datasetLabel==="outputs"){
+      valueToAppend = '%'
+      valueToReturn = valueRounded;
+    }
+    else{
+      valueToPrepend = '$'
+      valueToReturn = commaSeperateNumber(valueRounded)
+    }
+    tooltipItem.yLabel = valueToPrepend+valueToReturn+valueToAppend;
 
   },
   observeChart:function(){
