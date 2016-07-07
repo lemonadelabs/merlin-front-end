@@ -332,7 +332,13 @@ export default Ember.Component.extend({
       console.log('onContextMenu action')
     },
 
-
+    onContextMenuAction: function(timelineObject, action){
+      console.log('onContextMenuAction',action,timelineObject);
+      this.send(action, timelineObject)
+    },
+    getSuggestion: function(timelineObject){
+      console.log('getSuggestion',timelineObject);
+    },
     onTimelineObjectInteractionEnd: function (context) {
       var requests = this.persistDatesToBackend({
         // jshint unused:false

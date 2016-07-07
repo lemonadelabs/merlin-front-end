@@ -10,8 +10,8 @@ export default Ember.Component.extend({
   boundFinishManipulationFunc:undefined,
   boundResizeFunc:undefined,
   trackOffset:0,
-  showContextMenu: false;
-  contextMenuOptions: ['suggest','another','yet another'],
+  showContextMenu: false,
+  contextMenuOptions: [{label:'suggest',actionName:"getSuggestion"}],
   style:Ember.computed('x','width','active', function(){
     var x = this.get('x');
     var width = this.get('width');
@@ -287,5 +287,13 @@ export default Ember.Component.extend({
   }.observes('timelineGridObjects'),
   between: function(x, min, max) {
     return x >= min && x <= max;
+  },
+  actions:{
+    handleContextMenuAction: function(actionName){
+      console.log("blah blah");
+      if(actionName){
+        this.sendAction('onContextMenuAction',actionName,this)
+      }
+    }
   }
 });

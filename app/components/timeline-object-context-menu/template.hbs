@@ -1,1 +1,5 @@
-{{yield}}
+<ul>
+  {{#each this.options as |option|}}
+    <li {{action 'passActionName' option.actionName}}>{{option.label}}</li>
+  {{/each}}
+</ul>
