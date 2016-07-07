@@ -120,14 +120,53 @@ export default Ember.Component.extend({
   mouseEnter(){
     if (!this.get('active')) {
       this.addPopper(this.createPopperTemplate());
-      console.log(this);
+      // console.log(this);
     }
   },
   createPopperTemplate(){
+    var self = this
     let name = this.get('name');
     let capex = commaSeperate(this.get('capex'));
     let opex = commaSeperate(this.get('opex'));
 
+    var scenarioId = this.get('scenarioId')
+    var scenario = _.find(this.get('scenarios'), function (scenario) {
+      return scenario.id === scenarioId
+    })
+
+
+    var events = scenario.events
+    _.forEach(events, function (event) {
+      console.log(event)
+      _.forEach(event.actions, function (action) {
+        var entityId = action.operand_1.params[0]
+        var propertyId = action.operand_2.params[0]
+        var amount = action.operand_2.params[1]
+
+        // var entity = _.find(self.get('simulation.entities'), ['id', entityId])
+        // console.log(entity)
+
+        // console.log('-----------------------')
+        // console.log('entityId',entityId)
+        // console.log('propertyId',propertyId)
+        // console.log('amount',amount)
+      })
+    })
+    // console.log(scenario)
+    // get the scenario
+    // go through each event
+      // get the entity
+        // get entity id
+        // get processProperty id
+        // get amount
+      // get the simulation
+        // find entity
+          // find the process property from id, return the name
+
+
+
+
+    // we want resourcs and impacts in this string too
     let template = `<h4>${name}</h4><hr/><p><b>Captial Input:</b> $${capex}</p><p><b>Opex Contribution:</b> $${opex}</p>`
     return template;
   },

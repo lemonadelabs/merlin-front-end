@@ -68,7 +68,7 @@ export default Ember.Component.extend({
     _.forEach(resource.processProperties, function (newProcessProperty) {
       var action = self.makeAction({
         newProcessProperty : newProcessProperty,
-        entity : entity,
+        entityId : resource.selectedEntity.id,
       })
       if (action) {actions.push(action)}
     })
