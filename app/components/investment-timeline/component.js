@@ -329,7 +329,7 @@ export default Ember.Component.extend({
 
   actions:{
     onContextMenu: function () {
-      console.log('onContextMenu action')
+      // console.log('onContextMenu action')
     },
 
     onContextMenuAction: function(timelineObject, action){

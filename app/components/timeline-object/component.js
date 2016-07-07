@@ -1,4 +1,6 @@
 import Ember from 'ember';
+import commaSeperate from '../../common/commaSeperateNumber';
+import simTraversal from '../../common/simulation-traversal';
 
 export default Ember.Component.extend({
   active:false,
@@ -47,7 +49,25 @@ export default Ember.Component.extend({
       this.setPositionFromGrid();
     }
   },
+  addPopper(content){
+    if(!content){
+      return
+    }
 
+    var reference = this.get('element');
+    var popper = new Popper(
+        reference,
+        {
+            content: content,
+            contentType: 'html'
+        },
+        {
+             placement: 'top',
+             removeOnDestroy: true,
+        }
+    );
+    this.set('popper',popper)
+  },
   findAndSetTrackOffset(){
     let trackOffset = this.get('parentView.element').getBoundingClientRect().left
     this.set('trackOffset',trackOffset);
@@ -67,6 +87,7 @@ export default Ember.Component.extend({
   },
   mouseDown(e){
     this.handleInputStart(e);
+    this.removePopper();
   },
   touchStart(e){
     this.handleInputStart(e);
@@ -99,9 +120,111 @@ export default Ember.Component.extend({
     document.removeEventListener("cancelManipulation", this.boundFinishManipulationFunc, false);
     document.cancelManipulationListener = false;
   },
+  mouseEnter(){
+    if (!this.get('active')) {
+      this.addPopper(this.createPopperTemplate());
+      // console.log(this);
+    }
+  },
+  createPopperTemplate(){
+    var self = this
+    let name = this.get('name');
+    let capex = commaSeperate(this.get('capex'));
+    let opex = commaSeperate(this.get('opex'));
+
+    var scenarioId = this.get('scenarioId')
+    var scenario = _.find(this.get('scenarios'), function (scenario) {
+      return scenario.id === scenarioId
+    })
+
+    var resourceInfo = {}
+    var resourcesMessages = []
+    var impactsMessages = []
+    var events = scenario.events
+    var entityId = events[0].actions[0].operand_1.params[0]
+    var entity = _.find(self.get('simulation.entities'), ['id', entityId])
+
+    _.forEach(events, function (event) {
+      var time = Number(event.time)
+      resourceInfo[ time ] = {}
+      _.forEach(event.actions, function (action) {
+
+        var propertyId = action.operand_2.params[0]
+        var amount = action.operand_2.params[1]
+
+        if (!resourceInfo[time][propertyId]) { resourceInfo[time][propertyId] = [] }
+        resourceInfo[time][propertyId].push(amount)
+      })
+    })
+
+    var eventKeys = Object.keys(resourceInfo).sort(compareNumbers)
+    function compareNumbers(a, b) { return a - b }
+
+    var event1Data = resourceInfo[eventKeys[0]]
+    var event2Data = resourceInfo[eventKeys[1]]
+
+    _.forEach(event1Data, function (values, propertyId) {
+      var event2PropertyData = event2Data[propertyId]
+      _.forEach(values, function (value) {
+        var indexOfReleaseValue = event2PropertyData.indexOf(value * -1)
+
+        if (indexOfReleaseValue > -1) {
+          event2PropertyData.splice(indexOfReleaseValue, 1)
+        }
+      })
+    })
+    _.forEach(event2Data, function(array, id) { // clean up
+      if (array.length === 0) { delete event2Data[id] }
+    })
+
+    var processProperties = simTraversal.getProcessPropertiesFromEntity({ entity : entity })
+
+    _.forEach(event1Data, function (values, propertyId) {
+      resourcesMessages.push( createMessage( values, propertyId ) )
+    })
+
+    _.forEach(event2Data, function (values, propertyId) {
+      impactsMessages.push( createMessage( values, propertyId ) )
+    })
+
+    function createMessage(values, propertyId) {
+      var processProperty = _.find(processProperties, ['id', Number(propertyId)])
+      var value = values[0]
+      var message = ''
+      if (value > 0) { message +=  '+' }
+      message += `${value} ${processProperty.name}`
+      return message
+    }
+
+    let template = `<h4>${name}</h4><hr/>`
+    + `<p><b>Captial Input:</b> $${capex}</p>`
+    + `Opex Contribution:</b> $${opex}</p>`
+    + `<p><b>Required Resources:</b></p>`
+
+    _.forEach(resourcesMessages, function (message) {
+      template += `<p>${message}</p>`
+    })
+
+    template += `<p><b>Impacts:</b></p>`
+    _.forEach(impactsMessages, function (message) {
+      template += `<p>${message}</p>`
+    })
+
+    return template;
+  },
+
   mouseUp(){
     //This will still work on IE
     this.finishManipulation();
+  },
+  mouseLeave(){
+    this.removePopper();
+  },
+  removePopper(){
+    var popper = this.get('popper')
+    if(popper){
+      popper.destroy()
+    }
   },
   finishManipulation: function(){
     this.set('active',false);
