@@ -86,6 +86,7 @@ html {
     padding: 10px;
     text-align: left;
     font-size: 10pt;
+    z-index:400;
 }
 /*
 .popper::after {

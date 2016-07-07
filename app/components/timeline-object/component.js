@@ -45,7 +45,25 @@ export default Ember.Component.extend({
       this.setPositionFromGrid();
     }
   },
+  addPopper(content){
+    if(!content){
+      return
+    }
 
+    var reference = this.get('element');
+    var popper = new Popper(
+        reference,
+        {
+            content: content,
+            contentType: 'html'
+        },
+        {
+             placement: 'top',
+             removeOnDestroy: true,
+        }
+    );
+    this.set('popper',popper)
+  },
   findAndSetTrackOffset(){
     let trackOffset = this.get('parentView.element').getBoundingClientRect().left
     this.set('trackOffset',trackOffset);
@@ -65,6 +83,7 @@ export default Ember.Component.extend({
   },
   mouseDown(e){
     this.handleInputStart(e);
+    this.removePopper();
   },
   touchStart(e){
     this.handleInputStart(e);
@@ -97,9 +116,32 @@ export default Ember.Component.extend({
     document.removeEventListener("cancelManipulation", this.boundFinishManipulationFunc, false);
     document.cancelManipulationListener = false;
   },
+  mouseEnter(){
+    if (!this.get('active')) {
+      this.addPopper(this.createPopperTemplate());
+      console.log(this);
+    }
+  },
+  createPopperTemplate(){
+    let name = this.get('name');
+    let capex = this.get('capex');
+    let opex = this.get('opex');
+
+    let template = `<h4>${name}</h4><hr/><p>Captial Input: $${capex}</p><p>Opex Contribution: $${opex}</p>`
+    return template;
+  },
   mouseUp(){
     //This will still work on IE
     this.finishManipulation();
+  },
+  mouseLeave(){
+    this.removePopper();
+  },
+  removePopper(){
+    var popper = this.get('popper')
+    if(popper){
+      popper.destroy()
+    }
   },
   finishManipulation: function(){
     this.set('active',false);
