@@ -2,7 +2,14 @@
   {{timeline-object-context-menu options=contextMenuOptions handleContextMenuAction=(action "handleContextMenuAction")}}
 {{/if}}
 
-<p class="object-name">{{name}}</p>
+
+
+{{#if suggestion}}
+  <p class="object-name">move {{name}} here</p>
+{{else}}
+  <p class="object-name">{{name}}</p>
+{{/if}}
+
 {{!-- {{#if this.capex}}
   <p class='object-info'>Capex ${{this.capex}}</p>
 {{/if}}

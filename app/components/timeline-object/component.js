@@ -5,7 +5,7 @@ import simTraversal from '../../common/simulation-traversal';
 export default Ember.Component.extend({
   active:false,
   classNames: ['timeline-object'],
-  classNameBindings:['active'],
+  classNameBindings:['active','suggestion'],
   attributeBindings: ['style'],
   x:undefined,
   width:undefined,
@@ -210,7 +210,7 @@ export default Ember.Component.extend({
       template += `<p>${message}</p>`
     })
 
-    return template;
+    // return template;
   },
 
   mouseUp(){
