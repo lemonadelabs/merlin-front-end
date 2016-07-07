@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import commaSeperate from '../../common/commaSeperateNumber';
 
 export default Ember.Component.extend({
   active:false,
@@ -124,10 +125,10 @@ export default Ember.Component.extend({
   },
   createPopperTemplate(){
     let name = this.get('name');
-    let capex = this.get('capex');
-    let opex = this.get('opex');
+    let capex = commaSeperate(this.get('capex'));
+    let opex = commaSeperate(this.get('opex'));
 
-    let template = `<h4>${name}</h4><hr/><p>Captial Input: $${capex}</p><p>Opex Contribution: $${opex}</p>`
+    let template = `<h4>${name}</h4><hr/><p><b>Captial Input:</b> $${capex}</p><p><b>Opex Contribution:</b> $${opex}</p>`
     return template;
   },
   mouseUp(){
