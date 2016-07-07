@@ -10,6 +10,8 @@ export default Ember.Component.extend({
   boundFinishManipulationFunc:undefined,
   boundResizeFunc:undefined,
   trackOffset:0,
+  showContextMenu: false;
+  contextMenuOptions: ['suggest','another','yet another'],
   style:Ember.computed('x','width','active', function(){
     var x = this.get('x');
     var width = this.get('width');
@@ -126,9 +128,11 @@ export default Ember.Component.extend({
   },
   contextMenu(e) {
     e.preventDefault()
-    console.log('..............')
-    console.log('this', this)
-    console.log('e', e)
+    this.set('showContextMenu', true)
+
+    // console.log('..............')
+    // console.log('this', this)
+    // console.log('e', e)
 
     this.sendAction('onContextMenu', this)
   },

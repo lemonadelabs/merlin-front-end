@@ -47,7 +47,7 @@ export default Ember.Component.extend({
   }),
   logErrors: function (messages) {
     _.forEach( messages, function (message) {
-      console.log(message.time, message.message)
+      // console.log(message.time, message.message)
     })
   },
 
