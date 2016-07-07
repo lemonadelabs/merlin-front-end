@@ -63,7 +63,7 @@ export default Ember.Component.extend({
     var actions = []
 
     // find the matching entity from the simulation
-    var entity = _.find( simulation.entities, function (e) { return e.id === resource.selectedEntity.id })
+    // var entity = _.find( simulation.entities, function (e) { return e.id === resource.selectedEntity.id })
     // loop over each new process property
     _.forEach(resource.processProperties, function (newProcessProperty) {
       var action = self.makeAction({
@@ -77,12 +77,12 @@ export default Ember.Component.extend({
 
   makeAction: function (opts) {
     var newProcessProperty = opts.newProcessProperty
-    var entity = opts.entity
+    var entityId = opts.entityId
 
     if (newProcessProperty.change) {
       var action = merlinUtils.createModifyProcessAction({
         newProcessProperty : newProcessProperty,
-        entityId : entity.id,
+        entityId : entityId,
       })
       return action
     }

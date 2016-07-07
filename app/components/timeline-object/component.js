@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import commaSeperate from '../../common/commaSeperateNumber';
+import simTraversal from '../../common/simulation-traversal';
 
 export default Ember.Component.extend({
   active:false,
@@ -134,42 +135,82 @@ export default Ember.Component.extend({
       return scenario.id === scenarioId
     })
 
-
+    var resourceInfo = {}
+    var resourcesMessages = []
+    var impactsMessages = []
     var events = scenario.events
+    var entityId = events[0].actions[0].operand_1.params[0]
+    var entity = _.find(self.get('simulation.entities'), ['id', entityId])
+
     _.forEach(events, function (event) {
-      console.log(event)
+      var time = Number(event.time)
+      resourceInfo[ time ] = {}
       _.forEach(event.actions, function (action) {
-        var entityId = action.operand_1.params[0]
+
         var propertyId = action.operand_2.params[0]
         var amount = action.operand_2.params[1]
 
-        // var entity = _.find(self.get('simulation.entities'), ['id', entityId])
-        // console.log(entity)
-
-        // console.log('-----------------------')
-        // console.log('entityId',entityId)
-        // console.log('propertyId',propertyId)
-        // console.log('amount',amount)
+        if (!resourceInfo[time][propertyId]) { resourceInfo[time][propertyId] = [] }
+        resourceInfo[time][propertyId].push(amount)
       })
     })
-    // console.log(scenario)
-    // get the scenario
-    // go through each event
-      // get the entity
-        // get entity id
-        // get processProperty id
-        // get amount
-      // get the simulation
-        // find entity
-          // find the process property from id, return the name
 
+    var eventKeys = Object.keys(resourceInfo).sort(compareNumbers)
+    function compareNumbers(a, b) { return a - b }
 
+    var event1Data = resourceInfo[eventKeys[0]]
+    var event2Data = resourceInfo[eventKeys[1]]
 
+    _.forEach(event1Data, function (values, propertyId) {
+      var event2PropertyData = event2Data[propertyId]
+      _.forEach(values, function (value) {
+        var indexOfReleaseValue = event2PropertyData.indexOf(value * -1)
 
-    // we want resourcs and impacts in this string too
-    let template = `<h4>${name}</h4><hr/><p><b>Captial Input:</b> $${capex}</p><p><b>Opex Contribution:</b> $${opex}</p>`
+        if (indexOfReleaseValue > -1) {
+          event2PropertyData.splice(indexOfReleaseValue, 1)
+        }
+      })
+    })
+    _.forEach(event2Data, function(array, id) { // clean up
+      if (array.length === 0) { delete event2Data[id] }
+    })
+
+    var processProperties = simTraversal.getProcessPropertiesFromEntity({ entity : entity })
+
+    _.forEach(event1Data, function (values, propertyId) {
+      resourcesMessages.push( createMessage( values, propertyId ) )
+    })
+
+    _.forEach(event2Data, function (values, propertyId) {
+      impactsMessages.push( createMessage( values, propertyId ) )
+    })
+
+    function createMessage(values, propertyId) {
+      var processProperty = _.find(processProperties, ['id', Number(propertyId)])
+      var value = values[0]
+      var message = ''
+      if (value > 0) { message +=  '+' }
+      message += `${value} ${processProperty.name}`
+      return message
+    }
+
+    let template = `<h4>${name}</h4><hr/>`
+    + `<p><b>Captial Input:</b> $${capex}</p>`
+    + `Opex Contribution:</b> $${opex}</p>`
+    + `<p><b>Required Resources:</b></p>`
+
+    _.forEach(resourcesMessages, function (message) {
+      template += `<p>${message}</p>`
+    })
+
+    template += `<p><b>Impacts:</b></p>`
+    _.forEach(impactsMessages, function (message) {
+      template += `<p>${message}</p>`
+    })
+
     return template;
   },
+
   mouseUp(){
     //This will still work on IE
     this.finishManipulation();
@@ -208,9 +249,9 @@ export default Ember.Component.extend({
   },
   contextMenu(e) {
     e.preventDefault()
-    console.log('..............')
-    console.log('this', this)
-    console.log('e', e)
+    // console.log('..............')
+    // console.log('this', this)
+    // console.log('e', e)
 
     this.sendAction('onContextMenu', this)
   },
