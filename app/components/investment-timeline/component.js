@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import processProjects from '../../business-logic/process-timeline-objects'
+import ProjectProcessor from '../../business-logic/process-timeline-objects'
 import DataSet from '../lemonade-chart/dataSet';
 import Axes from '../lemonade-chart/axes';
 import Tooltip from '../lemonade-chart/tooltip';
@@ -14,7 +14,6 @@ import commaSeperateNumber from '../../common/commaSeperateNumber';
 
 export default Ember.Component.extend({
   classNames: ['investment-timeline'],
-  processProjects: processProjects,
   timelineGridObjects:undefined,
   graphData:undefined,
   outputData:undefined,
@@ -42,7 +41,8 @@ export default Ember.Component.extend({
   }),
   init: function () {
     this._super();
-    this.processTelemetryData()
+    this.projectProcessor = new ProjectProcessor({ metadata : this.hardCodedMetadata }),
+    // this.processTelemetryData()
     this.set('graphData', this.processAndSortData() )
     this.buildChart()
   },
@@ -64,21 +64,15 @@ export default Ember.Component.extend({
 
     let graphData = this.get('graphData');
 
-    let remainingFunds = new DataSet('Remaining Funds', new Array(48), remainingFundsColor);
-    let totalInvestment = new DataSet('Total Investment', new Array(48), totalInvestmentColor);
+    let placeholder = new Array(48)
 
-    let capitalisation = new DataSet('Capitalisation', new Array(48), capitalisationColor);
-    let ongoingCost = new DataSet('Ongoing Cost', new Array(48), ongoingCostColor);
-
-    let outputData = new Array(48)
-    this.set('outputData', outputData)
-    let outputs = new DataSet('outputs', outputData, outputsColor);
-    outputs.setAxisId('yAxes2')
-
+    let remainingFunds = new DataSet('Remaining Funds', placeholder, remainingFundsColor);
+    let totalInvestment = new DataSet('Total Investment', placeholder, totalInvestmentColor);
     totalInvestment.setDashType('longDash')
-
-    capitalisation.setDashType('dotted')
+    let ongoingCost = new DataSet('Ongoing Cost', placeholder, ongoingCostColor);
     ongoingCost.setDashType('dotted')
+    let outputs = new DataSet('outputs', placeholder, outputsColor);
+    outputs.setAxisId('yAxes2')
 
     let xAxes = new Axes('', axisColor);
     xAxes.hideGridLines();
@@ -93,16 +87,13 @@ export default Ember.Component.extend({
     yAxes2.setPosition('right');
     yAxes2.hideGridLines();
 
-    this.set('axes',{'xAxes': xAxes, 'yAxes1': yAxes1,'yAxes2': yAxes2})
+    this.set('axes', {'xAxes': xAxes, 'yAxes1': yAxes1,'yAxes2': yAxes2})
 
     var dataSets = [
       remainingFunds,
-      // capexContribution,
-      // opexContribution,
       totalInvestment,
       ongoingCost,
       outputs,
-      // capitalisation,
     ]
 
     let tooltip = new Tooltip()
@@ -250,49 +241,41 @@ export default Ember.Component.extend({
   }.observes('projects'),
 
 
-
-
-
   processAndSortData: function(){ // this sorts out project stuff
     var projects = this.get('projects')
 
-    var processedData = this.processProjects({
-      metadata : this.get('hardCodedMetadata'),
-      projects : projects
-    })
-
-    var sortedData = {}
-    sortedData.labels = []
-    var labelsNotMadeYet = true
-
-    _.forEach(processedData, function (dataset, name) {
-      sortedData[name] = []
-      _.forEach(dataset, function (data, year) {
-        _.forEach(data, function (expenditure, month) {
-          sortedData[name].push( expenditure )
-
-          if (labelsNotMadeYet) {
-            if (month.length === 1) {month = '0' + String(month)}
-            sortedData.labels.push( `${year}/${month}` )
-          }
-        })
-      })
-      labelsNotMadeYet = false
-    })
-
-    sortedData.totalInvestment = []
-
-    _.forEach(sortedData.capex, function (datum, i) { // add up total investment
-      sortedData.totalInvestment.push(datum)
-      sortedData.totalInvestment[i] += sortedData.opex[i]
-    })
-
-    _.forEach(sortedData, function (dataset) { // add a value on to the begining of the dataset, for layout reasons
-      dataset.unshift(0)
-    })
-    sortedData.remainingFunds[0] = 50000000
-
+    var sortedData = this.projectProcessor.process( projects )
     return sortedData;
+
+    // console.log(processedData)
+
+    // var sortedData = {}
+    // sortedData.labels = []
+
+    // var labelsNotMadeYet = true
+    // _.forEach(processedData, function (dataset, name) {
+    //   sortedData[name] = []
+    //   _.forEach(dataset, function (data, year) {
+    //     _.forEach(data, function (expenditure, month) {
+    //       sortedData[name].push( expenditure )
+    //       console.log('asdf')
+
+    //       if (labelsNotMadeYet) {
+    //         if (month.length === 1) {month = '0' + String(month)}
+    //         sortedData.labels.push( `${year}/${month}` )
+    //       }
+    //     })
+    //   })
+    //   labelsNotMadeYet = false
+    // })
+
+    // _.forEach(sortedData, function (dataset) { // add a value on to the begining of the dataset, for layout reasons
+    //   dataset.unshift(0)
+    // })
+    // sortedData.remainingFunds[0] = 50000000
+
+    // console.log(sortedData)
+
   },
 
 

@@ -1,53 +1,92 @@
 import * as convertTime from '../common/convert-time'
 
-export default function processProjects (opts) {
-  var metadata = opts.metadata
-  var projects = opts.projects
-
-  // needs : start, end, units,
-  var researchSkeleton = makeSkeleton( { metadata : opts.metadata } )
-  var devSkeleton = makeSkeleton( { metadata : opts.metadata } )
-  var ongoingCostSkeleton = makeSkeleton( { metadata : opts.metadata } )
-  var capitalisationSkeleton = makeSkeleton( { metadata : opts.metadata } )
-  var fuelTankSkeleton = makeSkeleton( { metadata : opts.metadata } )
-
-  var capexSkeleton = makeSkeleton( { metadata : opts.metadata } )
-  var opexSkeleton = makeSkeleton( { metadata : opts.metadata } )
-
-
-
-  populateSkeletons({
-    researchSkeleton : researchSkeleton,
-    devSkeleton : devSkeleton,
-    ongoingCostSkeleton : ongoingCostSkeleton,
-    capitalisationSkeleton : capitalisationSkeleton,
-    fuelTankSkeleton : fuelTankSkeleton,
-    capexSkeleton : capexSkeleton,
-    opexSkeleton : opexSkeleton,
-
-    projects : projects,
-    metadata : metadata
-  })
-
-  return {
-    remainingFunds : fuelTankSkeleton,
-    capex : capexSkeleton,
-    opex : opexSkeleton,
-
-    capitalisation : capitalisationSkeleton,
-    ongoingCost : ongoingCostSkeleton,
-
-  }
-
+export default function ProjectProcessor (opts) {
+  this.metadata = opts.metadata
+  this.trees = makeDataTrees(opts.metadata)
+  this.labels = undefined
 }
 
-function populateSkeletons(opts) {
-  var fuelTankSkeleton = opts.fuelTankSkeleton
-  var capexSkeleton = opts.capexSkeleton
-  var opexSkeleton = opts.opexSkeleton
+function makeDataTrees(metadata) {
+  var tree = makeDataTree( metadata )
+  return {
+    fuelTankTree :  tree,
+    capexTree : _.cloneDeep( tree ),
+    opexTree : _.cloneDeep( tree ),
+    totalInvestmentTree : _.cloneDeep( tree ),
+    ongoingCostTree : _.cloneDeep( tree ),
+    capitalisationTree : _.cloneDeep( tree )
+  }
+};
 
-  var projects = opts.projects
-  var metadata = opts.metadata
+ProjectProcessor.prototype.process = function(projects) {
+  var trees = this.resetTrees(this.trees)
+  trees = this.populateDataTrees(projects, trees)
+  if (!this.labels) { this.makeLabels(trees.totalInvestment) }
+  var flattened = this.flattenData(trees)
+  flattened.labels = this.labels
+  var formatted = this.unshiftValue(flattened)
+  console.log(formatted)
+  return formatted
+};
+
+ProjectProcessor.prototype.unshiftValue = function(datasets) {
+  _.forEach(datasets, function (dataset, name) { // add a value on to the begining of the dataset, for layout reasons
+    if (name === 'labels') return
+    dataset.unshift(0)
+  })
+  datasets.remainingFunds[0] = this.metadata.availableFunds
+
+  return datasets
+};
+
+ProjectProcessor.prototype.resetTrees = function(trees) {
+  _.forEach(trees, this.resetTree)
+  return trees
+};
+
+ProjectProcessor.prototype.resetTree = function(tree) {
+  _.forEach(tree, function (data, year) {
+    _.forEach(data, function (datum, yearDevision) {
+      tree[year][yearDevision] = 0
+    })
+  })
+};
+
+ProjectProcessor.prototype.makeLabels = function(tree) {
+  var labels = []
+  _.forEach(tree, function (data, year) {
+    _.forEach(data, function (expenditure, month) {
+      if (month.length === 1) {month = '0' + String(month)}
+      labels.push( `${year}/${month}` )
+    })
+  })
+  labels.unshift(0)
+  this.labels = labels
+};
+
+ProjectProcessor.prototype.flattenData = function(trees) {
+  var sortedData = {}
+  _.forEach(trees, function (dataset, name) {
+    sortedData[name] = []
+    _.forEach(dataset, function (data, year) {
+      _.forEach(data, function (expenditure, month) {
+        sortedData[name].push( expenditure )
+      })
+    })
+  })
+  return sortedData
+};
+
+ProjectProcessor.prototype.populateDataTrees = function(projects, trees) {
+
+  var fuelTankTree = trees.fuelTankTree
+  var capexTree = trees.capexTree
+  var opexTree = trees.opexTree
+  var totalInvestmentTree = trees.totalInvestmentTree
+  var ongoingCostTree = trees.ongoingCostTree
+  var capitalisationTree = trees.capitalisationTree
+
+  var metadata = this.metadata
   var units = metadata.units
   var maxValue = getMaxValue(units)
 
@@ -70,14 +109,14 @@ function populateSkeletons(opts) {
       var opexInstallment = opex / installments
 
       distributeCost({
-        skeleton : capexSkeleton,
+        tree : capexTree,
         start : phase.start_date,
         end : phase.end_date,
         installment : capexInstallment,
       })
 
       distributeCost({
-        skeleton : opexSkeleton,
+        tree : opexTree,
         start : phase.start_date,
         end : phase.end_date,
         installment : opexInstallment,
@@ -96,7 +135,7 @@ function populateSkeletons(opts) {
       var capitalisationEnd = metadata.end
 
       distributeCost({
-        skeleton : opts.capitalisationSkeleton,
+        tree : capitalisationTree,
         start : capitalisationStart,
         end : capitalisationEnd,
         installment : capitalisationAmount
@@ -112,7 +151,7 @@ function populateSkeletons(opts) {
       var ongoingCostEnd = metadata.end
 
       distributeCost({
-        skeleton : opts.ongoingCostSkeleton,
+        tree : ongoingCostTree,
         start : ongoingCostStart,
         end : ongoingCostEnd,
         installment : ongoingCostInstallment
@@ -120,49 +159,79 @@ function populateSkeletons(opts) {
 
     })
 
+    aggregateTotalInvestment({
+      capexTree : capexTree,
+      opexTree : opexTree,
+      totalInvestmentTree : totalInvestmentTree
+    })
+
   })
 
-  var availableFunds = metadata.availableFunds
+  var availableFunds = this.metadata.availableFunds
 
   drainFuelTank({
-    fuelTankSkeleton : fuelTankSkeleton,
-    toSubtract : [ opts.capexSkeleton ],
+    fuelTankTree : fuelTankTree,
+    toSubtract : [ capexTree ],
     maxValue : maxValue,
     availableFunds : availableFunds
   })
 
 
+  return  {
+    remainingFunds : fuelTankTree,
+    // capex : capitalisationTree,
+    // opex : opexTree,
+    totalInvestment : totalInvestmentTree,
+
+    // capitalisation : capitalisationTree,
+    ongoingCost : ongoingCostTree,
+  }
+
+}
+
+
+function aggregateTotalInvestment (opts) {
+  var capexTree = opts.capexTree
+  var opexTree = opts.opexTree
+  var totalInvestmentTree = opts.totalInvestmentTree
+  _.forEach(totalInvestmentTree, function (data, year) {
+    _.forEach(data, function (datum, yearDevision) {
+      totalInvestmentTree[year][yearDevision] += ( capexTree[year][yearDevision] + opexTree[year][yearDevision] )
+    })
+  })
 }
 
 function drainFuelTank (opts) {
   var toSubtract = opts.toSubtract
-  var fuelTankSkeleton = opts.fuelTankSkeleton
+  var fuelTankTree = opts.fuelTankTree
   var yearlyFunds = opts.availableFunds
   var maxValue = opts.maxValue || 4
-  var availableFunds = 0
+  var availableFunds
 
-  _.forEach(fuelTankSkeleton, function (data, year) {
+  _.forEach(fuelTankTree, function (data, year) {
     _.forEach(data, function (expenditure, month) {
       if ( Number( month ) === 1 ) {
-        availableFunds += yearlyFunds
+        availableFunds = yearlyFunds
       }
+
+      // console.log(availableFunds)
 
       _.forEach(toSubtract, function (dataset) {
         availableFunds -= dataset[year][month]
       })
 
       /*jshint eqeqeq: true */
-      if (  Number( month ) == maxValue) {
-        if (availableFunds > 0) { availableFunds = 0 }
-      }
+      // if (  Number( month ) == maxValue) {
+      //   if (availableFunds > 0) { availableFunds = 0 }
+      // }
 
-      fuelTankSkeleton[year][month] = availableFunds
+      fuelTankTree[year][month] = availableFunds
     })
   })
 }
 
 function distributeCost(opts) {
-  var skeleton = opts.skeleton
+  var tree = opts.tree
   var start = opts.start
   var end = opts.end
   var installment = opts.installment
@@ -173,7 +242,7 @@ function distributeCost(opts) {
   var i, j
   if (start.year === end.year) {
     for (j = start.value; j <= end.value; j++) {
-      skeleton[start.year][j] += installment
+      tree[start.year][j] += installment
       itterate += 1
     }
     return
@@ -182,49 +251,48 @@ function distributeCost(opts) {
   for (i = start.year; i <= end.year; i++) {
     if (i === start.year) {
       for (j = start.value; j <= maxValue; j++) {
-        skeleton[i][j] += installment
+        tree[i][j] += installment
         itterate += 1
       }
     } else if (i === end.year) {
       for (j = 1; j <= end.value; j++) {
-        skeleton[i][j] += installment
+        tree[i][j] += installment
         itterate += 1
       }
     } else {
       for (j = 1; j <= maxValue; j++) {
-        skeleton[i][j] += installment
+        tree[i][j] += installment
         itterate += 1
       }
     }
   }
 }
 
-function makeSkeleton(opts) {
-  var metadata = opts.metadata
+function makeDataTree(metadata) {
   var start = metadata.start
   var end = metadata.end
   var units = metadata.units
 
   var maxValue = getMaxValue(units)
-  var skeleton = {}
+  var tree = {}
 
   for (var i = start.year; i <= end.year; i++) {
-    skeleton[i] = {}
+    tree[i] = {}
     if (i === start.year) {
       for (var j = start.value; j <= maxValue; j++) {
-        skeleton[i][j] = 0
+        tree[i][j] = 0
       }
     } else if (i === end.year) {
       for (var j = 1; j <= end.value; j++) {
-        skeleton[i][j] = 0
+        tree[i][j] = 0
       }
     } else {
       for (var j = 1; j <= maxValue; j++) {
-        skeleton[i][j] = 0
+        tree[i][j] = 0
       }
     }
   }
-  return skeleton
+  return tree
 }
 
 function getMaxValue (units) {
@@ -265,9 +333,3 @@ function findNoOfInstallments(opts) {
   return installments
 }
 
-// function sigmoid(t) {
-//   var xMultiplier = 1.3
-//   var startingYModifier = - 0.5
-//   var yMultiplier = 1.6
-//   return ( 1 / ( 1 + Math.pow( Math.E, - ( t * xMultiplier ) ) ) + startingYModifier ) * yMultiplier;
-// }
