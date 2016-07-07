@@ -5,6 +5,7 @@
   width: 100%;
   display: inline-flex;
   justify-content: center;
+  pointer-events: none;
 }
 
 .timeline-object-context-menu ul {
@@ -26,6 +27,7 @@
 }
 
 .timeline-object-context-menu ul li {
+  pointer-events: all;
   list-style: none;
   text-transform: capitalize;
   line-height: 1em;
