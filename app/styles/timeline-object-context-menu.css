@@ -1,4 +1,19 @@
 .timeline-object-context-menu {
-  position: relative;
-  top: -20px;
+  position: absolute;
+  top: -50px;
+  left: 0;
+}
+
+.timeline-object-context-menu ul {
+  background-color: rgba(33, 25, 40, 0.8);
+  border-radius: 50px;
+  padding: 5px 10px;
+}
+
+.timeline-object-context-menu ul li {
+  list-style: none;
+  text-transform: capitalize;
+  line-height: 1em;
+  font-size: 9.5pt;
+  font-weight: bold;
 }
