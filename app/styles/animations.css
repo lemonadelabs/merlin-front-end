@@ -6,3 +6,12 @@
     transform: translateY(-100%);
   }
 }
+
+@keyframes fade-in{
+  from {
+    transform: opacity(0);
+  }
+  to {
+    transform: opacity(1);
+  }
+}

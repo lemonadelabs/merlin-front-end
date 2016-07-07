@@ -72,35 +72,34 @@ html {
   overflow-x: auto;
 }
 
-.no-animate{
+.no-animate {
   animation: none;
 }
 
 .popper {
-    position: absolute;
-    background: var(--resource-color);
-    color: white;
-    min-width: 150px;
-    max-width: 300px;
-    border-radius: 3px;
-    padding: 10px;
-    text-align: left;
-    font-size: 10pt;
+  animation: fade-in 400ms;
+  position: absolute;
+  background: var(--resource-color);
+  color: white;
+  min-width: 150px;
+  max-width: 300px;
+  border-radius: 3px;
+  padding: 10px;
+  text-align: left;
+  font-size: 10pt;
+  z-index: 400;
 }
-/*
-.popper::after {
-    content: "▾";
-    font-size: 20px;
-    color: rgb(74, 144, 226);
-    position: absolute;
-    bottom: -13px;
-    width: 13px;
-    left: calc(50% - 6.5px);
-}*/
 
-.popper p{
+.popper hr {
+  border: none;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.popper p {
   margin-top: 0;
 }
+
 .popper p:last-of-type {
   margin-bottom: 0;
 }
