@@ -73,21 +73,20 @@
 }
 
 .timeline-track .track-name {
-    color: white;
-    margin-top: 5px;
-    margin-left: 10vw;
-    width: 80vw;
-    font-size: 10pt;
-    text-transform: capitalize;
-    border-bottom: solid 1px rgba(255,255,255,0.5);
-    /* background-color: rgba(255,255,255,0.1); */
-    padding-bottom: 3px;
-    padding-left: 7px;
-    font-weight: 600;
+  color: white;
+  margin-top: 5px;
+  margin-left: 10vw;
+  width: 80vw;
+  font-size: 10pt;
+  text-transform: capitalize;
+  border-bottom: solid 1px rgba(255, 255, 255, 0.5);
+  padding-bottom: 3px;
+  padding-left: 7px;
+  font-weight: 600;
 }
 
-
-.timeline-track-container{
+.timeline-track-container {
+  user-select: none;
   position: absolute;
   top: 136px;
   z-index: 10;
@@ -106,32 +105,39 @@
   padding-left: 6px;
 }
 
-.timeline-object.suggestion {
-  background-color: none;
+.timeline-suggestion {
+  position: absolute;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 2px;
   border: dashed 2px white;
+  pointer-events: none;
+  top: 30px;
+  min-height: 25px;
+  padding-left: 6px;
 }
 
 .timeline-object.active {
   cursor: -webkit-grabbing;
 }
 
-.timeline-object:after {
+.timeline-object::after {
   content: "";
   width: 20px;
   right: 0;
-  top:0;
+  top: 0;
   position: absolute;
   height: 100%;
   cursor: ew-resize;
 }
 
-.timeline-object:before {
+.timeline-object::before {
   content: "";
   cursor: ew-resize;
   height: 100%;
   left: 0;
   position: absolute;
-  top:0;
+  top: 0;
   width: 20px;
 }
 
@@ -139,7 +145,7 @@
   font-size: 10pt;
   font-weight: 600;
   margin-top: 0.1em;
-  margin-bottom: 0px;
+  margin-bottom: 0;
   text-transform: capitalize;
   pointer-events: none;
 }

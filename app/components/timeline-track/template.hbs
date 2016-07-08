@@ -23,3 +23,15 @@
     onNoDragClick=(action 'onNoDragClick')
   }}
 {{/each}}
+
+{{#each this.project.suggestions as |suggestion|}}
+  {{
+    timeline-suggestion
+    name=suggestion.name
+    id=suggestion.id
+    scenarioId=suggestion.scenario
+    start=suggestion.start_date
+    end=suggestion.end_date
+    timelineGridObjects=this.timelineGridObjects
+  }}
+{{/each}}

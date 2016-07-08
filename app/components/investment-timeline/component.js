@@ -337,7 +337,6 @@ export default Ember.Component.extend({
     getSuggestion: function(timelineObject){
       let phaseId = timelineObject.id;
       Ember.$.getJSON(`api/optimize-phase/${phaseId}/`).then( (suggestedPhase) => {
-        console.log(suggestedPhase);
         suggestedPhase.investment_cost = 0
         suggestedPhase.service_cost = 0
         suggestedPhase.capitalization = 0
@@ -347,9 +346,11 @@ export default Ember.Component.extend({
         var project = _.find(this.get('projects'), ['id', suggestedPhase.project])
         suggestedPhase.id = suggestedPhase.id * -1
         var originalLength = project.phases.length
-
-        project.phases.push(suggestedPhase)
-        project.phases.arrayContentDidChange(originalLength, 1, 0)
+        if(!project.suggestions){
+          Ember.set(project,'suggestions',[])
+        }
+        project.suggestions.push(suggestedPhase)
+        project.suggestions.arrayContentDidChange(originalLength, 1, 0)
       });
     },
     onTimelineObjectInteractionEnd: function (context) {
