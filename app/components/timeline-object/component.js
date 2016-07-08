@@ -255,7 +255,8 @@ export default Ember.Component.extend({
   },
   contextMenu(e) {
     e.preventDefault()
-    this.set('showContextMenu', true)
+    let toggleContexMenu = this.get('showContextMenu') ? false : true;
+    this.set('showContextMenu', toggleContexMenu)
 
     // console.log('..............')
     // console.log('this', this)
