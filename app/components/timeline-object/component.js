@@ -257,11 +257,6 @@ export default Ember.Component.extend({
     e.preventDefault()
     let toggleContexMenu = this.get('showContextMenu') ? false : true;
     this.set('showContextMenu', toggleContexMenu)
-
-    // console.log('..............')
-    // console.log('this', this)
-    // console.log('e', e)
-
     this.sendAction('onContextMenu', this)
   },
   snapToGrid: function(){
