@@ -332,37 +332,25 @@ export default Ember.Component.extend({
     },
 
     onContextMenuAction: function(timelineObject, action){
-      // console.log('onContextMenuAction',action,timelineObject);
       this.send(action, timelineObject)
     },
     getSuggestion: function(timelineObject){
+      let phaseId = timelineObject.id;
+      Ember.$.getJSON(`api/optimize-phase/${phaseId}/`).then( (suggestedPhase) => {
+        console.log(suggestedPhase);
+        suggestedPhase.investment_cost = 0
+        suggestedPhase.service_cost = 0
+        suggestedPhase.capitalization = 0
+        suggestedPhase.isSuggestion = true
+        convertTime.convertTimesInObject(suggestedPhase)
 
-      // console.log('getSuggestion',timelineObject);
-      var suggestedPhase = {
-        "id": 1,
-        "name": "asfd",
-        "description": "description",
-        "project": 1,
-        "scenario": 2,
-        "investment_cost": 60000000,
-        "service_cost": 80000000,
-        "start_date": "2018-04-01",
-        "end_date": "2018-09-30",
-        "is_active": true,
-        "capitalization": 0.0
-      }
-      suggestedPhase.investment_cost = 0
-      suggestedPhase.service_cost = 0
-      suggestedPhase.capitalization = 0
-      suggestedPhase.isSuggestion = true
-      convertTime.convertTimesInObject(suggestedPhase)
+        var project = _.find(this.get('projects'), ['id', suggestedPhase.project])
+        suggestedPhase.id = suggestedPhase.id * -1
+        var originalLength = project.phases.length
 
-      var project = _.find(this.get('projects'), ['id', suggestedPhase.id])
-      suggestedPhase.id = suggestedPhase.id * -1
-      var originalLength = project.phases.length
-
-      project.phases.push(suggestedPhase)
-      project.phases.arrayContentDidChange(originalLength, 1, 0)
+        project.phases.push(suggestedPhase)
+        project.phases.arrayContentDidChange(originalLength, 1, 0)
+      });
     },
     onTimelineObjectInteractionEnd: function (context) {
       var requests = this.persistDatesToBackend({
