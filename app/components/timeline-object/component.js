@@ -50,7 +50,7 @@ export default Ember.Component.extend({
     }
   },
   addPopper(content){
-    if(!content){
+    if(!content || this.get('showContextMenu')){
       return
     }
 
