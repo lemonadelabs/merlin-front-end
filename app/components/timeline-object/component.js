@@ -240,7 +240,7 @@ export default Ember.Component.extend({
     var oldEnd = this.get('end')
 
     if (_.isEqual(oldStart, timeFromPosition.startTime) && _.isEqual(oldEnd , timeFromPosition.endTime) ) {
-      this.triggureOnNoDragClick()
+      this.triggerOnNoDragClick()
     }
     this.set('start',timeFromPosition.startTime);
     this.set('end',timeFromPosition.endTime);
@@ -250,7 +250,7 @@ export default Ember.Component.extend({
     this.removeCancelEventListener();
 
   },
-  triggureOnNoDragClick: function () {
+  triggerOnNoDragClick: function () {
     this.sendAction('onNoDragClick', this)
   },
   contextMenu(e) {
