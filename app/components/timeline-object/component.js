@@ -417,7 +417,7 @@ export default Ember.Component.extend({
   },
   actions:{
     handleContextMenuAction: function(actionName){
-      console.log("blah blah");
+      this.set('showContextMenu', false)
       if(actionName){
         this.sendAction('onContextMenuAction',actionName,this)
       }
