@@ -9,6 +9,7 @@ import * as scenarioInteractions from '../../common/scenario-interactions'
 import * as simTraverse from '../../common/simulation-traversal'
 import * as projectsTraversal from '../../common/projects-traversal'
 import * as merlinUtils from '../../common/merlin-utils'
+import * as convertTime from '../../common/convert-time'
 import toTwoDP from '../../common/toTwoDP';
 import commaSeperateNumber from '../../common/commaSeperateNumber';
 
@@ -317,15 +318,13 @@ export default Ember.Component.extend({
   },
 
   persistDatesToBackend: function (opts) {
-    var callback = function () {
-      this.processTelemetryData()
+    if (opts.id > 0) { // do nothing for phases that are a suggestion.
+      var callback = function () {
+        this.processTelemetryData()
+      }
+      scenarioInteractions.updatePhaseTimes( opts, callback.bind(this) )
     }
-    scenarioInteractions.updatePhaseTimes( opts, callback.bind(this) )
-
   },
-
-
-
 
   actions:{
     onContextMenu: function () {
@@ -333,11 +332,37 @@ export default Ember.Component.extend({
     },
 
     onContextMenuAction: function(timelineObject, action){
-      console.log('onContextMenuAction',action,timelineObject);
+      // console.log('onContextMenuAction',action,timelineObject);
       this.send(action, timelineObject)
     },
     getSuggestion: function(timelineObject){
-      console.log('getSuggestion',timelineObject);
+
+      // console.log('getSuggestion',timelineObject);
+      var suggestedPhase = {
+        "id": 1,
+        "name": "asfd",
+        "description": "description",
+        "project": 1,
+        "scenario": 2,
+        "investment_cost": 60000000,
+        "service_cost": 80000000,
+        "start_date": "2018-04-01",
+        "end_date": "2018-09-30",
+        "is_active": true,
+        "capitalization": 0.0
+      }
+      suggestedPhase.investment_cost = 0
+      suggestedPhase.service_cost = 0
+      suggestedPhase.capitalization = 0
+      suggestedPhase.isSuggestion = true
+      convertTime.convertTimesInObject(suggestedPhase)
+
+      var project = _.find(this.get('projects'), ['id', suggestedPhase.id])
+      suggestedPhase.id = suggestedPhase.id * -1
+      var originalLength = project.phases.length
+
+      project.phases.push(suggestedPhase)
+      project.phases.arrayContentDidChange(originalLength, 1, 0)
     },
     onTimelineObjectInteractionEnd: function (context) {
       var requests = this.persistDatesToBackend({

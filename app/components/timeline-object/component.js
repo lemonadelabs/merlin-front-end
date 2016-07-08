@@ -5,7 +5,7 @@ import simTraversal from '../../common/simulation-traversal';
 export default Ember.Component.extend({
   active:false,
   classNames: ['timeline-object'],
-  classNameBindings:['active'],
+  classNameBindings:['active','suggestion'],
   attributeBindings: ['style'],
   x:undefined,
   width:undefined,
@@ -145,7 +145,7 @@ export default Ember.Component.extend({
     var resourcesMessages = []
     var impactsMessages = []
     var events = scenario.events
-    var entityId = events[0].actions[0].operand_1.params[0]
+    var entityId = (events[0].actions[0] || events[1].actions[0]).operand_1.params[0]
     var entity = _.find(self.get('simulation.entities'), ['id', entityId])
 
     _.forEach(events, function (event) {
