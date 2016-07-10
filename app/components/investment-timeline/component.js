@@ -288,7 +288,7 @@ export default Ember.Component.extend({
     _.forEach(parentEntity.children, function (childUrl) {
       var childId = simTraverse.getIdFromUrl(childUrl)
       var serviceModel = _.find(simulation.entities, function (entity) {
-        /*jshint eqeqeq: true */
+        /*jshint eqeqeq: false */
         return  entity.id == childId
       })
       serviceModels.push(serviceModel)
@@ -343,6 +343,8 @@ export default Ember.Component.extend({
         suggestedPhase.isSuggestion = true
         convertTime.convertTimesInObject(suggestedPhase)
 
+        //Kludge to fix time being off
+        suggestedPhase.end_date.value -= 1;
         var project = _.find(this.get('projects'), ['id', suggestedPhase.project])
         suggestedPhase.id = suggestedPhase.id * -1
         var originalLength = project.phases.length
