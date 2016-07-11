@@ -343,9 +343,6 @@ export default Ember.Component.extend({
         suggestedPhase.isSuggestion = true
         convertTime.convertTimesInObject(suggestedPhase)
 
-        //Kludge to fix time being off
-        suggestedPhase.end_date.value -= 1;
-
         var project = _.find(this.get('projects'), ['id', suggestedPhase.project])
         suggestedPhase.id = suggestedPhase.id * -1
         var originalLength = project.phases.length
