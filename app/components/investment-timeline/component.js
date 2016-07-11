@@ -345,12 +345,14 @@ export default Ember.Component.extend({
 
         //Kludge to fix time being off
         suggestedPhase.end_date.value -= 1;
+
         var project = _.find(this.get('projects'), ['id', suggestedPhase.project])
         suggestedPhase.id = suggestedPhase.id * -1
         var originalLength = project.phases.length
         if(!project.suggestions){
           Ember.set(project,'suggestions',[])
         }
+
         project.suggestions.push(suggestedPhase)
         project.suggestions.arrayContentDidChange(originalLength, 1, 0)
       });
