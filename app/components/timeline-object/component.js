@@ -5,13 +5,16 @@ import simTraversal from '../../common/simulation-traversal';
 export default Ember.Component.extend({
   active:false,
   classNames: ['timeline-object'],
-  classNameBindings:['active'],
+  classNameBindings:['active','suggestion'],
   attributeBindings: ['style'],
   x:undefined,
   width:undefined,
   boundFinishManipulationFunc:undefined,
   boundResizeFunc:undefined,
   trackOffset:0,
+  showContextMenu: false,
+  hasSuggestion:false,
+  contextMenuOptions: [{label:'suggest',actionName:"getSuggestion"}],
   style:Ember.computed('x','width','active', function(){
     var x = this.get('x');
     var width = this.get('width');
@@ -48,7 +51,7 @@ export default Ember.Component.extend({
     }
   },
   addPopper(content){
-    if(!content){
+    if(!content || this.get('showContextMenu')){
       return
     }
 
@@ -84,6 +87,10 @@ export default Ember.Component.extend({
     this.findAndSetTrackOffset();
   },
   mouseDown(e){
+    console.log(e);
+    if(e.target.className === ("timeline-object-context-menu-item")){
+      return;
+    }
     this.handleInputStart(e);
     this.removePopper();
   },
@@ -139,7 +146,7 @@ export default Ember.Component.extend({
     var resourcesMessages = []
     var impactsMessages = []
     var events = scenario.events
-    var entityId = events[0].actions[0].operand_1.params[0]
+    var entityId = (events[0].actions[0] || events[1].actions[0]).operand_1.params[0]
     var entity = _.find(self.get('simulation.entities'), ['id', entityId])
 
     _.forEach(events, function (event) {
@@ -234,7 +241,11 @@ export default Ember.Component.extend({
     var oldEnd = this.get('end')
 
     if (_.isEqual(oldStart, timeFromPosition.startTime) && _.isEqual(oldEnd , timeFromPosition.endTime) ) {
-      this.triggureOnNoDragClick()
+      this.triggerOnNoDragClick()
+    }
+
+    if(this.get('hasSuggestion')){
+      this.triggerHideSuggestion()
     }
     this.set('start',timeFromPosition.startTime);
     this.set('end',timeFromPosition.endTime);
@@ -244,15 +255,16 @@ export default Ember.Component.extend({
     this.removeCancelEventListener();
 
   },
-  triggureOnNoDragClick: function () {
+  triggerOnNoDragClick: function () {
     this.sendAction('onNoDragClick', this)
+  },
+  triggerHideSuggestion: function () {
+    this.sendAction('hideSuggestion', this)
   },
   contextMenu(e) {
     e.preventDefault()
-    // console.log('..............')
-    // console.log('this', this)
-    // console.log('e', e)
-
+    let toggleContexMenu = this.get('showContextMenu') ? false : true;
+    this.set('showContextMenu', toggleContexMenu)
     this.sendAction('onContextMenu', this)
   },
   snapToGrid: function(){
@@ -406,5 +418,16 @@ export default Ember.Component.extend({
   }.observes('timelineGridObjects'),
   between: function(x, min, max) {
     return x >= min && x <= max;
+  },
+  actions:{
+    handleContextMenuAction: function(actionName){
+      this.set('showContextMenu', false)
+      if(actionName==="getSuggestion"){
+        this.set("hasSuggestion", true);
+      }
+      if(actionName){
+        this.sendAction('onContextMenuAction',actionName,this)
+      }
+    }
   }
 });

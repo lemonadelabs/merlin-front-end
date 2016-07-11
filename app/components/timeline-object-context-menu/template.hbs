@@ -1,0 +1,5 @@
+<ul class="timeline-object-context-menu-item-list">
+  {{#each this.options as |option|}}
+    <li class="timeline-object-context-menu-item" {{action 'passActionName' option.actionName}}>{{option.label}}</li>
+  {{/each}}
+</ul>

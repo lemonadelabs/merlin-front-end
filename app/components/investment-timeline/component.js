@@ -9,6 +9,7 @@ import * as scenarioInteractions from '../../common/scenario-interactions'
 import * as simTraverse from '../../common/simulation-traversal'
 import * as projectsTraversal from '../../common/projects-traversal'
 import * as merlinUtils from '../../common/merlin-utils'
+import * as convertTime from '../../common/convert-time'
 import toTwoDP from '../../common/toTwoDP';
 import commaSeperateNumber from '../../common/commaSeperateNumber';
 
@@ -287,7 +288,7 @@ export default Ember.Component.extend({
     _.forEach(parentEntity.children, function (childUrl) {
       var childId = simTraverse.getIdFromUrl(childUrl)
       var serviceModel = _.find(simulation.entities, function (entity) {
-        /*jshint eqeqeq: true */
+        /*jshint eqeqeq: false */
         return  entity.id == childId
       })
       serviceModels.push(serviceModel)
@@ -317,22 +318,42 @@ export default Ember.Component.extend({
   },
 
   persistDatesToBackend: function (opts) {
-    var callback = function () {
-      this.processTelemetryData()
+    if (opts.id > 0) { // do nothing for phases that are a suggestion.
+      var callback = function () {
+        this.processTelemetryData()
+      }
+      scenarioInteractions.updatePhaseTimes( opts, callback.bind(this) )
     }
-    scenarioInteractions.updatePhaseTimes( opts, callback.bind(this) )
-
   },
-
-
-
 
   actions:{
     onContextMenu: function () {
       // console.log('onContextMenu action')
     },
 
+    onContextMenuAction: function(timelineObject, action){
+      this.send(action, timelineObject)
+    },
+    getSuggestion: function(timelineObject){
+      let phaseId = timelineObject.id;
+      Ember.$.getJSON(`api/optimize-phase/${phaseId}/`).then( (suggestedPhase) => {
+        suggestedPhase.investment_cost = 0
+        suggestedPhase.service_cost = 0
+        suggestedPhase.capitalization = 0
+        suggestedPhase.isSuggestion = true
+        convertTime.convertTimesInObject(suggestedPhase)
 
+        var project = _.find(this.get('projects'), ['id', suggestedPhase.project])
+        suggestedPhase.id = suggestedPhase.id * -1
+        var originalLength = project.phases.length
+        if(!project.suggestions){
+          Ember.set(project,'suggestions',[])
+        }
+
+        project.suggestions.push(suggestedPhase)
+        project.suggestions.arrayContentDidChange(originalLength, 1, 0)
+      });
+    },
     onTimelineObjectInteractionEnd: function (context) {
       var requests = this.persistDatesToBackend({
         // jshint unused:false

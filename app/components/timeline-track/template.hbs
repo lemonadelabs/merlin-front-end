@@ -12,11 +12,28 @@
     end=phase.end_date
     timelineGridObjects=this.timelineGridObjects
     onInteractionEnd=this.onInteractionEnd
+    suggestion=phase.isSuggestion
+
 
     simulation=this.simulation
     scenarios=this.scenarios
 
     onContextMenu=(action 'onContextMenu')
+    onContextMenuAction=(action 'onContextMenuAction')
     onNoDragClick=(action 'onNoDragClick')
+    hideSuggestion=(action 'hideSuggestion')
+  }}
+{{/each}}
+
+{{#each this.project.suggestions as |suggestion|}}
+  {{
+    timeline-suggestion
+    name=suggestion.name
+    id=suggestion.id
+    scenarioId=suggestion.scenario
+    start=suggestion.start_date
+    end=suggestion.end_date
+    fadeOut = suggestion.fadeOut
+    timelineGridObjects=this.timelineGridObjects
   }}
 {{/each}}

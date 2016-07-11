@@ -1,4 +1,11 @@
+{{#if this.showContextMenu}}
+  {{timeline-object-context-menu options=contextMenuOptions handleContextMenuAction=(action "handleContextMenuAction")}}
+{{/if}}
+
+
+
 <p class="object-name">{{name}}</p>
+
 {{!-- {{#if this.capex}}
   <p class='object-info'>Capex ${{this.capex}}</p>
 {{/if}}

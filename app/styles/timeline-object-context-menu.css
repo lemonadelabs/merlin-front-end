@@ -1,0 +1,39 @@
+.timeline-object-context-menu {
+  position: absolute;
+  top: -35px;
+  left: 0;
+  width: 100%;
+  display: inline-flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.timeline-object-context-menu ul {
+  position: relative;
+  width: max-content;
+  background-color: rgba(33, 25, 40, 0.9);
+  border-radius: 50px;
+  padding: 5px 10px;
+  margin: 0;
+  filter: drop-shadow(-1px -1px 0 rgb(125, 120, 130)) drop-shadow(1px -1px 0 rgb(125, 120, 130)) drop-shadow(-1px 1px 0 rgb(125, 120, 130)) drop-shadow(1px 1px 0 rgb(125, 120, 130));
+}
+
+.timeline-object-context-menu ul::after {
+  content: "▾";
+  position: absolute;
+  color: rgba(33, 25, 40, 0.9);
+  font-size: 22px;
+  top: 10px;
+  left: 50%;
+  margin-left: -10px;
+}
+
+.timeline-object-context-menu ul li {
+  pointer-events: all;
+  list-style: none;
+  text-transform: capitalize;
+  line-height: 1em;
+  font-size: 9.5pt;
+  font-weight: bold;
+  margin: 3px;
+}
