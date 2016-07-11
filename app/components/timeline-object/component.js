@@ -13,6 +13,7 @@ export default Ember.Component.extend({
   boundResizeFunc:undefined,
   trackOffset:0,
   showContextMenu: false,
+  hasSuggestion:false,
   contextMenuOptions: [{label:'suggest',actionName:"getSuggestion"}],
   style:Ember.computed('x','width','active', function(){
     var x = this.get('x');
@@ -242,6 +243,10 @@ export default Ember.Component.extend({
     if (_.isEqual(oldStart, timeFromPosition.startTime) && _.isEqual(oldEnd , timeFromPosition.endTime) ) {
       this.triggerOnNoDragClick()
     }
+
+    if(this.get('hasSuggestion')){
+      this.triggerHideSuggestion()
+    }
     this.set('start',timeFromPosition.startTime);
     this.set('end',timeFromPosition.endTime);
     if(interActEndFunc){
@@ -252,6 +257,9 @@ export default Ember.Component.extend({
   },
   triggerOnNoDragClick: function () {
     this.sendAction('onNoDragClick', this)
+  },
+  triggerHideSuggestion: function () {
+    this.sendAction('hideSuggestion', this)
   },
   contextMenu(e) {
     e.preventDefault()
@@ -414,6 +422,9 @@ export default Ember.Component.extend({
   actions:{
     handleContextMenuAction: function(actionName){
       this.set('showContextMenu', false)
+      if(actionName==="getSuggestion"){
+        this.set("hasSuggestion", true);
+      }
       if(actionName){
         this.sendAction('onContextMenuAction',actionName,this)
       }

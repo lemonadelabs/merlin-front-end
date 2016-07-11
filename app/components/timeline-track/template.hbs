@@ -21,6 +21,7 @@
     onContextMenu=(action 'onContextMenu')
     onContextMenuAction=(action 'onContextMenuAction')
     onNoDragClick=(action 'onNoDragClick')
+    hideSuggestion=(action 'hideSuggestion')
   }}
 {{/each}}
 
@@ -32,6 +33,7 @@
     scenarioId=suggestion.scenario
     start=suggestion.start_date
     end=suggestion.end_date
+    fadeOut = suggestion.fadeOut
     timelineGridObjects=this.timelineGridObjects
   }}
 {{/each}}

@@ -20,6 +20,12 @@ export default Ember.Component.extend({
       if(actionName){
         this.sendAction(actionName, timelineObject)
       }
+    },
+    hideSuggestion(timelineObject){
+      let suggestions = this.get('project.suggestions');
+      let suggestionIndex = _.findIndex(suggestions,['id', timelineObject.id * -1])
+      suggestions.splice(suggestionIndex, 1);
+      suggestions.arrayContentDidChange(suggestionIndex, 1, 0)
     }
   }
 });
