@@ -155,3 +155,11 @@
   margin-top: 0;
   margin-bottom: 0;
 }
+
+.suggestion-text {
+  white-space: nowrap;
+  max-width: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: inline-block;
+}
