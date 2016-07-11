@@ -148,18 +148,15 @@
   margin-bottom: 0;
   text-transform: capitalize;
   pointer-events: none;
+  white-space: nowrap;
+  max-width: 95%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: inline-block;
 }
 
 .object-info {
   font-size: 9.5pt;
   margin-top: 0;
   margin-bottom: 0;
-}
-
-.suggestion-text {
-  white-space: nowrap;
-  max-width: 100%;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  display: inline-block;
 }
