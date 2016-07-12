@@ -88,7 +88,7 @@ export default Ember.Component.extend({
   },
   mouseDown(e){
     console.log(e);
-    if(e.target.className === ("timeline-object-context-menu-item")){
+    if(e.target.className === "timeline-object-context-menu-item"){
       return;
     }
     this.handleInputStart(e);
