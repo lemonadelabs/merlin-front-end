@@ -146,18 +146,16 @@ export default Ember.Component.extend({
     var resourcesMessages = []
     var impactsMessages = []
     var events = scenario.events
-
-    if((events[0].actions || events[1].actions).length > 0){
-      var entityId = (events[0].actions[0] || events[1].actions[0]).operand_1.params[0]
-      var entity = _.find(self.get('simulation.entities'), ['id', entityId])
-      var processProperties = simTraversal.getProcessPropertiesFromEntity({ entity : entity })
-    }
+    var entities = {}
+    var processProperties = []
 
     _.forEach(events, function (event) {
       var time = Number(event.time)
       resourceInfo[ time ] = {}
       _.forEach(event.actions, function (action) {
-
+        var entityId = action.operand_1.params[0];
+        var entity = _.find(self.get('simulation.entities'), ['id', entityId]);
+        entities[entityId] = entity
         var propertyId = action.operand_2.params[0]
         var amount = action.operand_2.params[1]
 
@@ -166,6 +164,9 @@ export default Ember.Component.extend({
       })
     })
 
+    _.forEach(entities,function(value){
+      processProperties.push.apply( processProperties, simTraversal.getProcessPropertiesFromEntity({ entity : value }) )
+    })
     var eventKeys = Object.keys(resourceInfo).sort(compareNumbers)
     function compareNumbers(a, b) { return a - b }
 
