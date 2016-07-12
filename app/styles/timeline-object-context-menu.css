@@ -6,9 +6,11 @@
   display: inline-flex;
   justify-content: center;
   pointer-events: none;
+  min-height: 30px;
 }
 
 .timeline-object-context-menu ul {
+  animation: 350ms "fade-in";
   position: relative;
   width: max-content;
   background-color: rgba(33, 25, 40, 0.9);
