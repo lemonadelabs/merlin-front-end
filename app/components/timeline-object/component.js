@@ -237,7 +237,6 @@ export default Ember.Component.extend({
     if(popper){
       let popperElement = popper._popper
       popperElement.style.animationName = "fade-out";
-      console.log(popperElement.style)
       Ember.run.later(popper, popper.destroy, 300)
     }
   },
