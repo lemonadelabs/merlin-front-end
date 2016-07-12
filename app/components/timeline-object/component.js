@@ -130,7 +130,8 @@ export default Ember.Component.extend({
   },
   mouseEnter(){
     if (!this.get('active')) {
-      this.addPopper(this.createPopperTemplate());
+      let addPopperTimer = Ember.run.later(this, this.addPopper, this.createPopperTemplate(), 150);
+      this.set('addPopperTimer',addPopperTimer);
       // console.log(this);
     }
   },
@@ -230,7 +231,12 @@ export default Ember.Component.extend({
     this.finishManipulation();
   },
   mouseLeave(){
+    this.removeAddPopperTimer();
     this.removePopper();
+  },
+  removeAddPopperTimer(){
+    let addPopperTimer = this.get('addPopperTimer');
+    Ember.run.cancel(addPopperTimer);
   },
   removePopper(){
     var popper = this.get('popper')
