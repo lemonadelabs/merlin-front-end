@@ -44,6 +44,11 @@
 
 }
 
+.suggestion-text{
+  position: relative;
+  top: -2px;
+}
+
 .timeline-year-container {
   display: flex;
   width: 80vw;
@@ -67,9 +72,9 @@
 }
 
 .timeline-track {
-    width: 100%;
-    position: relative;
-    height: 55px;
+  width: 100%;
+  position: relative;
+  height: 55px;
 }
 
 .timeline-track .track-name {
@@ -98,7 +103,7 @@
   color: white;
   cursor: move;
   cursor: -webkit-grab;
-  min-height: 25px;
+  height: 25px;
   position: absolute;
   top: 30px;
   user-select: none;
@@ -113,8 +118,9 @@
   border: dashed 2px rgba(255, 255, 255, 0.5);
   pointer-events: none;
   top: 30px;
-  min-height: 25px;
+  height: 25px;
   padding-left: 6px;
+  padding-top: 0;
 }
 
 .timeline-object.active {
@@ -141,6 +147,94 @@
   width: 20px;
 }
 
+.timeline-object-popper {
+  background-color: rgb(33, 25, 40);
+  position: absolute;
+  color: white;
+  min-width: 150px;
+  max-width: 350px;
+  border-radius: 3px;
+  padding: 15px;
+  text-align: left;
+  font-size: 10pt;
+  z-index: 400;
+}
+
+.timeline-object-popper hr {
+  border: none;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.timeline-object-popper h4 {
+  margin: 0;
+}
+
+.timeline-object-popper p {
+  margin: 0;
+  line-height: 21px;
+}
+
+.timeline-object-popper .popper__arrow {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  position: absolute;
+  margin: 5px;
+}
+
+.timeline-object-popper[x-placement^="top"] {
+  margin-bottom: 8px;
+}
+
+.timeline-object-popper[x-placement^="top"] .popper__arrow {
+  border-width: 5px 5px 0;
+  border-color: rgb(33, 25, 40) transparent transparent transparent;
+  bottom: -5px;
+  left: calc(50% - 5px);
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.timeline-object-popper[x-placement^="bottom"] {
+  margin-top: 8px;
+}
+
+.timeline-object-popper[x-placement^="bottom"] .popper__arrow {
+  border-width: 0 5px 5px;
+  border-color: transparent transparent rgb(33, 25, 40) transparent;
+  top: -5px;
+  left: calc(50% - 5px);
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.timeline-object-popper[x-placement^="right"] {
+  margin-left: 8px;
+}
+
+.timeline-object-popper[x-placement^="right"] .popper__arrow {
+  border-width: 5px 5px 5px 0;
+  border-color: transparent rgb(33, 25, 40) transparent transparent;
+  left: -5px;
+  top: calc(50% - 5px);
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.timeline-object-popper[x-placement^="left"] {
+  margin-right: 8px;
+}
+
+.timeline-object-popper[x-placement^="left"] .popper__arrow {
+  border-width: 5px 0 5px 5px;
+  border-color: transparent transparent transparent rgb(33, 25, 40);
+  right: -5px;
+  top: calc(50% - 5px);
+  margin-left: 0;
+  margin-right: 0;
+}
+
 .object-name {
   font-size: 10pt;
   font-weight: 600;
@@ -150,6 +244,7 @@
   pointer-events: none;
   white-space: nowrap;
   max-width: 95%;
+  line-height: 100%;
   text-overflow: ellipsis;
   overflow: hidden;
   display: inline-block;

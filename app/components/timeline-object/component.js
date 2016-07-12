@@ -60,7 +60,8 @@ export default Ember.Component.extend({
         reference,
         {
             content: content,
-            contentType: 'html'
+            contentType: 'html',
+            classNames:['timeline-object-popper']
         },
         {
              placement: 'top',
