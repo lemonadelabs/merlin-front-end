@@ -60,7 +60,8 @@ export default Ember.Component.extend({
         reference,
         {
             content: content,
-            contentType: 'html'
+            contentType: 'html',
+            classNames:['timeline-object-popper']
         },
         {
              placement: 'top',
@@ -88,7 +89,7 @@ export default Ember.Component.extend({
   },
   mouseDown(e){
     console.log(e);
-    if(e.target.className === ("timeline-object-context-menu-item")){
+    if(e.target.className === "timeline-object-context-menu-item"){
       return;
     }
     this.handleInputStart(e);
@@ -146,14 +147,16 @@ export default Ember.Component.extend({
     var resourcesMessages = []
     var impactsMessages = []
     var events = scenario.events
-    var entityId = (events[0].actions[0] || events[1].actions[0]).operand_1.params[0]
-    var entity = _.find(self.get('simulation.entities'), ['id', entityId])
+    var entities = {}
+    var processProperties = []
 
     _.forEach(events, function (event) {
       var time = Number(event.time)
       resourceInfo[ time ] = {}
       _.forEach(event.actions, function (action) {
-
+        var entityId = action.operand_1.params[0];
+        var entity = _.find(self.get('simulation.entities'), ['id', entityId]);
+        entities[entityId] = entity
         var propertyId = action.operand_2.params[0]
         var amount = action.operand_2.params[1]
 
@@ -162,6 +165,9 @@ export default Ember.Component.extend({
       })
     })
 
+    _.forEach(entities,function(value){
+      processProperties.push( ...simTraversal.getProcessPropertiesFromEntity({ entity : value }) )
+    })
     var eventKeys = Object.keys(resourceInfo).sort(compareNumbers)
     function compareNumbers(a, b) { return a - b }
 
@@ -182,8 +188,6 @@ export default Ember.Component.extend({
       if (array.length === 0) { delete event2Data[id] }
     })
 
-    var processProperties = simTraversal.getProcessPropertiesFromEntity({ entity : entity })
-
     _.forEach(event1Data, function (values, propertyId) {
       resourcesMessages.push( createMessage( values, propertyId ) )
     })
@@ -194,23 +198,24 @@ export default Ember.Component.extend({
 
     function createMessage(values, propertyId) {
       var processProperty = _.find(processProperties, ['id', Number(propertyId)])
+      var processPropertyName = processProperty ? processProperty.name : ""
       var value = values[0]
       var message = ''
       if (value > 0) { message +=  '+' }
-      message += `${value} ${processProperty.name}`
+      message += `${value} ${processPropertyName || ""}`
       return message
     }
 
     let template = `<h4>${name}</h4><hr/>`
     + `<p><b>Captial Input:</b> $${capex}</p>`
-    + `Opex Contribution:</b> $${opex}</p>`
-    + `<p><b>Required Resources:</b></p>`
+    + `<p><b>Opex Contribution:</b> $${opex}</p>`
 
+    template+= resourcesMessages.length ? `<p><b>Required Resources:</b></p>` : ""
     _.forEach(resourcesMessages, function (message) {
       template += `<p>${message}</p>`
     })
 
-    template += `<p><b>Impacts:</b></p>`
+    template+= impactsMessages.length ? `<p><b>Impacts:</b></p>` : ""
     _.forEach(impactsMessages, function (message) {
       template += `<p>${message}</p>`
     })
