@@ -90,7 +90,6 @@ export default Ember.Component.extend({
     this.findAndSetTrackOffset();
   },
   mouseDown(e){
-    console.log(e);
     if(e.target.className === "timeline-object-context-menu-item"){
       return;
     }
