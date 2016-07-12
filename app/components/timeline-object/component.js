@@ -165,7 +165,7 @@ export default Ember.Component.extend({
     })
 
     _.forEach(entities,function(value){
-      processProperties.push.apply( processProperties, simTraversal.getProcessPropertiesFromEntity({ entity : value }) )
+      processProperties.push( ...simTraversal.getProcessPropertiesFromEntity({ entity : value }) )
     })
     var eventKeys = Object.keys(resourceInfo).sort(compareNumbers)
     function compareNumbers(a, b) { return a - b }
