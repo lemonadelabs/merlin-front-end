@@ -56,6 +56,7 @@ export default Ember.Component.extend({
     }
 
     var reference = this.get('element');
+
     var popper = new Popper(
         reference,
         {
@@ -68,6 +69,7 @@ export default Ember.Component.extend({
              removeOnDestroy: true,
         }
     );
+
     this.set('popper',popper)
   },
   findAndSetTrackOffset(){
@@ -233,7 +235,10 @@ export default Ember.Component.extend({
   removePopper(){
     var popper = this.get('popper')
     if(popper){
-      popper.destroy()
+      let popperElement = popper._popper
+      popperElement.style.animationName = "fade-out";
+      console.log(popperElement.style)
+      Ember.run.later(popper, popper.destroy, 300)
     }
   },
   finishManipulation: function(){

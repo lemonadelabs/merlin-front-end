@@ -148,6 +148,7 @@
 }
 
 .timeline-object-popper {
+  animation: 500ms "fade-in";
   background-color: rgb(33, 25, 40);
   position: absolute;
   color: white;
