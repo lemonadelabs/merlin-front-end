@@ -56,6 +56,7 @@ export default Ember.Component.extend({
     }
 
     var reference = this.get('element');
+
     var popper = new Popper(
         reference,
         {
@@ -68,6 +69,7 @@ export default Ember.Component.extend({
              removeOnDestroy: true,
         }
     );
+
     this.set('popper',popper)
   },
   findAndSetTrackOffset(){
@@ -88,7 +90,6 @@ export default Ember.Component.extend({
     this.findAndSetTrackOffset();
   },
   mouseDown(e){
-    console.log(e);
     if(e.target.className === "timeline-object-context-menu-item"){
       return;
     }
@@ -128,7 +129,8 @@ export default Ember.Component.extend({
   },
   mouseEnter(){
     if (!this.get('active')) {
-      this.addPopper(this.createPopperTemplate());
+      let addPopperTimer = Ember.run.later(this, this.addPopper, this.createPopperTemplate(), 150);
+      this.set('addPopperTimer',addPopperTimer);
       // console.log(this);
     }
   },
@@ -228,12 +230,19 @@ export default Ember.Component.extend({
     this.finishManipulation();
   },
   mouseLeave(){
+    this.removeAddPopperTimer();
     this.removePopper();
+  },
+  removeAddPopperTimer(){
+    let addPopperTimer = this.get('addPopperTimer');
+    Ember.run.cancel(addPopperTimer);
   },
   removePopper(){
     var popper = this.get('popper')
     if(popper){
-      popper.destroy()
+      let popperElement = popper._popper
+      popperElement.style.animationName = "fade-out";
+      Ember.run.later(popper, popper.destroy, 300)
     }
   },
   finishManipulation: function(){
