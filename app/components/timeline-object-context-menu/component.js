@@ -13,5 +13,17 @@ export default Ember.Component.extend({
     if(this.get('showContextMenu')){
       this.set('showMenu',true);
     }
-  }.observes('showContextMenu')
+    else{
+      this.hideMenu();
+    }
+  }.observes('showContextMenu'),
+  hideMenu(){
+    let element = this.get('element');
+    let menuElement = element.getElementsByClassName('timeline-object-context-menu-item-list')[0]
+    menuElement.style.animationName = "fade-out";
+    Ember.run.later(this, this.setShowMenuToFalse, 250);
+  },
+  setShowMenuToFalse(){
+    this.set('showMenu', false)
+  }
 });
