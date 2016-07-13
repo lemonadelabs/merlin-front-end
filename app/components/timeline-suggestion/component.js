@@ -27,8 +27,17 @@ export default Ember.Component.extend({
     Ember.run.debounce(this, this.setPositionFromGrid, 100);
     this.findAndSetTrackOffset();
   },
-  willDestroy(){
+  willDestroyElement: function() {
+    var clone = this.$().clone();
+    this.$().parent().append(clone);
+    // clone.fadeOut();
+    console.log(clone);
+    clone[0].style.animationName = "fade-out";
+    Ember.run.later(this, this.removeElement, clone[0], 300);
     window.removeEventListener('resize', this.boundResizeFunc)
+  },
+  removeElement(element){
+    element.parentNode.removeChild(element);
   },
   setPositionFromGrid: function(){
     var startPosInfo = this.searchForPositionFromTime(this.get('start'));

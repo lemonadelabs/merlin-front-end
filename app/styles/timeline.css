@@ -111,6 +111,7 @@
 }
 
 .timeline-suggestion {
+  animation: 500ms "fade-in";
   position: absolute;
   color: white;
   background-color: rgba(0, 0, 0, 0.2);
