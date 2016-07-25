@@ -10,7 +10,7 @@ import * as convertTime from './convert-time'
 * this function takes an array of projects and returns the scenario ids for those projects.
 *
 * @method getScenarioIds
-* @param {Array} array of projects
+* @param {Array} projects: array of projects
 * @return {Array} array of ids
 */
 
