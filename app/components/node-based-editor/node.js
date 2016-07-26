@@ -1,3 +1,13 @@
+/**
+* @class Node
+* @param {Object} opts
+*   @param {Object} opts.id
+*   @param {Object} opts.draw
+*   @param {Object} opts.component
+*   @param {Object} opts.nodeModel
+*   @param {Object} opts.nodeType
+*/
+
 export default function Node (opts) {
   this.id = opts.id
   this.nodeType = opts.nodeType
@@ -11,6 +21,19 @@ export default function Node (opts) {
   if (opts.nodeModel.outputs) { this.outputTerminals = this.findOutputTerminals( { outputs : opts.nodeModel.outputs} ) }
 }
 
+/**
+* finds the input terminals for a node, and packages them in an object with the terminal id as the key
+*
+* @method findInputTerminals
+* @param {Object} opts
+*   @param {Number} opts.id
+*   @param {Object} opts.draw
+*   @param {Object} opts.component
+*   @param {Object} opts.nodeModel
+*   @param {string} opts.nodeType
+
+* @return {Object} object of input terminal objects
+*/
 Node.prototype.findInputTerminals = function(opts) {
   var self = this
   var inputs = {}
@@ -39,6 +62,14 @@ Node.prototype.findInputTerminals = function(opts) {
   return inputs
 }
 
+/**
+* finds the output terminals for a node, and packages them in an object with the terminal id as the key
+*
+* @method findOutputTerminals
+* @param {Object} opts
+*   @param {Array} opts.outputs
+* @return {Object} object of output terminal objects
+*/
 Node.prototype.findOutputTerminals = function(opts) {
   var self = this
   var outputs = {}
