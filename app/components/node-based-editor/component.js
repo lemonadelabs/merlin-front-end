@@ -174,7 +174,6 @@ export default Ember.Component.extend({
         entityComponents : this.entityComponents,
         outputComponents : this.outputComponents
       })
-      // this.nodesGroup.initCables()
       // this.nodesGroup.terminalListners()
     } else {
       console.warn('the entity components haven\'t been built yet')

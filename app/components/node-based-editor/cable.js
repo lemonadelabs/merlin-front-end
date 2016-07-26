@@ -1,3 +1,14 @@
+/**
+* Instantiates a cable object
+*
+* @class Cable
+* @param {Object} opts
+*   @param {Object} opts.cableParent
+*   @param {Object} opts.outputTerminal
+*   @param {Object} opts.color
+*   @param {Object} opts.groupOffsetX
+*   @param {Object} opts.groupOffsetY
+*/
 export default function Cable (opts) {
   this.cssOffset = 2000
   this.draw = opts.cableParent
@@ -8,6 +19,18 @@ export default function Cable (opts) {
 }
 
 
+/**
+* Initializes the cable, plots the initial path
+*
+* @method Cable.prototype.init
+* @param {Object} opts
+*   @param {Object} opts.cableParent
+*   @param {Object} opts.outputTerminal
+*   @param {Object} opts.inputTerminal
+*   @param {Object} opts.color
+
+* @return {Object} svg cable
+*/
 Cable.prototype.init = function(opts) {
 
   var cableParent = opts.cableParent
@@ -40,6 +63,12 @@ Cable.prototype.init = function(opts) {
 
 };
 
+/**
+* for updating cable that is being put in by a user. It uses the mouse location for one of the points. This function has been working in the past, but is not currently implemented
+*
+* @method Cable.prototype.flyTo
+* @param {Object} opts
+*/
 Cable.prototype.flyTo = function(opts) {
   var coords = {}
 
@@ -73,6 +102,12 @@ Cable.prototype.flyTo = function(opts) {
   this.svg.plot( curveString )
 };
 
+/**
+* @method Cable.prototype.updatePosition
+* @param {Object} opts
+*   @param {Object} opts.groupOffsetX
+*   @param {Object} opts.groupOffsetY
+*/
 Cable.prototype.updatePosition = function(opts) {
   var startPositionCSS = terminalCSSPosition(this.outputTerminal.$domElement)
   var endPositionCSS = terminalCSSPosition(this.inputTerminal.$domElement)
@@ -98,6 +133,15 @@ Cable.prototype.updatePosition = function(opts) {
   this.svg.plot( curveString )
 };
 
+/**
+* figures out weather the cable needs a reverse path string, or a regular path string
+*
+* @method Cable.prototype.buildPathString
+* @param {Object} opts
+*   @param {Object} opts.start
+*   @param {Object} opts.end
+* @return {String} SVG path
+*/
 Cable.prototype.buildPathString = function (opts) {
   if (opts.start.top) {
     opts.start.x = opts.start.left
@@ -120,6 +164,15 @@ Cable.prototype.buildPathString = function (opts) {
   }
 };
 
+/**
+* builds a sring to represent a cable path where the output entity is on the right hand side of the input entity
+*
+* @method Cable.prototype.buildReversePathString
+* @param {Object} opts
+*   @param {Object} opts.start
+*   @param {Object} opts.end
+* @return {String} SVG path
+*/
 Cable.prototype.buildReversePathString = function(opts) {
 
   var start = opts.start
@@ -159,6 +212,15 @@ Cable.prototype.buildReversePathString = function(opts) {
           C ${controlPt3.x} ${controlPt3.y} ${controlPt4.x} ${controlPt4.y}  ${end.x} ${end.y}`
 };
 
+/**
+* builds a sring to represent a cable path where the output entity is on the left hand side of the input entity
+*
+* @method Cable.prototype.buildStandardPathString
+* @param {Object} opts
+*   @param {Object} opts.start
+*   @param {Object} opts.end
+* @return {String} SVG path
+*/
 Cable.prototype.buildStandardPathString = function(opts) {
   var start = opts.start
   var end = opts.end
