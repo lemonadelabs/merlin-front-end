@@ -418,34 +418,7 @@ export default Ember.Component.extend({
     })
   },
 
-  // updateSelectedEntitiesAndOutputs: function (opts) {
-  //   var removed = this.selectedEntities.length
-  //   this.selectedEntities.length = 0
-  //   this.selectedEntities.push(...opts.entities)
-  //   this.selectedEntities.arrayContentDidChange(0,this.selectedEntities.length, removed)
-
-  //   removed = this.selectedOutputs.length
-  //   this.selectedOutputs.length = 0
-  //   this.selectedOutputs.push(...this.get('outputs'))
-  //   this.selectedOutputs.arrayContentDidChange(0,this.selectedOutputs.length, removed)
-
-  //   this.nodesGroup.clearNodesAndBuildNewNodes({
-  //     entityComponents : this.entityComponents,
-  //     outputComponents : this.outputComponents
-  //   })
-  // },
-
   actions: {
-    // viewService: function (entity) {
-    //   console.log(entity)
-    //   var childEntities = simTraversal.getChildrenOfEntity({
-    //     entity : entity,
-    //     simulation : this.get('simulation')
-    //   })
-    //   this.updateSelectedEntitiesAndOutputs({
-    //     entities : childEntities
-    //   })
-    // },
     resetDefaults: function () {
       this.resetBaseline()
     }
