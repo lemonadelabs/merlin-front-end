@@ -23,6 +23,11 @@ export default Ember.Component.extend({
     this.resetNewProjectData() // if we want the form to remember data when it has been closed and reopened again, move this function into the .then of the last post reqest, and set newProjectData to the object on line 12
     this.set('currentStep', this.get('steps')[0])
   },
+  /**
+  * resets the form data for new project wizard
+  *
+  * @method resetNewProjectData
+  */
   resetNewProjectData: function () {
     var newProjectData = {
       is_ringfenced: false,
@@ -35,6 +40,14 @@ export default Ember.Component.extend({
     this.set('newProjectData', newProjectData)
   },
 
+  /**
+  * saves scenarios to the backend
+  *
+  * @method persistScenarioForPhase
+  * @param {Object} opts
+  *   @param {Object} opts.phase
+  * @return {Object} promise
+  */
   persistScenarioForPhase: function (opts) {
     var phase = opts.phase
     var simulation = this.get('simulation')
@@ -56,6 +69,14 @@ export default Ember.Component.extend({
     })
   },
 
+  /**
+  * creates actions for a modified resource
+  *
+  * @method makeActions
+  * @param {Object} opts
+  *   @param {Object} opts.resource
+  * @return {Array} array of actions
+  */
   makeActions: function (opts) {
     var self = this
     var resource = opts.resource
@@ -75,6 +96,15 @@ export default Ember.Component.extend({
     return actions
   },
 
+  /**
+  * creates a sigular action for a process property
+  *
+  * @method makeActions
+  * @param {Object} opts
+  *   @param {Object} opts.newProcessProperty
+  *   @param {Object} opts.entityId
+  * @return {Object} action
+  */
   makeAction: function (opts) {
     var newProcessProperty = opts.newProcessProperty
     var entityId = opts.entityId
@@ -88,6 +118,14 @@ export default Ember.Component.extend({
     }
   },
 
+  /**
+  * creates mirrored/inverted actions for a set of actions, so to release the resource after the project phase
+  *
+  * @method invertActions
+  * @param {Object} opts
+  *   @param {Array} opts.actions
+  * @return {Array} array of inverted actions
+  */
   invertActions : function (opts) {
     var actions = opts.actions
     var invertedActions = []
@@ -97,6 +135,15 @@ export default Ember.Component.extend({
     return invertedActions
   },
 
+  /**
+  * Creates start and end events for a projectphase
+  *
+  * @method createEvents
+  * @param {Object} opts
+  *   @param {Object} opts.scenario
+  *   @param {Object} opts.phase
+  * @return {Object} start and end event
+  */
   createEvents: function (opts) {
     var self = this
 
@@ -139,10 +186,6 @@ export default Ember.Component.extend({
       endEvent.actions = _.concat(endEvent.actions, impactActions)
     })
 
-    // console.log('startEvent', startEvent)
-    // console.log('endEvent', endEvent)
-
-    // return event
     return {
       start: startEvent,
       end: endEvent
@@ -168,6 +211,11 @@ export default Ember.Component.extend({
     //   console.log('catchProcessPropertyValues', values)
     // },
 
+
+    /**
+    * handles the creation of a new `project` resource, and child resources `phase` and `event`
+    * @method persistProject
+    */
     persistProject: function () {
 
       var self = this
