@@ -50,6 +50,34 @@ export default Ember.Component.extend({
     })
   },
 
+  loadBaseline: function () {
+    var self = this
+    var id = this.simulation.id
+    Ember.$.getJSON("api/scenarios/").then(function (scenarios) {
+
+      var baseline = scenarioInteractions.findBaseline({
+        scenarios : scenarios,
+        simulationId : id
+      })
+
+      if (baseline) {
+        self.set('baseline', baseline)
+      } else {
+        var postData = {
+          "name": 'baseline',
+          "sim": "http://127.0.0.1:8000/api/simulations/" + id + '/',
+          "start_offset": 0
+        }
+        postJSON({
+          data : postData,
+          url : "api/scenarios/"
+        }).then(function (baseline) {
+          self.set('baseline', baseline)
+        })
+      }
+    })
+  }.on('init'),
+
   initNodesGroup: function () {
     this.nodesGroup = new NodesGroup({
       draw : this.draw,
@@ -67,6 +95,10 @@ export default Ember.Component.extend({
     this.set('svgOpacity', opacity)
   },
 
+  /**
+  * filters entities based on current branch and service
+  * @method filterEntities
+  */
   filterEntities: function () {
 
     var branchId = this.get('branch')
@@ -137,6 +169,11 @@ export default Ember.Component.extend({
     return _.uniqWith(selectedOutputs, _.isEqual)
   },
 
+  /**
+  * Trigures all init fxns in the NodesGroup. Calls itself again if one or more of the entity components have not been instantiated yet.
+  *
+  * @method resetNodesgroup
+  */
   resetNodesgroup: function () {
     var counter = 0
 
@@ -153,48 +190,6 @@ export default Ember.Component.extend({
     }
   }.observes('entityComponents', 'outputComponents'),
 
-  reCentreDraggableBackground: function () {
-    this.set('transformX', 0)
-    this.set('transformY', 0)
-  },
-
-  buildSVGNodes: function () {
-
-    var self = this
-
-    console.log(Object.keys( this.entityComponents ).length, Object.keys( this.outputComponents ).length, this.selectedEntities.length, this.selectedOutputs.length )
-    if (Object.keys( this.entityComponents ).length + Object.keys( this.outputComponents ).length === this.selectedEntities.length + this.selectedOutputs.length ) {
-      this.nodesGroup = new NodesGroup({
-        draw : this.draw,
-        entityModel : self.get('selectedEntities'),
-        outputModel : self.get('selectedOutputs'),
-        persistPosition : self.persistPosition
-      })
-      this.nodesGroup.buildNodes({
-        entityComponents : this.entityComponents,
-        outputComponents : this.outputComponents
-      })
-      // this.nodesGroup.terminalListners()
-    } else {
-      console.warn('the entity components haven\'t been built yet')
-    }
-  },
-
-  replaceArrayContent: function (array, content) {
-    var removedAmount = array.length
-    var addedAmount = content.length
-    array.length = 0
-    array.push(...content)
-    array.arrayContentDidChange(0, addedAmount, removedAmount)
-  },
-
-  updateNodesGroupOffsetX: function () {
-    this.nodesGroup.groupOffsetX = this.get('transformX')
-  }.observes('transformX'),
-
-  updateNodesGroupOffsetY: function () {
-    this.nodesGroup.groupOffsetY = this.get('transformY')
-  }.observes('transformY'),
 
   updateBaseline: function (opts) {
     var self = this
@@ -261,36 +256,11 @@ export default Ember.Component.extend({
     return request
   },
 
-  warn: function (amount, subject) { console.warn( `there are ${amount} ${subject}s returned in this case. There should only be 1.` ) },
-
-  loadBaseline: function () {
-    var self = this
-    var id = this.simulation.id
-    Ember.$.getJSON("api/scenarios/").then(function (scenarios) {
-
-      var baseline = scenarioInteractions.findBaseline({
-        scenarios : scenarios,
-        simulationId : id
-      })
-
-      if (baseline) {
-        self.set('baseline', baseline)
-      } else {
-        var postData = {
-          "name": 'baseline',
-          "sim": "http://127.0.0.1:8000/api/simulations/" + id + '/',
-          "start_offset": 0
-        }
-        postJSON({
-          data : postData,
-          url : "api/scenarios/"
-        }).then(function (baseline) {
-          self.set('baseline', baseline)
-        })
-      }
-    })
-  }.on('init'),
-
+  /**
+  * sorts errors into a datastructure to be consumed by the entity and output components
+  *
+  * @method sortErrors
+  */
   sortErrors: function (opts) {
     var self = this
     var errors = {
@@ -316,6 +286,11 @@ export default Ember.Component.extend({
     self.set('errors', errors)
   },
 
+  /**
+  * runs the sumulation and sorts the telemetry data to be consumed by the entity and output components
+  *
+  * @method runSimulation
+  */
   runSimulation: function(){
     var self = this
     var baselineId = this.baseline.id
@@ -403,6 +378,10 @@ export default Ember.Component.extend({
     this.nodesGroup.updateCablesForNode(opts)
   },
 
+  /**
+  * deletes baseline resource and associated events, then calls the creation of a new baseline
+  * @method resetBaseline
+  */
   resetBaseline: function () {
     var self = this
     var baseline = this.get('baseline')
@@ -417,6 +396,30 @@ export default Ember.Component.extend({
       })
     })
   },
+
+  warn: function (amount, subject) { console.warn( `there are ${amount} ${subject}s returned in this case. There should only be 1.` ) },
+
+  reCentreDraggableBackground: function () {
+    this.set('transformX', 0)
+    this.set('transformY', 0)
+  },
+
+  replaceArrayContent: function (array, content) {
+    var removedAmount = array.length
+    var addedAmount = content.length
+    array.length = 0
+    array.push(...content)
+    array.arrayContentDidChange(0, addedAmount, removedAmount)
+  },
+
+  updateNodesGroupOffsetX: function () {
+    this.nodesGroup.groupOffsetX = this.get('transformX')
+  }.observes('transformX'),
+
+  updateNodesGroupOffsetY: function () {
+    this.nodesGroup.groupOffsetY = this.get('transformY')
+  }.observes('transformY'),
+
 
   actions: {
     resetDefaults: function () {
