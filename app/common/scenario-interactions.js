@@ -2,22 +2,36 @@ import * as convertTime from './convert-time'
 import putJSON from './put-json'
 import postJSON from './post-json'
 
+/**
+* @method findBaseline
+* @param {Object} opts
+*   @param {Array} opts.scenarios
+*   @param {Number} opts.simulationId
+* @return {Object} baseline scenario
+*/
 export function findBaseline(opts) {
   var scenarios = opts.scenarios
   var simulationId = opts.simulationId
   var simSubstring = `api/simulations/${simulationId}/`
-
   return _.find(scenarios, function (scenario) {
     return  ( _.includes(scenario.sim, simSubstring) && scenario.name === 'baseline')
   })
 }
 
+/**
+* @method findScenarioByName
+* @param {Object} opts
+*   @param {Array} opts.scenarios
+*   @param {String} opts.scenarioName
+*   @param {Number} opts.simulationId
+
+* @return {Object} scenario
+*/
 export function findScenarioByName(opts){
   var scenarios = opts.scenarios
   var scenarioName = opts.scenarioName
   var simulationId = opts.simulationId
   var simSubstring = `api/simulations/${simulationId}/`
-
   return _.find(scenarios, function (scenario) {
     return  ( _.includes(scenario.sim, simSubstring) && scenario.name === scenarioName)
   })
@@ -36,6 +50,16 @@ export function createBlankScenario(opts){
     url : "api/scenarios/"
   })
 }
+
+/**
+* persists changed phase and scenario times
+*
+* @method updatePhaseTimes
+* @param {Object} data
+*   @param {Object} opts.start_date
+*   @param {Object} opts.start_date
+* @param {Function} callback
+*/
 export function updatePhaseTimes(data, callback) {
   // get old start_date
   var requests = []
