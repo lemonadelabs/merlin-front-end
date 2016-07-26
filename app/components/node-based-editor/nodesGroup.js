@@ -3,6 +3,21 @@ import Cable from './cable'
 import Node from './node'
 import * as simTraverse from '../../common/simulation-traversal'
 
+/**
+* handles things to do with nodes, terminals and cables
+* @class NodesGroup
+* @param {Object} opts
+
+*   @param {Object} opts.simulation
+*   @param {Object} opts.draw
+*   @param {Array} opts.entityModel
+*   @param {Array} opts.outputModel
+*   @param {Object} opts.entityComponents
+*   @param {Object} opts.outputComponents
+*   @param {Function} opts.updateSVGOpacity
+
+*/
+
 export default function NodesGroup (opts) {
   this.simulation = opts.simulation
   this.draw = opts.draw
@@ -35,6 +50,11 @@ export default function NodesGroup (opts) {
   this.flyingCable = undefined
 }
 
+/**
+* sets up event listners on the node terminals, used to create new cables between nodes. Currently this feature is not being used
+*
+* @method terminalListners
+*/
 NodesGroup.prototype.terminalListners = function() {
   var self = this
 
@@ -125,6 +145,10 @@ NodesGroup.prototype.terminalListners = function() {
   })
 };
 
+/**
+* resets the nodesgroup to be ready to display a new selection of nodes
+* @method resetGroup
+*/
 NodesGroup.prototype.resetGroup = function() {
   this.hideCables()
   this.entityNodes = {}
@@ -145,11 +169,18 @@ NodesGroup.prototype.hideCables = function() {
   })
 };
 
-NodesGroup.prototype.clearNodesAndBuildNewNodes = function(opts) {
+/**
+* @method called when the selection of nodes to be displayed has changed in the component
+*/
+NodesGroup.prototype.clearNodesAndBuildNewNodes = function() {
   this.resetGroup()
-  this.buildNodes(opts)
+  this.buildNodes()
 };
 
+/**
+* handles the instantiation of cables
+* @method initCables
+*/
 NodesGroup.prototype.initCables = function() {
   var self = this
 
@@ -204,6 +235,10 @@ NodesGroup.prototype.initCables = function() {
   })
 };
 
+/**
+* each terminal saves a reference to the cable(s) connected to it, so that the cables can be updated when the node is moved
+* @method referenceCableInTerminals
+*/
 NodesGroup.prototype.referenceCableInTerminals = function(opts) {
   var cable = opts.cable
   var inputTerminal = cable.inputTerminal
@@ -228,6 +263,10 @@ NodesGroup.prototype.updateCablesForNode = function(opts) {
 
 };
 
+/**
+* handles the creation of nodes
+* @method buildNodes
+*/
 NodesGroup.prototype.buildNodes = function(opts) {
   var self = this
 
@@ -252,6 +291,13 @@ NodesGroup.prototype.buildNodes = function(opts) {
 
 };
 
+/**
+* creates a Node instance
+* @method buildNode
+* @param {Object} componenet
+* @param {Number} i
+*   this is an itterate used for initial layout
+*/
 NodesGroup.prototype.buildNode = function(component, i) {
   var self = this
   var id = component.get('id')
@@ -286,36 +332,3 @@ NodesGroup.prototype.buildNode = function(component, i) {
   }
 
 };
-function buildNode(component, i) {
-  var id = component.get('id')
-  var nodeType = component.get('node-type')
-  var positionX = component.get('positionX')
-  var positionY = component.get('positionY')
-
-  if ( !component.get('entity.display_pos_x') ) { component.set('transformX', 60 * i + 40) }
-  if ( !component.get('entity.display_pos_y') ) { component.set('transformY', 40 * i + 40) }
-
-  var nodeModel = (nodeType === 'output-node') ? _.find(self.outputModel, ['id', id]) : _.find(self.entityModel, ['id', id])
-
-  var node = new Node({
-    id : id,
-    draw : self.draw,
-    component : component,
-    nodeModel : nodeModel,
-    nodeType : nodeType,
-  })
-
-  if (_.includes(nodeType, 'entity')) {
-    self.entityNodes[id] = node
-
-    _.forEach(node.outputTerminals, function (output, id) {
-      self.outputTerminals[id] = output
-    })
-    _.forEach(node.inputTerminals, function (input, id) {
-      self.inputTerminals[id] = input
-    })
-  } else if (_.includes(nodeType, 'output')) {
-    self.outputNodes[id] = node
-  }
-
-}

@@ -143,10 +143,7 @@ export default Ember.Component.extend({
     this.reCentreDraggableBackground()
 
     if (Object.keys( this.entityComponents ).length + Object.keys( this.outputComponents ).length === this.selectedEntities.length + this.selectedOutputs.length ) {
-      this.nodesGroup.clearNodesAndBuildNewNodes({
-        entityComponents : this.get('selectedEntities'),
-        outputComponents : this.get('selectedOutputs')
-      })
+      this.nodesGroup.clearNodesAndBuildNewNodes()
       this.nodesGroup.initCables()
       this.updateCablesForAllNodes()
 
