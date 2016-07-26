@@ -1,7 +1,19 @@
 /////////////////////////////////////////////////////////////////////////
 ////////////////////////////////// API //////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
+/**
+* for extracting information from merlin simulations
+* @module simulation-traversal
+*/
 
+
+/**
+* @method getChildrenOfEntity
+* @param {Object} opts
+*   @param {Object} opts.entity
+*   @param {Object} opts.simulation
+* @return {Array} array of entities
+*/
 export function getChildrenOfEntity (opts) {
   var entity = opts.entity
   var simulation = opts.simulation
@@ -13,13 +25,13 @@ export function getChildrenOfEntity (opts) {
 
 }
 
-function getIdsFromChildUrls(urls) {
-  return _.map(urls, function (url) {
-    return Number( url.replace(/.*entities\//, '').slice(0, -1) )
-  })
-
-}
-
+/**
+* @method findSimoutputFromSimoutputconnectorId
+* @param {Object} opts
+*   @param {Number} opts.simoutputconnectorId
+*   @param {Array} opts.simOutputs
+* @return {Object} simulation output entity
+*/
 export function findSimoutputFromSimoutputconnectorId (opts) {
   var simoutputconnectorId = opts.simoutputconnectorId
   var simOutputs = opts.simOutputs
@@ -33,6 +45,12 @@ export function findSimoutputFromSimoutputconnectorId (opts) {
   return matchedSimoutput
 }
 
+/**
+* @method getServiceModelsFromSimulation
+* @param {Object} opts
+*   @param {Object} opts.simulation
+* @return {Array} serviceModel entities
+*/
 export function getServiceModelsFromSimulation (opts) { // used in 2-a-i
   var simulation = opts.simulation
   var parentEntity = getParentEntity({ simulation : simulation})
@@ -43,6 +61,14 @@ export function getServiceModelsFromSimulation (opts) { // used in 2-a-i
   return serviceModels
 }
 
+/**
+* returns attributes of the children of the service model
+* @method getChildAttributesFromServiceModel
+* @param {Object} opts
+*   @param {Object} opts.serviceModel
+*   @param {Object} opts.simulation
+* @return {Array}
+*/
 export function getChildAttributesFromServiceModel (opts) { // used in 2-a-ii
   var serviceModel = opts.serviceModel
   var simulation = opts.simulation
@@ -54,6 +80,14 @@ export function getChildAttributesFromServiceModel (opts) { // used in 2-a-ii
   return attributes
 }
 
+/**
+* @method getChildEntitiesByAttribute
+* @param {Object} opts
+*   @param {Object} opts.simulation
+*   @param {Object} opts.serviceModel
+*   @param {String} opts.attribute
+* @return {Array} Entities
+*/
 export function getChildEntitiesByAttribute(opts){ //used by haircut
   var simulation = opts.simulation
   var serviceModel = opts.serviceModel
@@ -67,6 +101,13 @@ export function getChildEntitiesByAttribute(opts){ //used by haircut
   return filteredEntities
 }
 
+/**
+* @method filterEntitiesByAttribute
+* @param {Object} opts
+*   @param {String} opts.attribute
+*   @param {Array} opts.entities
+* @return {Array} entities
+*/
 export function filterEntitiesByAttribute (opts) {  // used in 2-a-iii
   var attribute = opts.attribute
   var entities = opts.entities
@@ -77,6 +118,12 @@ export function filterEntitiesByAttribute (opts) {  // used in 2-a-iii
   return filteredEntities
 }
 
+/**
+* @method getProcessPropertiesFromEntity
+* @param {Object} opts
+*   @param {Object} opts.entity
+* @return {Array}
+*/
 export function getProcessPropertiesFromEntity (opts) {  // used in 2-a-iiii
   var entity = opts.entity
   var processProperties = _.map(entity.processes, function (process) {
@@ -86,6 +133,11 @@ export function getProcessPropertiesFromEntity (opts) {  // used in 2-a-iiii
   return processProperties
 }
 
+/**
+* @method getIdFromUrl
+* @param {String} url
+* @return {String}
+*/
 export function getIdFromUrl(url) {
   var slashless = url.slice(0, -1)
   var id = slashless.substring(slashless.lastIndexOf('/') + 1, slashless.length)
@@ -141,4 +193,10 @@ function getServiceModels (opts) {
     serviceModels.push(serviceModel)
   })
   return serviceModels
+}
+
+function getIdsFromChildUrls(urls) {
+  return _.map(urls, function (url) {
+    return Number( url.replace(/.*entities\//, '').slice(0, -1) )
+  })
 }
