@@ -41,6 +41,10 @@ export default Ember.Component.extend({
 
   }.observes('capitalization'),
 
+  /**
+  * this fxn runs when the user wants to edit a phase
+  * @method populateFormWithPhase
+  */
   populateFormWithPhase: function () {
     var phaseToEdit = this.get('phases')[this.get('editPhase.index')]
 
@@ -51,7 +55,6 @@ export default Ember.Component.extend({
     this.set('capitalization', phaseToEdit.capitalization)
     this.set('resourcesHoldingPenResources', _.cloneDeep( phaseToEdit.resources ) )
     this.set('resourcesHoldingPenImpacts', _.cloneDeep(phaseToEdit.impacts) )
-
   },
 
   resetNewPhaseForm: function () {
@@ -80,6 +83,13 @@ export default Ember.Component.extend({
     })
   },
 
+  /**
+  * calculates how mush a process property value has changed, and adds that value to the processProperty to be used later in the creation of actions
+  * @method addChangeAttributeToProcessProperty
+  * @param {Object} opts
+  *   @param {Object} opts.
+  * @return {Array} array of ids
+  */
   addChangeAttributeToProcessProperty: function (opts) {
     var newProcessProperty = opts.newProcessProperty
     var entity = opts.entity
@@ -98,6 +108,11 @@ export default Ember.Component.extend({
       this.set('editPhase', undefined)
       this.sendAction('toggleChildLayer')
     },
+
+    /**
+    * takes information from child layers and packages it up into a phase
+    * @method addNewPhase
+    */
     addNewPhase: function () {
 
       var resourcePen = this.get('resourcesHoldingPenResources')
@@ -152,6 +167,13 @@ export default Ember.Component.extend({
       this.sendAction('toggleChildLayer')
     },
 
+    /**
+    * takes the resourse and impact information and packages it to be used later in the creation of a phase
+    *
+    * @method packageChildData
+    * @param {Array} processProperties
+    * @param {String} layerType either `resourse` or `impact`
+    */
     packageChildData: function (processProperties, layerType) {
       var resourcePen =  this.get(`resourcesHoldingPen${layerType}`)
 
