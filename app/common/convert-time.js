@@ -1,3 +1,22 @@
+/**
+* Module for converting time between frontend and backend formats.
+* backend format: "2016-07-01"
+* frontend format: {
+*   year : 2017,
+*   value : 1,
+* }
+* @module convert-time
+*/
+
+
+/**
+* Take an object. Any properties of the object that contain date information will be switched to the other format.
+*
+* @method convertTimesInObject
+* @param {Object} object
+* @return {Array} array of ids
+*/
+
 export function convertTimesInObject (object) {
   _.forEach(object, function (value, key) {
     if (key.indexOf('date') > -1) {
@@ -10,14 +29,13 @@ export function convertTimesInObject (object) {
   })
 }
 
-function switchTimeFormat (opts) {
-  if (typeof time === 'object') {
-    return quarterToBackend(opts)
-  } else {
-    return toQuater(opts.time)
-  }
-}
-
+/**
+* converts string type date into the front end type date
+*
+* @method toQuater
+* @param {String} time
+* @return {Object} formatted date
+*/
 export function toQuater (time) {
   var month = Number( time.substring(5,7) )
   var quarter
@@ -38,6 +56,14 @@ export function toQuater (time) {
     value : quarter,
   }
 }
+
+/**
+* Converts front end format date to backend format
+*
+* @method
+* @param {Object} object
+* @return {Array} array of ids
+*/
 
 export function quarterToBackend(opts) {
   var time = opts.time
@@ -64,42 +90,13 @@ export function quarterToBackend(opts) {
   return formatted
 }
 
-function formatTimeForBackend(day, month, year) {
-  return `${ year }-${ formatDayOrMonth(month) }-${ formatDayOrMonth(day) }`
-}
-
-function formatDayOrMonth(t) {
-  return String(t).length === 1 ? `0${t}` : String(t)
-}
-
-function daysInMonth(month,year) {
-   return new Date(year, month, 0).getDate();
-}
-
-function additiveInverse(number) {
-  return number * -1
-}
-
-function isBEarlier(opts) {
-  var a = opts.a
-  var b = opts.b
-  if (a.year > b.year) { return true }
-  if (b.year > a.year) { return false }
-  if (a.year === b.year) {
-    return (b.value < a.value) ? true : false
-  }
-}
-
-function ensureQuartersInObject(opts) {
-  _.forEach(opts, function (value, key) {
-    opts[key] = ensureQuarterFormat(value)
-  })
-}
-
-function ensureQuarterFormat(time) {
-  return ( typeof time === 'string' ) ? toQuater(time) : time
-}
-
+/**
+* takes a time in either formats, and returns time + 1quarter in front end format
+*
+* @method incrementTimeBy1
+* @param {Object} opts
+* @return {Object} time
+*/
 export function incrementTimeBy1 (opts) {
   var maxValue = opts.maxValue || 4
   var time = ensureQuarterFormat( _.cloneDeep(opts.time) )
@@ -112,7 +109,13 @@ export function incrementTimeBy1 (opts) {
   return time
 }
 
-
+/**
+* takes a time in either formats, and returns time + 3quarters in front end format
+*
+* @method incrementTimeBy3
+* @param {Object} opts
+* @return {Object} time
+*/
 
 export function incrementTimeBy3(opts) {
   var time = opts.time
@@ -123,6 +126,13 @@ export function incrementTimeBy3(opts) {
   return three
 }
 
+/**
+* takes two times and returns the amount of ticks between them
+*
+* @method clicksBetween
+* @param {Object} opts
+* @return {Number}
+*/
 
 export function clicksBetween(opts) {
 
@@ -164,8 +174,52 @@ export function clicksBetween(opts) {
   }
   var clicks = quatersToClicks( quarters )
   return inverse ? additiveInverse( clicks ) : clicks
-
 }
+
+function switchTimeFormat (opts) {
+  if (typeof time === 'object') {
+    return quarterToBackend(opts)
+  } else {
+    return toQuater(opts.time)
+  }
+}
+
+function formatTimeForBackend(day, month, year) {
+  return `${ year }-${ formatDayOrMonth(month) }-${ formatDayOrMonth(day) }`
+}
+
+function formatDayOrMonth(t) {
+  return String(t).length === 1 ? `0${t}` : String(t)
+}
+
+function daysInMonth(month,year) {
+   return new Date(year, month, 0).getDate();
+}
+
+function additiveInverse(number) {
+  return number * -1
+}
+
+function isBEarlier(opts) {
+  var a = opts.a
+  var b = opts.b
+  if (a.year > b.year) { return true }
+  if (b.year > a.year) { return false }
+  if (a.year === b.year) {
+    return (b.value < a.value) ? true : false
+  }
+}
+
+function ensureQuartersInObject(opts) {
+  _.forEach(opts, function (value, key) {
+    opts[key] = ensureQuarterFormat(value)
+  })
+}
+
+function ensureQuarterFormat(time) {
+  return ( typeof time === 'string' ) ? toQuater(time) : time
+}
+
 
 function quatersToClicks(quaters) {
   return quaters * 3

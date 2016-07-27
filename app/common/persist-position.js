@@ -1,5 +1,12 @@
 import putJSON from './put-json'
 
+/**
+* persists the position of node to a backend API
+*
+* @method persistPosition
+* @param {Object} e mouse event
+*/
+
 export default function persistPosition (e) {
   var id = this.get('id')
   var nodeType = this.get('node-type')

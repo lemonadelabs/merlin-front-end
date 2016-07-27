@@ -2,19 +2,10 @@ import Ember from 'ember';
 // import * as simTraverse from '../../common/simulation-traversal'
 
 export default Ember.Component.extend({
-  // phaseName: undefined,
-  // capital: undefined,
-  // operational: undefined,
-  // description: undefined,
   timelineGridObjects: undefined,
   selectedServiceModel: undefined,
   showChildLayer: false,
   editPhase: undefined,
-
-  // newPhases: [] // new phaes is passed to the clild layer
-  // should
-
-
 
   checkForErrors: function () {
     var validated = true
@@ -66,6 +57,10 @@ export default Ember.Component.extend({
 
   actions: {
 
+    /**
+    * opens the phase edit layer
+    * @method onNoDragClick
+    */
     onNoDragClick: function (timelineObject) {
       if ( this.get('editPhase') === undefined && this.get('showChildLayer') === true) { return }
 
@@ -87,26 +82,15 @@ export default Ember.Component.extend({
         this.set('editPhase', undefined)
         this.set('showChildLayer', false)
       }
-
-
     },
-
-
-    // editPhase () {
-    // },
     toggleChildLayer () {
       this.toggleBool('showChildLayer');
     },
-    updatePhase () {
-      //this is needed for the timeline-track component, we might want to do something here anyway
-    },
     next () {
       this.set('submitted', true);
-      // do things regarding data, like validation
       this.sendAction('next');
     },
     back () {
-      // this.set('submitted', true);
       this.sendAction('back');
     },
     cancel () {

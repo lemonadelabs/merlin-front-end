@@ -1,5 +1,19 @@
 import * as convertTime from './convert-time'
 
+/**
+* Module for extracting information from projects.
+* @module project-traversal
+*/
+
+
+/**
+* this function takes an array of projects and returns the scenario ids for those projects.
+*
+* @method getScenarioIds
+* @param {Array} projects: array of projects
+* @return {Array} array of ids
+*/
+
 export function getScenarioIds (projects) {
   var phases = getPhasesFromProjects( projects )
   var phasesSorted = sortProjectphasesCronologically( phases )

@@ -1,18 +1,27 @@
 import * as convertTime from '../common/convert-time'
 
+/**
+* this function and assosiated functions takes an array of projects and uses the financial information and time information to create datasets that represent global cashflow.
+*
+* @method processProjects
+* @param {Object} opts
+*   @param {Object} opts.metadata
+*   @param {Projects} opts.projects
+* @return {Object} populated datasctructures
+*/
 export default function processProjects (opts) {
   var metadata = opts.metadata
   var projects = opts.projects
 
   // needs : start, end, units,
-  var researchSkeleton = makeSkeleton( { metadata : opts.metadata } )
-  var devSkeleton = makeSkeleton( { metadata : opts.metadata } )
-  var ongoingCostSkeleton = makeSkeleton( { metadata : opts.metadata } )
-  var capitalisationSkeleton = makeSkeleton( { metadata : opts.metadata } )
-  var fuelTankSkeleton = makeSkeleton( { metadata : opts.metadata } )
+  var researchSkeleton = makeSkeleton( { metadata : metadata } )
+  var devSkeleton = makeSkeleton( { metadata : metadata } )
+  var ongoingCostSkeleton = makeSkeleton( { metadata : metadata } )
+  var capitalisationSkeleton = makeSkeleton( { metadata : metadata } )
+  var fuelTankSkeleton = makeSkeleton( { metadata : metadata } )
 
-  var capexSkeleton = makeSkeleton( { metadata : opts.metadata } )
-  var opexSkeleton = makeSkeleton( { metadata : opts.metadata } )
+  var capexSkeleton = makeSkeleton( { metadata : metadata } )
+  var opexSkeleton = makeSkeleton( { metadata : metadata } )
 
 
 
@@ -41,6 +50,17 @@ export default function processProjects (opts) {
 
 }
 
+/**
+* this method destructively modifies the provided data structures. It controls the interegation of the projects and populates the datastructures with the desired information
+*
+* @method populateSkeletons
+* @param {Object} opts
+*   @param {Object} opts.fuelTankSkeleton
+*   @param {Object} opts.capexSkeleton
+*   @param {Object} opts.opexSkeleton
+*   @param {Object} opts.projects
+*   @param {Object} opts.metadata
+*/
 function populateSkeletons(opts) {
   var fuelTankSkeleton = opts.fuelTankSkeleton
   var capexSkeleton = opts.capexSkeleton
@@ -134,6 +154,16 @@ function populateSkeletons(opts) {
 
 }
 
+/**
+* This method destructively modifies the provided datasctructutre `fuelTankSkeleton`. It tops up the fuel tank every year with `availableFunds`. It subtracts the datastructures in the `toSubtract` array from the fuelTank data structure.
+*
+* @method drainFuelTank
+* @param {Object} opts
+*   @param {Array} opts.toSubtract datasctructures to subtract from the fueltank
+*   @param {Object} opts.fuelTankSkeleton
+*   @param {Number} opts.availableFunds
+*   @param {Number} opts.maxValue year devision default 4
+*/
 function drainFuelTank (opts) {
   var toSubtract = opts.toSubtract
   var fuelTankSkeleton = opts.fuelTankSkeleton
@@ -161,6 +191,17 @@ function drainFuelTank (opts) {
   })
 }
 
+/**
+* This method destructively modifies the provided datasctructutre skeleton, adding the installment value to each datum between start and end dates.
+*
+* @method distributeCost
+* @param {Object} opts
+*   @param {Object} opts.skeleton
+*   @param {Object} opts.start
+*   @param {Object} opts.end
+*   @param {Number} opts.installment
+*   @param {Number} opts.maxValue year devision default 4
+*/
 function distributeCost(opts) {
   var skeleton = opts.skeleton
   var start = opts.start
@@ -199,6 +240,14 @@ function distributeCost(opts) {
   }
 }
 
+/**
+* this function creates a datastructure that represents the timeframe of the metadata. The returned datastructure is made up of values of `0`
+*
+* @method makeSkeleton
+* @param {Object} opts
+*   @param {Object} opts.metadata
+* @return {Object} datasctructure of zeros
+*/
 function makeSkeleton(opts) {
   var metadata = opts.metadata
   var start = metadata.start
@@ -234,6 +283,7 @@ function getMaxValue (units) {
     return 4
   }
 }
+
 function findNoOfInstallments(opts) {
   var start = opts.start
   var end = opts.end
@@ -264,10 +314,3 @@ function findNoOfInstallments(opts) {
   }
   return installments
 }
-
-// function sigmoid(t) {
-//   var xMultiplier = 1.3
-//   var startingYModifier = - 0.5
-//   var yMultiplier = 1.6
-//   return ( 1 / ( 1 + Math.pow( Math.E, - ( t * xMultiplier ) ) ) + startingYModifier ) * yMultiplier;
-// }

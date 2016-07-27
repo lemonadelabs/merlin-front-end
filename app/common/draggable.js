@@ -1,3 +1,14 @@
+/**
+* this module enables a dom element to be draggable.
+* it can integrate with persist-position module to persist informtation to an api on mouse up
+*
+* @module draggable
+* @param {Object} opts
+*   opts.element element to become draggable
+*   opts.context context of element
+* @return {Array} array of ids
+*/
+
 export default function initDraggable (opts) {
   var persistPosition = opts.persistPosition
   var self = opts.context
