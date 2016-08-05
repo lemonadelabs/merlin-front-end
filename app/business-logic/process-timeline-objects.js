@@ -137,9 +137,7 @@ function populateSkeletons(opts) {
         end : ongoingCostEnd,
         installment : ongoingCostInstallment
       })
-
     })
-
   })
 
   var availableFunds = metadata.availableFunds
@@ -276,6 +274,7 @@ function makeSkeleton(opts) {
   return skeleton
 }
 
+// this function decides how many year devisions there are.
 function getMaxValue (units) {
   if (units === 'months') {
     return 12
